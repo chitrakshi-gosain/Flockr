@@ -1,3 +1,10 @@
+import channel
+from data import data
+
+import pytest
+from error import InputError
+from error import AccessError
+
 '''
 Tests for channel_invite()
 
@@ -24,7 +31,17 @@ Description: Invites a user (with user id u_id) to join a channel with ID
 
 '''
 Current assumptions:
+    1. User cannot be invited if they are already in the channel
 '''
 
-def test_channel_invite():
-    #todo
+'''
+Test ideas: [description] - [pass / fail / error]
+    1. channel_id is invalid - InputError
+    2. invalid user is added - InputError
+    3. authorised user is not in channel - AccessError
+    4. user is already in channel - fail
+    5. valid channel_id and users - pass
+'''
+
+def test_channel_invite_invalid_channel():
+    pass
