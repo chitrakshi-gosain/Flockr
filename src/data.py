@@ -1,3 +1,5 @@
+# can we have comments in coordination, would be easier to relate.
+
 data = {
     'users': [
         { #user -> u_id: 0
