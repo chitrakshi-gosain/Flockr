@@ -44,4 +44,5 @@ Test ideas: [description] - [pass / fail / error]
 '''
 
 def test_channel_invite_invalid_channel():
-    pass
+    with pytest.raises(InputError) as e:
+        assert channel
