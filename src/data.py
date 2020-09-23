@@ -8,6 +8,8 @@ data = {
             'name_first' : 'fname0',
             'name_last' : 'lname0',
             'handle_str' : 'handle0'
+            'token' : 'fname0' + 'lname0'
+            'password' : 'pass0'
         },
         { #user -> u_id: 1
             'u_id' : 1,
@@ -15,6 +17,8 @@ data = {
             'name_first' : 'fname1',
             'name_last' : 'lname1',
             'handle_str' : 'handle1'
+            'token' : 'fname1' + 'lname1'
+            'password' : 'pass1'
         }
     ],
 
