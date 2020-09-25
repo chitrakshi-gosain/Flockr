@@ -1,6 +1,8 @@
-import auth
-import channel
-import channels
+from auth import auth_*
+from channel import channel_*
+from channels import channels_*
+from other import clear
+import pytest
 
 # Sets up various user sample data for testing purposes
 def initialise_user_data():
@@ -56,6 +58,8 @@ def test_channels_create_valid_basic():
     assert basic_channel_details['all_members'][0]['name_first'] == 'owner_first'
     assert basic_channel_details['all_members'][0]['name_last'] == 'owner_last'
 
+    clear()
+
 # Creating channel with empty string name
 def test_channels_create_valid_empty():
     users = initialise_user_data()
@@ -77,6 +81,8 @@ def test_channels_create_valid_empty():
     assert empty_channel_details['all_members'][0]['name_first'] == 'user1_first'
     assert empty_channel_details['all_members'][0]['name_last'] == 'user1_last'
 
+    clear()
+
 # Creating private channel
 def test_channels_create_valid_private():
     users = initialise_user_data()
@@ -97,6 +103,13 @@ def test_channels_create_valid_private():
     assert empty_channel_details['all_members'][0]['u_id'] == users['john']['id']
     assert empty_channel_details['all_members'][0]['name_first'] == 'John_first'
     assert empty_channel_details['all_members'][0]['name_last'] == 'Smith_last'
+
+    # Ensure that channel is private by attempting join from non-member
+    pytest.raises(Exception):
+        channel_join(users['user1']['token'])
+
+    clear()
+
 
 # Creating channel with too large of a name
 # Creating two channels with the same name
