@@ -1,7 +1,10 @@
 import auth
 import channel
 import channels
-import pytest
 
-def test_channels_list():
-	pass
+def initialise_user_data():
+
+
+def initialise_channel_data():
+
+
