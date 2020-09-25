@@ -35,3 +35,7 @@
 ### channels_listall
 
 ### channels_create
+- Channel names can be empty strings
+- Two channels can share a name
+- Channel names can have spaces and special characters
+- User who creates a channel becomes an owner and member of that channel
