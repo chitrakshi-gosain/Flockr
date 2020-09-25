@@ -6,6 +6,9 @@ import pytest
 
 # Sets up various user sample data for testing purposes
 def initialise_user_data():
+    # Ensures any currently existing data is removed
+    clear()
+
     # Register users:
     # Descriptive test data
     (owner_id, owner_token) = auth_register('owner@email.com', 'owner_pass', 'owner_first', 'owner_last')
@@ -22,7 +25,7 @@ def initialise_user_data():
     (ingrid_id, ingrid_token) = auth_register('ingrid.cline@gmail.com', '572o75630', 'Ingrid', 'Cline')
     (donald_id, donald_token) = auth_register('donaldrichards@gmail.com', 'kjdfg;h;;df', 'Donald', 'Richards')
 
-    # Returns user data that is implementation dependent
+    # Returns user data that is implementation dependent (id, token)
     return {
         'owner': {'id': owner_id, 'token': owner_token},
         'user1': {'id': user1_id, 'token': user1_token},
@@ -125,5 +128,18 @@ def test_channels_create_invalid_namesize():
     clear()
 
 # Creating two channels with the same name
+def test_channels_create_valid_samename():
+    users = initialise_user_data()
+
+    # Creating public channels with the same name
+    channels_create(users['user1']['token'], 'Hello World!', True)
+    channels_create(users['user2']['token'], 'Hello World!', True)
+
+    # Checking both channels exist and have the same name
+    channel_list = channels_listall(users['user3']['token'])
+
+    assert channel_list[0]['name'] == 'Hello World!'
+    assert channel_list[1]['name'] == 'Hello World!'
+
 # Non-existant user creating a channel
 # Logged out user creating channel
