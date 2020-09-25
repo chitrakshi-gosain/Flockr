@@ -1,7 +1,7 @@
 # can we have comments in coordination, would be easier to relate.
 
 #added admin variable to users
-#added is_private to channels
+#added is_public to channels
 
 data = {
     'users': [
@@ -31,7 +31,7 @@ data = {
         { #channel0
             'channel_id' : 0,
             'name' : 'ch_name0',
-            'is_private' : True,
+            'is_public' : True,
             'owner_members' : [ #_members
                 {
                     'u_id' : 0,
@@ -69,7 +69,7 @@ data = {
         { #channel1
             'channel_id' : 1,
             'name' : 'ch_name1',
-            'is_private' : False,
+            'is_public' : False,
             'owner_members' : [ #_members
                 {
                     'u_id' : 1,
