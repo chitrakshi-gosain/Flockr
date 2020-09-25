@@ -4,8 +4,8 @@ import channels
 
 # Sets up various user sample data for testing purposes
 def initialise_user_data():
-	# Register users:
-	# Descriptive test data
+    # Register users:
+    # Descriptive test data
     (owner_id, owner_token) = auth_register('owner@email.com', 'owner_pass', 'owner_first', 'owner_last')
     (user1_id, user1_token) = auth_register('user1@email.com', 'user1_pass', 'user1_first', 'user1_last')
     (user2_id, user2_token) = auth_register('user2@email.com', 'user2_pass', 'user2_first', 'user2_last')
@@ -36,16 +36,17 @@ def initialise_user_data():
 	}
 
 # Creating channel with valid data
-def test_channels_create_valid_simple1():
+def test_channels_create_valid_basic():
+    users = initialise_user_data()
+
     # Creating a basic public channel
-    users = initialise_user_data()	
-    basic_channel_id = channels_create(users['owner']['token'], 'A Basic Channel', true)
+    channel_id = channels_create(users['owner']['token'], 'A Basic Channel', True)
 
-    # Checks that channels_create has returned a valid id (integer value)
-    assert isinstance(basic_channel_id, int)
+    # Check that channels_create has returned a valid id (integer value)
+    assert isinstance(channel_id, int)
 
-    # Checks that channel details have all been set correctly
-    basic_channel_details = channel_details(users['owner']['token'], basic_channel_id)
+    # Check that channel details have all been set correctly
+    basic_channel_details = channel_details(users['owner']['token'], channel_id)
 
     assert basic_channel_details['name'] == 'A Basic Channel'
     assert basic_channel_details['owner_members'][0]['u_id'] == users['owner']['id']
@@ -56,6 +57,47 @@ def test_channels_create_valid_simple1():
     assert basic_channel_details['all_members'][0]['name_last'] == 'owner_last'
 
 # Creating channel with empty string name
+def test_channels_create_valid_empty():
+    users = initialise_user_data()
+
+    # Creating public channel with empty string as name
+    channel_id = channels_create(users['user1']['token'], '', True)
+
+    # Check that channels_create has returned a valid id (integer value)
+    assert isinstance(channel_id, int)
+
+    # Check that channel details have all been set correctly
+    empty_channel_details = channel_details(users['user1']['token'], channel_id)
+
+    assert empty_channel_details['name'] == ''
+    assert empty_channel_details['owner_members'][0]['u_id'] == users['user1']['id']
+    assert empty_channel_details['owner_members'][0]['name_first'] == 'user1_first'
+    assert empty_channel_details['owner_members'][0]['name_last'] == 'user1_last'
+    assert empty_channel_details['all_members'][0]['u_id'] == users['user1']['id']
+    assert empty_channel_details['all_members'][0]['name_first'] == 'user1_first'
+    assert empty_channel_details['all_members'][0]['name_last'] == 'user1_last'
+
+# Creating private channel
+def test_channels_create_valid_private():
+    users = initialise_user_data()
+
+    # Creating private channel
+    channel_id = channels_create(users['john']['token'], 'Private Disc', False)
+
+    # Check that channels_create has returned a valid id (integer value)
+    assert isinstance(channel_id, int)
+
+    # Check that channel details have all been set correctly
+    private_channel_details = channel_details(users['john']['token'], channel_id)
+
+    assert empty_channel_details['name'] == 'Private Disc'
+    assert empty_channel_details['owner_members'][0]['u_id'] == users['john']['id']
+    assert empty_channel_details['owner_members'][0]['name_first'] == 'John'
+    assert empty_channel_details['owner_members'][0]['name_last'] == 'Smith'
+    assert empty_channel_details['all_members'][0]['u_id'] == users['john']['id']
+    assert empty_channel_details['all_members'][0]['name_first'] == 'John_first'
+    assert empty_channel_details['all_members'][0]['name_last'] == 'Smith_last'
+
 # Creating channel with too large of a name
 # Creating two channels with the same name
 # Non-existant user creating a channel
