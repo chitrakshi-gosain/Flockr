@@ -110,8 +110,20 @@ def test_channels_create_valid_private():
 
     clear()
 
-
 # Creating channel with too large of a name
+def test_channels_create_invalid_namesize():
+    users = initialise_user_data()
+
+    # Creating public channel with namesize > 20 characters
+    pytest.raises(Exception):
+        channels_create(users['user1']['token'], 'supercalifragilisticexpialidocious', True)
+
+    # Creating private channel with namesize > 20 characters
+    pytest.raises(Exception):
+        channels_create(users['user2']['token'], 'supercalifragilisticexpialidocious', False)
+
+    clear()
+
 # Creating two channels with the same name
 # Non-existant user creating a channel
 # Logged out user creating channel
