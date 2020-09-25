@@ -141,5 +141,3 @@ def test_channels_create_valid_samename():
     assert channel_list[0]['name'] == 'Hello World!'
     assert channel_list[1]['name'] == 'Hello World!'
 
-# Non-existant user creating a channel
-# Logged out user creating channel
