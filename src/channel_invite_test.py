@@ -1,10 +1,10 @@
-from channel import channel_invite, channel_details
+from channel import channel_invite, channel_join, channel_details
+from other import clear
 import auth
 import channels
 
 import pytest
-from error import InputError
-from error import AccessError
+from error import InputError, AccessError
 
 '''
 Tests for channel_invite()
@@ -30,7 +30,7 @@ Description: Invites a user (with user id u_id) to join a channel with ID
 # Wed15 Grape 2
 
 #note: these tests also require the functions to be implemented:
-    #auth_register, channels_create, channel_details
+    #auth_register, channels_create, channel_details, channel_join, clear
 
 
 '''
@@ -44,7 +44,7 @@ Test ideas: [description] - [pass / fail / error]
     2. channel_id is invalid - InputError
     3. invalid user is added - InputError
     4. authorised user is not in channel - AccessError
-    5. user is already in channel - fail -----------------(Maybe not required?)
+    5. user is already in channel - fail -----------------(How do we test?)
 '''
 
 def initialise_data():
@@ -78,27 +78,44 @@ def test_channel_invite_valid_basic():
     admin, users0 = users["admin"], users['users0']
     public = channels['public']
 
+    channel_join(admin[1], public[0]) # token, channel_id
+
     assert user_in_channel(user0[0], admin[1], public[0]) == False
     channel_invite(admin[1], public[0], user0[0]) # admin_token, channel_id, user_id
     assert user_in_channel(user0[0], admin[1], public[0]) == True
+    clear()
 
 def test_channel_invite_invalid_channel():
     (users, channels) = initialise_data()
     admin, user0 = users["admin"], users['user0']
     public, private = channels['public'], channels['private']
 
+    channel_join(admin[1], public[0]) # token, channel_id
+
     invalid_channel_id = (public[0] + private[0])/2 #should guarantee an invalid (different) id
     with pytest.raises(InputError) as e:
         assert channel_invite(admin[1], invalid_channel_id, user0[0]) # admin_token, invalid_id, user_id
+    clear()
 
 def test_channel_invite_invalid_user():
     (users, channels) = initialise_data()
     admin, user0, user1 = users["admin"], users['user0'], users['user1']
     public = channels['public']
 
+    channel_join(admin[1], public[0]) # token, channel_id
+
     invalid_user_id = admin[0] + user0[0] + user1[0] #should garantee an invalid id
     with pytest.raises(InputError) as e:
-        assert channel_invite(admin[1], public[0], invalid_user_id) # admin_token, invalid_id, user_id
+        assert channel_invite(admin[1], public[0], invalid_user_id) # admin_token, channel_id, invalid_user_id
+    clear()
 
 def test_channel_invite_invoker_not_in_channel():
-    pass #not sure what it means by authorised user
+    (users, channels) = initialise_data()
+    admin, user0, user1 = users["admin"], users['user0'], users['user1']
+    public = channels['public']
+
+    assert user_in_channel(user0[0], admin[1], public[0]) == False
+    with pytest.raises(AccessError) as e:
+        assert channel_invite(user1[1], public[0], invalid_user_id) # user1_token, channel_id, user_id
+    #Should be AccessError as user1 was not in channel
+    clear()
