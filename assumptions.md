@@ -33,6 +33,7 @@
 ### channels_list
 
 ### channels_listall
+- Includes private channels
 
 ### channels_create
 - Channel names can be empty strings
