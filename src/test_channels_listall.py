@@ -191,3 +191,12 @@ def test_channels_listall_valid_mix():
     assert channel_list[7]['name'] == 'Private'
 
     clear()
+
+# Listing channels when none have been created
+def test_channels_listall_valid_empty():
+    users = initialise_user_data()
+
+    # Checking channels_list return is correct
+    assert channels_listall(users['user1']['token']) == []
+
+    clear()
