@@ -31,9 +31,11 @@
 ## channels.py
 
 ### channels_list
+- Channels are listed in order of creation
 
 ### channels_listall
 - Includes private channels
+- Channels are listed in order of creation
 
 ### channels_create
 - Channel names can be empty strings
