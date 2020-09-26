@@ -1,6 +1,6 @@
-from auth import auth_*
-from channel import channel_*
-from channels import channels_*
+from auth import auth_register
+from channel import channel_details
+from channels import channels_create, channels_listall, channels_list
 from other import clear
 import pytest
 

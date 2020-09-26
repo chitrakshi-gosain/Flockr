@@ -1,6 +1,6 @@
-from auth import auth_*
-from channel import channel_*
-from channels import channels_*
+from auth import auth_register
+from channel import channel_details
+from channels import channels_create, channels_listall, channels_list
 from other import clear
 import pytest
 
@@ -108,7 +108,7 @@ def test_channels_create_valid_private():
     assert empty_channel_details['all_members'][0]['name_last'] == 'Smith_last'
 
     # Ensure that channel is private by attempting join from non-member
-    pytest.raises(Exception):
+    with pytest.raises(Exception):
         channel_join(users['user1']['token'])
 
     clear()
@@ -118,11 +118,11 @@ def test_channels_create_invalid_namesize():
     users = initialise_user_data()
 
     # Creating public channel with namesize > 20 characters
-    pytest.raises(Exception):
+    with pytest.raises(Exception):
         channels_create(users['user1']['token'], 'supercalifragilisticexpialidocious', True)
 
     # Creating private channel with namesize > 20 characters
-    pytest.raises(Exception):
+    with pytest.raises(Exception):
         channels_create(users['user2']['token'], 'supercalifragilisticexpialidocious', False)
 
     clear()
