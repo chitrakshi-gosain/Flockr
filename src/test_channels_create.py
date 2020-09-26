@@ -1,8 +1,25 @@
-from auth import auth_register
+from auth import auth_register, auth_logout
 from channel import channel_details
 from channels import channels_create, channels_listall, channels_list
 from other import clear
 import pytest
+
+'''
+----channels_create Documentation----
+Parameters:
+(token, name, is_public)
+
+Return Type:
+{channel_id}
+
+Exceptions:
+InputError when any of:
+- Name is more than 20 characters long
+
+Description:
+Creates a new channel with that name 
+that is either a public or private channel
+'''
 
 # Sets up various user sample data for testing purposes
 def initialise_user_data():
@@ -141,3 +158,16 @@ def test_channels_create_valid_samename():
     assert channel_list[0]['name'] == 'Hello World!'
     assert channel_list[1]['name'] == 'Hello World!'
 
+# Attempting to call channels_listall without a valid token
+def test_channels_listall_invalid_token():
+    users = initialise_user_data()
+
+    # Only way to guarrantee a token is invalid is to invalidate an existing token
+    invalid_token = users['owner']['token']
+    auth_logout(invalid_token)
+
+    # Checking that AccessError is thrown
+    with pytest.raises(Exception):
+        channels_create(invalid_token, 'Name', True)
+
+    clear()
