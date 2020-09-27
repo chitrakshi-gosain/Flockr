@@ -53,26 +53,26 @@ Test ideas: [description] - [pass / fail / error]
 def initialise_data():
     #create users
     #The first user to sign up is global owner
-    (admin_id, admin_token) = auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
-    (user0_id, user0_token) = auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    (user1_id, user1_token) = auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
+    admin_details = auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
+    user0_details = auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
+    user1_details = auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
     #create channels
-    channel_publ_id = channels_create(admin_token, "publ0", True)
-    channel_priv_id = channels_create(admin_token, "priv0", False)
+    channel_publ_details = channels_create(admin_token, "publ0", True)
+    channel_priv_details = channels_create(admin_token, "priv0", False)
 
     return { # users
-        'admin' : {'u_id': admin_id, 'token': admin_token, 'is_admin': True},
-        'user0' : {'u_id': user0_id, 'token': user0_token, 'is_admin': False},
-        'user1' : {'u_id': user1_id, 'token': user1_token, 'is_admin': False},
+        'admin' : admin_details,
+        'user0' : user0_details,
+        'user1' : user1_details,
     },
     { # channels
-        'publ' : {'ch_id': channel_publ_id},
-        'priv' : {'ch_id': channel_priv_id},
+        'publ' : channel_publ_details,
+        'priv' : channel_priv_details,
     }
 
 def is_user_in_channel(user_id, token, channel_id):
-    (name, owners, members) = channel_details(token, channel_id)
-    for member in members:
+    channel_details = channel_details(token, channel_id)
+    for member in channel_details['all_members']:
         if (member['u_id'] == user_id):
             return True
     return False
@@ -130,8 +130,8 @@ def test_channel_invite_invalid_token():
 
 def count_instances(user_id, token, channel_id):
     count = 0
-    (name, owners, members) = channel_details(token, channel_id)
-    for member in members:
+    channel_details = channel_details(token, channel_id)
+    for member in channel_details['all_members']:
         if (member['u_id'] == user_id):
             count += 1
     return count
