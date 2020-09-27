@@ -1,7 +1,7 @@
-from channel import channel_invite, channel_join, channel_details
+from channel import channel_join, channel_details
 from other import clear
-import auth
-import channels
+from auth import auth_register
+from channels import channels_create
 
 import pytest
 from error import InputError, AccessError
@@ -33,10 +33,10 @@ Description: Given a channel_id of a channel that the authorised user can join,
 
 '''
 Current assumptions:
-    1. User cannot join if they are already in the channel
-    2. Users are valid when/if they try join the channel
-    3. Should directly modify data if it works (and we check if data has changed to verify)
-
+    1. " " is an invalid token
+    2. User cannot join if they are already in the channel -as if function was not called
+    3. ids can only be non-negative integers
+    4. The first user to sign up is a global owner
 '''
 
 '''
@@ -45,26 +45,30 @@ Test ideas: [description] - [pass / fail / error]
     2. channel_id does not exist - InputError
     3. channel is private (and user is not admin) - AccessError
     4. channel is private (and user is admin) - pass
-    5. user is already in channel - fail ----------------------- (How do we test this?)
+    5. user has invalid token - AccessError
+    6. user is already in channel - fail (treat as function was not called)
 '''
 def initialise_data():
-    # create users
-    (admin_id, admin_token) = auth.auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
-    (user0_id, user0_token) = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    (user1_id, user1_token) = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
+    #create users
+    #The first user to sign up is global owner
+    (admin_id, admin_token) = auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
+    (user0_id, user0_token) = auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
+    (user1_id, user1_token) = auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
+    #create channels
+    channel_publ_id = channels_create(admin_token, "publ0", True)
+    channel_priv_id = channels_create(admin_token, "priv0", False)
 
-    users_list = { 'admin' : [admin_id, admin_token],
-                   'user0' : [user0_id, user0_token],
-                   'user1' : [user1_id, user1_token] }
-    # create channels
-    channel_public_id = channels.channels_create(admin_token, "public0", True)
-    channel_private_id = channels.channels_create(admin_token, "private0", False)
+    return { # users
+        'admin' : {'u_id': admin_id, 'token': admin_token, 'is_admin': True},
+        'user0' : {'u_id': user0_id, 'token': user0_token, 'is_admin': False},
+        'user1' : {'u_id': user1_id, 'token': user1_token, 'is_admin': False},
+    },
+    { # channels
+        'publ' : {'ch_id': channel_publ_id},
+        'priv' : {'ch_id': channel_priv_id},
+    }
 
-    channels_list = { 'public' : [channel_public_id], 'private' : channel_private_id }
-
-    return (users_list, channels_list)
-
-def user_in_channel(user_id, token, channel_id):
+def is_user_in_channel(user_id, token, channel_id):
     (name, owners, members) = channel_details(token, channel_id)
     for member in members:
         if (member['u_id'] == user_id):
@@ -73,44 +77,76 @@ def user_in_channel(user_id, token, channel_id):
 
 
 def test_channel_join_basic():
-    (users, channels) = initialise_data()
-    admin, user0 = users["admin"], users['users0']
-    public = channels['public']
-
-    assert user_in_channel(user0[0], user0[1], public[0]) == False
-    channel_join(user0[1], public[0]) #token, channel_id
-    assert user_in_channel(user0[0], user0[1], public[0]) == True
     clear()
+    users, channels = initialise_data()
+    # make sure user0 is not in channel
+    assert is_user_in_channel(users['user0']['u_id'], users['user0']['token'], channels['publ']['ch_id']) == False
+    # attempt to join
+    channel_join(users['user0']['token'], channels['publ']['ch_id'])
+    #now make sure user0 is in channel
+    assert is_user_in_channel(users['user0']['u_id'], users['user0']['token'], channels['publ']['ch_id']) == True
+
 
 def test_channel_join_invalid_channel():
-    (users, channels) = initialise_data()
-    admin, user0 = users["admin"], users['user0']
-    public, private = channels['public'], channels['private']
-
-    invalid_channel_id = (public[0] + private[0])/2 #should guarantee an invalid (different) id
-
-    assert user_in_channel(user0[0], user0[1], public[0]) == False
-    with pytest.raises(InputError) as e:
-        assert channel_join(user0[1], invalid_channel_id) #token, invalid_channel_id
     clear()
+    users, channels = initialise_data()
+
+    invalid_channel_id = -1
+    with pytest.raises(InputError) as e: #expect error as channel_id is invalid
+        assert channel_join(users['user0']['token'], invalid_channel_id)
+
 
 def test_channel_join_private_user():
-    (users, channels) = initialise_data()
-    admin, user0 = users["admin"], users['user0']
-    private = channels['private']
-
-    assert user_in_channel(user0[1], private[0]) == False
-    with pytest.raises(AccessError) as e:
-        assert channel_join(user0[1], private[0]) #token, invalid_channel_id
     clear()
+    users, channels = initialise_data()
+    assert users['user0']['is_admin'] == False
+    #make sure user0 us not in channel
+    assert is_user_in_channel(users['user0']['u_id'], users['user0']['token'],channels['priv']['ch_id']) == False
+    with pytest.raises(AccessError) as e: #expect error as channel is private and user0 is not an admin
+        assert channel_join(users['user0']['token'], channels['priv']['ch_id'])
+
 
 def test_channel_join_private_admin():
-    (users, channels) = initialise_data()
-    admin, user0 = users["admin"], users['user0']
-    private = channels['private']
-
-    #how to properly set admin?
-    assert user_in_channel(admin[1], private) == False
-    channel_join(admin[1], private[0]) #token, channel_id
-    assert user_in_channel(admin[1], private) == True
     clear()
+    users, channels = initialise_data()
+    assert users['admin']['is_admin'] == True
+
+    #make sure admin is not in channel
+    assert is_user_in_channel(users['admin']['u_id'], users['admin']['token'], channels['priv']['ch_id']) == False
+    #attempt to join
+    channel_join(users['admin']['token'], channels['priv']['ch_id'])
+    #now admin should be in channel
+    assert is_user_in_channel(users['admin']['u_id'], users['admin']['token'], channels['priv']['ch_id']) == True
+
+
+def test_channel_join_invalid_token():
+    clear()
+    users, channels = initialise_data()
+
+    invalid_token = ' '
+    with pytest.raises(AccessError) as e: #expect AccessError as token is invalid
+        assert channel_join(invalid_token, channels['publ']['ch_id'])
+
+
+def count_instances(user_id, token, channel_id):
+    count = 0
+    (name, owners, members) = channel_details(token, channel_id)
+    for member in members:
+        if (member['u_id'] == user_id):
+            count += 1
+    return count
+
+def test_channel_join_already_member():
+    clear()
+    users, channels = initialise_data()
+
+    # make sure user0 is not in channel
+    assert is_user_in_channel(users['user0']['u_id'], users['user0']['token'], channels['publ']['ch_id']) == False
+    # attempt to join
+    channel_join(users['user0']['token'], channels['publ']['ch_id'])
+    #now make sure user0 is in channel
+    assert is_user_in_channel(users['user0']['u_id'], users['user0']['token'], channels['publ']['ch_id']) == True
+    #Try join a second time
+    channel_join(users['user0']['token'], channels['publ']['ch_id'])
+    #there should only ever one instance of user in each channel
+    assert count_instances(users['user0']['u_id'], users['user0']['token'], channels['publ']['ch_id']) == 1
