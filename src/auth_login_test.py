@@ -26,30 +26,37 @@ Error type: InputError
 KEEP IN MIND:
 -> user can be registered/non-registered, hence check
 -> user can be already logged-in and trying to re-log-in, this has two 
-   possibilties:
+   possibilties, confirm if this should be considered yet:
         *log-in to self account again
         *log-in to someone else's account
-   however, in both cases user should be asked to logout first and then try.
-        
+   however, in both cases user should be asked to logout first and then try
+-> do we keep track of passwords? if in case user enters old password, then??
 '''
 
 import auth
 import pytest
+from error import InputError
 
 def test_successful_login():
-    pass
+    auth.auth_register('validemailid0@gmail.com', '123Abc!', 'Valid', 'User')
+    auth.auth_login('validemail0@gmail.com', '123Abc!')
 
 def test_invalid_email():
-    pass
+    with pytest.raises(InputError):
+        auth.auth_register('validemailid_gmail.com', '123Abc!', 'Valid', 'User')
 
 def test_unregistered_user():
-    pass
+    with pytest.raises(InputError):
+        auth.auth_login('notvalidemail1@gmail.com', '123Abc!')
 
 def test_wrong_password():
-    pass
+    auth.auth_register('validemailid2@gmail.com', '123Abc!', 'Valid', 'User')
+    auth.auth_login('validemail2@gmail.com', 'cbA321!')
 
 def test_re_login():
+    # not sure if it is to be implemented in iteration 1 or at all
     pass
 
-def test_add_more_later():
-    pass
+def test_insufficient_parameters():
+    with pytest.raises(InputError):
+        auth.auth_login('notvalidemail1@gmail.com', None)
