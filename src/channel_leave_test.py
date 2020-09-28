@@ -49,10 +49,10 @@ def initialise_data():
     user0_details = auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
     user1_details = auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
     #create channels
-    channel_publ_details = channels_create(admin_token, "publ0", True)
-    channel_priv_details = channels_create(admin_token, "priv0", False)
+    channel_publ_details = channels_create(admin_details['token'], "publ0", True)
+    channel_priv_details = channels_create(admin_details['token'], "priv0", False)
 
-    return { # users
+    return ({ # users
         'admin' : admin_details,
         'user0' : user0_details,
         'user1' : user1_details,
@@ -60,7 +60,7 @@ def initialise_data():
     { # channels
         'publ' : channel_publ_details,
         'priv' : channel_priv_details,
-    }
+    })
 
 def is_user_in_channel(user_id, token, channel_id):
     channel_details = channel_details(token, channel_id)
