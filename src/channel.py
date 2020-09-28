@@ -1,16 +1,14 @@
-from data import data
+import data
 from error import InputError, AccessError
-
 
 def channel_invite(token, channel_id, u_id):
     #order of checks: invalid token, invalid user, invalid channel_id, invoker not in chnnel
-    global data # get access to data
 
     is_valid_user = False
 
     is_valid_invoker = False
     is_invoker_admin = False
-    for user in data['users']: #check if token is valid -> get user info
+    for user in data.data['users']: #check if token is valid -> get user info
         if user['u_id'] == u_id:
             is_valid_user = True
             user_info = {'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']}
@@ -31,7 +29,7 @@ def channel_invite(token, channel_id, u_id):
 
     is_valid_channel = False
     channel_idx = 0
-    for channel in data['channels']: #check if channel is valid -> get channel info
+    for channel in data.data['channels']: #check if channel is valid -> get channel info
         if channel['channel_id'] == channel_id:
             is_valid_channel = True
             is_public = channel['is_public']
@@ -41,13 +39,13 @@ def channel_invite(token, channel_id, u_id):
     if not is_valid_channel:
         raise InputError('channel_id does not refer to a valid channel')
 
-    if not is_invoker_admin and not invoker_info in data['channels'][channel_idx]['all_members']:
+    if not is_invoker_admin and not invoker_info in data.data['channels'][channel_idx]['all_members']:
         raise AccessError('invoker is not part of the channel')
 
     #add valid users to valid channel
     if is_valid_invoker and is_valid_user and is_valid_channel:
-        if not user_info in data['channels'][channel_idx]['all_members']:
-            data['channels'][channel_idx]['all_members'].append(user_info)
+        if not user_info in data.data['channels'][channel_idx]['all_members']:
+            data.data['channels'][channel_idx]['all_members'].append(user_info)
         else:
             #assume function was not called (to prevent data duplication)
             pass
@@ -90,10 +88,9 @@ def channel_messages(token, channel_id, start):
 
 def channel_leave(token, channel_id):
     #order of check: invalid token, invalid channel, not in channel
-    global data # get access to data
 
     is_valid_user = False
-    for user in data['users']: #check if token is valid -> get user info
+    for user in data.data['users']: #check if token is valid -> get user info
         if user['token'] == token:
             is_valid_user = True
             user_info = {'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']}
@@ -104,7 +101,7 @@ def channel_leave(token, channel_id):
 
     is_valid_channel = False
     channel_idx = 0
-    for channel in data['channels']: #check if channel is valid -> get channel info
+    for channel in data.data['channels']: #check if channel is valid -> get channel info
         if channel['channel_id'] == channel_id:
             is_valid_channel = True
             break
@@ -115,8 +112,8 @@ def channel_leave(token, channel_id):
 
     #remove valid user from valid channel
     if is_valid_user and is_valid_channel:
-        if user_info in data['channels'][channel_idx]['all_members']:
-            data['channels'][channel_idx]['all_members'].remove(user_info)
+        if user_info in data.data['channels'][channel_idx]['all_members']:
+            data.data['channels'][channel_idx]['all_members'].remove(user_info)
         else:
             raise AccessError("User cannot leave channels they are not part of")
 
@@ -125,10 +122,9 @@ def channel_leave(token, channel_id):
 
 def channel_join(token, channel_id):
     # order of checks: invalid token, invalid channel, private channel
-    global data # get access to data
 
     is_valid_user = False
-    for user in data['users']: #check if token is valid -> get user info
+    for user in data.data['users']: #check if token is valid -> get user info
         if user['token'] == token:
             is_valid_user = True
             is_admin = user['is_admin']
@@ -140,7 +136,7 @@ def channel_join(token, channel_id):
 
     is_valid_channel = False
     channel_idx = 0
-    for channel in data['channels']: #check if channel is valid -> get channel info
+    for channel in data.data['channels']: #check if channel is valid -> get channel info
         if channel['channel_id'] == channel_id:
             is_valid_channel = True
             is_public = channel['is_public']
@@ -155,8 +151,8 @@ def channel_join(token, channel_id):
 
     #add valid users to valid channel
     if is_valid_user and is_valid_channel:
-        if not user_info in data['channels'][channel_idx]['all_members']:
-            data['channels'][channel_idx]['all_members'].append(user_info)
+        if not user_info in data.data['channels'][channel_idx]['all_members']:
+            data.data['channels'][channel_idx]['all_members'].append(user_info)
         else:
             #assume function was not called to not create duplicate data
             pass
@@ -171,7 +167,3 @@ def channel_addowner(token, channel_id, u_id):
 def channel_removeowner(token, channel_id, u_id):
     return {
     }
-
-
-#temp testing
-channel_invite("fname1lname1", 0, 1)
