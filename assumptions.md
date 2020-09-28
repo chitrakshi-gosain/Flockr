@@ -1,14 +1,9 @@
 # Assumptions
 
-## auth.py
-
-### auth_login
-- Assumption 1
-- etc...
-
-### auth_logout
-
-### auth_register
+## auth.py (auth_login, auth_logout, auth_register)
+- Passwords - will contain only printable ASCII characters
+- Token - provided as of iteration 1 is not unique to login session
+- Handles - add here after impleemnting function
 
 
 ## channel.py
