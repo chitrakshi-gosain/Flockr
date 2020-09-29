@@ -25,9 +25,6 @@ KEEP IN MIND:
 -> check if user is logged in before logging out
 -> check if token was invaildated, maybe just make a function to check that in sense make a dictionary for valid tokens with uid somehwere
 '''
-'''
-DATA TYPES
-'''
 
 import auth
 import pytest

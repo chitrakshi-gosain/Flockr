@@ -38,6 +38,7 @@ from error import InputError
 
 def test_successful_login_with_everything_valid():
     # modify this as in check if token is valid, do it after making function, probs
+    # will have to user.py for this and dat.py too, have a basic idea of what to do
     # this is a stub atm
     auth.auth_register('logintestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
     auth.auth_login('logintestvalidemailid0@gmail.com', '123Abc!0')

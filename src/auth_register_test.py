@@ -33,8 +33,7 @@ KEEP IN MIND:
         *log-in to someone else's account
    however, in both cases user should be asked to logout first and then try
 -> how to deal with re registeration of a user 
--> handle_str checks need to be done, will have to user use.py for it
--> add data types section here  
+-> handle_str checks need to be done, will have to user use.py for it 
 '''
 
 import auth
