@@ -23,16 +23,25 @@ Error type: AccessError
 '''
 KEEP IN MIND:
 -> check if user is logged in before logging out
--> check if token was invaildated, maybe just make a function to check that 
--> check if token is valid before klogout
--> check is token is no onger valid after logout - sense wise it's same as first one
+-> check if token was invaildated, maybe just make a function to check that in sense make a dictionary for valid tokens with uid somehwere
+'''
+'''
+DATA TYPES
 '''
 
 import auth
 import pytest
+from error import AccessError, InputError
 
 def test_successful_logout():
-    pass
+    auth.auth_register('logouttestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
+    test_user_0 = auth.auth_login('logouttestvalidemailid0@gmail.com', '123Abc!0')
+    assert auth.auth_logout(test_user_0['token'])
 
 def test_active_token_now_invalid():
-    pass
+    with pytest.raises(AccessError):
+        auth.auth_logout('invalid_token')
+
+def test_insufficient_parameters():
+    with pytest.raises(InputError):
+        auth.auth_logout(None)

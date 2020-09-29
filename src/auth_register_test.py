@@ -32,26 +32,74 @@ KEEP IN MIND:
    possibilties:
         *log-in to self account again
         *log-in to someone else's account
-   however, in both cases user should be asked to logout first and then try   
+   however, in both cases user should be asked to logout first and then try
+-> how to deal with re registeration of a user 
+-> handle_str checks need to be done, will have to user use.py for it
+-> add data types section here  
 '''
 
 import auth
+import user
 import pytest
+from error import InputError
 
-def test_trying_to_login():
-    pass
+def test_trying_to_register_and_login_with_everything_valid():
+    auth.auth_register('registerationtestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
+    auth.auth_login('registerationtestvalidemailid0@gmail.com', '123Abc!0')
 
 def test_invalid_email():
-    pass
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestinvalidemailid0_gmail.com', '123Abc!!', 'Invalid', 'User0')
 
 def test_existing_email_registeration():
-    pass
+    auth.auth_register('registerationtestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1again')
+
+def test_too_short_first_name():
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid2@gmail.com', '123Abc!2', 'Valid', 'User2')
+    
+def test_too_short_last_name():
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
 
 def test_too_long_first_name():
-    pass
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid4@gmail.com', '123Abc!4', 'Valid' * 11, 'User4')
 
 def test_too_long_last_name():
-    pass
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid5@gmail.com', '123Abc!5', 'Valid', 'User5' * 11)
 
 def test_too_short_password():
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid6@gmail.com', '12A!6', 'Valid', 'User6')
+
+def test_too_long_password(): # assuming max length is 32 characters, discuss
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid7@gmail.com', '1234567890ABCDEFGHIJ!@#$%^&*()_+7', 'Valid', 'User7')
+
+def test_lowercase_handle(): 
+    test_user_8 = auth.auth_register('registerationtestvalidemailid8@gmail.com', '123Abc!8', 'Valid', 'User8')
+    test_user_profile_8 = user.user_profile(test_user_8['token'], test_user_8['u_id'])
+    assert test_user_profile_8['handle_str'] == 'validuser8'
     pass
+
+def test_unique_handle():
+    test_user_9 = auth.auth_register('registerationtestvalidemailid9@gmail.com', '123Abc!9', 'Valid', 'User9')
+    test_user_profile_9 = user.user_profile(test_user_9['token'], test_user_9['u_id'])
+    test_user_10 = auth.auth_register('registerationtestvalidemailid10@gmail.com', '123Abc!10', 'Valid', 'User10')
+    test_user_profile_10 = user.user_profile(test_user_10['token'], test_user_10['u_id'])
+    assert test_user_profile_9['handle_str'] != test_user_profile_10['handle_str']
+    pass
+
+def test_too_long_handle():
+    test_user_11 = auth.auth_register('registerationtestvalidemailid11@gmail.com', '123Abc!11', 'Valid' * 2, 'User11' * 3)
+    test_user_profile_11 = user.user_profile(test_user_11['token'], test_user_11['u_id'])
+    assert test_user_profile_11['handle_str'] == 'validvaliduser11user'
+    pass
+
+def test_insufficient_parameters():
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid7@gmail.com', None, 'Valid', 'User7')

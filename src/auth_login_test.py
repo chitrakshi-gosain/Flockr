@@ -37,26 +37,38 @@ import auth
 import pytest
 from error import InputError
 
-def test_successful_login():
-    auth.auth_register('validemailid0@gmail.com', '123Abc!', 'Valid', 'User')
-    auth.auth_login('validemail0@gmail.com', '123Abc!')
+def test_successful_login_with_everything_valid():
+    # modify this as in check if token is valid, do it after making function, probs
+    # this is a stub atm
+    auth.auth_register('logintestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
+    auth.auth_login('logintestvalidemailid0@gmail.com', '123Abc!0')
+    pass
 
 def test_invalid_email():
     with pytest.raises(InputError):
-        auth.auth_register('validemailid_gmail.com', '123Abc!', 'Valid', 'User')
+        auth.auth_login('logintestinvalidemailid_gmail.com', '123Abc!!')
 
 def test_unregistered_user():
+    auth.auth_register('logintestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
     with pytest.raises(InputError):
-        auth.auth_login('notvalidemail1@gmail.com', '123Abc!')
+        auth.auth_login('unregisteredemail1@gmail.com', '123Abc!!')
 
 def test_wrong_password():
-    auth.auth_register('validemailid2@gmail.com', '123Abc!', 'Valid', 'User')
-    auth.auth_login('validemail2@gmail.com', 'cbA321!')
+    auth.auth_register('logintestvalidemailid2@gmail.com', '123Abc!2', 'Valid', 'User2')
+    auth.auth_login('logintestvalidemailid2@gmail.com', 'cbA321!!')
 
 def test_re_login():
-    # not sure if it is to be implemented in iteration 1 or at all
-    pass
+    auth.auth_register('logintestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
+    with pytest.raises(InputError):
+        auth.auth_login('logintestvalidemailid3@gmail.com', '123Abc!3')
 
 def test_insufficient_parameters():
+    auth.auth_register('logintestvalidemailid4@gmail.com', '123Abc!4', 'Valid', 'User4')
     with pytest.raises(InputError):
-        auth.auth_login('notvalidemail1@gmail.com', None)
+        auth.auth_login('logintestvalidemailid4@gmail.com', None)
+
+'''
+NOTES:
+# eliminate the auth.auth_register in each test and maybe just have it once at top, will it work?
+# discuss and add a test for return_type of function, probs
+'''
