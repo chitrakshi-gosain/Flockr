@@ -2,6 +2,7 @@ from auth import auth_register, auth_logout
 from channel import channel_details
 from channels import channels_create, channels_listall, channels_list
 from other import clear
+import error
 import pytest
 
 '''
@@ -67,7 +68,7 @@ def test_channels_list_valid_single():
     # Checking channels_list return is correct
     channel_list = channels_list(users['owner']['token'])
 
-    assert channel_list[0]['channel_id'] == channel_id
+    assert channel_list[0]['channel_id'] == channel_id['channel_id']
     assert channel_list[0]['name'] == 'A Basic Channel'
 
     clear()
@@ -89,11 +90,11 @@ def test_channels_list_valid_same():
     channel_list = channels_list(users['user1']['token'])
 
     # Id checks
-    assert channel_list[0]['channel_id'] == channel_id[0]
-    assert channel_list[1]['channel_id'] == channel_id[1]
-    assert channel_list[2]['channel_id'] == channel_id[2]
-    assert channel_list[3]['channel_id'] == channel_id[3]
-    assert channel_list[4]['channel_id'] == channel_id[4]
+    assert channel_list[0]['channel_id'] == channel_id[0]['channel_id']
+    assert channel_list[1]['channel_id'] == channel_id[1]['channel_id']
+    assert channel_list[2]['channel_id'] == channel_id[2]['channel_id']
+    assert channel_list[3]['channel_id'] == channel_id[3]['channel_id']
+    assert channel_list[4]['channel_id'] == channel_id[4]['channel_id']
 
     # Name checks
     assert channel_list[0]['name'] == 'First Channel'
@@ -125,11 +126,11 @@ def test_channels_list_valid_same():
     ingrid_channel_list = channels_list(users['ingrid']['token'])
 
     # Id checks
-    assert user1_channel_list[0]['channel_id'] == channel_id[0]
-    assert user2_channel_list[0]['channel_id'] == channel_id[1]
-    assert donald_channel_list[0]['channel_id'] == channel_id[2]
-    assert john_channel_list[0]['channel_id'] == channel_id[3]
-    assert ingrid_channel_list[0]['channel_id'] == channel_id[4]
+    assert user1_channel_list[0]['channel_id'] == channel_id[0]['channel_id']
+    assert user2_channel_list[0]['channel_id'] == channel_id[1]['channel_id']
+    assert donald_channel_list[0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list[0]['channel_id'] == channel_id[3]['channel_id']
+    assert ingrid_channel_list[0]['channel_id'] == channel_id[4]['channel_id']
 
     # Name checks
     assert user1_channel_list[0]['name'] == 'First Channel'
@@ -158,11 +159,11 @@ def test_channels_list_valid_private():
     john_channel_list = channels_list(users['john']['token'])
 
     # Id checks
-    assert user1_channel_list[0]['channel_id'] == channel_id[0]
-    assert user1_channel_list[1]['channel_id'] == channel_id[1]
-    assert john_channel_list[0]['channel_id'] == channel_id[2]
-    assert john_channel_list[1]['channel_id'] == channel_id[3]
-    assert john_channel_list[2]['channel_id'] == channel_id[4]
+    assert user1_channel_list[0]['channel_id'] == channel_id[0]['channel_id']
+    assert user1_channel_list[1]['channel_id'] == channel_id[1]['channel_id']
+    assert john_channel_list[0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list[1]['channel_id'] == channel_id[3]['channel_id']
+    assert john_channel_list[2]['channel_id'] == channel_id[4]['channel_id']
 
     # Name checks
     assert user1_channel_list[0]['name'] == 'First Channel'
@@ -199,14 +200,14 @@ def test_channels_list_valid_mix():
     jane_channel_list = channels_list(users['jane']['token'])
 
     # Id checks
-    assert user1_channel_list[0]['channel_id'] == channel_id[0]
-    assert user2_channel_list[0]['channel_id'] == channel_id[1]
-    assert donald_channel_list[0]['channel_id'] == channel_id[2]
-    assert john_channel_list[0]['channel_id'] == channel_id[3]
-    assert ingrid_channel_list[0]['channel_id'] == channel_id[4]
-    assert user1_channel_list[1]['channel_id'] == channel_id[5]
-    assert user3_channel_list[0]['channel_id'] == channel_id[6]
-    assert jane_channel_list[0]['channel_id'] == channel_id[7]
+    assert user1_channel_list[0]['channel_id'] == channel_id[0]['channel_id']
+    assert user2_channel_list[0]['channel_id'] == channel_id[1]['channel_id']
+    assert donald_channel_list[0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list[0]['channel_id'] == channel_id[3]['channel_id']
+    assert ingrid_channel_list[0]['channel_id'] == channel_id[4]['channel_id']
+    assert user1_channel_list[1]['channel_id'] == channel_id[5]['channel_id']
+    assert user3_channel_list[0]['channel_id'] == channel_id[6]['channel_id']
+    assert jane_channel_list[0]['channel_id'] == channel_id[7]['channel_id']
 
     # Name checks
     assert user1_channel_list[0]['name'] == 'First Channel'

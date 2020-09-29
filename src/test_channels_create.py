@@ -2,6 +2,7 @@ from auth import auth_register, auth_logout
 from channel import channel_details
 from channels import channels_create, channels_listall, channels_list
 from other import clear
+import error
 import pytest
 
 '''
@@ -65,10 +66,10 @@ def test_channels_create_valid_basic():
     channel_id = channels_create(users['owner']['token'], 'A Basic Channel', True)
 
     # Check that channels_create has returned a valid id (integer value)
-    assert isinstance(channel_id, int)
+    assert isinstance(channel_id['channel_id'], int)
 
     # Check that channel details have all been set correctly
-    basic_channel_details = channel_details(users['owner']['token'], channel_id)
+    basic_channel_details = channel_details(users['owner']['token'], channel_id['channel_id'])
 
     assert basic_channel_details['name'] == 'A Basic Channel'
     assert basic_channel_details['owner_members'][0]['u_id'] == users['owner']['u_id']
@@ -88,10 +89,10 @@ def test_channels_create_valid_empty():
     channel_id = channels_create(users['user1']['token'], '', True)
 
     # Check that channels_create has returned a valid id (integer value)
-    assert isinstance(channel_id, int)
+    assert isinstance(channel_id['channel_id'], int)
 
     # Check that channel details have all been set correctly
-    empty_channel_details = channel_details(users['user1']['token'], channel_id)
+    empty_channel_details = channel_details(users['user1']['token'], channel_id['channel_id'])
 
     assert empty_channel_details['name'] == ''
     assert empty_channel_details['owner_members'][0]['u_id'] == users['user1']['u_id']
@@ -111,10 +112,10 @@ def test_channels_create_valid_private():
     channel_id = channels_create(users['john']['token'], 'Private Disc', False)
 
     # Check that channels_create has returned a valid id (integer value)
-    assert isinstance(channel_id, int)
+    assert isinstance(channel_id['channel_id'], int)
 
     # Check that channel details have all been set correctly
-    private_channel_details = channel_details(users['john']['token'], channel_id)
+    private_channel_details = channel_details(users['john']['token'], channel_id['channel_id'])
 
     assert empty_channel_details['name'] == 'Private Disc'
     assert empty_channel_details['owner_members'][0]['u_id'] == users['john']['u_id']
@@ -125,7 +126,7 @@ def test_channels_create_valid_private():
     assert empty_channel_details['all_members'][0]['name_last'] == 'Smith_last'
 
     # Ensure that channel is private by attempting join from non-member
-    with pytest.raises(Exception):
+    with pytest.raises(AccessError):
         channel_join(users['user1']['token'])
 
     clear()
@@ -135,11 +136,11 @@ def test_channels_create_invalid_namesize():
     users = initialise_user_data()
 
     # Creating public channel with namesize > 20 characters
-    with pytest.raises(Exception):
+    with pytest.raises(InputError):
         channels_create(users['user1']['token'], 'supercalifragilisticexpialidocious', True)
 
     # Creating private channel with namesize > 20 characters
-    with pytest.raises(Exception):
+    with pytest.raises(InputError):
         channels_create(users['user2']['token'], 'supercalifragilisticexpialidocious', False)
 
     clear()
@@ -167,7 +168,7 @@ def test_channels_listall_invalid_token():
     auth_logout(invalid_token)
 
     # Checking that AccessError is thrown
-    with pytest.raises(Exception):
+    with pytest.raises(AccessError):
         channels_create(invalid_token, 'Name', True)
 
     clear()
