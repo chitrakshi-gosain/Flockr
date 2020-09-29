@@ -1,7 +1,7 @@
 # Assumptions
 
 ## auth.py (auth_login, auth_logout, auth_register)
-- Passwords - will contain only printable ASCII characters
+- Passwords - will contain only printable ASCII characters, max legth: 32, discuss
 - Token - provided as of iteration 1 is not unique to login session
 - Handles - add here after impleemnting function
 
