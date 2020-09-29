@@ -8,7 +8,7 @@
 '''
 
 '''
-FUNCTIONS_AVAILABLE_FOR_THE_TEST(PARAMETERS) return (RETURN_TYPE):
+FUNCTIONS_USED_FOR_THE_TEST(PARAMETERS) return (RETURN_TYPE):
 -> auth_register(email, password, name_first, name_last) return (u_id, token)
 -> auth_login(email,password) return (u_id, token)
 -> auth_logout(token) return (is_sucess)
