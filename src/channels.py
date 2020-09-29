@@ -11,6 +11,18 @@ def channels_list(token):
     }
 
 def channels_listall(token):
+    # Checking token validity and finding user that accessed listall
+    current_user = {}
+    # Loops through users until matching token is found
+    for user in users:
+        if user['token'] == token:
+            current_user = user
+    # If matching token is not found then AccessError is raised
+    if current_user == {}:
+        raise AccessError("Invalid Token")
+
+    # Constructing list of all channels
+
     return {
         'channels': [
         	{
