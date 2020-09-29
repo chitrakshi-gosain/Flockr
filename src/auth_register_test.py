@@ -56,11 +56,11 @@ def test_existing_email_registeration():
 
 def test_too_short_first_name():
     with pytest.raises(InputError):
-        auth.auth_register('registerationtestvalidemailid2@gmail.com', '123Abc!2', 'Valid', 'User2')
+        auth.auth_register('registerationtestvalidemailid2@gmail.com', '123Abc!2', '', 'User2')
     
 def test_too_short_last_name():
     with pytest.raises(InputError):
-        auth.auth_register('registerationtestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
+        auth.auth_register('registerationtestvalidemailid3@gmail.com', '123Abc!3', '', 'User3')
 
 def test_too_long_first_name():
     with pytest.raises(InputError):
