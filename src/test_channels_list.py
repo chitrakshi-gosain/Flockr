@@ -239,7 +239,7 @@ def test_channels_list_invalid_token():
     auth_logout(invalid_token)
 
     # Checking that AccessError is thrown
-    with pytest.raises(Exception):
+    with pytest.raises(AccessError):
         channels_list(invalid_token)
 
     clear()
