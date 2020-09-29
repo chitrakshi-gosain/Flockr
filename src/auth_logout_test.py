@@ -28,6 +28,7 @@ KEEP IN MIND:
 
 import auth
 import pytest
+from user import user_profile
 from error import AccessError, InputError
 
 def test_successful_logout():

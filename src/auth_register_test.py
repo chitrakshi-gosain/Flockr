@@ -37,9 +37,9 @@ KEEP IN MIND:
 '''
 
 import auth
-import user
 import pytest
 from error import InputError
+from user import user_profile
 
 def test_trying_to_register_and_login_with_everything_valid():
     auth.auth_register('registerationtestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
