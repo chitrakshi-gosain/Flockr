@@ -2,7 +2,7 @@ from auth import auth_register, auth_logout
 from channel import channel_details
 from channels import channels_create, channels_listall, channels_list
 from other import clear
-import error
+from error import AccessError, InputError
 import pytest
 
 '''
@@ -156,11 +156,11 @@ def test_channels_create_valid_samename():
     # Checking both channels exist and have the same name
     channel_list = channels_listall(users['user3']['token'])
 
-    assert channel_list[0]['name'] == 'Hello World!'
-    assert channel_list[1]['name'] == 'Hello World!'
+    assert channel_list['channels'][0]['name'] == 'Hello World!'
+    assert channel_list['channels'][1]['name'] == 'Hello World!'
 
 # Attempting to call channels_listall without a valid token
-def test_channels_listall_invalid_token():
+def test_channels_create_invalid_token():
     users = initialise_user_data()
 
     # Only way to guarrantee a token is invalid is to invalidate an existing token

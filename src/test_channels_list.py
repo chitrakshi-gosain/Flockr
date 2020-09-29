@@ -68,8 +68,8 @@ def test_channels_list_valid_single():
     # Checking channels_list return is correct
     channel_list = channels_list(users['owner']['token'])
 
-    assert channel_list[0]['channel_id'] == channel_id['channel_id']
-    assert channel_list[0]['name'] == 'A Basic Channel'
+    assert channel_list['channels'][0]['channel_id'] == channel_id['channel_id']
+    assert channel_list['channels'][0]['name'] == 'A Basic Channel'
 
     clear()
 
@@ -90,18 +90,18 @@ def test_channels_list_valid_same():
     channel_list = channels_list(users['user1']['token'])
 
     # Id checks
-    assert channel_list[0]['channel_id'] == channel_id[0]['channel_id']
-    assert channel_list[1]['channel_id'] == channel_id[1]['channel_id']
-    assert channel_list[2]['channel_id'] == channel_id[2]['channel_id']
-    assert channel_list[3]['channel_id'] == channel_id[3]['channel_id']
-    assert channel_list[4]['channel_id'] == channel_id[4]['channel_id']
+    assert channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
+    assert channel_list['channels'][1]['channel_id'] == channel_id[1]['channel_id']
+    assert channel_list['channels'][2]['channel_id'] == channel_id[2]['channel_id']
+    assert channel_list['channels'][3]['channel_id'] == channel_id[3]['channel_id']
+    assert channel_list['channels'][4]['channel_id'] == channel_id[4]['channel_id']
 
     # Name checks
-    assert channel_list[0]['name'] == 'First Channel'
-    assert channel_list[1]['name'] == 'Channel 2'
-    assert channel_list[2]['name'] == 'Discussion'
-    assert channel_list[3]['name'] == 'Chatter'
-    assert channel_list[4]['name'] == '3rd Channel'
+    assert channel_list['channels'][0]['name'] == 'First Channel'
+    assert channel_list['channels'][1]['name'] == 'Channel 2'
+    assert channel_list['channels'][2]['name'] == 'Discussion'
+    assert channel_list['channels'][3]['name'] == 'Chatter'
+    assert channel_list['channels'][4]['name'] == '3rd Channel'
 
     clear()
 
@@ -126,18 +126,18 @@ def test_channels_list_valid_same():
     ingrid_channel_list = channels_list(users['ingrid']['token'])
 
     # Id checks
-    assert user1_channel_list[0]['channel_id'] == channel_id[0]['channel_id']
-    assert user2_channel_list[0]['channel_id'] == channel_id[1]['channel_id']
-    assert donald_channel_list[0]['channel_id'] == channel_id[2]['channel_id']
-    assert john_channel_list[0]['channel_id'] == channel_id[3]['channel_id']
-    assert ingrid_channel_list[0]['channel_id'] == channel_id[4]['channel_id']
+    assert user1_channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
+    assert user2_channel_list['channels'][0]['channel_id'] == channel_id[1]['channel_id']
+    assert donald_channel_list['channels'][0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list['channels'][0]['channel_id'] == channel_id[3]['channel_id']
+    assert ingrid_channel_list['channels'][0]['channel_id'] == channel_id[4]['channel_id']
 
     # Name checks
-    assert user1_channel_list[0]['name'] == 'First Channel'
-    assert user2_channel_list[0]['name'] == 'Channel 2'
-    assert donald_channel_list[0]['name'] == 'Discussion'
-    assert john_channel_list[0]['name'] == 'Chatter'
-    assert ingrid_channel_list[0]['name'] == '3rd Channel'
+    assert user1_channel_list['channels'][0]['name'] == 'First Channel'
+    assert user2_channel_list['channels'][0]['name'] == 'Channel 2'
+    assert donald_channel_list['channels'][0]['name'] == 'Discussion'
+    assert john_channel_list['channels'][0]['name'] == 'Chatter'
+    assert ingrid_channel_list['channels'][0]['name'] == '3rd Channel'
 
     clear()
 
@@ -159,18 +159,18 @@ def test_channels_list_valid_private():
     john_channel_list = channels_list(users['john']['token'])
 
     # Id checks
-    assert user1_channel_list[0]['channel_id'] == channel_id[0]['channel_id']
-    assert user1_channel_list[1]['channel_id'] == channel_id[1]['channel_id']
-    assert john_channel_list[0]['channel_id'] == channel_id[2]['channel_id']
-    assert john_channel_list[1]['channel_id'] == channel_id[3]['channel_id']
-    assert john_channel_list[2]['channel_id'] == channel_id[4]['channel_id']
+    assert user1_channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
+    assert user1_channel_list['channels'][1]['channel_id'] == channel_id[1]['channel_id']
+    assert john_channel_list['channels'][0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list['channels'][1]['channel_id'] == channel_id[3]['channel_id']
+    assert john_channel_list['channels'][2]['channel_id'] == channel_id[4]['channel_id']
 
     # Name checks
-    assert user1_channel_list[0]['name'] == 'First Channel'
-    assert user1_channel_list[1]['name'] == 'Channel 2'
-    assert john_channel_list[0]['name'] == 'Discussion'
-    assert john_channel_list[1]['name'] == 'Chatter'
-    assert john_channel_list[2]['name'] == '3rd Channel'
+    assert user1_channel_list['channels'][0]['name'] == 'First Channel'
+    assert user1_channel_list['channels'][1]['name'] == 'Channel 2'
+    assert john_channel_list['channels'][0]['name'] == 'Discussion'
+    assert john_channel_list['channels'][1]['name'] == 'Chatter'
+    assert john_channel_list['channels'][2]['name'] == '3rd Channel'
 
     clear()
 
@@ -200,24 +200,24 @@ def test_channels_list_valid_mix():
     jane_channel_list = channels_list(users['jane']['token'])
 
     # Id checks
-    assert user1_channel_list[0]['channel_id'] == channel_id[0]['channel_id']
-    assert user2_channel_list[0]['channel_id'] == channel_id[1]['channel_id']
-    assert donald_channel_list[0]['channel_id'] == channel_id[2]['channel_id']
-    assert john_channel_list[0]['channel_id'] == channel_id[3]['channel_id']
-    assert ingrid_channel_list[0]['channel_id'] == channel_id[4]['channel_id']
-    assert user1_channel_list[1]['channel_id'] == channel_id[5]['channel_id']
-    assert user3_channel_list[0]['channel_id'] == channel_id[6]['channel_id']
-    assert jane_channel_list[0]['channel_id'] == channel_id[7]['channel_id']
+    assert user1_channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
+    assert user2_channel_list['channels'][0]['channel_id'] == channel_id[1]['channel_id']
+    assert donald_channel_list['channels'][0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list['channels'][0]['channel_id'] == channel_id[3]['channel_id']
+    assert ingrid_channel_list['channels'][0]['channel_id'] == channel_id[4]['channel_id']
+    assert user1_channel_list['channels'][1]['channel_id'] == channel_id[5]['channel_id']
+    assert user3_channel_list['channels'][0]['channel_id'] == channel_id[6]['channel_id']
+    assert jane_channel_list['channels'][0]['channel_id'] == channel_id[7]['channel_id']
 
     # Name checks
-    assert user1_channel_list[0]['name'] == 'First Channel'
-    assert user2_channel_list[0]['name'] == 'Channel 2'
-    assert donald_channel_list[0]['name'] == 'Discussion'
-    assert john_channel_list[0]['name'] == 'Chatter'
-    assert ingrid_channel_list[0]['name'] == '3rd Channel'
-    assert user1_channel_list[1]['name'] == 'First Channel'
-    assert user3_channel_list[0]['name'] == 'Channel 2'
-    assert jane_channel_list[0]['name'] == 'Private'
+    assert user1_channel_list['channels'][0]['name'] == 'First Channel'
+    assert user2_channel_list['channels'][0]['name'] == 'Channel 2'
+    assert donald_channel_list['channels'][0]['name'] == 'Discussion'
+    assert john_channel_list['channels'][0]['name'] == 'Chatter'
+    assert ingrid_channel_list['channels'][0]['name'] == '3rd Channel'
+    assert user1_channel_list['channels'][1]['name'] == 'First Channel'
+    assert user3_channel_list['channels'][0]['name'] == 'Channel 2'
+    assert jane_channel_list['channels'][0]['name'] == 'Private'
 
     clear()
 
@@ -226,7 +226,7 @@ def test_channels_list_valid_empty():
     users = initialise_user_data()
 
     # Checking channels_list return is correct
-    assert channels_list(users['user1']['token']) == []
+    assert channels_list(users['user1']['token']) == {'channels': []}
 
     clear()
 
