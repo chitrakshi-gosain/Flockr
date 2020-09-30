@@ -41,19 +41,19 @@ data = {
                 {
                     'u_id' : 0,
                     'name_first' : 'fname0',
-                    'name_last' : 'fname1',
+                    'name_last' : 'lname0',
                 }
             ],
             'all_members' : [ # all_members of channel0
                 {
                     'u_id' : 0,
                     'name_first' : 'fname0',
-                    'name_last' : 'fname0',
+                    'name_last' : 'lname0',
                 },
                 {
                     'u_id' : 1,
                     'name_first' : 'fname1',
-                    'name_last' : 'fname1',
+                    'name_last' : 'lname1',
                 },
             ],
             'messages' : [ # messages of channel0
@@ -79,19 +79,19 @@ data = {
                 {
                     'u_id' : 1,
                     'name_first' : 'fname1',
-                    'name_last' : 'fname1',
+                    'name_last' : 'lname1',
                 }
             ],
             'all_members' : [# all_memebers of channel1
                 {
                     'u_id' : 0,
                     'name_first' : 'fname0',
-                    'name_last' : 'fname0',
+                    'name_last' : 'lname0',
                 },
                 {
                     'u_id' : 1,
                     'name_first' : 'fname1',
-                    'name_last' : 'fname1',
+                    'name_last' : 'lname1',
                 },
             ],
             'messages' : [ # messages of channel1
