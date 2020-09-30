@@ -38,7 +38,7 @@ DATA TYPES
 '''
 
 import re
-from data import *
+import data
 from error import InputError, AccessError
 
 def auth_login(email, password):
@@ -78,7 +78,7 @@ def auth_logout(token):
     # modufy get_user_id function such that the parameter passed can either be email or token and if returns u_id, IMPORTANT
 
     # or do it this way, find the user with matching token and relace the token with invalid token string
-    for user in data['users']:
+    for user in data.data['users']:
         if user['token']  == token:
             user['token'] = 'invalid_token'
 
@@ -116,8 +116,9 @@ def auth_register(email, password, name_first, name_last):
     # user_login_credentials = {}
     # user_login_credentials= auth_login(email, passowrd)
     # user_token = user_login_credentials['token']
-    # but this wont technically work since user isnt registered yet
-    user_token = name_first + name_last
+    # but this wont technically work since user isnt registered yet, so have a 
+    # invalid_token at first, then add the dict, then login then get token and return, voila
+    user_token = 'invalid_token'
 
     # making a new_user dictionary
     new_user = {
@@ -131,14 +132,17 @@ def auth_register(email, password, name_first, name_last):
             'password' : password
     }
 # IMPORTANT: rememeber to tell jordan to change handle_str in data, it's not like spec says
-    data['users'].append(new_user)
-    # things to be added to data['users']  -> just append to dictionary's key :))
+    data.data['users'].append(new_user)
+    # things to be added to data.data['users']  -> just append to dictionary's key :))
     # -> u_id, is_admin (this will be false), email, name_first, name_last, handle_str, token, password
     # this is where we add data to data.data['users']
-    
+
+    user_login_credentials= auth_login(email, password)
+    # user_token = user_login_credentials['token']   
+
     return {
         'u_id': user_id,
-        'token': user_token
+        'token': user_login_credentials['token']  
     }
 
 def check_if_valid_email(email):
@@ -156,14 +160,14 @@ def check_name_length(name_to_check):
     return True
 
 def check_if_registered_user(email):
-    for user in data['users']:
+    for user in data.data['users']:
         if user['email'] == email:
             return True
     return False
 
 def get_user_id(email):
     user_count = -1
-    for user in data['users']:
+    for user in data.data['users']:
         if user['email']  == email:
             user_id = user['u_id']
             return user_id
@@ -177,7 +181,7 @@ def generate_handle(name_first, name_last):
     return handle_str
 
 def check_password(email, password):
-    for user in data['users']:
+    for user in data.data['users']:
         if user['email']  == email:
             if user['password'] == password:
                 return True
@@ -188,7 +192,7 @@ def generate_token():
     pass
 
 def check_token(token):
-    for user in data['users']:
+    for user in data.data['users']:
         if user['token'] == token:
             return True
     return False
