@@ -43,12 +43,12 @@ def test_successful_login_with_everything_valid():
     # modify this as in check if token is valid, do it after making function, probs
     # will have to user.py for this and dat.py too, have a basic idea of what to do
     # this is a stub atm
-    auth.auth_register('logintestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
-    test_user_with_valid_token = auth.auth_login('logintestvalidemailid0@gmail.com', '123Abc!0')
-    # can work further if we makes changes to dat for easy extraction of stuff
-    # or think some other way if we dont change data
-    # but it's a black box test, should i depend on data.py this much???
-    assert(test_user_with_valid_token) == 'a' # totally unncessary, just to  avoid error of unused variable
+    # auth.auth_register('logintestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
+    # test_user_login_credentials = auth.auth_login('logintestvalidemailid0@gmail.com', '123Abc!0')
+    # # can work further if we makes changes to dat for easy extraction of stuff
+    # # or think some other way if we dont change data
+    # # but it's a black box test, should i depend on data.py this much???
+    # assert(test_user_login_credentials) == {'a'} # totally unncessary, just to  avoid error of unused variable
     pass
 
 def test_invalid_email():

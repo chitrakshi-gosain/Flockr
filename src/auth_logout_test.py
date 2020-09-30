@@ -36,7 +36,7 @@ def test_successful_logout():
     clear()
     auth.auth_register('logouttestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
     test_user_0 = auth.auth_login('logouttestvalidemailid0@gmail.com', '123Abc!0')
-    assert auth.auth_logout(test_user_0['token'])
+    assert auth.auth_logout(test_user_0['token']) == {'is_success' : True}
 
 def test_active_token_now_invalid():
     clear()

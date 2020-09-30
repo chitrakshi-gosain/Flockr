@@ -43,24 +43,16 @@ from error import InputError, AccessError
 
 def auth_login(email, password):
     if None in {email, password}:
-        raise InputError(
-            description = 'Insufficient parameters. Please enter: email, password'
-        )
+        raise InputError('Insufficient parameters. Please enter: email, password.')
 
     if not check_if_valid_email(email):
-         raise InputError(
-            description = 'Please enter a valid email-id.'
-        ) 
+         raise InputError('Please enter a valid email-id.') 
 
     if not check_if_registered_user(email):
-        raise InputError(
-            description = 'Please register since you are not registered yet'
-        )
+        raise InputError('Please register since you are not registered yet.')
 
     if not check_password(email, password):
-        raise InputError(
-            description = 'Please enter the correct password'
-        ) 
+        raise InputError('Please enter the correct password.') 
 
     # since no errors, all is good now, gnerate a token and get u_id
     user_id = get_user_id(email)
@@ -77,14 +69,10 @@ def auth_login(email, password):
 
 def auth_logout(token):
     if None in {token}:
-        raise InputError(
-            description = 'Insufficient parameters. Please enter: token'
-        )
+        raise InputError('Insufficient parameters. Please enter: token')
 
     if not check_token(token):
-        raise AccessError(
-            description = 'No such token exists'
-        ) 
+        raise AccessError('No such token exists')
 
     # now find u_id and then put a invalid token in place, maybe sjust have a common invalid token for identification
     # modufy get_user_id function such that the parameter passed can either be email or token and if returns u_id, IMPORTANT
@@ -100,34 +88,22 @@ def auth_logout(token):
 
 def auth_register(email, password, name_first, name_last):
     if None in {email, password, name_first, name_last}:
-        raise InputError(
-            description = 'Insufficient parameters. Please enter: email, password, name_first, name_last'
-        )
+        raise InputError('Insufficient parameters. Please enter: email, password, name_first, name_last')
 
     if not check_if_valid_email(email):
-         raise InputError(
-            description = 'Please enter a valid email-id.'
-        ) 
+         raise InputError('Please enter a valid email-id.') 
 
     if len(password) < 6 or len(password) > 32:
-        raise InputError(
-            description = 'Password should be of atleast 6 characters and no more than 32 chracters'
-        )
+        raise InputError('Password should be of atleast 6 characters and no more than 32 chracters')
 
     if not check_name_length(name_first):
-        raise InputError(
-            description = 'First name should be between 1 to 50 characters'
-        )
+        raise InputError('First name should be between 1 to 50 characters')
 
     if not check_name_length(name_first):
-        raise InputError(
-            description = 'Last name should be between 1 to 50 characters'
-        )
+        raise InputError('Last name should be between 1 to 50 characters')
 
     if check_if_registered_user(email):
-        raise InputError(
-            description = 'Email address is already beng used by another user'
-        )
+        raise InputError('Email address is already beng used by another user')
 
     for user_id in data['users']:
         user_id += 1
@@ -169,7 +145,7 @@ def check_if_valid_email(email):
     # makig a check existing email and duplicate email function is same just different
     # returns, instead implemnt it a bit differently when calling can solve the 
     # purpose with only one function
-    regex = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+    regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
     if re.search(regex, email):
         return True
     return False
