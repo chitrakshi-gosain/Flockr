@@ -57,6 +57,9 @@ def auth_login(email, password):
     # since no errors, all is good now, gnerate a token and get u_id
     user_id = get_user_id(email)
     user_token = email
+    for user in data.data['users']:
+        if user['email']  == email:
+            user['token'] = user_token
     # IMPORTANT : Tell everyone i've implemented email as token as of now, rather 
     # than name_first + name_last, just aviding extra code since this a temp fix,
     # hence change data.py
@@ -70,11 +73,14 @@ def auth_login(email, password):
 def auth_logout(token):
     if None in {token}:
         raise InputError('Insufficient parameters. Please enter: token')
+    
+    status = False
 
     if check_token(token) is False:
-        raise AccessError('No such token exists')
+        return {
+            'is_success': status
+        }
 
-    status = False
     # now find u_id and then put a invalid token in place, maybe sjust have a common invalid token for identification
     # modufy get_user_id function such that the parameter passed can either be email or token and if returns u_id, IMPORTANT
 
