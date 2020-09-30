@@ -69,20 +69,22 @@ def test_wrong_password():
     with pytest.raises(InputError):
         auth.auth_login('logintestvalidemailid2@gmail.com', 'cbA321!!')
 
-# def test_re_login():
-#     clear()
-#     auth.auth_register('logintestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
-#     with pytest.raises(InputError):
-#         auth.auth_login('logintestvalidemailid3@gmail.com', '123Abc!3')
-
 def test_insufficient_parameters():
     clear()
-    auth.auth_register('logintestvalidemailid4@gmail.com', '123Abc!4', 'Valid', 'User4')
+    auth.auth_register('logintestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
     with pytest.raises(InputError):
-        auth.auth_login('logintestvalidemailid4@gmail.com', None)
+        auth.auth_login('logintestvalidemailid3@gmail.com', None)
 
-'''
-NOTES:
-# eliminate the auth.auth_register in each test and maybe just have it once at top, will it work?
-# discuss and add a test for return_type of function, probs
-'''
+def test_return_type():
+    clear()
+    auth.auth_register('registerationtestvalidemailid4@gmail.com', '123Abc!4', 'Valid', 'User4')
+    test_user_4_registeration_credentials = auth.auth_login('registerationtestvalidemailid4@gmail.com', '123Abc!4')
+    assert isinstance(test_user_4_registeration_credentials['u_id'], int)
+    assert isinstance(test_user_4_registeration_credentials['token'], str) 
+
+def test_login_u_id():
+    pass
+def test_login_unique_token():
+    pass
+def test_multiple_logins():
+    pass
