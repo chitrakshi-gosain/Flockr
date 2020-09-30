@@ -1,65 +1,50 @@
-# can we have comments in coordination, would be easier to relate.
+# Created collaboratively by Wed15Team2 2020 T3
+# Used to store data for our Flockr
 
-#added admin variable to users
-#added is_public to channels
+# Modification log:
+# 25/09: added is_admin key to users' dict and is_public key to channels's dict
+# 01/10: changed data in user['handle_str'], user['token'] and user['password']
+#        as per the implementation, modified/added comments, also added a header
+#        comment
 
+# the global variable data is a listed dictionary
 data = {
     'users': [
-        { #user -> u_id: 0
+        { # user -> u_id : 0
             'u_id' : 0,
             'is_admin' : True,
             'email' : 'blah0@domain',
             'name_first' : 'fname0',
             'name_last' : 'lname0',
-            'handle_str' : 'handle0',
-            'token' : 'fname0lname0',
-            'password' : 'pass0'
+            'handle_str' : 'fname0lname0',
+            'token' : 'blah0@domain',
+            'password' : 'password0'
         },
-        { #user -> u_id: 1
+        { # user -> u_id : 1
             'u_id' : 1,
             'is_admin' : False,
             'email' : 'blah1@domain',
             'name_first' : 'fname1',
             'name_last' : 'lname1',
-            'handle_str' : 'handle1',
-            'token' : 'fname1lname1',
-            'password' : 'pass1'
-        },
-        { #user -> u_id: 2
-            'u_id' : 2,
-            'is_admin' : False,
-            'email' : 'blah2@domain',
-            'name_first' : 'fname2',
-            'name_last' : 'lname2',
-            'handle_str' : 'handle2',
-            'token' : 'fname2lname2',
-            'password' : 'pass2'
-        },
-        { #user -> u_id: 3
-            'u_id' : 3,
-            'is_admin' : False,
-            'email' : 'blah3@domain',
-            'name_first' : 'fname3',
-            'name_last' : 'lname3',
-            'handle_str' : 'handle3',
-            'token' : 'fname3lname3',
-            'password' : 'pass3'
+            'handle_str' : 'fname1lname1',
+            'token' : 'blah1@domain',
+            'password' : 'password1'
         }
     ],
 
     'channels' : [
-        { #channel0
+        { # channels -> channel_id : 0
             'channel_id' : 0,
             'name' : 'ch_name0',
             'is_public' : True,
-            'owner_members' : [ #_members
+            'owner_members' : [ # owner_memebers of channel0
                 {
                     'u_id' : 0,
                     'name_first' : 'fname0',
                     'name_last' : 'lname0',
                 }
             ],
-            'all_members' : [
+            'all_members' : [ # all_members of channel0
                 {
                     'u_id' : 0,
                     'name_first' : 'fname0',
@@ -71,14 +56,14 @@ data = {
                     'name_last' : 'lname1',
                 },
             ],
-            'messages' : [ #messages
-                {
+            'messages' : [ # messages of channel0
+                { # mesages -> message_id : 0
                     'message_id' : 0,
                     'u_id' : 0,
                     'message' : 'messagecontents0',
                     'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
                 },
-                {
+                { # mesages -> message_id : 1
                     'message_id' : 1,
                     'u_id' : 0,
                     'message' : 'messagecontents1',
@@ -86,18 +71,18 @@ data = {
                 },
             ]
         },
-        { #channel1
+        { # channels -> channel_id : 1
             'channel_id' : 1,
             'name' : 'ch_name1',
             'is_public' : False,
-            'owner_members' : [ #_members
+            'owner_members' : [ # owner_memebers of channel1
                 {
                     'u_id' : 1,
                     'name_first' : 'fname1',
                     'name_last' : 'lname1',
                 }
             ],
-            'all_members' : [
+            'all_members' : [# all_memebers of channel1
                 {
                     'u_id' : 0,
                     'name_first' : 'fname0',
@@ -109,8 +94,8 @@ data = {
                     'name_last' : 'lname1',
                 },
             ],
-            'messages' : [ #messages
-                {
+            'messages' : [ # messages of channel1
+                { # mesages -> message_id : 0
                     'message_id' : 0,
                     'u_id' : 0,
                     'message' : 'messagecontents0',
