@@ -34,10 +34,12 @@ KEEP IN MIND:
 
 import auth
 import pytest
+from other import clear
 from error import InputError
 from user import user_profile
 
 def test_successful_login_with_everything_valid():
+    clear()
     # modify this as in check if token is valid, do it after making function, probs
     # will have to user.py for this and dat.py too, have a basic idea of what to do
     # this is a stub atm
@@ -50,24 +52,30 @@ def test_successful_login_with_everything_valid():
     pass
 
 def test_invalid_email():
+    clear()
+    auth.auth_register('logintestinvalidemailid@gmail.com', '123Abc!!', 'Valid', 'User!')
     with pytest.raises(InputError):
         auth.auth_login('logintestinvalidemailid_gmail.com', '123Abc!!')
 
 def test_unregistered_user():
+    clear()
     auth.auth_register('logintestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
     with pytest.raises(InputError):
         auth.auth_login('unregisteredemail1@gmail.com', '123Abc!!')
 
 def test_wrong_password():
+    clear()
     auth.auth_register('logintestvalidemailid2@gmail.com', '123Abc!2', 'Valid', 'User2')
     auth.auth_login('logintestvalidemailid2@gmail.com', 'cbA321!!')
 
 def test_re_login():
+    clear()
     auth.auth_register('logintestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
     with pytest.raises(InputError):
         auth.auth_login('logintestvalidemailid3@gmail.com', '123Abc!3')
 
 def test_insufficient_parameters():
+    clear()
     auth.auth_register('logintestvalidemailid4@gmail.com', '123Abc!4', 'Valid', 'User4')
     with pytest.raises(InputError):
         auth.auth_login('logintestvalidemailid4@gmail.com', None)
