@@ -71,9 +71,10 @@ def auth_logout(token):
     if None in {token}:
         raise InputError('Insufficient parameters. Please enter: token')
 
-    if not check_token(token):
+    if check_token(token) is False:
         raise AccessError('No such token exists')
 
+    status = False
     # now find u_id and then put a invalid token in place, maybe sjust have a common invalid token for identification
     # modufy get_user_id function such that the parameter passed can either be email or token and if returns u_id, IMPORTANT
 
@@ -81,9 +82,10 @@ def auth_logout(token):
     for user in data.data['users']:
         if user['token']  == token:
             user['token'] = 'invalid_token'
+            status = True
 
     return {
-        'is_success': True
+        'is_success': status
     }
 
 def auth_register(email, password, name_first, name_last):
@@ -99,7 +101,7 @@ def auth_register(email, password, name_first, name_last):
     if not check_name_length(name_first):
         raise InputError('First name should be between 1 to 50 characters')
 
-    if not check_name_length(name_first):
+    if not check_name_length(name_last):
         raise InputError('Last name should be between 1 to 50 characters')
 
     if check_if_registered_user(email):
@@ -132,7 +134,7 @@ def auth_register(email, password, name_first, name_last):
             'password' : password
     }
 # IMPORTANT: rememeber to tell jordan to change handle_str in data, it's not like spec says
-    data.data['users'].append(new_user)
+    data.data['users'].append(new_user.copy())
     # things to be added to data.data['users']  -> just append to dictionary's key :))
     # -> u_id, is_admin (this will be false), email, name_first, name_last, handle_str, token, password
     # this is where we add data to data.data['users']

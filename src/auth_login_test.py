@@ -66,13 +66,14 @@ def test_unregistered_user():
 def test_wrong_password():
     clear()
     auth.auth_register('logintestvalidemailid2@gmail.com', '123Abc!2', 'Valid', 'User2')
-    auth.auth_login('logintestvalidemailid2@gmail.com', 'cbA321!!')
-
-def test_re_login():
-    clear()
-    auth.auth_register('logintestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
     with pytest.raises(InputError):
-        auth.auth_login('logintestvalidemailid3@gmail.com', '123Abc!3')
+        auth.auth_login('logintestvalidemailid2@gmail.com', 'cbA321!!')
+
+# def test_re_login():
+#     clear()
+#     auth.auth_register('logintestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
+#     with pytest.raises(InputError):
+#         auth.auth_login('logintestvalidemailid3@gmail.com', '123Abc!3')
 
 def test_insufficient_parameters():
     clear()
