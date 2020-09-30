@@ -64,7 +64,7 @@ def auth_login(email, password):
 
     return {
         'u_id': user_id,
-        'token': user_token,
+        'token': user_token
     }
 
 def auth_logout(token):
@@ -83,7 +83,7 @@ def auth_logout(token):
             user['token'] = 'invalid_token'
 
     return {
-        'is_success': True,
+        'is_success': True
     }
 
 def auth_register(email, password, name_first, name_last):
@@ -104,9 +104,8 @@ def auth_register(email, password, name_first, name_last):
 
     if check_if_registered_user(email):
         raise InputError('Email address is already beng used by another user')
-
-    for user_id in data['users']:
-        user_id += 1
+    
+    user_id = get_user_id(email)
 
     user_is_admin = False
 
@@ -165,7 +164,8 @@ def get_user_id(email):
     for user in data['users']:
         if user['email']  == email:
             user_id = user['u_id']
-    return user_id
+            return user_id
+    # add a general retunr here, think
 
 def generate_handle(name_first, name_last):
     concatenated_names = name_first + name_last
