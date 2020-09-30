@@ -103,7 +103,7 @@ def auth_register(email, password, name_first, name_last):
         raise InputError('Last name should be between 1 to 50 characters')
 
     if check_if_registered_user(email):
-        raise InputError('Email address is already beng used by another user')
+        raise InputError('Email address is already being used by another user')
     
     user_id = get_user_id(email)
 
@@ -116,6 +116,7 @@ def auth_register(email, password, name_first, name_last):
     # user_login_credentials = {}
     # user_login_credentials= auth_login(email, passowrd)
     # user_token = user_login_credentials['token']
+    # but this wont technically work since user isnt registered yet
     user_token = name_first + name_last
 
     # making a new_user dictionary
@@ -161,10 +162,13 @@ def check_if_registered_user(email):
     return False
 
 def get_user_id(email):
+    user_count = -1
     for user in data['users']:
         if user['email']  == email:
             user_id = user['u_id']
             return user_id
+        user_count += 1 # this is for register function, i.e. we need to make user id there, then it is retunr user_count + 1
+    return user_count + 1
     # add a general retunr here, think
 
 def generate_handle(name_first, name_last):
