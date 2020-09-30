@@ -21,19 +21,13 @@ Error type: InputError
 -> password is less than 6 characters
 -> name_first is not between 1 and 50 characters
 -> name_last is not between 1 and 50 characters
-# for name check make a check_length function and send parameters to it during test
 '''
 
 '''
 KEEP IN MIND:
 -> user can be registered/non-registered, hence check
--> user can be already logged-in and trying to re-log-in, this has two 
-   possibilties:
-        *log-in to self account again
-        *log-in to someone else's account
-   however, in both cases user should be asked to logout first and then try
--> how to deal with re registeration of a user 
--> handle_str checks need to be done, will have to user use.py for it 
+-> check re registeration of a user 
+-> handle_str checks need to be done, will have to user user.py for it 
 '''
 
 import auth

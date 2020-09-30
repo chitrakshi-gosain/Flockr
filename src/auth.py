@@ -17,12 +17,14 @@ Error type: InputError
 
 '''
 KEEP IN MIND:
--> user can be registered/non-registered, hence check
--> user can be already logged-in and trying to re-log-in, this has two 
-possibilties:
-        *log-in to self account again
-        *log-in to someone else's account
-however, in both cases user should be asked to logout first and then try.
+-> make one function to check if user is registered and use it for both 
+   re-registration check and registered before login check
+-> allow multiple session log-ins, 
+   * for this make a data.data['valid_tokens'] dict in data.py, have tokens as 
+   key, and value as u_id this way we can keep track of multiple logins very 
+   easily, but dont do it now everyone will have to change implementation, do it
+   after we are done merging all branches once, so if anything ever goes wrong 
+   we have A BACKUP. also, this aint imp for itr 1 so dont stress. :)
 
 '''
 

@@ -24,12 +24,9 @@ Error type: InputError
 '''
 KEEP IN MIND:
 -> user can be registered/non-registered, hence check
--> user can be already logged-in and trying to re-log-in, this has two 
-   possibilties, confirm if this should be considered yet:
-        *log-in to self account again
-        *log-in to someone else's account
-   however, in both cases user should be asked to logout first and then try
--> do we keep track of passwords? if in case user enters old password, then??
+-> allow multiple logins
+-> do we keep track of passwords? if in case user enters old password, then??, 
+   ask Hayden if this needs to be done
 '''
 
 import auth
