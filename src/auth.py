@@ -57,9 +57,8 @@ def auth_login(email, password):
     # since no errors, all is good now, gnerate a token and get u_id
     user_id = get_user_id(email)
     user_token = email
-    for user in data.data['users']:
-        if user['email']  == email:
-            user['token'] = user_token
+    store_generated_token(email, user_token)
+
     # IMPORTANT : Tell everyone i've implemented email as token as of now, rather 
     # than name_first + name_last, just aviding extra code since this a temp fix,
     # hence change data.py
@@ -101,8 +100,8 @@ def auth_register(email, password, name_first, name_last):
     if not check_if_valid_email(email):
          raise InputError('Please enter a valid email-id.') 
 
-    if len(password) < 6 or len(password) > 32:
-        raise InputError('Password should be of atleast 6 characters and no more than 32 chracters')
+    if not check_if_valid_password(password):
+        raise InputError('Password should be of atleast 6 characters and no more than 32 chracters. Also, it should contain minimum one lowercase letter, one uppercase letter, one digit and one special character from the ones mentioned: "!, @, #, $, %, ^, &, *".')
 
     if not check_name_length(name_first):
         raise InputError('First name should be between 1 to 50 characters')
@@ -122,7 +121,7 @@ def auth_register(email, password, name_first, name_last):
     # token generation is actually part of login so just call login here rather than making token
     # do:
     # user_login_credentials = {}
-    # user_login_credentials= auth_login(email, passowrd)
+    # user_login_credentials= auth_login(email, password)
     # user_token = user_login_credentials['token']
     # but this wont technically work since user isnt registered yet, so have a 
     # invalid_token at first, then add the dict, then login then get token and return, voila
@@ -162,6 +161,26 @@ def check_if_valid_email(email):
         return True
     return False
 
+def check_if_valid_password(password):
+    allowed_special_symbols =['!', '@', '#', '$', '%', '^', '&', '*']   
+
+    if not 6 <= len(password) <= 32:
+        return False
+
+    if not any(character.isdigit() for character in password): 
+        return False 
+          
+    if not any(character.isupper() for character in password): 
+        return False
+          
+    if not any(character.islower() for character in password): 
+        return False
+          
+    if not any(character in allowed_special_symbols for character in password): 
+        return False
+
+    return True          
+
 def check_name_length(name_to_check):
     if not 1 <= len(name_to_check) <= 50:
         return False
@@ -195,12 +214,17 @@ def check_password(email, password):
                 return True
     return False
 
-# not needed right now
-def generate_token():
-    pass
-
 def check_token(token):
     for user in data.data['users']:
         if user['token'] == token:
             return True
     return False
+
+def store_generated_token(email, user_token):
+    for user in data.data['users']:
+            if user['email']  == email:
+                user['token'] = user_token
+                
+# not needed right now
+# def generate_token():
+#     pass
