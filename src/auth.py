@@ -39,15 +39,61 @@ DATA TYPES
 
 import re
 from data import *
-from error import InputError
+from error import InputError, AccessError
 
 def auth_login(email, password):
+    if None in {email, password}:
+        raise InputError(
+            description = 'Insufficient parameters. Please enter: email, password'
+        )
+
+    if not check_if_valid_email(email):
+         raise InputError(
+            description = 'Please enter a valid email-id.'
+        ) 
+
+    if not check_if_registered_user(email):
+        raise InputError(
+            description = 'Please register since you are not registered yet'
+        )
+
+    if not check_password(email, password):
+        raise InputError(
+            description = 'Please enter the correct password'
+        ) 
+
+    # since no errors, all is good now, gnerate a token and get u_id
+    user_id = get_user_id(email)
+    user_token = email
+    # IMPORTANT : Tell everyone i've implemented email as token as of now, rather 
+    # than name_first + name_last, just aviding extra code since this a temp fix,
+    # hence change data.py
+    # CHANGE MY TOKEN TEST(s)
+
     return {
-        'u_id': 1,
-        'token': '12345',
+        'u_id': user_id,
+        'token': user_token,
     }
 
 def auth_logout(token):
+    if None in {token}:
+        raise InputError(
+            description = 'Insufficient parameters. Please enter: token'
+        )
+
+    if not check_token(token):
+        raise AccessError(
+            description = 'No such token exists'
+        ) 
+
+    # now find u_id and then put a invalid token in place, maybe sjust have a common invalid token for identification
+    # modufy get_user_id function such that the parameter passed can either be email or token and if returns u_id, IMPORTANT
+
+    # or do it this way, find the user with matching token and relace the token with invalid token string
+    for user in data['users']:
+        if user['token']  == token:
+            user['token'] = 'invalid_token'
+
     return {
         'is_success': True,
     }
@@ -68,11 +114,12 @@ def auth_register(email, password, name_first, name_last):
             description = 'Password should be of atleast 6 characters and no more than 32 chracters'
         )
 
-    if len(name_first) < 1 or len(name_first) > 50:
+    if not check_name_length(name_first):
         raise InputError(
             description = 'First name should be between 1 to 50 characters'
         )
-    if len(name_last) < 1 or len(name_last) > 50:
+
+    if not check_name_length(name_first):
         raise InputError(
             description = 'Last name should be between 1 to 50 characters'
         )
@@ -89,6 +136,11 @@ def auth_register(email, password, name_first, name_last):
 
     user_handle_str = generate_handle(name_first, name_last)
 
+    # token generation is actually part of login so just call login here rather than making token
+    # do:
+    # user_login_credentials = {}
+    # user_login_credentials= auth_login(email, passowrd)
+    # user_token = user_login_credentials['token']
     user_token = name_first + name_last
 
     # making a new_user dictionary
@@ -114,10 +166,18 @@ def auth_register(email, password, name_first, name_last):
     }
 
 def check_if_valid_email(email):
+    # makig a check existing email and duplicate email function is same just different
+    # returns, instead implemnt it a bit differently when calling can solve the 
+    # purpose with only one function
     regex = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
     if re.search(regex, email):
         return True
     return False
+
+def check_name_length(name_to_check):
+    if not 1 <= len(name_to_check) <= 50:
+        return False
+    return True
 
 def check_if_registered_user(email):
     for user in data['users']:
@@ -125,13 +185,30 @@ def check_if_registered_user(email):
             return True
     return False
 
+def get_user_id(email):
+    for user in data['users']:
+        if user['email']  == email:
+            user_id = user['u_id']
+    return user_id
+
 def generate_handle(name_first, name_last):
     concatenated_names = name_first + name_last
     handle_str = concatenated_names[:20]
     return handle_str
 
-def check_password(x):
+def check_password(email, password):
+    for user in data['users']:
+        if user['email']  == email:
+            if user['password'] == password:
+                return True
+    return False
+
+# not needed right now
+def generate_token():
     pass
 
-def check_name_length(y):
-    pass
+def check_token(token):
+    for user in data['users']:
+        if user['token'] == token:
+            return True
+    return False
