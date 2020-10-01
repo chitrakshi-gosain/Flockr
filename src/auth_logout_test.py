@@ -37,17 +37,16 @@ def test_successful_logout():
     test_user_0 = auth.auth_register('logouttestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
     assert auth.auth_logout(test_user_0['token']) == {'is_success' : True}
 
-# def test_active_token_now_invalid():
-#     clear()
-#     test_user_1 =  auth.auth_register('logouttestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
-#     assert auth.auth_logout(test_user_1['token']) == {'is_success' : True}
-#     assert auth.auth_logout(test_user_1['token']) == {'is_success' : False}
-
 def test_active_token_now_invalid():
     clear()
     auth.auth_register('logouttestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
     test_user_1 = auth.auth_login('logouttestvalidemailid1@gmail.com', '123Abc!1')
     assert auth.auth_logout(test_user_1['token']) == {'is_success' : True}
+    with pytest.raises(AccessError):
+        auth.auth_logout(test_user_1['token'])
+
+def test_invalid_token():
+    clear()
     with pytest.raises(AccessError):
         auth.auth_logout('invalid_token')
 

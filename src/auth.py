@@ -44,6 +44,9 @@ import data
 from error import InputError, AccessError
 
 def auth_login(email, password):
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
     # Checking for InputError(s):
     if None in {email, password}:
         raise InputError('Insufficient parameters. Please enter: email, password.')
@@ -76,22 +79,19 @@ def auth_login(email, password):
     }
 
 def auth_logout(token):
+    ''' 
+    Logs out the user i.e. invalidates the authorised token of the user for the 
+    session and returns a dictionary with is_success as key and value as True if
+    successfully logged out, and value as False if not
+    '''
+
     # Checking for InputError:
     if token is None:
         raise InputError('Insufficient parameters. Please enter: token')
-    
-    # status = False
-    # # Checking for AccessError:
-    # if check_token(token) is False:
-    #     return {
-    #         'is_success': status
-    #     }
-    print(token)
-    print(check_token(token))
+
+    # Checking for AccessError:
     if not check_token(token):
         raise AccessError('No such token exists')
-    
-    status = False
 
     # Since there is no InputError or AccessError, hence proceeding forward:
 
@@ -109,7 +109,7 @@ def auth_register(email, password, name_first, name_last):
     if not check_if_valid_email(email):
          raise InputError('Please enter a valid email-id.') 
 
-    if not check_if_valid_password(password):
+    if not (6<= len(password) <= 32):
         raise InputError('Password should be of atleast 6 characters and no more than 32 chracters. Also, it should contain minimum one lowercase letter, one uppercase letter, one digit and one special character from the ones mentioned: "!, @, #, $, %, ^, &, *".')
 
     if not check_name_length(name_first):
@@ -122,89 +122,69 @@ def auth_register(email, password, name_first, name_last):
         raise InputError('Email address is already being used by another user')
  
     # Since there are no InputError(s), hence proceeding forward:
-    
-       
-    user_id = get_user_id(email)
+         
+    # Storing data required for creation of new_user in variables
+    # user_id = get_user_id(email)
+    # user_is_admin = False
+    # user_handle_str = generate_handle(name_first, name_last)
+    # user_token = '**token_not_assigned**'
 
-    user_is_admin = False
-
-    user_handle_str = generate_handle(name_first, name_last)
-
-    # token generation is actually part of login so just call login here rather than making token
-    # do:
-    # user_login_credentials = {}
-    # user_login_credentials= auth_login(email, password)
-    # user_token = user_login_credentials['token']
-    # but this wont technically work since user isnt registered yet, so have a 
-    # invalid_token at first, then add the dict, then login then get token and return, voila
-    user_token = 'invalid_token'
-
-    # making a new_user dictionary
+    # making a new dictionary for new_user and adding all values to their keys : previously (with variables)
+    # amking a new dictionary for new_user and adding values to the keys respectively
+    # some keys' values are parameters from the user pthers are obtained using both user's input and helper fucntions (now)
     new_user = {
-            'u_id' : user_id,
-            'is_admin' : user_is_admin,
+            'u_id' : get_user_id(email),
+            'is_admin' : check_if_first_user(),
             'email' : email,
             'name_first' : name_first,
             'name_last' : name_last,
-            'handle_str' : user_handle_str,
-            'token' : user_token,
+            'handle_str' : generate_handle(name_first, name_last),
+            'token' : '**token_not_assigned**',
             'password' : password
     }
-# IMPORTANT: rememeber to tell jordan to change handle_str in data, it's not like spec says
-    data.data['users'].append(new_user.copy())
-    # things to be added to data.data['users']  -> just append to dictionary's key :))
-    # -> u_id, is_admin (this will be false), email, name_first, name_last, handle_str, token, password
-    # this is where we add data to data.data['users']
 
-    user_login_credentials= auth_login(email, password)
-    # user_token = user_login_credentials['token']   
+    # appending the data of new_user to data dictionary in data file
+    data.data['users'].append(new_user)
+
+    # logging-in the new_user to get the authenticated token for their current 
+    # session
+    user_login_credentials = auth_login(email, password)  
 
     return {
-        'u_id': user_id,
+        'u_id': get_user_id(email),
         'token': user_login_credentials['token']  
     }
 
 def check_if_valid_email(email):
-    # makig a check existing email and duplicate email function is same just different
-    # returns, instead implemnt it a bit differently when calling can solve the 
-    # purpose with only one function
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
     regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
     if re.search(regex, email):
         return True
-    return False
-
-def check_if_valid_password(password):
-    allowed_special_symbols = ['!', '@', '#', '$', '%', '^', '&', '*']   
-
-    if not 6 <= len(password) <= 32:
-        return False
-
-    if not any(character.isdigit() for character in password): 
-        return False 
-          
-    if not any(character.isupper() for character in password): 
-        return False
-          
-    if not any(character.islower() for character in password): 
-        return False
-          
-    if not any(character in allowed_special_symbols for character in password): 
-        return False
-
-    return True          
+    return False          
 
 def check_name_length(name_to_check):
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
     if not 1 <= len(name_to_check) <= 50:
         return False
     return True
 
 def check_if_registered_user(email):
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
     for user in data.data['users']:
         if user['email'] == email:
             return True
     return False
 
 def get_user_id(email):
+    '''
+    NICE FUNCTION HEADER COMMENT HERE explain everything abt function here rather than in-line it doesnt look pretty
+    '''
     user_count = -1
     for user in data.data['users']:
         # for an existing user, we find them by their email and return existing 
@@ -219,11 +199,17 @@ def get_user_id(email):
     return user_count + 1
 
 def generate_handle(name_first, name_last):
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
     concatenated_names = name_first + name_last
     handle_str = concatenated_names[:20]
     return handle_str
 
 def check_password(email, password):
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
     for user in data.data['users']:
         if user['email']  == email:
             if user['password'] == password:
@@ -231,6 +217,9 @@ def check_password(email, password):
     return False
 
 def check_token(token):
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
     for user in data.data['users']:
         if user['token'] == token:
             return True
@@ -239,14 +228,53 @@ def check_token(token):
 # later make this as store_And_generate_token(email):, i.e. this will generate 
 # token, store it and then return it
 def store_generated_token(email, user_token):
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
     for user in data.data['users']:
             if user['email']  == email:
                 user['token'] = user_token
 
 # or do it this way, find the user with matching token and relace the token with invalid token string
 def invalidating_token(token):
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
     for user in data.data['users']:
         if user['token']  == token:
-            user['token'] = 'invalid_token'
+            user['token'] = 'invalidated_the_token'
             return True
     return False
+
+def check_if_first_user():
+    '''
+    NICE FUNCTION HEADER COMMENT HERE
+    '''
+    if len(data.data['users']) == 0:
+        return True
+    return False
+
+# NOT NEEDED ATM:
+
+# def check_if_valid_password(password):
+#     allowed_special_symbols = ['!', '@', '#', '$', '%', '^', '&', '*']   
+
+#     if not 6 <= len(password) <= 32:
+#         return False
+
+#     if not any(character.isdigit() for character in password): 
+#         return False 
+          
+#     if not any(character.isupper() for character in password): 
+#         return False
+          
+#     if not any(character.islower() for character in password): 
+#         return False
+          
+#     if not any(character in allowed_special_symbols for character in password): 
+#         return False
+
+#     return True
+
+# code used to debug logout :     print(token)  
+#                                 print(check_token(token))

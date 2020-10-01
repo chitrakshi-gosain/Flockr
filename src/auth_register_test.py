@@ -79,7 +79,7 @@ def test_password_too_short_():
 def test_password_too_long_(): # assuming max length is 32 characters, discuss
     clear()
     with pytest.raises(InputError):
-        auth.auth_register('registerationtestvalidemailid7@gmail.com', '1234567890ABCDEFGHIJ!@#$%^&*7', 'Valid', 'User7')
+        auth.auth_register('registerationtestvalidemailid7@gmail.com', '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*7', 'Valid', 'User7')
 
 def test_insufficient_parameters():
     clear()
@@ -92,25 +92,12 @@ def test_return_type():
     assert isinstance(test_user_9_registeration_credentials['u_id'], int)
     assert isinstance(test_user_9_registeration_credentials['token'], str)  
 
-def test_password_without_lowercase():
-    clear()
-    with pytest.raises(InputError):
-        auth.auth_register('registerationtestvalidemailid10@gmail.com', '123ABC!10', 'Valid', 'User10')
+def test_first_user_is_admin():
+    # regitser two users and get u_id's, match these u_id's with  owner_members, returned by channel_details
+    # assert: u_id of user1 should be there and user2's shouldnt
+    pass
 
-def test_password_without_uppercase():
-    clear()
-    with pytest.raises(InputError):
-        auth.auth_register('registerationtestvalidemailid11@gmail.com', '123abc!11', 'Valid', 'User11')
-
-def test_password_without_digit():
-    clear()
-    with pytest.raises(InputError):
-        auth.auth_register('registerationtestvalidemailid12@gmail.com', 'Abc!twelve', 'Valid', 'User12')
-
-def test_password_without_allowed_special_symbols():
-    clear()
-    with pytest.raises(InputError):
-        auth.auth_register('registerationtestvalidemailid13@gmail.com', '123abc 13', 'Valid', 'User13')
+# NOT NEEDED ATM:
 
 # def test_lowercase_handle(): 
 #     clear()
@@ -134,3 +121,24 @@ def test_password_without_allowed_special_symbols():
 #     # test_user_profile_11 = user_profile(test_user_11['token'], test_user_11['u_id'])
 #     # assert test_user_profile_11['handle_str'] == 'validvaliduser11user'
 #     pass
+
+# NOT NEEDED SINCE REMOVED THE PASSWORD PATTERN CHECK:
+# def test_password_without_lowercase():
+#     clear()
+#     with pytest.raises(InputError):
+#         auth.auth_register('registerationtestvalidemailid10@gmail.com', '123ABC!10', 'Valid', 'User10')
+
+# def test_password_without_uppercase():
+#     clear()
+#     with pytest.raises(InputError):
+#         auth.auth_register('registerationtestvalidemailid11@gmail.com', '123abc!11', 'Valid', 'User11')
+
+# def test_password_without_digit():
+#     clear()
+#     with pytest.raises(InputError):
+#         auth.auth_register('registerationtestvalidemailid12@gmail.com', 'Abc!twelve', 'Valid', 'User12')
+
+# def test_password_without_allowed_special_symbols():
+#     clear()
+#     with pytest.raises(InputError):
+#         auth.auth_register('registerationtestvalidemailid13@gmail.com', '123abc 13', 'Valid', 'User13')
