@@ -37,16 +37,9 @@ from user import user_profile
 
 def test_successful_login_with_everything_valid():
     clear()
-    # modify this as in check if token is valid, do it after making function, probs
-    # will have to user.py for this and dat.py too, have a basic idea of what to do
-    # this is a stub atm
-    # auth.auth_register('logintestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
-    # test_user_login_credentials = auth.auth_login('logintestvalidemailid0@gmail.com', '123Abc!0')
-    # # can work further if we makes changes to dat for easy extraction of stuff
-    # # or think some other way if we dont change data
-    # # but it's a black box test, should i depend on data.py this much???
-    # assert(test_user_login_credentials) == {'a'} # totally unncessary, just to  avoid error of unused variable
-    pass
+    auth.auth_register('logintestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
+    auth.auth_login('logintestvalidemailid0@gmail.com', '123Abc!0')
+    # is this ok?
 
 def test_invalid_email():
     clear()
@@ -75,13 +68,31 @@ def test_insufficient_parameters():
 def test_return_type():
     clear()
     auth.auth_register('registerationtestvalidemailid4@gmail.com', '123Abc!4', 'Valid', 'User4')
-    test_user_4_registeration_credentials = auth.auth_login('registerationtestvalidemailid4@gmail.com', '123Abc!4')
-    assert isinstance(test_user_4_registeration_credentials['u_id'], int)
-    assert isinstance(test_user_4_registeration_credentials['token'], str) 
+    test_user_4_login_credentials = auth.auth_login('registerationtestvalidemailid4@gmail.com', '123Abc!4')
+    assert isinstance(test_user_4_login_credentials['u_id'], int)
+    assert isinstance(test_user_4_login_credentials['token'], str) 
 
+# altho register calls login, there is still 1% chance that u_id and token returned from login function might be played with.
 def test_login_u_id():
-    pass
-def test_login_unique_token():
-    pass
+    clear()
+    test_user_5_register_credentials = auth.auth_register('registerationtestvalidemailid5@gmail.com', '123Abc!5', 'Valid', 'User5')
+    test_user_5_login_credentials = auth.auth_login('registerationtestvalidemailid5@gmail.com', '123Abc!5')
+    assert test_user_5_login_credentials['u_id'] == test_user_5_register_credentials['u_id']
+
+def test_login_unique_token_and_u_id():
+    clear()
+    auth.auth_register('registerationtestvalidemailid6@gmail.com', '123Abc!6', 'Valid', 'User6')
+    test_user_6_login_credentials = auth.auth_login('registerationtestvalidemailid6@gmail.com', '123Abc!6')
+    auth.auth_register('registerationtestvalidemailid7@gmail.com', '123Abc!7', 'Valid', 'User7')
+    test_user_7_login_credentials = auth.auth_login('registerationtestvalidemailid7@gmail.com', '123Abc!7')
+
+    assert test_user_6_login_credentials != test_user_7_login_credentials
+
+    tokens = [test_user_6_login_credentials['token'], test_user_7_login_credentials['token']]
+    assert len(set(tokens)) == len(tokens)
+
 def test_multiple_logins():
-    pass
+    clear()
+    auth.auth_register('registerationtestvalidemailid8@gmail.com', '123Abc!8', 'Valid', 'User8')
+    auth.auth_login('registerationtestvalidemailid8@gmail.com', '123Abc!8')
+    auth.auth_login('registerationtestvalidemailid8@gmail.com', '123Abc!8')

@@ -44,58 +44,64 @@ import data
 from error import InputError, AccessError
 
 def auth_login(email, password):
+    # Checking for InputError(s):
     if None in {email, password}:
         raise InputError('Insufficient parameters. Please enter: email, password.')
 
     if not check_if_valid_email(email):
          raise InputError('Please enter a valid email-id.') 
 
-    if not check_if_registered_user(email):
+    if check_if_registered_user(email) is False:
         raise InputError('Please register since you are not registered yet.')
 
-    if not check_password(email, password):
+    if check_password(email, password) is False:
         raise InputError('Please enter the correct password.') 
 
-    # since no errors, all is good now, gnerate a token and get u_id
+    # Since there are no InputError(s), hence proceeding forward:
+    
+    # getting the return value 'u_id' from data
     user_id = get_user_id(email)
+
+    # generating token
     user_token = email
+
+    # updating token in data.data['users']
     store_generated_token(email, user_token)
 
-    # IMPORTANT : Tell everyone i've implemented email as token as of now, rather 
-    # than name_first + name_last, just aviding extra code since this a temp fix,
-    # hence change data.py
-    # CHANGE MY TOKEN TEST(s)
-
+    # returning the dictionary with users' u_id, and token authenticated for 
+    # their session
     return {
         'u_id': user_id,
         'token': user_token
     }
 
 def auth_logout(token):
+    # Checking for InputError:
     if None in {token}:
         raise InputError('Insufficient parameters. Please enter: token')
     
     status = False
-
+    # Checking for AccessError:
     if check_token(token) is False:
         return {
             'is_success': status
         }
 
-    # now find u_id and then put a invalid token in place, maybe sjust have a common invalid token for identification
-    # modufy get_user_id function such that the parameter passed can either be email or token and if returns u_id, IMPORTANT
+    # if check_token(token) is False:
+    #     raise AccessError('No such token exists')
 
-    # or do it this way, find the user with matching token and relace the token with invalid token string
-    for user in data.data['users']:
-        if user['token']  == token:
-            user['token'] = 'invalid_token'
-            status = True
+    # status = False
+
+    # Since there is no InputError or AccessError, hence proceeding forward:
+
+    status = invalidating_token(token)
 
     return {
         'is_success': status
     }
 
 def auth_register(email, password, name_first, name_last):
+    # Checking for InputError(s):
     if None in {email, password, name_first, name_last}:
         raise InputError('Insufficient parameters. Please enter: email, password, name_first, name_last')
 
@@ -111,9 +117,12 @@ def auth_register(email, password, name_first, name_last):
     if not check_name_length(name_last):
         raise InputError('Last name should be between 1 to 50 characters')
 
-    if check_if_registered_user(email):
+    if check_if_registered_user(email) is True:
         raise InputError('Email address is already being used by another user')
+ 
+    # Since there are no InputError(s), hence proceeding forward:
     
+       
     user_id = get_user_id(email)
 
     user_is_admin = False
@@ -197,12 +206,16 @@ def check_if_registered_user(email):
 def get_user_id(email):
     user_count = -1
     for user in data.data['users']:
+        # for an existing user, we find them by their email and return existing 
+        # u_id
         if user['email']  == email:
             user_id = user['u_id']
             return user_id
-        user_count += 1 # this is for register function, i.e. we need to make user id there, then it is retunr user_count + 1
+        # counting the number of user(s) in data['users'], this helps in 
+        # creating new u_id
+        user_count += 1
+    # for a new user, we make a new u_id and return it
     return user_count + 1
-    # add a general retunr here, think
 
 def generate_handle(name_first, name_last):
     concatenated_names = name_first + name_last
@@ -222,11 +235,17 @@ def check_token(token):
             return True
     return False
 
+# later make this as store_And_generate_token(email):, i.e. this will generate 
+# token, store it and then return it
 def store_generated_token(email, user_token):
     for user in data.data['users']:
             if user['email']  == email:
                 user['token'] = user_token
-                
-# not needed right now
-# def generate_token():
-#     pass
+
+# or do it this way, find the user with matching token and relace the token with invalid token string
+def invalidating_token(token):
+    for user in data.data['users']:
+        if user['token']  == token:
+            user['token'] = 'invalid_token'
+            return True
+    return False
