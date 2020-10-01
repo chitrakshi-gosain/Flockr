@@ -77,20 +77,21 @@ def auth_login(email, password):
 
 def auth_logout(token):
     # Checking for InputError:
-    if None in {token}:
+    if token is None:
         raise InputError('Insufficient parameters. Please enter: token')
     
-    status = False
-    # Checking for AccessError:
-    if check_token(token) is False:
-        return {
-            'is_success': status
-        }
-
-    # if check_token(token) is False:
-    #     raise AccessError('No such token exists')
-
     # status = False
+    # # Checking for AccessError:
+    # if check_token(token) is False:
+    #     return {
+    #         'is_success': status
+    #     }
+    print(token)
+    print(check_token(token))
+    if not check_token(token):
+        raise AccessError('No such token exists')
+    
+    status = False
 
     # Since there is no InputError or AccessError, hence proceeding forward:
 
@@ -173,7 +174,7 @@ def check_if_valid_email(email):
     return False
 
 def check_if_valid_password(password):
-    allowed_special_symbols =['!', '@', '#', '$', '%', '^', '&', '*']   
+    allowed_special_symbols = ['!', '@', '#', '$', '%', '^', '&', '*']   
 
     if not 6 <= len(password) <= 32:
         return False
