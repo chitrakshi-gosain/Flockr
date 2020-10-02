@@ -84,7 +84,7 @@ def is_channel_valid(channel_id):
     channel_valid = False
     for channel in data.data['channels']:
         if channel['channel_id'] == channel_id:
-            channel_valid == True
+            channel_valid = True
             channel_dict = channel
             break
             
