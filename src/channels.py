@@ -1,4 +1,4 @@
-from data import *
+import data
 from error import AccessError, InputError
 
 def channels_list(token):
@@ -22,7 +22,7 @@ def channels_list(token):
     # Checking token validity and finding user that accessed listall
     current_user = {}
     # Loops through users until matching token is found
-    for user in data['users']:
+    for user in data.data['users']:
         if user['token'] == token:
             current_user = user
     # If matching token is not found then AccessError is raised
@@ -32,7 +32,7 @@ def channels_list(token):
     # Constructing list of all channels
     channel_list = []
 
-    for channel in data['channels']:
+    for channel in data.data['channels']:
         for member in channel['all_members']:
             if member['u_id'] == current_user['u_id']:
                 channel_details = {
@@ -66,7 +66,7 @@ def channels_listall(token):
     # Checking token validity and finding user that accessed listall
     current_user = {}
     # Loops through users until matching token is found
-    for user in data['users']:
+    for user in data.data['users']:
         if user['token'] == token:
             current_user = user
     # If matching token is not found then AccessError is raised
@@ -76,7 +76,7 @@ def channels_listall(token):
     # Constructing list of all channels
     channel_list = []
 
-    for channel in data['channels']:
+    for channel in data.data['channels']:
         channel_details = {
             'channel_id': channel['channel_id'],
             'name': channel['name']
@@ -109,7 +109,7 @@ def channels_create(token, name, is_public):
     # Checking token validity and finding user that created channel
     current_user = {}
     # Loops through users until matching token is found
-    for user in data['users']:
+    for user in data.data['users']:
         if user['token'] == token:
             current_user = user
     # If matching token is not found then AccessError is raised
@@ -150,7 +150,7 @@ def channels_create(token, name, is_public):
     }
 
     # Entry is added to data.py
-    data['channels'].append(new_channel)
+    data.data['channels'].append(new_channel)
 
     return {
         'channel_id': channel_id,
