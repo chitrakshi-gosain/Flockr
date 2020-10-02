@@ -20,7 +20,6 @@ def channel_details(token, channel_id):
     channel_contents.update({'all_members': channel_dict['all_members']})
     return channel_contents
 
-
 def channel_messages(token, channel_id, start):
 
     is_token_valid(token)
@@ -77,7 +76,7 @@ def is_user_authorised(token, u_id):
                 user_authorised = True
 
     if not user_authorised:
-        raise AccessError('User is not authorised')
+        raise AccessError('Authorised user is not a member of channel with channel_id')
 
 def is_channel_valid(channel_id):
 
@@ -90,7 +89,7 @@ def is_channel_valid(channel_id):
             break
             
     if not channel_valid:
-        raise InputError('Channel_id is not valid')
+        raise InputError('Channel ID is not a valid channel')
 
     return channel_dict
 
