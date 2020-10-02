@@ -73,7 +73,7 @@ def is_user_authorised(token, u_id):
 
     for channel in data.data['channels']:
         for member in channel['all_members']:
-            if member[u_id] == u_id:
+            if member['u_id'] == u_id:
                 user_authorised = True
 
     if not user_authorised:
@@ -93,7 +93,7 @@ def is_channel_valid(channel_id):
         raise InputError('Channel_id is not valid')
 
     return channel_dict
-    
+
 def channel_leave(token, channel_id):
     return {
     }
