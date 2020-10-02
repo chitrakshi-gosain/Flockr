@@ -105,7 +105,8 @@ def channel_messages(token, channel_id, start):
     if len(channel_dict['messages']) == 0:
         messages_history.update({'end': -1})
     
-    messages_history.update({'messages': messages_list})
+    else:
+        messages_history.update({'messages': messages_list})
     return messages_history
 
 def channel_leave(token, channel_id):
