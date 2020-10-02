@@ -124,8 +124,8 @@ def channels_create(token, name, is_public):
     # most recently set channel_id
     channel_id = 0
 
-    if channels != []:
-        channel_id = data['channels'][-1]['channel_id'] + 1
+    if data.data['channels'] != []:
+        channel_id = data.data['channels'][-1]['channel_id'] + 1
 
     # data.py dictionary entry is constructed
     new_channel = {
