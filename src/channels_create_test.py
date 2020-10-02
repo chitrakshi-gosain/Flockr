@@ -150,14 +150,16 @@ def test_channels_create_valid_samename():
     users = initialise_user_data()
 
     # Creating public channels with the same name
-    channels_create(users['user1']['token'], 'Hello World!', True)
-    channels_create(users['user2']['token'], 'Hello World!', True)
+    channel_id1 = channels_create(users['user1']['token'], 'Hello World!', True)
+    channel_id2 = channels_create(users['user2']['token'], 'Hello World!', True)
 
     # Checking both channels exist and have the same name
     channel_list = channels_listall(users['user3']['token'])
 
     assert channel_list['channels'][0]['name'] == 'Hello World!'
     assert channel_list['channels'][1]['name'] == 'Hello World!'
+    assert channel_list['channels'][0]['channel_id'] == channel_id1['channel_id']
+    assert channel_list['channels'][1]['channel_id'] == channel_id2['channel_id']
 
 # Attempting to call channels_listall without a valid token
 def test_channels_create_invalid_token():
