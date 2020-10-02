@@ -6,8 +6,16 @@
 # 01/10: changed data in user['handle_str'], user['token'] and user['password']
 #        as per the implementation, modified/added comments, also added a header
 #        comment
+# 02/10: Ensured data dictionary is blank at execution
 
 # the global variable data is a listed dictionary
+
+data = {
+        'users': [],
+        'channels': []
+        }
+
+'''
 data = {
     'users': [
         { # user -> u_id : 0
@@ -105,3 +113,4 @@ data = {
         },
     ]
 }
+'''
