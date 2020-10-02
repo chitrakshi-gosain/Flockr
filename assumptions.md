@@ -40,7 +40,14 @@
 ## channels.py
 
 ### channels_list
+- Channels are listed in order of creation
 
 ### channels_listall
+- Includes private channels
+- Channels are listed in order of creation
 
 ### channels_create
+- Channel names can be empty strings
+- Two channels can share a name
+- Channel names can have spaces and special characters
+- User who creates a channel becomes an owner and member of that channel
