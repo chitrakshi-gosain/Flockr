@@ -91,8 +91,6 @@ def channel_messages(token, channel_id, start):
 
     # start_index is the index of the dictionary where the messages start loading from.
     # If start = 0, start_index will be the index of the last added dictionary.
-    if len(channel_dict['messages']) == 0:
-        messages_history.update({'end': -1})
 
     start_index = (num_message - 1) - start
     messages_list = []
@@ -104,8 +102,10 @@ def channel_messages(token, channel_id, start):
             messages_history.update({'end': -1})
             break
 
+    if len(channel_dict['messages']) == 0:
+        messages_history.update({'end': -1})
+    
     messages_history.update({'messages': messages_list})
-
     return messages_history
 
 def channel_leave(token, channel_id):
