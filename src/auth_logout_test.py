@@ -39,17 +39,16 @@ def test_successful_logout():
 
 def test_active_token_now_invalid():
     clear()
-    test_user_1 =  auth.auth_register('logouttestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
+    auth.auth_register('logouttestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
+    test_user_1 = auth.auth_login('logouttestvalidemailid1@gmail.com', '123Abc!1')
     assert auth.auth_logout(test_user_1['token']) == {'is_success' : True}
-    assert auth.auth_logout(test_user_1['token']) == {'is_success' : False}
+    with pytest.raises(AccessError):
+        auth.auth_logout(test_user_1['token'])
 
-# def test_active_token_now_invalid():
-#     clear()
-#     auth.auth_register('logouttestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
-#     test_user_1 = auth.auth_login('logouttestvalidemailid1@gmail.com', '123Abc!1')
-#     assert auth.auth_logout(test_user_1['token'])
-#     with pytest.raises(AccessError):
-#         auth.auth_logout('invalid_token')
+def test_invalid_token():
+    clear()
+    with pytest.raises(AccessError):
+        auth.auth_logout('invalid_token')
 
 def test_insufficient_parameters():
     clear()
@@ -59,6 +58,4 @@ def test_insufficient_parameters():
 def test_return_type():
     clear()
     test_user_2_registeration_credentials =  auth.auth_register('logouttestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User2')
-    assert isinstance(test_user_2_registeration_credentials['token'], str) 
-
-# how about a test when logout user tries to join channel, should be in channel_join test tho.
+    assert isinstance(test_user_2_registeration_credentials['token'], str)

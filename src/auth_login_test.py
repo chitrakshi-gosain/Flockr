@@ -40,7 +40,7 @@ def test_successful_login_with_everything_valid():
     auth.auth_register('logintestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
     auth.auth_login('logintestvalidemailid0@gmail.com', '123Abc!0')
     # is this ok?
-
+    
 def test_invalid_email():
     clear()
     auth.auth_register('logintestinvalidemailid@gmail.com', '123Abc!!', 'Valid', 'User!')
