@@ -117,13 +117,13 @@ def test_channels_create_valid_private():
     # Check that channel details have all been set correctly
     private_channel_details = channel_details(users['john']['token'], channel_id['channel_id'])
 
-    assert empty_channel_details['name'] == 'Private Disc'
-    assert empty_channel_details['owner_members'][0]['u_id'] == users['john']['u_id']
-    assert empty_channel_details['owner_members'][0]['name_first'] == 'John'
-    assert empty_channel_details['owner_members'][0]['name_last'] == 'Smith'
-    assert empty_channel_details['all_members'][0]['u_id'] == users['john']['u_id']
-    assert empty_channel_details['all_members'][0]['name_first'] == 'John_first'
-    assert empty_channel_details['all_members'][0]['name_last'] == 'Smith_last'
+    assert private_channel_details['name'] == 'Private Disc'
+    assert private_channel_details['owner_members'][0]['u_id'] == users['john']['u_id']
+    assert private_channel_details['owner_members'][0]['name_first'] == 'John'
+    assert private_channel_details['owner_members'][0]['name_last'] == 'Smith'
+    assert private_channel_details['all_members'][0]['u_id'] == users['john']['u_id']
+    assert private_channel_details['all_members'][0]['name_first'] == 'John_first'
+    assert private_channel_details['all_members'][0]['name_last'] == 'Smith_last'
 
     # Ensure that channel is private by attempting join from non-member
     with pytest.raises(AccessError):
