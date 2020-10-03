@@ -105,7 +105,7 @@ def channel_messages(token, channel_id, start):
 
     if len(channel_dict['messages']) == 0:
         messages_history.update({'end': -1})
-    
+
     else:
         messages_history.update({'messages': messages_list})
     return messages_history
@@ -138,6 +138,8 @@ def channel_leave(token, channel_id):
     if is_valid_user and is_valid_channel:
         if user_info in data.data['channels'][channel_idx]['all_members']:
             data.data['channels'][channel_idx]['all_members'].remove(user_info)
+        if user_info in data.data['channels'][channel_idx]['all_owners']:
+            data.data['channels'][channel_idx]['all_owners'].remove(user_info)
         else:
             raise AccessError("User cannot leave channels they are not part of")
 
@@ -240,4 +242,3 @@ def is_user_authorised(token, u_id, channel_dict):
         raise AccessError('Authorised user is not a member of channel with channel_id')
 
     return user_authorised
-
