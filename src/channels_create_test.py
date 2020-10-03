@@ -1,5 +1,5 @@
 from auth import auth_register, auth_logout
-from channel import channel_details
+from channel import channel_details, channel_join
 from channels import channels_create, channels_listall, channels_list
 from other import clear
 from error import AccessError, InputError
@@ -127,7 +127,7 @@ def test_channels_create_valid_private():
 
     # Ensure that channel is private by attempting join from non-member
     with pytest.raises(AccessError):
-        channel_join(users['user1']['token'])
+        channel_join(users['user1']['token'], channel_id['channel_id'])
 
     clear()
 
