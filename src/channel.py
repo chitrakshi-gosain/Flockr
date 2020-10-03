@@ -228,6 +228,10 @@ def is_user_authorised(token, u_id, channel_dict):
     u_id = find_user_id(token)
 
     user_authorised = False
+    for user in data.data['users']:
+        if user['token'] == token:
+            user_authorised = user['is_admin']
+
     for member in channel_dict['all_members']:
         if member['u_id'] == u_id:
             user_authorised = True

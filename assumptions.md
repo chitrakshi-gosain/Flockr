@@ -19,6 +19,7 @@
 - 3. ids can only be non-negative integers
 
 ### channel_details
+- 1. An admin can get the details from any channel
 
 ### channel_messages
 
