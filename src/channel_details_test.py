@@ -50,7 +50,7 @@ def test_return_type():
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register user_1
     user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
 
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)                                 # create a public channel
+    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)                                 # create a public channel
 
     # Invite two users to the channel                   
     channel_join(user1_credentials['token'], channel1_id['channel_id'])
@@ -81,10 +81,10 @@ def test_channel_details_case():
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register user_1
     user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
 
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)                                 # create a public channel
+    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)                                 # create a public channel
 
     # Invite two users to the channel                   
-    channel_invite(user1_credentials['token'], channel1_id['channel_id'], user1_credentials['u_id'])
+    channel_join(user1_credentials['token'], channel1_id['channel_id'])
 
     owner = {'u_id': 'owner_id', 'name_first': 'owner_firstname', 'name_last': 'owner_lastname'}
     user1 = {'u_id': 'user1_id', 'name_first': 'user1_firstname', 'name_last': 'user1_lastname'}
@@ -93,14 +93,16 @@ def test_channel_details_case():
     assert channel_contents == channel_details(user1_credentials['token'], channel1_id['channel_id'])
 
 
-def test_channel_details_empty_channel():
+# def test_channel_details_empty_channel():
 
-    clear()
-    #login the owner and create channel
-    owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register user_1
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)
+#     clear()
+#     #login the owner and create channel
+#     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register user_1
+#     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)
 
-    channel_leave(owner_credentials['token'], channel1_id['channel_id'])
-    channel_contents = {'name': 'channel1_name', 'owner_members': [], 'all_members': []}                                # is this how you would represent 
-    assert channel_contents == channel_details(owner_credentials['token'], channel1_id['channel_id'])                                              # no members?
+#     channel_leave(owner_credentials['token'], channel1_id['channel_id'])
+
+#     with pytest.raises(AccessError):
+#         channel_details(owner_credentials['token'], channel1_id['channel_id']
+                        
 

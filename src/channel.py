@@ -56,6 +56,7 @@ def channel_invite(token, channel_id, u_id):
 
 
 def channel_details(token, channel_id):
+
     if None in {token, channel_id}:
         raise InputError('Insufficient parameters given')
 
@@ -63,7 +64,6 @@ def channel_details(token, channel_id):
     u_id = find_user_id(token)
     channel_dict = is_channel_valid(channel_id)
     is_user_authorised(token, u_id, channel_dict)
-
 
     channel_contents = {}
     channel_contents.update({'name': channel_dict['name']})
@@ -234,3 +234,6 @@ def is_user_authorised(token, u_id, channel_dict):
 
     if not user_authorised:
         raise AccessError('Authorised user is not a member of channel with channel_id')
+
+    return user_authorised
+
