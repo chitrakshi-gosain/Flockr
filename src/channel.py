@@ -138,8 +138,8 @@ def channel_leave(token, channel_id):
     if is_valid_user and is_valid_channel:
         if user_info in data.data['channels'][channel_idx]['all_members']:
             data.data['channels'][channel_idx]['all_members'].remove(user_info)
-        if user_info in data.data['channels'][channel_idx]['all_owners']:
-            data.data['channels'][channel_idx]['all_owners'].remove(user_info)
+        if user_info in data.data['channels'][channel_idx]['owner_members']:
+            data.data['channels'][channel_idx]['owner_members'].remove(user_info)
         else:
             raise AccessError("User cannot leave channels they are not part of")
 
