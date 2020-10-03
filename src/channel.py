@@ -61,8 +61,9 @@ def channel_details(token, channel_id):
 
     is_token_valid(token)
     u_id = find_user_id(token)
-    is_user_authorised(token, u_id, channel_id)
     channel_dict = is_channel_valid(channel_id)
+    is_user_authorised(token, u_id, channel_dict)
+
 
     channel_contents = {}
     channel_contents.update({'name': channel_dict['name']})
@@ -192,16 +193,7 @@ def channel_removeowner(token, channel_id, u_id):
     return {
     }
 
-
-
-# HELPER FUNCTIONS
-def find_user_id(token):
-    for user in data.data['users']:
-        if user['token'] == token:
-            u_id = user['u_id']
-            return u_id
-
-
+################ HELPER FUNCTIONS
 def is_token_valid(token):
     valid_token = False
     for user in data.data['users']:
@@ -211,19 +203,11 @@ def is_token_valid(token):
     if not valid_token:
         raise AccessError('Invalid Token')
 
-def is_user_authorised(token, u_id, channel_id):
-    u_id = find_user_id(token)
-
-    user_authorised = False
-    for channel in data.data['channels']:
-        if channel_id == channel['channel_id']:
-            for member in channel['all_members']:
-                if member['u_id'] == u_id:
-                    user_authorised = True
-
-
-    if not user_authorised:
-        raise AccessError('Authorised user is not a member of channel with channel_id')
+def find_user_id(token):
+    for user in data.data['users']:
+        if user['token'] == token:
+            u_id = user['u_id']
+            return u_id
 
 def is_channel_valid(channel_id):
 
@@ -239,3 +223,14 @@ def is_channel_valid(channel_id):
         raise InputError('Channel_id is not valid')
 
     return channel_dict
+
+def is_user_authorised(token, u_id, channel_dict):
+    u_id = find_user_id(token)
+
+    user_authorised = False
+    for member in channel_dict['all_members']:
+        if member['u_id'] == u_id:
+            user_authorised = True
+
+    if not user_authorised:
+        raise AccessError('Authorised user is not a member of channel with channel_id')
