@@ -1,5 +1,5 @@
 from auth import auth_register
-from channel import channel_details, channel_join, channel_invite
+from channel import channel_details, channel_join, channel_invite, channel_leave
 from channels import channels_create
 import pytest
 from other import clear
@@ -53,7 +53,7 @@ def test_return_type():
     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)                                 # create a public channel
 
     # Invite two users to the channel                   
-    channel_invite(user1_credentials['token'], channel1_id['channel_id'], user1_credentials['u_id'])
+    channel_join(user1_credentials['token'], channel1_id['channel_id'])
 
     owner = {'u_id': owner_credentials['u_id'], 'name_first': 'owner_firstname', 'name_last': 'owner_lastname'}
 
@@ -102,5 +102,5 @@ def test_channel_details_empty_channel():
 
     channel_leave(owner_credentials['token'], channel1_id['channel_id'])
     channel_contents = {'name': 'channel1_name', 'owner_members': [], 'all_members': []}                                # is this how you would represent 
-    assert channel_contents == channel_details(owner_credentials['token'], channel1['channel_id'])                                              # no members?
+    assert channel_contents == channel_details(owner_credentials['token'], channel1_id['channel_id'])                                              # no members?
 

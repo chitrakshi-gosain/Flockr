@@ -61,7 +61,7 @@ def channel_details(token, channel_id):
 
     is_token_valid(token)
     u_id = find_user_id(token)
-    is_user_authorised(token, u_id)
+    is_user_authorised(token, u_id, channel_id)
     channel_dict = is_channel_valid(channel_id)
 
     channel_contents = {}
@@ -211,17 +211,19 @@ def is_token_valid(token):
     if not valid_token:
         raise AccessError('Invalid Token')
 
-def is_user_authorised(token, u_id):
+def is_user_authorised(token, u_id, channel_id):
     u_id = find_user_id(token)
 
     user_authorised = False
     for channel in data.data['channels']:
-        for member in channel['all_members']:
-            if member['u_id'] == u_id:
-                user_authorised = True
+        if channel_id == channel['channel_id']:
+            for member in channel['all_members']:
+                if member['u_id'] == u_id:
+                    user_authorised = True
+
 
     if not user_authorised:
-        raise AccessError('User is not authorised')
+        raise AccessError('Authorised user is not a member of channel with channel_id')
 
 def is_channel_valid(channel_id):
 
