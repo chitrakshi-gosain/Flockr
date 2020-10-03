@@ -87,9 +87,9 @@ def test_channel_details_case():
     # Invite two users to the channel                   
     channel_join(user1_credentials['token'], channel1_id['channel_id'])
 
-    owner = {'u_id': 'owner_id', 'name_first': 'owner_firstname', 'name_last': 'owner_lastname'}
-    user1 = {'u_id': 'user1_id', 'name_first': 'user1_firstname', 'name_last': 'user1_lastname'}
-    channel_contents = {'name': 'channel1', 'owner_members': [owner], 'all_members': [owner, user1]}
+    owner = {'u_id': owner_credentials['u_id'], 'name_first': 'owner_firstname', 'name_last': 'owner_lastname'}
+    user1 = {'u_id': user1_credentials['u_id'], 'name_first': 'user1_firstname', 'name_last': 'user1_lastname'}
+    channel_contents = {'name': 'channel1_name', 'owner_members': [owner], 'all_members': [owner, user1]}
 
     assert channel_contents == channel_details(user1_credentials['token'], channel1_id['channel_id'])
 
