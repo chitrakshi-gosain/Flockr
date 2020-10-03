@@ -78,8 +78,8 @@ def channel_messages(token, channel_id, start):
 
     is_token_valid(token)
     u_id = find_user_id(token)
-    is_user_authorised(token, u_id)
     channel_dict = is_channel_valid(channel_id)
+    is_user_authorised(token, u_id, channel_dict)
 
     num_message = 0
     for message in (channel_dict['messages']):
