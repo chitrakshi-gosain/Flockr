@@ -1,10 +1,11 @@
 from auth import auth_register
 from channel import channel_details, channel_join, channel_invite, channel_leave
 from channels import channels_create
-import pytest
 from other import clear
 from error import InputError
 from error import AccessError
+import pytest
+
 
 def test_insufficient_parameters():
     clear()
@@ -58,7 +59,7 @@ def test_return_type():
     owner = {'u_id': owner_credentials['u_id'], 'name_first': 'owner_firstname', 'name_last': 'owner_lastname'}
 
     user1 = {'u_id': user1_credentials['u_id'], 'name_first': 'user1_firstname', 'name_last': 'user1_lastname'}
-    channel_contents = {'name': 'channel1', 'owner_members': [owner], 'all_members': [owner, user1]}
+    channel_contents = {'name': 'channel1_name', 'owner_members': [owner], 'all_members': [owner, user1]}
 
     assert isinstance(channel_contents['name'], str)
 
