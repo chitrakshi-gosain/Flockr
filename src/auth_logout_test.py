@@ -8,7 +8,7 @@
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> auth_register(email, password, name_first, name_last) return {u_id, token}
 -> auth_login(email,password) return {u_id, token}
 -> auth_logout(token) return {is_sucess}
@@ -16,8 +16,10 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 
 '''
 EXCEPTIONS
+Error type: InputError
+    -> insufficient parameters
 Error type: AccessError
--> token passed is not a valid token
+    -> token passed in is not a valid token
 '''
 
 '''
