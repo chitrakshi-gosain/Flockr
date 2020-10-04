@@ -1,4 +1,5 @@
 import data
+import user
 from error import InputError
 from error import AccessError
 
@@ -188,12 +189,93 @@ def channel_join(token, channel_id):
 
 
 def channel_addowner(token, channel_id, u_id):
+    # check if token is not valid
+    if token not in [user["token"] for user in data.data["users"]]:
+        raise AccessError('invalid token')
+    
+    # check if authorised user (based on token) is admin of the flockr
+    for u in data.data["users"]:
+        if token == u["token"] and u["is_admin"] == False:
+            raise AccessError('authorised user is not an admin of the flockr')
+
+    # check if authorised user is owner of the channel
+    token_uid = find_user_id(token)
+    if not is_channel_owner(token_uid, channel_id):
+        raise AccessError('authorised user is not an owner of the channel')
+
+    # check if channel_id is not a valid channel id
+    if channel_id not in [channel['channel_id'] for channel in data.data['channels']]:
+        raise InputError('channel_id not valid')
+    
+    # searches through data and finds the channel dictionary with the provided channel_id
+    for channel in data.data['channels']:
+        if channel['channel_id'] == channel_id:
+            channel_from_id = channel
+            break
+
+    # check if u_id is in the list of the u_ids of existing owners
+    # i.e. if the provided u_id is already an owner
+    if u_id in [owner['u_id'] for owner in channel_from_id['owner_members']]:
+        raise InputError('u_id is already an owner')
+
+    # extracts first and last names from channel dict
+    user_info = user.user_profile(token, u_id)
+    user_info = user_info['user']
+    name_first = user_info['name_first']
+    name_last = user_info['name_last']
+    user_dict = {'u_id': u_id, 'name_first': name_first, 'name_last': name_last}
+
+    # append the given user to the list of owners
+    for channel in data.data["channels"]:
+        if channel["channel_id"] == channel_id:
+                data.data["channels"][channel_id]["owner_members"].append(user_dict.copy())
+                break
+    
     return {
     }
 
+
 def channel_removeowner(token, channel_id, u_id):
+    # check if token is not valid
+    if token not in [user["token"] for user in data.data["users"]]:
+        raise AccessError('invalid token')
+
+    # check if authorised user (based on token) is admin of the flockr
+    for u in data.data["users"]:
+        if token == u["token"] and u["is_admin"] == False:
+            raise AccessError('authorised user is not an owner of the flockr')
+
+    # check if authorised user is owner of the channel
+    token_uid = find_user_id(token)
+    if not is_channel_owner(token_uid, channel_id):
+        raise AccessError('authorised user is not an owner of the channel')
+
+    # check if channel_id is not a valid channel id
+    if channel_id not in [channel['channel_id'] for channel in data.data['channels']]:
+        raise InputError('channel_id not valid')
+
+    # searches through data and finds the channel dictionary with the provided channel_id
+    for channel in data.data['channels']:
+        if channel['channel_id'] == channel_id:
+            channel_from_id = channel
+            break
+
+    # check if u_id is not in the list of the u_ids of existing owners
+    # i.e. if the provided u_id is not an owner
+    if u_id not in [owner['u_id'] for owner in channel_from_id['owner_members']]:
+        raise InputError('u_id is not an owner')
+
+    # remove the given user from the list of owners
+    for channel in data.data["channels"]:
+        if channel["channel_id"] == channel_id:
+            for i in range(len(channel["owner_members"])):
+                if channel["owner_members"][i]["u_id"] == u_id:
+                    del data.data["channels"][channel_id]["owner_members"][i]
+                    break
+
     return {
     }
+
 
 ################ HELPER FUNCTIONS
 def is_token_valid(token):
@@ -242,3 +324,9 @@ def is_user_authorised(token, u_id, channel_dict):
         raise AccessError('Authorised user is not a member of channel with channel_id')
 
     return user_authorised
+
+def is_channel_owner(u_id, channel_id):
+    for channel in data.data['channels']:
+        if channel["channel_id"] == channel_id and u_id in [owner["u_id"] for owner in channel["owner_members"]]:
+            return True
+    return False
