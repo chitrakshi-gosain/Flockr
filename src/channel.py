@@ -1,3 +1,8 @@
+# Created collaboratively by Wed15Team2 2020 T3
+# Contributer - Joseph Knox, Ahmet Karatas, Jordan Huynh
+
+# Iteration 1
+
 import data
 import user
 from error import InputError
