@@ -1,9 +1,10 @@
 # Assumptions
 
 ## auth.py
-- 1. As of iteration 1, token provided by *auth_login* and *auth_register* are not unqiue to the login session.
-- 2. Password can be maximum 32 charcacters long
-- 3. Password will only consist of printable ASCII characters
+- 1. First user to register becomes the Flockr owner
+- 2. As of iteration 1, token provided by *auth_login* and *auth_register* are not unqiue to the login session.
+- 3. Password can be maximum 32 charcacters long
+- 4. Password will only consist of printable ASCII characters
 
 ### auth_login
 - 1. Multiple login sessions are allowed, however, presently they do not have unique tokens.
