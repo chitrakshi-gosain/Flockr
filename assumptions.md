@@ -19,6 +19,7 @@
 - 4. u_id is always a positive whole number
 - 5. name_first and name_last can have both ASCII and Non-ASCII characters
 - 6. name_first and name_last that are purely whitespaces are not valid
+- 7. User becomes admin of the flockr
 
 
 ## channel.py
@@ -44,9 +45,14 @@
 - 4. The first user to sign up is a global owner
 
 ### channel_addowner
+- 1. User with u_id is already a member of channel with channel_id
+- 2. -1 is not a valid channel ID
+- 3. ' ' is not a valid token
 
 ### channel_removeowner
-
+- 1. User with u_id is already a member of channel with channel_id
+- 2. -1 is not a valid channel ID
+- 3. ' ' is not a valid token
 
 ## channels.py
 
