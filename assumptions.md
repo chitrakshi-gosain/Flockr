@@ -1,14 +1,22 @@
 # Assumptions
 
 ## auth.py
+- 1. As of iteration 1, token provided by *auth_login* and *auth_register* are not unqiue to the login session.
+- 2. Password can be maximum 32 charcacters long
+- 3. Password will only consist of printable ASCII characters
 
 ### auth_login
-- Assumption 1
-- etc...
+- 1. Multiple login sessions are allowed, however, presently they do not have unique tokens.
 
 ### auth_logout
+- 1. " " is an invalid token
 
 ### auth_register
+- 1. It logs the user in
+- 2. The generated handle can be alphanumeric
+- 3. If the generated handle is already taken, a modified handle is assigned to the user by adding his u_id at the end of the handle.
+- 4. u_id is always a positive whole number
+- 5. name_first and name_last that are purely whitespaces are not valid
 
 
 ## channel.py
