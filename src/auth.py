@@ -132,7 +132,7 @@ def auth_logout(token):
     if check_token(token) is False:
         raise AccessError('Token passed in is not a valid token')
 
-    # Since there is no InputError or AccessError, hence proceeding forward: 
+    # Since there is no InputError or AccessError, hence proceeding forward:
 
     return {
         'is_success': invalidating_token(token)
