@@ -1,7 +1,87 @@
+# Created collaboratively by Wed15Team2 2020 T3
+# Contributer - Joseph Knox, Ahmet Karatas, Jordan Huynh
+
+# Iteration 1
+
 import data
 import user
 from error import InputError
 from error import AccessError
+
+'''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> channel_invite(token, channel_id, u_id) return {}
+-> channel_details(token, channel_id) return {name, owner_members, all_members}
+-> channel_messages(token, channel_id, start) return {messages, start, end}
+-> channel_leave(token, channel_id) return {}
+-> channel_join(token, channel_id) return {}
+-> channel_addowner(token, channel_id, u_id) return {}
+-> channel_removeowner(token, channel_id, u_id) return {}
+'''
+
+'''
+DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
+    -> token: string
+    -> channel_id: integer
+    -> u_id: integer
+    -> start: integer
+    -> name: string
+    -> owner_members: list of dictionaries, where each dictionary contains types {u_id, name_first, name_last}
+    -> all_members: list of dictionaries, where each dictionary contains types {u_id, name_first, name_last}
+    -> name_first: string
+    -> name_last: string
+'''
+
+'''
+EXCEPTIONS
+    * channel_invite
+        Error type: InputError
+            -> channel_id does not refer to a valid channel
+            -> u_id does not refer to a valid user
+        Error type: AccessError
+            -> the authorised user is not already a member of the channel
+    * channel_details
+        Error type: InputError
+            -> Channel is not valid
+            -> Insufficient parameters given
+        Error type: AccessError
+            -> token passed in is not a valid token
+            -> User is not an authorised member of the channel
+    * channel_messages
+        Error type: InputError
+            -> Insufficient parameters given
+            -> Channel is not valid
+            -> If start is greater than the number of messages in the channel
+        Error type: AccessError
+            -> token passed in is not a valid token
+            -> User is not an authorised member of the channel
+    * channel_leave
+        Error type: InputError
+            -> Channel ID is not a valid channel
+        Error type: AccessError
+            -> Authorised user is not a member of channel with channel_id
+    * channel_join
+        Error type: InputError
+            -> Channel ID is not a valid channel
+        Error type: AccessError
+            -> channel_id refers to a channel that is private (when the authorised user is not a global owner)
+    * channel_addowner
+        Error type: InputError
+            -> Channel ID is not a valid channel
+            -> When user with user id u_id is already an owner of the channel
+        Error type: AccessError
+            -> when the authorised user is not an owner of the flockr, or an owner of this channel
+    * channel_removeowner
+        Error type: InputError
+            -> Channel ID is not a valid channel
+            -> When user with user id u_id is not an owner of the channel
+        Error type: AccessError
+            -> when the authorised user is not an owner of the flockr, or an owner of this channel
+'''
 
 def channel_invite(token, channel_id, u_id):
     #order of checks: invalid token, invalid user, invalid channel_id, invoker not in chnnel
@@ -192,7 +272,7 @@ def channel_addowner(token, channel_id, u_id):
     # check if token is not valid
     if token not in [user["token"] for user in data.data["users"]]:
         raise AccessError('invalid token')
-    
+
     # check if authorised user (based on token) is admin of the flockr
     for u in data.data["users"]:
         if token == u["token"] and u["is_admin"] == False:
@@ -206,7 +286,7 @@ def channel_addowner(token, channel_id, u_id):
     # check if channel_id is not a valid channel id
     if channel_id not in [channel['channel_id'] for channel in data.data['channels']]:
         raise InputError('channel_id not valid')
-    
+
     # searches through data and finds the channel dictionary with the provided channel_id
     for channel in data.data['channels']:
         if channel['channel_id'] == channel_id:
@@ -230,7 +310,7 @@ def channel_addowner(token, channel_id, u_id):
         if channel["channel_id"] == channel_id:
                 data.data["channels"][channel_id]["owner_members"].append(user_dict.copy())
                 break
-    
+
     return {
     }
 

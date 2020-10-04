@@ -249,6 +249,7 @@ def check_if_registered_user(email):
     Given the email of a user to be registered checks if the email is aready 
     being used by another user
     '''
+
     for user in data.data['users']:
         if user['email'] == email:
             return True
@@ -263,6 +264,7 @@ def get_user_id_from_email(email):
                          next number as u_id 
     and then returns it
     '''
+    
     user_count = -1
     for user in data.data['users']:
         if user['email']  == email:

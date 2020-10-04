@@ -1,22 +1,46 @@
+# Created collaboratively by Wed15Team2 2020 T3
+# Contributer - Cyrus Wilkie
+
+# Iteration 1
+
+'''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> channels_list(token) return {channels}
+-> channels_listall(token) return {channels}
+-> channels_create(token) return {channel_id}
+'''
+
+'''
+DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
+    -> token: string
+    -> name: string
+    -> is_public: boolean
+    -> {channels}: dictionary
+    -> {channel_id}: dictionary
+'''
+
 import data
 from error import AccessError, InputError
 
 def channels_list(token):
     '''
-    ----channels_list Documentation----
-    Parameters:
-    (token)
-
-    Return Type:
-    {channels}
-
-    Exceptions:
-    N/A
-
-    Description:
+    DESCRIPTION:
     Provide a list of all channels (and 
     their associated details) that the 
     authorised user is part of
+    
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> N/A
     '''
 
     # Checking token validity and finding user that accessed listall
@@ -48,19 +72,18 @@ def channels_list(token):
 
 def channels_listall(token):
     '''
-    ----channels_listall Documentation----
-    Parameters:
-    (token)
-
-    Return Type:
-    {channels}
-
-    Exceptions:
-    N/A
-
-    Description:
+    DESCRIPTION:
     Provide a list of all channels (and 
     their associated details)
+    
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> N/A
     '''
 
     # Checking token validity and finding user that accessed listall
@@ -90,20 +113,21 @@ def channels_listall(token):
 
 def channels_create(token, name, is_public):
     '''
-    ----channels_create Documentation----
-    Parameters:
-    (token, name, is_public)
-
-    Return Type:
-    {channel_id}
-
-    Exceptions:
-    InputError when any of:
-    - Name is more than 20 characters long
-
-    Description:
+    DESCRIPTION:
     Creates a new channel with that name 
     that is either a public or private channel
+    
+    PARAMETERS:
+        -> token
+        -> name: Name of channel to be created
+        -> is_public: Whether the channel is public
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> InputError when any of:
+            - Name is more than 20 characters long
     '''
 
     # Checking token validity and finding user that created channel

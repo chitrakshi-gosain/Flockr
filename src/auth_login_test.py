@@ -17,9 +17,10 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 '''
 EXCEPTIONS
 Error type: InputError
--> email entered is not valid
--> email entered does not belong to a user, i.e. not registered
--> password is incorrect
+    -> insufficient parameters
+    -> email entered is not a valid email
+    -> email entered does not belong to a user
+    -> password is not correct
 '''
 
 '''
