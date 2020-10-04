@@ -390,7 +390,7 @@ if __name__ == '__main__':
     assert user12_handle != user13_handle
 '''
 
-NOT NEEDED ATM:
+# NOT NEEDED ATM:
 
 # def check_if_valid_password(password):
 #     allowed_special_symbols = ['!', '@', '#', '$', '%', '^', '&', '*']   
