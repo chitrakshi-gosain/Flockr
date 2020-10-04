@@ -1,16 +1,17 @@
 # Created collaboratively by Wed15Team2 2020 T3
 # Contributer - Chitrakshi Gosain
-# Reviewer - Ahmet K
 
 # Iteration 1
+
 '''
 *********************************BASIC TEMPLATE*********************************
 '''
 
 '''
-FUNCTIONS_USED_FOR_THE_TEST(PARAMETERS) return (RETURN_TYPE):
--> auth_register(email, password, name_first, name_last) return (u_id, token)
--> auth_login(email,password) return (u_id, token)
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
+-> auth_login(email,password) return {u_id, token}
+-> auth_logout(token) return {is_sucess}
 '''
 
 '''
@@ -37,37 +38,42 @@ from user import user_profile
 
 def test_successful_login_with_everything_valid():
     clear()
-    auth.auth_register('logintestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
+    test_user_0 = auth.auth_register('logintestvalidemailid0@gmail.com', '123Abc!0', 'Valid', 'User0')
+    auth.auth_logout(test_user_0['token'])
     auth.auth_login('logintestvalidemailid0@gmail.com', '123Abc!0')
-    # is this ok?
     
 def test_invalid_email():
     clear()
-    auth.auth_register('logintestinvalidemailid@gmail.com', '123Abc!!', 'Valid', 'User!')
+    test_user_exclamatory = auth.auth_register('logintestinvalidemailid@gmail.com', '123Abc!!', 'Valid', 'User!')
+    auth.auth_logout(test_user_exclamatory['token'])
     with pytest.raises(InputError):
         auth.auth_login('logintestinvalidemailid_gmail.com', '123Abc!!')
 
 def test_unregistered_user():
     clear()
-    auth.auth_register('logintestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
+    test_user_1 = auth.auth_register('logintestvalidemailid1@gmail.com', '123Abc!1', 'Valid', 'User1')
+    auth.auth_logout(test_user_1['token'])
     with pytest.raises(InputError):
         auth.auth_login('unregisteredemail1@gmail.com', '123Abc!!')
 
 def test_wrong_password():
     clear()
-    auth.auth_register('logintestvalidemailid2@gmail.com', '123Abc!2', 'Valid', 'User2')
+    test_user_2 = auth.auth_register('logintestvalidemailid2@gmail.com', '123Abc!2', 'Valid', 'User2')
+    auth.auth_logout(test_user_2['token'])
     with pytest.raises(InputError):
         auth.auth_login('logintestvalidemailid2@gmail.com', 'cbA321!!')
 
 def test_insufficient_parameters():
     clear()
-    auth.auth_register('logintestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
+    test_user_3 = auth.auth_register('logintestvalidemailid3@gmail.com', '123Abc!3', 'Valid', 'User3')
+    auth.auth_logout(test_user_3['token'])
     with pytest.raises(InputError):
         auth.auth_login('logintestvalidemailid3@gmail.com', None)
 
 def test_return_type():
     clear()
-    auth.auth_register('registerationtestvalidemailid4@gmail.com', '123Abc!4', 'Valid', 'User4')
+    test_user_4 = auth.auth_register('registerationtestvalidemailid4@gmail.com', '123Abc!4', 'Valid', 'User4')
+    auth.auth_logout(test_user_4['token'])
     test_user_4_login_credentials = auth.auth_login('registerationtestvalidemailid4@gmail.com', '123Abc!4')
     assert isinstance(test_user_4_login_credentials['u_id'], int)
     assert isinstance(test_user_4_login_credentials['token'], str) 
@@ -81,9 +87,11 @@ def test_login_u_id():
 
 def test_login_unique_token_and_u_id():
     clear()
-    auth.auth_register('registerationtestvalidemailid6@gmail.com', '123Abc!6', 'Valid', 'User6')
+    test_user_6 = auth.auth_register('registerationtestvalidemailid6@gmail.com', '123Abc!6', 'Valid', 'User6')
+    auth.auth_logout(test_user_6['token'])
     test_user_6_login_credentials = auth.auth_login('registerationtestvalidemailid6@gmail.com', '123Abc!6')
-    auth.auth_register('registerationtestvalidemailid7@gmail.com', '123Abc!7', 'Valid', 'User7')
+    test_user_7 = auth.auth_register('registerationtestvalidemailid7@gmail.com', '123Abc!7', 'Valid', 'User7')
+    auth.auth_logout(test_user_7['token'])
     test_user_7_login_credentials = auth.auth_login('registerationtestvalidemailid7@gmail.com', '123Abc!7')
 
     assert test_user_6_login_credentials != test_user_7_login_credentials
@@ -96,3 +104,14 @@ def test_multiple_logins():
     auth.auth_register('registerationtestvalidemailid8@gmail.com', '123Abc!8', 'Valid', 'User8')
     auth.auth_login('registerationtestvalidemailid8@gmail.com', '123Abc!8')
     auth.auth_login('registerationtestvalidemailid8@gmail.com', '123Abc!8')
+
+def test_looking_for_negative_u_id():
+    clear()
+    auth.auth_register('registerationtestvalidemailid9@gmail.com', '123Abc!9', 'Valid', 'User9')
+    test_user_9_login_credentials = auth.auth_login('registerationtestvalidemailid9@gmail.com', '123Abc!9')
+    assert test_user_9_login_credentials['u_id'] >= 0
+    
+def test_non_ascii_password():
+    clear()
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid13@gmail.com', 'pass \n word', 'Valid', 'User13')

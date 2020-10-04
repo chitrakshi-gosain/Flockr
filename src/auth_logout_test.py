@@ -1,17 +1,17 @@
 # Created collaboratively by Wed15Team2 2020 T3
 # Contributer - Chitrakshi Gosain
-# Reviewer - Ahmet K
 
 # Iteration 1
+
 '''
 *********************************BASIC TEMPLATE*********************************
 '''
 
 '''
-FUNCTIONS_USED_FOR_THE_TEST(PARAMETERS) return (RETURN_TYPE):
--> auth_register(email, password, name_first, name_last) return (u_id, token)
--> auth_login(email,password) return (u_id, token)
--> auth_logout(token) return (is_sucess)
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
+-> auth_login(email,password) return {u_id, token}
+-> auth_logout(token) return {is_sucess}
 '''
 
 '''
@@ -49,6 +49,11 @@ def test_invalid_token():
     clear()
     with pytest.raises(AccessError):
         auth.auth_logout('invalid_token')
+
+def test_whitespace_as_token():
+    clear()
+    with pytest.raises(AccessError):
+        auth.auth_logout(' ')
 
 def test_insufficient_parameters():
     clear()
