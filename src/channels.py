@@ -13,6 +13,7 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 -> channels_listall(token) return {channels}
 -> channels_create(token) return {channel_id}
 '''
+
 '''
 DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
     -> token: string
