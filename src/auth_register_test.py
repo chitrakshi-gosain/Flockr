@@ -1,16 +1,17 @@
 # Created collaboratively by Wed15Team2 2020 T3
 # Contributer - Chitrakshi Gosain
-# Reviewer - Ahmet K
 
 # Iteration 1
+
 '''
 *********************************BASIC TEMPLATE*********************************
 '''
 
 '''
-FUNCTIONS_USED_FOR_THE_TEST(PARAMETERS) return (RETURN_TYPE):
--> auth_register(email, password, name_first, name_last) return (u_id, token)
--> auth_login(email,password) return (u_id, token)
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
+-> auth_login(email,password) return {u_id, token}
+-> auth_logout(token) return {is_sucess}
 '''
 
 '''
@@ -92,10 +93,33 @@ def test_return_type():
     assert isinstance(test_user_9_registeration_credentials['u_id'], int)
     assert isinstance(test_user_9_registeration_credentials['token'], str)  
 
-def test_first_user_is_admin():
-    # regitser two users and get u_id's, match these u_id's with  owner_members, returned by channel_details
-    # assert: u_id of user1 should be there and user2's shouldnt
-    pass
+def test_non_ascii_name_first():
+    clear()
+    auth.auth_register('registerationtestvalidemailid10@gmail.com', '123Abc!10', 'Anaïs', 'User10')
+
+def test_non_ascii_name_last():
+    clear()
+    auth.auth_register('registerationtestvalidemailid11@gmail.com', '123Abc!11', 'Valid', 'सिंह')
+
+def test_looking_for_negative_u_id():
+    clear()
+    test_user_12_registeration_credentials = auth.auth_register('registerationtestvalidemailid12@gmail.com', '123Abc!12', 'Valid', 'User12')
+    assert test_user_12_registeration_credentials['u_id'] >= 0
+
+def test_non_ascii_password():
+    clear()
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid13@gmail.com', 'pass \n word', 'Valid', 'User13')
+
+def test_whitespace_first_name():
+    clear()
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid14@gmail.com', '123Abc!14', '     ', 'User14')
+
+def test_whitespace_last_name():
+    clear()
+    with pytest.raises(InputError):
+        auth.auth_register('registerationtestvalidemailid15@gmail.com', '123Abc!15', '     ', 'User15')
 
 # NOT NEEDED ATM:
 
