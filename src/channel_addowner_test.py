@@ -1,3 +1,8 @@
+# Created collaboratively by Wed15Team2 2020 T3
+# Contributer - Joseph Knox
+
+# Iteration 1
+
 from channel import channel_details, channel_addowner, channel_join
 from channels import channels_create
 import pytest
