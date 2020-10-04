@@ -1,3 +1,8 @@
+# Created collaboratively by Wed15Team2 2020 T3
+# Contributer - Jordan Hunyh
+
+# Iteration 1
+
 from channel import channel_invite, channel_join, channel_details
 from other import clear
 from auth import auth_register
