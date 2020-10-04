@@ -1,5 +1,9 @@
+import data
+# this is not official implementation, this is just to use in my tests.
+# therefore i made not tests for this
+
 def clear():
-    pass
+    data.data = {'users': [], 'channels': []}
 
 def users_all(token):
     return {
