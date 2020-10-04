@@ -15,7 +15,7 @@
 ### auth_register
 - 1. It logs the user in
 - 2. The generated handle can be alphanumeric
-- 3. If the generated handle is already taken, a modified handle is assigned to the user by adding his u_id at the end of the handle.
+- 3. If the generated handle is already taken, a modified handle is assigned to the user by adding his u_id at the end of the handle
 - 4. u_id is always a positive whole number
 - 5. name_first and name_last can have both ASCII and Non-ASCII characters
 - 6. name_first and name_last that are purely whitespaces are not valid
