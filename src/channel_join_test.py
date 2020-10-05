@@ -93,10 +93,10 @@ def test_channel_join_basic():
 
 def test_channel_join_invalid_channel():
     clear()
-    users, channels = initialise_data()
+    users = initialise_data()[0]
 
     invalid_channel_id = -1
-    with pytest.raises(InputError) as e: #expect error as channel_id is invalid
+    with pytest.raises(InputError): #expect error as channel_id is invalid
         assert channel_join(users['user0']['token'], invalid_channel_id)
 
 
@@ -106,7 +106,7 @@ def test_channel_join_private_user():
     #make sure user0 us not in channel
     channel_join(users['admin']['token'], channels['publ']['channel_id']) #need valid token to call is_user_in channel
     assert is_user_in_channel(users['user0']['u_id'], users['admin']['token'],channels['priv']['channel_id']) == False
-    with pytest.raises(AccessError) as e: #expect error as channel is private and user0 is not an admin
+    with pytest.raises(AccessError): #expect error as channel is private and user0 is not an admin
         assert channel_join(users['user0']['token'], channels['priv']['channel_id'])
 
 
@@ -124,10 +124,10 @@ def test_channel_join_private_admin():
 
 def test_channel_join_invalid_token():
     clear()
-    users, channels = initialise_data()
+    channels = initialise_data()[1]
 
     invalid_token = ' '
-    with pytest.raises(AccessError) as e: #expect AccessError as token is invalid
+    with pytest.raises(AccessError): #expect AccessError as token is invalid
         assert channel_join(invalid_token, channels['publ']['channel_id'])
 
 
