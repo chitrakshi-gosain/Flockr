@@ -4,7 +4,7 @@
 # Iteration 1
 
 from auth import auth_register
-from channel import channel_details, channel_join, channel_invite, channel_leave
+from channel import channel_details, channel_join
 from channels import channels_create
 from other import clear
 from error import InputError
@@ -31,9 +31,6 @@ def test_user_not_authorised():
 def test_channel_id_not_valid():
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
-    user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
-
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)
 
     invalid_channel_id = -1 
     with pytest.raises(InputError):
@@ -44,10 +41,7 @@ def test_token_invalid():
     clear()
 
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
-    user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
-
     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
-
     with pytest.raises(AccessError):
         channel_details('incorrect_user1_token', channel1_id['channel_id'])
 
@@ -106,7 +100,7 @@ def test_channel_details_case():
 #     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register user_1
 #     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)
 
-#     channel_leave(owner_credentials['token'], channel1_id['channel_id'])
+#   (owner_credentials['token'], channel1_id['channel_id'])
 
 #     with pytest.raises(AccessError):
 #         channel_details(owner_credentials['token'], channel1_id['channel_id']
