@@ -33,7 +33,7 @@ def test_channel_addowner_noerrors():
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    u_id0, token0 = user0_details['u_id'], user0_details['token']
+    token0 = user0_details['token']
 
     # user1 with u_id1 and token1 is not admin
     user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
@@ -58,7 +58,7 @@ def test_channel_addowner_invalidchannel():
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    u_id0, token0 = user0_details['u_id'], user0_details['token']
+    token0 = user0_details['token']
 
     # user1 with u_id1 and token1 is not admin
     user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
@@ -85,7 +85,7 @@ def test_channel_addowner_alreadyowner():
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    u_id0, token0 = user0_details['u_id'], user0_details['token']
+    token0 = user0_details['token']
 
     # user1 with u_id1 and token1 is not admin
     user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
