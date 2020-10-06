@@ -20,15 +20,14 @@ def test_user1_not_authorised():
     with pytest.raises(AccessError):
         channel_messages(user1_credentials['token'], channel1_id['channel_id'], 0)
 
-    
+
 def test_channel_id_not_valid():
 
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
     user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
 
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
-    invalid_channel_id = -1 
+    invalid_channel_id = -1
 
     with pytest.raises(InputError):
         channel_messages(user1_credentials['token'], invalid_channel_id, 0)
@@ -36,7 +35,6 @@ def test_channel_id_not_valid():
 def test_token_invalid():
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
-    user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
 
     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
 
@@ -63,5 +61,3 @@ def test_empty_messages():
 
     messages_history = {'messages': [], 'start': 0, 'end': -1}
     assert (messages_history == channel_messages(owner_credentials['token'], channel1_id['channel_id'], 0))
-
-
