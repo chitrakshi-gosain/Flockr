@@ -84,7 +84,7 @@ def test_channel_removeowner_notowner():
     with pytest.raises(InputError):
         channel_removeowner(admin['token'], channel_id, user0['u_id'])
 
-# test that channel_removeowner raises AccessError if the authorised user is not an owner of the channel
+# test that channel_removeowner raises AccessError if the authorised user is not an owner of the channel or admin of the flockr
 def test_channel_removeowner_authnotowner():
     clear()
 
