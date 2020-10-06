@@ -25,9 +25,7 @@ def test_channel_id_not_valid():
 
     clear()
     user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
-
     invalid_channel_id = -1
-
     with pytest.raises(InputError):
         channel_messages(user1_credentials['token'], invalid_channel_id, 0)
 

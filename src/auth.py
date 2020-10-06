@@ -87,7 +87,7 @@ def auth_login(email, password):
         raise InputError('Insufficient parameters, please enter: email, password')
 
     if check_if_valid_email(email) is False:
-         raise InputError('Email entered is not a valid email') 
+        raise InputError('Email entered is not a valid email') 
 
     if check_if_registered_user(email) is False:
         raise InputError('Email entered does not belong to a user')
@@ -166,7 +166,7 @@ def auth_register(email, password, name_first, name_last):
         raise InputError('Insufficient parameters. Please enter: email, password, name_first, name_last')
 
     if check_if_valid_email(email) is False:
-         raise InputError('Email entered is not a valid email') 
+        raise InputError('Email entered is not a valid email') 
 
     if check_if_valid_password(password) is False:
         raise InputError('Password entered is less than 6 characters long or more than 32 characters long or contains Non-ASCII characters')
@@ -328,8 +328,8 @@ def store_generated_token(email, user_token):
     '''
 
     for user in data.data['users']:
-            if user['email']  == email:
-                user['token'] = user_token
+        if user['email']  == email:
+            user['token'] = user_token
 
 # or do it this way, find the user with matching token and relace the token with invalid token string
 def invalidating_token(token):
@@ -342,7 +342,6 @@ def invalidating_token(token):
         if user['token']  == token:
             user['token'] = 'invalidated_the_token'
             return True
-    return False
 
 def check_if_first_user():
     '''
