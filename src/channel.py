@@ -114,7 +114,6 @@ def channel_invite(token, channel_id, u_id):
     for channel in data.data['channels']: #check if channel is valid -> get channel info
         if channel['channel_id'] == channel_id:
             is_valid_channel = True
-            is_public = channel['is_public']
             break
         channel_idx += 1
 
