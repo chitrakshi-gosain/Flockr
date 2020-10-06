@@ -124,5 +124,5 @@ def test_channel_leave_member():
     channel_addowner(users['admin']['token'], channels['publ']['channel_id'], users['user0']['u_id'])
     channel_leave(users['user0']['token'], channels['publ']['channel_id'])
 
-    assert is_user_in_channel(users['user0']['u_id'], users['admin']['token'], channels['publ']['u_id']) == False
-    assert is_owner_in_channel(users['user0']['u_id'], users['admin']['token'], channels['publ']['u_id']) == False
+    assert is_user_in_channel(users['user0']['u_id'], users['admin']['token'], channels['publ']['channel_id']) == False
+    assert is_owner_in_channel(users['user0']['u_id'], users['admin']['token'], channels['publ']['channel_id']) == False
