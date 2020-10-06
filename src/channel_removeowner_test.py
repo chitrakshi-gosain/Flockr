@@ -21,7 +21,7 @@ def is_channel_owner(u_id, token, channel_id):
 # TESTS 
 
 # basic test with no edge case or errors raised
-def channel_removeowner_noerrors_test():
+def test_channel_removeowner_noerrors():
     clear()
 
     user_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
@@ -39,7 +39,7 @@ def channel_removeowner_noerrors_test():
 
 
 # test that channel_removeowner raises InputError if channel_id is not a valid channel_id
-def channel_removeowner_invalidchannel_test():
+def test_channel_removeowner_invalidchannel():
     clear()
 
     user_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
@@ -59,7 +59,7 @@ def channel_removeowner_invalidchannel_test():
         channel_removeowner(token, channel_id, u_id)
 
 # test that channel_removeowner raises InputError if user with provided u_id is not an owner of the channel
-def channel_removeowner_notowner_test():
+def test_channel_removeowner_notowner():
     clear()
 
     user_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
@@ -82,7 +82,7 @@ def channel_removeowner_notowner_test():
         channel_removeowner(token, channel_id, u_id)
 
 # test that channel_removeowner raises AccessError if the authorised user is not an owner of the channel
-def channel_removeowner_authnotowner_test():
+def test_channel_removeowner_authnotowner():
     clear()
 
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
@@ -108,7 +108,7 @@ def channel_removeowner_authnotowner_test():
 
 # test that channel_removeowner raises AccessError if the authorised user is not an owner of the channel or the flockr
 # i.e. test that channel_removeowner raises AccessError if token is invalid
-def channel_removeowner_accesserror_test():
+def test_channel_removeowner_accesserror():
     clear()
 
     user_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
