@@ -108,7 +108,6 @@ def test_channel_addowner_authnotowner():
     with pytest.raises(AccessError):
         channel_addowner(token1, channel_id, u_id0)
 
-
 # test that channel_addowner raises AccessError if the provided token is not valid
 def test_channel_addowner_invalidtoken():
     clear()
