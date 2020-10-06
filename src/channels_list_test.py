@@ -106,7 +106,7 @@ def test_channels_list_valid_same():
     clear()
 
 # Listing multiple created channels from different users
-def test_channels_list_valid_same():
+def test_channels_list_valid_different():
     users = initialise_user_data()
 
     # Creating channels and storing ids
