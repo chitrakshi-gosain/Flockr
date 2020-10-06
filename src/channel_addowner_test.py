@@ -28,7 +28,7 @@ def is_channel_owner(u_id, token, channel_id):
 # TESTS 
 
 # basic test with no edge case or errors raised
-def channel_addowner_noerrors_test():
+def test_channel_addowner_noerrors():
     clear()
 
     # user with u_id and token is the first to register, thus also admin of the flockr
@@ -46,7 +46,7 @@ def channel_addowner_noerrors_test():
 
 
 # test that channel_addowner raises InputError if channel_id is not a valid channel_id
-def channel_addowner_invalidchannel_test():
+def test_channel_addowner_invalidchannel():
     clear()
 
     user_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
@@ -65,7 +65,7 @@ def channel_addowner_invalidchannel_test():
 
 
 # test that channel_addowner raises InputError if user with provided u_id is already an owner of the channel
-def channel_addowner_alreadyowner_test():
+def test_channel_addowner_alreadyowner():
     clear()
 
     user_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
@@ -86,7 +86,7 @@ def channel_addowner_alreadyowner_test():
 
 
 # test that channel_addowner raises AccessError if the authorised user is not an owner of the channel
-def channel_addowner_authnotowner_test():
+def test_channel_addowner_authnotowner():
     clear()
 
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
@@ -110,7 +110,7 @@ def channel_addowner_authnotowner_test():
 
 
 # test that channel_addowner raises AccessError if the provided token is not valid
-def channel_addowner_invalidtoken_test():
+def test_channel_addowner_invalidtoken():
     clear()
 
     user_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
