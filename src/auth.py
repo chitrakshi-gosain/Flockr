@@ -246,7 +246,7 @@ def check_name_length_and_is_a_whitesapce(name_to_check):
 
 def check_if_registered_user(email):
     '''
-    Given the email of a user to be registered checks if the email is aready 
+    Given the email of a user to be registered checks if the email is already
     being used by another user
     '''
 
@@ -258,16 +258,16 @@ def check_if_registered_user(email):
 def get_user_id_from_email(email):
     '''
     Given the email of the user who is:
-    -> already registered: finds the user by their email in the database and 
+    -> already registered: finds the user by their email in the database and
                            returns their existing u_id
-    -> to be registered: counts the number of existing users and assigns the 
-                         next number as u_id 
+    -> to be registered: counts the number of existing users and assigns the
+                         next number as u_id
     and then returns it
     '''
     
     user_count = -1
     for user in data.data['users']:
-        if user['email']  == email:
+        if user['email'] == email:
             user_id = user['u_id']
             return user_id
         user_count += 1

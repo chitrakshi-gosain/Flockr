@@ -18,7 +18,6 @@ def test_insufficient_parameters():
         channel_details(None, None)
 
 def test_user_not_authorised():
-
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')
     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
