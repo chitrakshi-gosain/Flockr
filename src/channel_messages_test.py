@@ -24,7 +24,6 @@ def test_user1_not_authorised():
 def test_channel_id_not_valid():
 
     clear()
-    owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
     user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
 
     invalid_channel_id = -1
