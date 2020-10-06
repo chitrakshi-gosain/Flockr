@@ -40,7 +40,7 @@ def channels_list(token):
         -> {channels}
 
     EXCEPTIONS:
-        -> N/A
+        -> AccessError: Invalid token
     '''
 
     # Checking token validity and finding user that accessed listall
@@ -83,7 +83,7 @@ def channels_listall(token):
         -> {channels}
 
     EXCEPTIONS:
-        -> N/A
+        -> AccessError: Invalid token
     '''
 
     # Checking token validity and finding user that accessed listall
