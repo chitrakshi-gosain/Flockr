@@ -1,9 +1,23 @@
-from auth import auth_register, auth_logout
-from channel import channel_details
-from channels import channels_create, channels_listall, channels_list
-from other import clear
-from error import AccessError, InputError
-import pytest
+# Created collaboratively by Wed15Team2 2020 T3
+# Contributer - Cyrus Wilkie
+
+# Iteration 1
+
+'''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> intialise_user_data() return {users}
+-> test_channels_listall_valid_single()
+-> test_channels_listall_valid_same()
+-> test_channels_listall_valid_different()
+-> test_channels_listall_valid_private()
+-> test_channels_listall_valid_mix()
+-> test_channels_listall_valid_empty()
+-> test_channels_listall_invalid_token()
+'''
 
 '''
 ----channels_listall Documentation----
@@ -20,6 +34,13 @@ Description:
 Provide a list of all channels (and 
 their associated details)
 '''
+
+from auth import auth_register, auth_logout
+from channel import channel_details
+from channels import channels_create, channels_listall, channels_list
+from other import clear
+from error import AccessError, InputError
+import pytest
 
 # Sets up various user sample data for testing purposes
 def initialise_user_data():
