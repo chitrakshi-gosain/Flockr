@@ -29,7 +29,7 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 '''
 
 '''
-----channel_leave Documentation----
+----channel_invite Documentation----
 
 Parameters:(token, channel_id, u_id)
 

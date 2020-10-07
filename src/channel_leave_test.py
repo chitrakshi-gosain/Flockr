@@ -23,7 +23,6 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 
 '''
 ----channel_leave Documentation----
-Tests for channel_leave()
 
 Parameters:(token, channel_id)
 
