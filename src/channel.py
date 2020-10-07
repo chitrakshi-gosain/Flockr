@@ -268,6 +268,17 @@ def channel_join(token, channel_id):
 
 
 def channel_addowner(token, channel_id, u_id):
+    '''
+    DESCRIPTION:
+    Make user with user id u_id an owner of the channel 
+    with channel id channel_id
+
+    PARAMETERS:
+        -> token : token for authenticating the user
+        -> channel_id : id of channel to be added to
+        -> u_id : id of user to be added
+    '''
+
     # check if token is not valid
     if token not in [user["token"] for user in data.data["users"]]:
         raise AccessError('invalid token')
@@ -324,6 +335,17 @@ def channel_addowner(token, channel_id, u_id):
 
 
 def channel_removeowner(token, channel_id, u_id):
+    '''
+    DESCRIPTION:
+    Make user with user id u_id no longer an owner of the channel
+    with channel id channel_id
+
+    PARAMETERS:
+        -> token : token for authenticating the user
+        -> channel_id : id of channel to be removed from
+        -> u_id : id of user to be removed
+    '''
+
     # check if token is not valid
     if token not in [user["token"] for user in data.data["users"]]:
         raise AccessError('invalid token')
