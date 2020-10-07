@@ -1,9 +1,23 @@
-from auth import auth_register, auth_logout
-from channel import channel_details
-from channels import channels_create, channels_listall, channels_list
-from other import clear
-from error import AccessError, InputError
-import pytest
+# Created collaboratively by Wed15Team2 2020 T3
+# Contributer - Cyrus Wilkie
+
+# Iteration 1
+
+'''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> intialise_user_data() return {users}
+-> test_channels_list_valid_single()
+-> test_channels_list_valid_same()
+-> test_channels_list_valid_different()
+-> test_channels_list_valid_private()
+-> test_channels_list_valid_mix()
+-> test_channels_list_valid_empty()
+-> test_channels_list_invalid_token()
+'''
 
 '''
 ----channels_list Documentation----
@@ -21,6 +35,13 @@ Provide a list of all channels (and
 their associated details) that the 
 authorised user is part of
 '''
+
+from auth import auth_register, auth_logout
+from channel import channel_details
+from channels import channels_create, channels_listall, channels_list
+from other import clear
+from error import AccessError, InputError
+import pytest
 
 # Sets up various user sample data for testing purposes
 def initialise_user_data():
@@ -106,7 +127,7 @@ def test_channels_list_valid_same():
     clear()
 
 # Listing multiple created channels from different users
-def test_channels_list_valid_same():
+def test_channels_list_valid_different():
     users = initialise_user_data()
 
     # Creating channels and storing ids

@@ -33,10 +33,12 @@ def test_check_empty():
     clear() #meta?
 
     users, channels = initialise_data()
-    name, owners, members = channel_details(users['admin']['token'], channels['publ']['channel_id'])
+    details = channel_details(users['admin']['token'], channels['publ']['channel_id'])
+
+    assert details # not empty
 
     clear()
-    with pytest.raises(AccessError) as e: #expect AccessError as all data has been cleared
+    with pytest.raises(AccessError): #expect AccessError as all data has been cleared
         assert channel_details(users['admin']['token'], channels['publ']['channel_id'])
 
 #Should we add more tests or is this fine?

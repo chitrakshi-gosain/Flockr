@@ -1,4 +1,4 @@
-from channel import channel_leave, channel_join, channel_details
+from channel import channel_leave, channel_join, channel_details, channel_addowner
 from other import clear
 from auth import auth_register
 from channels import channels_create
@@ -84,10 +84,10 @@ def test_channel_leave_basic():
 
 def test_channel_leave_invalid_channel():
     clear()
-    users, channels = initialise_data()
+    users = initialise_data()[0]
 
     invalid_channel_id = -1
-    with pytest.raises(InputError) as e:
+    with pytest.raises(InputError):
         assert channel_leave(users['user0']['token'], invalid_channel_id)
 
 
@@ -97,14 +97,32 @@ def test_channel_leave_not_in_channel():
 
     channel_join(users['admin']['token'], channels['publ']['channel_id']) #need valid token to call is_user_in channel
     assert is_user_in_channel(users['user0']['u_id'], users['admin']['token'], channels['publ']['channel_id']) == False
-    with pytest.raises(AccessError) as e: #expect AccessError as user is not in channel
+    with pytest.raises(AccessError): #expect AccessError as user is not in channel
         assert channel_leave(users['user0']['token'], channels['publ']['channel_id'])
 
 
 def test_channel_join_invalid_token():
     clear()
-    users, channels = initialise_data()
+    channels = initialise_data()[1]
 
     invalid_token = ' '
-    with pytest.raises(AccessError) as e: #expect AccessError as token is invalid
+    with pytest.raises(AccessError): #expect AccessError as token is invalid
         assert channel_leave(invalid_token, channels['publ']['channel_id'])
+
+def is_owner_in_channel(user_id, token, channel_id):
+    channel_info = channel_details(token, channel_id)
+    for owner in channel_info['owner_members']:
+        if (owner['u_id'] == user_id):
+            return True
+    return False
+
+def test_channel_leave_member():
+    clear()
+    users, channels = initialise_data()
+
+    channel_join(users['user0']['token'], channels['publ']['channel_id'])
+    channel_addowner(users['admin']['token'], channels['publ']['channel_id'], users['user0']['u_id'])
+    channel_leave(users['user0']['token'], channels['publ']['channel_id'])
+
+    assert is_user_in_channel(users['user0']['u_id'], users['admin']['token'], channels['publ']['channel_id']) == False
+    assert is_owner_in_channel(users['user0']['u_id'], users['admin']['token'], channels['publ']['channel_id']) == False

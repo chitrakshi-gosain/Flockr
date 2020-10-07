@@ -29,10 +29,10 @@ from error import AccessError, InputError
 def channels_list(token):
     '''
     DESCRIPTION:
-    Provide a list of all channels (and 
-    their associated details) that the 
+    Provide a list of all channels (and
+    their associated details) that the
     authorised user is part of
-    
+
     PARAMETERS:
         -> token
 
@@ -40,7 +40,7 @@ def channels_list(token):
         -> {channels}
 
     EXCEPTIONS:
-        -> N/A
+        -> AccessError: Invalid token
     '''
 
     # Checking token validity and finding user that accessed listall
@@ -73,9 +73,9 @@ def channels_list(token):
 def channels_listall(token):
     '''
     DESCRIPTION:
-    Provide a list of all channels (and 
+    Provide a list of all channels (and
     their associated details)
-    
+
     PARAMETERS:
         -> token
 
@@ -83,7 +83,7 @@ def channels_listall(token):
         -> {channels}
 
     EXCEPTIONS:
-        -> N/A
+        -> AccessError: Invalid token
     '''
 
     # Checking token validity and finding user that accessed listall
@@ -114,9 +114,9 @@ def channels_listall(token):
 def channels_create(token, name, is_public):
     '''
     DESCRIPTION:
-    Creates a new channel with that name 
+    Creates a new channel with that name
     that is either a public or private channel
-    
+
     PARAMETERS:
         -> token
         -> name: Name of channel to be created
