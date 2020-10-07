@@ -6,48 +6,48 @@ from channels import channels_create
 import pytest
 from error import InputError, AccessError
 
-'''
-Tests for channel_join()
-
-Interface:
-Parameters:(token, channel_id)
-
-Return type: {}
-
-Exceptions: InputError ->
-                Channel ID is not a valid channel
-            AccessError ->
-                channel_id refers to a channel that is private
-                    (when the authorised user is not an admin)
-
-Description: Given a channel_id of a channel that the authorised user can join,
-             adds them to that channel
 
 '''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> intialise_user_data() return { users }, { channels }
+-> is_user_in_channel() return True/False
+-> count_instances() return count
+-> test_channel_join_basic()
+-> test_channel_join_invalid_channel()
+-> test_channel_join_private_user()
+-> test_channel_join_private_admin()
+-> test_channel_join_invalid_token()
+-> test_channel_join_already_member()
+'''
+
+'''
+----channel_join Documentation----
+Parameters:
+(token, channel_id)
+
+Return Type:
+{}
+
+Exceptions:
+    InputError when:
+        -> Channel ID is not a valid channel
+    AccessError when:
+        -> channel_id refers to a channel that is private (when the authorised user is not a global owner)
+
+Description: Given a channel_id of a channel that the
+             authorised user can join, adds them to that channel
+'''
+
+
 
 # Jordan Huynh (z5169771)
 # Wed15 Grape 2
 
-#note: these tests also require the functions to be implemented:
-    #auth_register, channels_create, channel_details, clear
 
-'''
-Current assumptions:
-    1. " " is an invalid token
-    2. User cannot join if they are already in the channel -as if function was not called
-    3. ids can only be non-negative integers
-    4. The first user to sign up is a global owner
-'''
-
-'''
-Test ideas: [description] - [pass / fail / error]
-    1. valid public channel_id and user is not in channel - pass
-    2. channel_id does not exist - InputError
-    3. channel is private (and user is not admin) - AccessError
-    4. channel is private (and user is admin) - pass
-    5. user has invalid token - AccessError
-    6. user is already in channel - fail (treat as function was not called)
-'''
 def initialise_data():
     #create users
     #The first user to sign up is global owner
@@ -78,6 +78,13 @@ def is_user_in_channel(user_id, token, channel_id):
             return True
     return False
 
+def count_instances(user_id, token, channel_id):
+    count = 0
+    channel_info = channel_details(token, channel_id)
+    for member in channel_info['all_members']:
+        if (member['u_id'] == user_id):
+            count += 1
+    return count
 
 def test_channel_join_basic():
     clear()
@@ -130,14 +137,6 @@ def test_channel_join_invalid_token():
     with pytest.raises(AccessError): #expect AccessError as token is invalid
         assert channel_join(invalid_token, channels['publ']['channel_id'])
 
-
-def count_instances(user_id, token, channel_id):
-    count = 0
-    channel_info = channel_details(token, channel_id)
-    for member in channel_info['all_members']:
-        if (member['u_id'] == user_id):
-            count += 1
-    return count
 
 def test_channel_join_already_member():
     clear()
