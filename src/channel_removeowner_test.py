@@ -1,3 +1,37 @@
+# Created collaboratively by Wed15Team2 2020 T3
+# Contributer - Joseph Knox
+
+# Iteration 1
+
+'''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
+-> channel_details(token, channel_id) return {name, owner_members, all_members}
+-> channel_addowner(token, channel_id, u_id) return {}
+-> channel_removeowner(token, channel_id, u_id) return {}
+-> channel_join(token, channel_id) return {}
+-> channels_create(token, name, is_public) return {channel_id}
+'''
+
+'''
+EXCEPTIONS
+Error type: InputError
+    -> channel_id is not a valid channel ID
+    -> user with u_id is already an owner of the channel
+Error type: AccessError
+    -> token passed in is not a valid token
+    -> authorised user is not an admin of the flockr or owner of the channel
+'''
+
+'''
+KEEP IN MIND:
+-> channels_create adds user (based on token) as member and owner of the channel
+'''
+
 from channel import channel_details, channel_addowner, channel_removeowner, channel_join
 from channels import channels_create
 import pytest
