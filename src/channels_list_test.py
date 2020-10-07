@@ -99,6 +99,10 @@ def test_channels_list_valid_single():
     assert channel_list['channels'][0]['channel_id'] == channel_id['channel_id']
     assert channel_list['channels'][0]['name'] == 'A Basic Channel'
 
+    # Type checking
+    assert isinstance(channel_list['channels'][0]['channel_id'], int)
+    assert isinstance(channel_list['channels'][0]['name'], str)
+
     clear()
 
 
