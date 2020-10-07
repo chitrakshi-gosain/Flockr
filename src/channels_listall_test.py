@@ -1,3 +1,10 @@
+from auth import auth_register, auth_logout
+from channel import channel_details
+from channels import channels_create, channels_listall, channels_list
+from other import clear
+from error import AccessError, InputError
+import pytest
+
 # Created collaboratively by Wed15Team2 2020 T3
 # Contributer - Cyrus Wilkie
 
@@ -35,15 +42,11 @@ Provide a list of all channels (and
 their associated details)
 '''
 
-from auth import auth_register, auth_logout
-from channel import channel_details
-from channels import channels_create, channels_listall, channels_list
-from other import clear
-from error import AccessError, InputError
-import pytest
-
-# Sets up various user sample data for testing purposes
 def initialise_user_data():
+    '''
+    Sets up various user sample data for testing purposes
+    '''
+
     # Ensures any currently existing data is removed
     clear()
 
@@ -78,8 +81,12 @@ def initialise_user_data():
         'donald': donald_details
     }
 
-# Listing a single created channel
+
 def test_channels_listall_valid_single():
+    '''
+    Listing a single created channel
+    '''
+
     users = initialise_user_data()
 
     # Creating a basic public channel
@@ -93,8 +100,12 @@ def test_channels_listall_valid_single():
 
     clear()
 
-# Listing multiple created channels from the same user
+
 def test_channels_listall_valid_same():
+    '''
+    Listing multiple created channels from the same user
+    '''
+
     users = initialise_user_data()
 
     # Creating channels and storing ids
@@ -125,8 +136,12 @@ def test_channels_listall_valid_same():
 
     clear()
 
-# Listing multiple created channels from different users
+
 def test_channels_listall_valid_different():
+    '''
+    Listing multiple created channels from different users
+    '''
+
     users = initialise_user_data()
 
     # Creating channels and storing ids
@@ -157,8 +172,12 @@ def test_channels_listall_valid_different():
 
     clear()
 
-# Listing multiple created private channels from different users
+
 def test_channels_listall_valid_private():
+    '''
+    Listing multiple created private channels from different users
+    '''
+
     users = initialise_user_data()
 
     # Creating channels and storing ids
@@ -189,8 +208,12 @@ def test_channels_listall_valid_private():
 
     clear()
 
-# Listing a mix of multiple public and private channels from different users with some sharing names
+
 def test_channels_listall_valid_mix():
+    '''
+    Listing a mix of multiple public and private channels from different users with some sharing names
+    '''
+
     users = initialise_user_data()
 
     # Creating channels and storing ids
@@ -230,8 +253,12 @@ def test_channels_listall_valid_mix():
 
     clear()
 
-# Listing channels when none have been created
+
 def test_channels_listall_valid_empty():
+    '''
+    Listing channels when none have been created
+    '''
+
     users = initialise_user_data()
 
     # Checking channels_list return is correct
@@ -239,8 +266,12 @@ def test_channels_listall_valid_empty():
 
     clear()
 
-# Attempting to call channels_listall without a valid token
+
 def test_channels_listall_invalid_token():
+    '''
+    Attempting to call channels_listall without a valid token
+    '''
+
     users = initialise_user_data()
 
     # Only way to guarrantee a token is invalid is to invalidate an existing token

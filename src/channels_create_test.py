@@ -1,3 +1,10 @@
+from auth import auth_register, auth_logout
+from channel import channel_details, channel_join
+from channels import channels_create, channels_listall, channels_list
+from other import clear
+from error import AccessError, InputError
+import pytest
+
 # Created collaboratively by Wed15Team2 2020 T3
 # Contributer - Cyrus Wilkie
 
@@ -35,15 +42,11 @@ Creates a new channel with that name
 that is either a public or private channel
 '''
 
-from auth import auth_register, auth_logout
-from channel import channel_details, channel_join
-from channels import channels_create, channels_listall, channels_list
-from other import clear
-from error import AccessError, InputError
-import pytest
-
-# Sets up various user sample data for testing purposes
 def initialise_user_data():
+    '''
+    Sets up various user sample data for testing purposes
+    '''
+
     # Ensures any currently existing data is removed
     clear()
 
@@ -78,8 +81,12 @@ def initialise_user_data():
         'donald': donald_details
     }
 
-# Creating channel with valid data
+
 def test_channels_create_valid_basic():
+    '''
+    Creating channel with valid data
+    '''
+
     users = initialise_user_data()
 
     # Creating a basic public channel
@@ -101,8 +108,12 @@ def test_channels_create_valid_basic():
 
     clear()
 
-# Creating channel with empty string name
+
 def test_channels_create_valid_empty():
+    '''
+    Creating channel with empty string name
+    '''
+
     users = initialise_user_data()
 
     # Creating public channel with empty string as name
@@ -124,8 +135,12 @@ def test_channels_create_valid_empty():
 
     clear()
 
-# Creating private channel
+
 def test_channels_create_valid_private():
+    '''
+    Creating private channel
+    '''
+
     users = initialise_user_data()
 
     # Creating private channel
@@ -151,8 +166,12 @@ def test_channels_create_valid_private():
 
     clear()
 
-# Creating channel with too large of a name
+
 def test_channels_create_invalid_namesize():
+    '''
+    Creating channel with too large of a name
+    '''
+
     users = initialise_user_data()
 
     # Creating public channel with namesize > 20 characters
@@ -165,8 +184,12 @@ def test_channels_create_invalid_namesize():
 
     clear()
 
-# Creating two channels with the same name
+
 def test_channels_create_valid_samename():
+    '''
+    Creating two channels with the same name
+    '''
+
     users = initialise_user_data()
 
     # Creating public channels with the same name
@@ -181,8 +204,12 @@ def test_channels_create_valid_samename():
     assert channel_list['channels'][0]['channel_id'] == channel_id1['channel_id']
     assert channel_list['channels'][1]['channel_id'] == channel_id2['channel_id']
 
-# Attempting to call channels_listall without a valid token
+
 def test_channels_create_invalid_token():
+    '''
+    Attempting to call channels_listall without a valid token
+    '''
+
     users = initialise_user_data()
 
     # Only way to guarrantee a token is invalid is to invalidate an existing token
