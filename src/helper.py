@@ -1,9 +1,18 @@
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributers - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
+               Ahmet Karatas, Joseph Knox
+
+Iteration 1
+'''
+
+import re
 import data
 
 def check_if_valid_email(email):
     '''
-    Given the email of the user to be registeredd checks if it is a valid email
-    using a regex
+    Given the email of the user to be registeredd checks if it is a
+    valid email using a regex
     '''
 
     regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
@@ -15,34 +24,37 @@ def check_if_valid_email(email):
 
 def check_if_valid_password(password):
     '''
-    Given the password of the user to be registered checks it's length is in
-    valid range and if it has printable ASCII characters only
+    Given the password of the user to be registered checks it's length
+    is in valid range and if it has printable ASCII characters only
     '''
 
-    if not 6<= len(password) <= 32:
+    if not 6 <= len(password) <= 32:
         return False
     if not password.isprintable():
         return False
+
     return True
 
 
 def check_name_length_and_is_a_whitesapce(name_to_check):
     '''
-    Given the first or last name of the user to be registered checks if it's
-    length is in valid range and if it is not completely a whitespace
+    Given the first or last name of the user to be registered checks if
+    it's length is in valid range and if it is not completely a
+    whitespace
     '''
 
     if not 1 <= len(name_to_check) <= 50:
         return False
     if name_to_check.isspace():
         return False
+
     return True
 
 
 def check_if_first_user():
     '''
-    Chceks if the registering user is the first user of Flockr, this later leads
-    to giving the first user the admin of Flockr status
+    Chceks if the registering user is the first user of Flockr, this
+    later leads to giving the first user the admin of Flockr status
     '''
     #if len(data.data['users']) == 0:
     #    return True
@@ -52,27 +64,41 @@ def check_if_first_user():
 
 def invalidating_token(token):
     '''
-    Given the token of authenticated user invalidates it which later leads to
-    unauthentication of the user i.e. logging-out the user
+    Given the token of authenticated user invalidates it which later
+    leads to unauthentication of the user i.e. logging-out the user
     '''
 
     for user in data.data['users']:
         if user['token'] == token:
             user['token'] = 'invalidated_the_token' #I'm not sure if this directly affects data
+
     return True
 
 
 def get_channel_info(channel_id):
-    for channel in data['channels']:
-        if channel['channel_id'] == channel:
+
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    for channel in data.data['channels']:
+        if channel['channel_id'] == channel_id:
             return channel
+
     return False
 
 
 def is_user_authorised(token, u_id, channel_id):
+    '''
+    ADD DOCSTRING HERE
+    '''
+
     user_info = get_user_info('token', token)
 
     in_channel = is_user_in_channel(user_info['u_id'], channel_id)
+
+    # why are we taking u_id as a parameter, if not using it?, keep in
+    # mind to change it whereever necessary
 
     #user_authorised = False
     #for user in data.data['users']:
@@ -87,8 +113,13 @@ def is_user_authorised(token, u_id, channel_id):
 
 
 def is_channel_owner(u_id, channel_id):
+    '''
+    ADD DOCSTRING HERE
+    '''
+
     #for channel in data.data['channels']:
-    #    if channel["channel_id"] == channel_id and u_id in [owner["u_id"] for owner in channel["owner_members"]]:
+    #    if channel["channel_id"] == channel_id and u_id in [owner["u_id"] \
+    #    for owner in channel["owner_members"]]:
     #        return True
     #return False
 
@@ -97,6 +128,10 @@ def is_channel_owner(u_id, channel_id):
 
 
 def get_user_info(variable, identifier):
+    '''
+    ADD DOCSTRING HERE
+    '''
+
     for user in data.data['users']:
         if user[variable] == identifier:
             return user
@@ -105,6 +140,9 @@ def get_user_info(variable, identifier):
 
 
 def is_user_in_channel(u_id, channel_id):
+    '''
+    ADD DOCSTRING HERE
+    '''
 
     #channel_info = get_channel_info(channel_id)
     #user_info = get_user_info('u_id', u_id)
@@ -119,8 +157,6 @@ def is_user_in_channel(u_id, channel_id):
 
     channel_members = get_channel_info(channel_id)['channel_members']
     return any(user['u_id'] == u_id for user in channel_members)
-
-
 
 '''
 #### Channel_messages and channel_details helper functions
