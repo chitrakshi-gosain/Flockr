@@ -7,7 +7,7 @@ import data
 import user
 from error import InputError
 from error import AccessError
-from helper import is_user_authorised1, is_channel_valid, find_user_id, is_token_valid
+from helper import is_user_authorised1, is_channel_valid, is_token_valid, get_user_info
 
 '''
 *********************************BASIC TEMPLATE*********************************
