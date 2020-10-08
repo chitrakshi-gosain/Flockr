@@ -16,7 +16,7 @@ from auth import auth_login, auth_logout, auth_register
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> auth_register(email, password, name_first, name_last) return
    {u_id, token}
 -> auth_login(email,password) return {u_id, token}
