@@ -100,6 +100,8 @@ def channel_invite(token, channel_id, u_id):
 
     #order of checks: invalid token, invalid user, invalid channel_id, invoker not in chnnel
 
+    ########### BEFORE ##########
+    '''
     is_valid_user = False
 
     is_valid_invoker = False
@@ -144,6 +146,37 @@ def channel_invite(token, channel_id, u_id):
         else:
             #assume function was not called (to prevent data duplication)
             pass
+    '''
+
+    ########### AFTER #######
+
+    user_info = get_user_info('u_id', u_id)
+    invoker_info = get_user_info('token', token)
+
+    if not invoker_info:
+        raise AccessError('token is invalid')
+
+    if not user_info:
+        raise InputError('u_id does not refer to a vlid user')
+
+    channel_info = get_channel_info(channel_id)
+
+    if not channel_info:
+        raise InputError('channel_id does not refer to a valid channel')
+
+    if not is_user_in_channel(invoker_info['u_id'], channel_id) and not invoker_info['is_admin']:
+        raise AccessError('invoker is not part of the channel')
+
+    channel_index = data.data['channels'].index(channel_info)
+
+    user_added = {
+        'u_id': user_info['u_id'],
+        'name_first': user_info['name_first'],
+        'name_last': user_info['name_last']
+    }
+
+    if not is_user_in_channel(u_id, channel):
+        data.data['channels'][channel_index]['all_members'].append(user_added)
 
     return {
     }
