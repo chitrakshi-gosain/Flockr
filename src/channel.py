@@ -84,6 +84,20 @@ EXCEPTIONS
 '''
 
 def channel_invite(token, channel_id, u_id):
+    '''
+    DESCRIPTION:
+    Invites a user (with user id u_id) to join a channel with ID
+    channel_id. Once invited the user is added to the channel
+    immediately
+
+    PARAMETERS:
+        -> token : token of user who called invite
+        -> channel_id : id of the channel
+        -> u_id : id of the user who is to be invited
+
+    RETURN VALUES:
+    '''
+
     #order of checks: invalid token, invalid user, invalid channel_id, invoker not in chnnel
 
     is_valid_user = False
@@ -191,6 +205,16 @@ def channel_messages(token, channel_id, start):
     return messages_history
 
 def channel_leave(token, channel_id):
+    '''
+    DESCRIPTION:
+    Given a channel ID, the user removed as a member of this channel
+
+    PARAMETERS:
+        -> token : token of user who is to leave
+        -> channel_id : id of the channel
+
+    RETURN VALUES:
+    '''
     #order of check: invalid token, invalid channel, not in channel
 
     is_valid_user = False
@@ -227,6 +251,17 @@ def channel_leave(token, channel_id):
     }
 
 def channel_join(token, channel_id):
+    '''
+    DESCRIPTION:
+    Given a channel_id of a channel that the
+    authorised user can join, adds them to that channel
+
+    PARAMETERS:
+        -> token : token of user who is to join channel
+        -> channel_id : id of the channel
+
+    RETURN VALUES:
+    '''
     # order of checks: invalid token, invalid channel, private channel
 
     is_valid_user = False
@@ -270,7 +305,7 @@ def channel_join(token, channel_id):
 def channel_addowner(token, channel_id, u_id):
     '''
     DESCRIPTION:
-    Make user with user id u_id an owner of the channel 
+    Make user with user id u_id an owner of the channel
     with channel id channel_id
 
     PARAMETERS:
@@ -319,7 +354,7 @@ def channel_addowner(token, channel_id, u_id):
     for u in data.data["users"]:
         if u["u_id"] == u_id:
             user_info = u
-    
+
     name_first = user_info['name_first']
     name_last = user_info['name_last']
     user_dict = {'u_id': u_id, 'name_first': name_first, 'name_last': name_last}
