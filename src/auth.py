@@ -8,6 +8,11 @@ Iteration 1
 import re
 import data
 from error import InputError, AccessError
+# from helper import check_if_valid_email, check_if_valid_password, \
+# check_name_length_and_is_a_whitesapce, check_if_first_user, \
+# invalidating_token
+
+# remove re and data once i import helper
 
 '''
 ****************************BASIC TEMPLATE******************************
