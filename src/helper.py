@@ -99,3 +99,46 @@ def is_user_in_channel(u_id, channel_id):
     user_data = {'u_id': user_info['u_id'], 'name_first': user_info['name_first'], 'name_last': user_info['name_last']}
 
     return user_data in channel_info['all_members']
+
+
+
+#### Channel_messages and channel_details helper functions
+# Checking the validity of a token
+def is_token_valid(token):
+    valid_token = False
+    for user in data.data['users']:
+        if user['token'] == token:
+            valid_token = True
+
+    return valid_token
+
+
+# Checking the validity of a channel
+def is_channel_valid(channel_id):
+
+    channel_valid = False
+    channel_dict = {}
+    channel_info = [channel_valid, channel_dict]
+
+    for channel in data.data['channels']:
+        if channel['channel_id'] == channel_id:
+            channel_info[0] = True
+            channel_info[1] = channel
+            break
+
+    return channel_info
+
+# Checking if the user is authorised
+def is_user_authorised1(token, u_id, channel_dict):
+    u_id = find_user_id(token)
+
+    user_authorised = False
+    for user in data.data['users']:
+        if user['token'] == token:
+            user_authorised = user['is_admin']
+
+    for member in channel_dict['all_members']:
+        if member['u_id'] == u_id:
+            user_authorised = True
+
+    return user_authorised

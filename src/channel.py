@@ -1,5 +1,5 @@
 # Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Joseph Knox, Ahmet Karatas, Jordan Huynh
+# Contributers - Joseph Knox, Ahmet Karatas, Jordan Huynh
 
 # Iteration 1
 
@@ -7,6 +7,7 @@ import data
 import user
 from error import InputError
 from error import AccessError
+from helper import is_user_authorised1, is_channel_valid, find_user_id, is_token_valid
 
 '''
 *********************************BASIC TEMPLATE*********************************
@@ -181,17 +182,44 @@ def channel_invite(token, channel_id, u_id):
     return {
     }
 
-
 def channel_details(token, channel_id):
+    '''
+    DESCRIPTION:
+    Given a channel_id that a user is authorised in, returns a list of dictionaries
+    which contain the channel's name, its owner members and all of its members.
+    
+    PARAMETERS:
+        -> token : token of user who is to join channel
+        -> channel_id : id of the channel
 
+    RETURN VALUES:
+    # order of checks: insuficient parameters, token validity, channel validity, user authorisation
+    '''
+
+    # Testing for insufficient parameters
     if None in {token, channel_id}:
         raise InputError('Insufficient parameters given')
 
-    is_token_valid(token)
-    u_id = find_user_id(token)
-    channel_dict = is_channel_valid(channel_id)
-    is_user_authorised(token, u_id, channel_dict)
+    # Testing for token validity
+    valid_token = helper.is_token_valid(token)
+    if not valid_token:
+        raise AccessError('Invalid Token')
 
+    # Retrieving the u_id from the given token
+    user_id = helper.get_user_info('token', token)['u_id']
+    # Finding if channel is valid and assigning the current channel to a dictionary
+    channel_info = helper.is_channel_valid(channel_id)
+    channel_valid = channel_info[0]
+    channel_dict = channel_info[1]
+    if not channel_valid:
+        raise InputError('Channel ID is not a valid channel')
+
+    # Finding if the user is authorised or not
+    user_authorised = helper.is_user_authorised1(token, u_id, channel_dict)
+    if not user_authorised:
+        raise AccessError('Authorised user is not a member of channel with channel_id')
+
+    # Retrieving the information from the assigned dictionary and returning the new dictionary
     channel_contents = {}
     channel_contents.update({'name': channel_dict['name']})
     channel_contents.update({'owner_members': channel_dict['owner_members']})
@@ -200,30 +228,61 @@ def channel_details(token, channel_id):
 
 
 def channel_messages(token, channel_id, start):
-    if None in {token, channel_id, start}:
+    '''
+    DESCRIPTION:
+    Given a channel_id that a user is authorised in, returns the messages from
+    the start message to the start + 50'th message.
+    
+    PARAMETERS:
+        -> token : token of user who is to join channel
+        -> channel_id : id of the channel
+        -> start: The position to start loading the messages
+
+    RETURN VALUES:
+    # order of checks: insuficient parameters, token validity, channel validity, user authorisation
+    '''
+
+
+    # Testing for insufficient parameters
+    if None in {token, channel_id}:
         raise InputError('Insufficient parameters given')
 
-    is_token_valid(token)
-    u_id = find_user_id(token)
-    channel_dict = is_channel_valid(channel_id)
-    is_user_authorised(token, u_id, channel_dict)
+    # Testing for token validity
+    valid_token = helper.is_token_valid(token)
+    if not valid_token:
+        raise AccessError('Invalid Token')
 
+    # Retrieving the u_id from the given token
+    user_id = helper.get_user_info('token', token)['u_id']
+    # Finding if channel is valid and assigning the current channel to a dictionary
+    channel_info = helper.is_channel_valid(channel_id)
+    channel_valid = channel_info[0]
+    channel_dict = channel_info[1]
+    if not channel_valid:
+        raise InputError('Channel ID is not a valid channel')
+
+    # Finding if the user is authorised or not
+    user_authorised = helper.is_user_authorised1(token, u_id, channel_dict)
+    if not user_authorised:
+        raise AccessError('Authorised user is not a member of channel with channel_id')
+
+    # Finding the number of messages in the channel
     num_message = 0
     for message in (channel_dict['messages']):
         num_message += 1
 
+    # Checking if the start input given does not exceed the number of messages in the channel
     if start > num_message:
         raise InputError('Start is greater than the total number of messages in the channel')
 
     messages_history = {'messages': [], 'start': start, 'end': start + 50}
-
     # start_index is the index of the dictionary where the messages start loading from.
     # If start = 0, start_index will be the index of the last added dictionary.
 
     start_index = (num_message - 1) - start
     messages_list = []
 
-    # The goal is to load messages from the start_index to (start_index -50)
+    # The goal is to load the message dict's from start_index to (start_index - 50)
     for (loop_index, message) in enumerate(channel_dict['messages'][start_index:start_index - 50:-1]):
         messages_list.append(message)
         if (start_index - loop_index == 0):
@@ -452,51 +511,13 @@ def channel_removeowner(token, channel_id, u_id):
 
 
 ################ HELPER FUNCTIONS
-def is_token_valid(token):
-    valid_token = False
-    for user in data.data['users']:
-        if user['token'] == token:
-            valid_token = True
 
-    if not valid_token:
-        raise AccessError('Invalid Token')
-
-def find_user_id(token):
-    for user in data.data['users']:
-        if user['token'] == token:
-            u_id = user['u_id']
-            return u_id
-
-def is_channel_valid(channel_id):
-    channel_dict = {}
-    channel_valid = False
+def is_channel_owner(u_id, channel_id):
     for channel in data.data['channels']:
-        if channel['channel_id'] == channel_id:
-            channel_valid = True
-            channel_dict = channel
-            break
+        if channel["channel_id"] == channel_id and u_id in [owner["u_id"] for owner in channel["owner_members"]]:
+            return True
+    return False
 
-    if not channel_valid:
-        raise InputError('Channel_id is not valid')
-
-    return channel_dict
-
-def is_user_authorised(token, u_id, channel_dict):
-    u_id = find_user_id(token)
-
-    user_authorised = False
-    for user in data.data['users']:
-        if user['token'] == token:
-            user_authorised = user['is_admin']
-
-    for member in channel_dict['all_members']:
-        if member['u_id'] == u_id:
-            user_authorised = True
-
-    if not user_authorised:
-        raise AccessError('Authorised user is not a member of channel with channel_id')
-
-    return user_authorised
 
 def is_channel_owner(u_id, channel_id):
     for channel in data.data['channels']:
