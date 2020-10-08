@@ -31,18 +31,19 @@ KEEP IN MIND:
 -> channels_create adds user (based on token) as member and owner of the channel
 '''
 
-
+import pytest
+import auth
 from channel import channel_details, channel_addowner, channel_join
 from channels import channels_create
-import pytest
 from error import InputError, AccessError
 from other import clear
-import auth
 
-# channel_addowner should add the user with the provided u_id to the list of owners of a channel with the provided channel_id
+# channel_addowner should add the user with the provided u_id
+# to the list of owners of a channel with the provided channel_id
 # assumes that u_id is already a member of the channel
 
-### maybe also test for admin vs non-admin (global owners) (an admin is the first user to register in system)
+### maybe also test for admin vs non-admin (global owners)
+### (an admin is the first user to register in system)
 
 # HELPER FUNCTIONS
 
@@ -54,7 +55,7 @@ def is_channel_owner(u_id, token, channel_id):
             return True
     return False
 
-# TESTS 
+# TESTS
 
 # basic test with no edge case or errors raised
 def test_channel_addowner_noerrors():
@@ -108,7 +109,8 @@ def test_channel_addowner_invalidchannel():
         channel_addowner(token0, channel_id, u_id1)
 
 
-# test that channel_addowner raises InputError if user with provided u_id is already an owner of the channel
+# test that channel_addowner raises InputError
+# if user with provided u_id is already an owner of the channel
 def test_channel_addowner_alreadyowner():
     clear()
 
@@ -137,7 +139,8 @@ def test_channel_addowner_alreadyowner():
         channel_addowner(token0, channel_id, u_id1)
 
 
-# test that channel_addowner raises AccessError if the authorised user is not an owner of the channel
+# test that channel_addowner raises AccessError
+# if the authorised user is not an owner of the channel
 def test_channel_addowner_authnotowner():
     clear()
 
