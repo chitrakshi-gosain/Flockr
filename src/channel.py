@@ -400,7 +400,6 @@ def find_user_id(token):
             return u_id
 
 def is_channel_valid(channel_id):
-
     channel_dict = {}
     channel_valid = False
     for channel in data.data['channels']:
