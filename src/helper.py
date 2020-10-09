@@ -64,7 +64,15 @@ def invalidating_token(token):
 def get_channel_info(channel_id):
 
     '''
-    ADD DOCSTRING HERE
+    Given a potential channel_id, returns the channel dictionary
+    of the matching channel, else returns false
+
+    Example:
+    channel_info = helper.get_channel_info(channel_id)
+    if not channel_info:
+        raise InputError('channel does not exist')
+    if channel_info['is_public']:
+        pass
     '''
 
     for channel in data.data['channels']:
@@ -76,7 +84,10 @@ def get_channel_info(channel_id):
 
 def is_user_authorised(token, channel_id):
     '''
-    ADD DOCSTRING HERE
+    Given a VALID token and VALID channel_id, returns True if the
+    user is in the channel or if the user is admin
+
+    (You should check if these arguments are valid before calling the functions)
     '''
 
     user_info = get_user_info('token', token)
@@ -91,7 +102,10 @@ def is_user_authorised(token, channel_id):
 
 def is_channel_owner(u_id, channel_id):
     '''
-    ADD DOCSTRING HERE
+    Given a VALID user id and VALID channel_id, returns True
+    if the user is an owner of the channel, else returns False
+
+    (You should check if these arguments are valid before calling the functions)
     '''
 
     channel_owners = get_channel_info(channel_id)['owner_members']
@@ -100,7 +114,9 @@ def is_channel_owner(u_id, channel_id):
 
 def get_user_info(variable, identifier):
     '''
-    ADD DOCSTRING HERE
+    Given a VALID variable ('u_id', 'token', 'email') and potential
+    UNIQUE identifier (u_id, token, email), returns the user dictionary.
+    Else returns False
     '''
 
     for user in data.data['users']:
@@ -111,7 +127,10 @@ def get_user_info(variable, identifier):
 
 def is_user_in_channel(u_id, channel_id):
     '''
-    ADD DOCSTRING HERE
+    Given a VALID user id and VALID channel id, returns True if
+    the user is within the specified channel
+
+    (You should check if these arguments are valid before calling the functions)
     '''
 
     channel_members = get_channel_info(channel_id)['all_members']
