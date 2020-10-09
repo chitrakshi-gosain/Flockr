@@ -7,7 +7,8 @@ import data
 import user
 from error import InputError
 from error import AccessError
-from helper import is_user_authorised1, is_channel_valid, is_token_valid, get_user_info
+#from helper import is_user_authorised1, is_channel_valid, is_token_valid, get_user_info
+import helper
 
 '''
 *********************************BASIC TEMPLATE*********************************
@@ -100,84 +101,26 @@ def channel_invite(token, channel_id, u_id):
     '''
 
     #order of checks: invalid token, invalid user, invalid channel_id, invoker not in chnnel
-
-    ########### BEFORE ##########
-    '''
-    is_valid_user = False
-
-    is_valid_invoker = False
-    is_invoker_admin = False
-    for user in data.data['users']: #check if token is valid -> get user info
-        if user['u_id'] == u_id:
-            is_valid_user = True
-            user_info = {'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']}
-
-        if user['token'] == token:
-            is_valid_invoker = True
-            is_invoker_admin = user['is_admin']
-            invoker_info = {'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']}
-
-        if is_valid_invoker and is_valid_user:
-            break # stop scanning through unnecessary entries
-
-    if not is_valid_invoker:
-        raise AccessError('token is invalid')
-
-    if not is_valid_user:
-        raise InputError('u_id does not refer to a valid user')
-
-    is_valid_channel = False
-    channel_idx = 0
-    for channel in data.data['channels']: #check if channel is valid -> get channel info
-        if channel['channel_id'] == channel_id:
-            is_valid_channel = True
-            break
-        channel_idx += 1
-
-    if not is_valid_channel:
-        raise InputError('channel_id does not refer to a valid channel')
-
-    if not is_invoker_admin and not invoker_info in data.data['channels'][channel_idx]['all_members']:
-        raise AccessError('invoker is not part of the channel')
-
-    #add valid users to valid channel
-    if is_valid_invoker and is_valid_user and is_valid_channel:
-        if not user_info in data.data['channels'][channel_idx]['all_members']:
-            data.data['channels'][channel_idx]['all_members'].append(user_info)
-        else:
-            #assume function was not called (to prevent data duplication)
-            pass
-    '''
-
-    ########### AFTER #######
-
-    user_info = get_user_info('u_id', u_id)
-    invoker_info = get_user_info('token', token)
-
+    invoker_info = helper.get_user_info('token', token)
     if not invoker_info:
         raise AccessError('token is invalid')
 
+    user_info = helper.get_user_info('u_id', u_id)
     if not user_info:
         raise InputError('u_id does not refer to a vlid user')
 
-    channel_info = get_channel_info(channel_id)
-
+    channel_info = helper.get_channel_info(channel_id)
     if not channel_info:
         raise InputError('channel_id does not refer to a valid channel')
 
-    if not is_user_in_channel(invoker_info['u_id'], channel_id) and not invoker_info['is_admin']:
+    if not helper.is_user_in_channel(invoker_info['u_id'], channel_id) and not invoker_info['is_admin']:
         raise AccessError('invoker is not part of the channel')
 
-    channel_index = data.data['channels'].index(channel_info)
+    user_added = { 'u_id': user_info['u_id'], 'name_first': user_info['name_first'],
+                   'name_last': user_info['name_last'] }
 
-    user_added = {
-        'u_id': user_info['u_id'],
-        'name_first': user_info['name_first'],
-        'name_last': user_info['name_last']
-    }
-
-    if not is_user_in_channel(u_id, channel):
-        data.data['channels'][channel_index]['all_members'].append(user_added)
+    if not helper.is_user_in_channel(u_id, channel_id):
+        channel_info['all_members'].append(user_added)
 
     return {
     }
@@ -187,7 +130,7 @@ def channel_details(token, channel_id):
     DESCRIPTION:
     Given a channel_id that a user is authorised in, returns a list of dictionaries
     which contain the channel's name, its owner members and all of its members.
-    
+
     PARAMETERS:
         -> token : token of user who is to join channel
         -> channel_id : id of the channel
@@ -232,7 +175,7 @@ def channel_messages(token, channel_id, start):
     DESCRIPTION:
     Given a channel_id that a user is authorised in, returns the messages from
     the start message to the start + 50'th message.
-    
+
     PARAMETERS:
         -> token : token of user who is to join channel
         -> channel_id : id of the channel
@@ -307,37 +250,25 @@ def channel_leave(token, channel_id):
 
     RETURN VALUES:
     '''
+
     #order of check: invalid token, invalid channel, not in channel
-
-    is_valid_user = False
-    for user in data.data['users']: #check if token is valid -> get user info
-        if user['token'] == token:
-            is_valid_user = True
-            user_info = {'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']}
-            break
-
-    if not is_valid_user:
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
         raise AccessError('token is invalid')
 
-    is_valid_channel = False
-    channel_idx = 0
-    for channel in data.data['channels']: #check if channel is valid -> get channel info
-        if channel['channel_id'] == channel_id:
-            is_valid_channel = True
-            break
-        channel_idx += 1
-
-    if not is_valid_channel:
+    channel_info = helper.get_channel_info(channel_id)
+    if not channel_info:
         raise InputError('channel_id does not refer to a valid channel')
 
-    #remove valid user from valid channel
-    if is_valid_user and is_valid_channel:
-        if user_info in data.data['channels'][channel_idx]['owner_members']:
-            data.data['channels'][channel_idx]['owner_members'].remove(user_info)
-        if user_info in data.data['channels'][channel_idx]['all_members']:
-            data.data['channels'][channel_idx]['all_members'].remove(user_info)
-        else:
-            raise AccessError("User cannot leave channels they are not part of")
+    user_removed = { 'u_id': user_info['u_id'], 'name_first': user_info['name_first'],
+                     'name_last': user_info['name_last'] }
+
+    if helper.is_channel_owner(user_info['u_id'], channel_id):
+        channel_info['owner_members'].remove(user_removed)
+    if helper.is_user_in_channel(user_info['u_id'], channel_id):
+        channel_info['all_members'].remove(user_removed)
+    else:
+        raise AccessError('User cannot leave channels they are not part of')
 
     return {
     }
@@ -354,41 +285,25 @@ def channel_join(token, channel_id):
 
     RETURN VALUES:
     '''
+    
     # order of checks: invalid token, invalid channel, private channel
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
+        raise AccessError('invalid token')
 
-    is_valid_user = False
-    for user in data.data['users']: #check if token is valid -> get user info
-        if user['token'] == token:
-            is_valid_user = True
-            is_admin = user['is_admin']
-            user_info = {'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']}
-            break
-
-    if not is_valid_user:
-        raise AccessError('token is invalid')
-
-    is_valid_channel = False
-    channel_idx = 0
-    for channel in data.data['channels']: #check if channel is valid -> get channel info
-        if channel['channel_id'] == channel_id:
-            is_valid_channel = True
-            is_public = channel['is_public']
-            break
-        channel_idx += 1
-
-    if not is_valid_channel:
+    channel_info = helper.get_channel_info(channel_id)
+    if not channel_info:
         raise InputError('channel_id does not refer to a valid channel')
 
-    if not is_admin and not is_public:
-        raise AccessError('only admins can join private channels')
 
-    #add valid users to valid channel
-    if is_valid_user and is_valid_channel:
-        if not user_info in data.data['channels'][channel_idx]['all_members']:
-            data.data['channels'][channel_idx]['all_members'].append(user_info)
-        else:
-            #assume function was not called to not create duplicate data
-            pass
+    if not channel_info['is_public'] and not user_info['is_admin']:
+        raise AccessError("only admins can join private channels")
+
+    user_added = { 'u_id': user_info['u_id'], 'name_first': user_info['name_first'],
+                   'name_last': user_info['name_last'] }
+
+    if not helper.is_user_in_channel(user_info['u_id'], channel_id):
+        channel_info['all_members'].append(user_added)
 
     return {
     }
