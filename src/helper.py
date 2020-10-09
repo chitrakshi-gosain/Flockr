@@ -114,7 +114,7 @@ def is_user_in_channel(u_id, channel_id):
     ADD DOCSTRING HERE
     '''
 
-    channel_members = get_channel_info(channel_id)['channel_members']
+    channel_members = get_channel_info(channel_id)['all_members']
     return any(user['u_id'] == u_id for user in channel_members)
 
 
