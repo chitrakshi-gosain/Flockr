@@ -255,3 +255,142 @@ def find_user_id(token):
 Use:
 user_id = get_user_info('token', token)['u_id']
 '''
+
+def is_token_valid(token):
+    valid_token = False
+    for user in data.data['users']:
+        if user['token'] == token:
+            valid_token = True
+
+    return valid_token
+
+
+def is_channel_valid(channel_id):
+
+    channel_valid = False
+    channel_dict = {}
+    channel_info = [channel_valid, channel_dict]
+
+    for channel in data.data['channels']:
+        if channel['channel_id'] == channel_id:
+            channel_info[0] = True
+            channel_info[1] = channel
+            break
+
+    return channel_info
+
+
+def is_user_authorised1(token, u_id, channel_dict):
+    u_id = find_user_id(token)
+
+    user_authorised = False
+    for user in data.data['users']:
+        if user['token'] == token:
+            user_authorised = user['is_admin']
+
+    for member in channel_dict['all_members']:
+        if member['u_id'] == u_id:
+            user_authorised = True
+
+    return user_authorised
+
+
+def check_if_registered_user(email):
+    '''
+    Given the email of a user to be registered checks if the email is
+    already being used by another user
+    '''
+
+    for user in data.data['users']:
+        if user['email'] == email:
+            return True
+
+    return False
+
+
+def get_user_id_from_email(email):
+    '''
+    Given the email of the user who is:
+    -> already registered: finds the user by their email in the database
+                           and returns their existing u_id
+    -> to be registered: counts the number of existing users and assigns
+                         the next number as u_id
+    and then returns it
+    '''
+
+    user_count = -1
+    for user in data.data['users']:
+        if user['email'] == email:
+            user_id = user['u_id']
+            return user_id
+        user_count += 1
+
+    return user_count + 1
+
+
+def generate_handle(name_first, name_last, email):
+    '''
+    Given the first and last name of the user, a handle is generated
+    that is the concatentation of a lowercase-only first name and last
+    name. If the concatenation is longer than 20 characters, it is
+    cutoff at 20 characters. If the handle is already taken, user's u_id
+    is concatenated at the very end, incase this concatenation exceeds
+    the length of 20 characters, the last characters of handle string
+    (which already belongs to another user) are adjusted to accomodate
+    the user's u_id in the very end
+    '''
+
+    concatenated_names = name_first.lower() + name_last.lower()
+    handle_string = concatenated_names[:20]
+    status = False
+
+    for user_with_same_handle in data.data['users']:
+        if user_with_same_handle['handle_str'] == handle_string:
+            status = True
+
+    if status is True:
+        user_id = str(get_user_id_from_email(email))
+        cut_handle_till = 20 - len(user_id)
+        handle_string = handle_string[:cut_handle_till] + user_id
+    return handle_string
+
+
+def check_password(email, password):
+    '''
+    Given the password of the user while logging-in matches the password
+    with the database file which stores the password of user made while
+    registering
+    '''
+
+    for user in data.data['users']:
+        if user['email'] == email:
+            if user['password'] == password:
+                return True
+
+    return False
+
+
+def check_token(token):
+    '''
+    Given the token checks if the token belongs to an authenticated user
+    '''
+
+    for user in data.data['users']:
+        if user['token'] == token:
+            return True
+
+    return False
+
+
+# later modify this as store_And_generate_token(email):, i.e. this will generate
+# token, store it and then return it
+def store_generated_token(email, user_token):
+    '''
+    Given the email of the user trying of log-in stores the
+    authenticated token in database as necessary which later results in
+    the authentication of the user for the particular session
+    '''
+
+    for user in data.data['users']:
+        if user['email'] == email:
+            user['token'] = user_token
