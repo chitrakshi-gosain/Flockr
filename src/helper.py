@@ -161,7 +161,8 @@ def generate_handle(name_first, name_last, email):
             status = True
 
     if status is True:
-        user_id = str(get_user_id_from_email(email))
+        user_info = get_user_info('email', email)
+        user_id = str(user_info['u_id'])
         cut_handle_till = 20 - len(user_id)
         handle_string = handle_string[:cut_handle_till] + user_id
     return handle_string
