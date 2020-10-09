@@ -17,6 +17,7 @@ def check_if_valid_email(email):
 
     regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
     return re.search(regex, email) #more concise
+    # this returns None instead of False.. :/
 
 
 def check_if_valid_password(password):
@@ -161,8 +162,7 @@ def generate_handle(name_first, name_last, email):
             status = True
 
     if status is True:
-        user_info = get_user_info('email', email)
-        user_id = str(user_info['u_id'])
+        user_id = str(len(data.data['users']))
         cut_handle_till = 20 - len(user_id)
         handle_string = handle_string[:cut_handle_till] + user_id
     return handle_string
@@ -199,3 +199,7 @@ def store_generated_token(email, user_token):
     for user in data.data['users']:
         if user['email'] == email:
             user['token'] = user_token
+
+if __name__ == '__main__':
+    print(check_if_valid_email("whatever@gmail.com"))
+    print(check_if_valid_email("whatnot.com"))
