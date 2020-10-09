@@ -5,14 +5,12 @@ Contributer - Chitrakshi Gosain
 Iteration 1
 '''
 
-import re
 import data
+from other import clear
 from error import InputError, AccessError
-# from helper import check_if_valid_email, check_if_valid_password, \
-# check_name_length_and_is_a_whitesapce, check_if_first_user, \
-# invalidating_token
-
-# remove re and data once i import helper
+from helper import check_if_valid_email, check_if_valid_password, \
+check_name_length_and_is_a_whitesapce, invalidating_token, get_user_info, \
+generate_handle, check_password, store_generated_token
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -96,10 +94,10 @@ def auth_login(email, password):
         raise InputError(description='Insufficient parameters, please enter: \
                          email, password')
 
-    if check_if_valid_email(email) is False:
+    if check_if_valid_email(email) is None:
         raise InputError(description='Email entered is not a valid email')
 
-    if check_if_registered_user(email) is False:
+    if get_user_info('email', email) is False:
         raise InputError(description='Email entered does not belong to a user')
 
     if check_password(email, password) is False:
@@ -116,7 +114,7 @@ def auth_login(email, password):
     # returning the dictionary with users' u_id, and token authenticated
     # for their session
     return {
-        'u_id': get_user_id_from_email(email),
+        'u_id': get_user_info('email', email)['u_id'],
         'token': user_token
     }
 
@@ -141,7 +139,7 @@ def auth_logout(token):
                         token')
 
     # Checking for AccessError:
-    if check_token(token) is False:
+    if not get_user_info('token', token):
         raise AccessError(description='Token passed in is not a valid token')
 
     # Since there is no InputError or AccessError, hence proceeding
@@ -196,7 +194,7 @@ def auth_register(email, password, name_first, name_last):
         raise InputError(description='name_last is not between 1 and 50 \
                         characters inclusively in length or is a whitespace')
 
-    if check_if_registered_user(email) is True:
+    if get_user_info('email', email) is not False:
         raise InputError(description='Email address is already being used by \
                         another user')
 
@@ -207,8 +205,8 @@ def auth_register(email, password, name_first, name_last):
     # obtained using both helper fucntions and user's innput(as parameters
     # for these)
     new_user = {
-        'u_id' : get_user_id_from_email(email),
-        'is_admin' : check_if_first_user(),
+        'u_id' : len(data.data['users']),
+        'is_admin' : bool(len(data.data['users']) == 0),
         'email' : email,
         'name_first' : name_first,
         'name_last' : name_last,
@@ -229,158 +227,9 @@ def auth_register(email, password, name_first, name_last):
         'token': user_login_credentials['token']
     }
 
-def check_if_valid_email(email):
-    '''
-    Given the email of the user to be registeredd checks if it is a
-    valid email using a regex
-    '''
-
-    regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
-    if re.search(regex, email):
-        return True
-    return False
-
-def check_if_valid_password(password):
-    '''
-    Given the password of the user to be registered checks it's length
-    is in valid range and if it has printable ASCII characters only
-    '''
-
-    if not 6 <= len(password) <= 32:
-        return False
-    if not password.isprintable():
-        return False
-    return True
-
-def check_name_length_and_is_a_whitesapce(name_to_check):
-    '''
-    Given the first or last name of the user to be registered checks if
-    it's length is in valid range and if it is not completely a
-    whitespace
-    '''
-
-    if not 1 <= len(name_to_check) <= 50:
-        return False
-    if name_to_check.isspace():
-        return False
-    return True
-
-def check_if_registered_user(email):
-    '''
-    Given the email of a user to be registered checks if the email is
-    already being used by another user
-    '''
-
-    for user in data.data['users']:
-        if user['email'] == email:
-            return True
-    return False
-
-def get_user_id_from_email(email):
-    '''
-    Given the email of the user who is:
-    -> already registered: finds the user by their email in the database
-                           and returns their existing u_id
-    -> to be registered: counts the number of existing users and assigns
-                         the next number as u_id
-    and then returns it
-    '''
-
-    user_count = -1
-    for user in data.data['users']:
-        if user['email'] == email:
-            user_id = user['u_id']
-            return user_id
-        user_count += 1
-    return user_count + 1
-
-def generate_handle(name_first, name_last, email):
-    '''
-    Given the first and last name of the user, a handle is generated
-    that is the concatentation of a lowercase-only first name and last
-    name. If the concatenation is longer than 20 characters, it is
-    cutoff at 20 characters. If the handle is already taken, user's u_id
-    is concatenated at the very end, incase this concatenation exceeds
-    the length of 20 characters, the last characters of handle string
-    (which already belongs to another user) are adjusted to accomodate
-    the user's u_id in the very end
-    '''
-
-    concatenated_names = name_first.lower() + name_last.lower()
-    handle_string = concatenated_names[:20]
-    status = False
-
-    for user_with_same_handle in data.data['users']:
-        if user_with_same_handle['handle_str'] == handle_string:
-            status = True
-
-    if status is True:
-        user_id = str(get_user_id_from_email(email))
-        cut_handle_till = 20 - len(user_id)
-        handle_string = handle_string[:cut_handle_till] + user_id
-    return handle_string
-
-def check_password(email, password):
-    '''
-    Given the password of the user while logging-in matches the password
-    with the database file which stores the password of user made while
-    registering
-    '''
-
-    for user in data.data['users']:
-        if user['email'] == email:
-            if user['password'] == password:
-                return True
-    return False
-
-def check_token(token):
-    '''
-    Given the token checks if the token belongs to an authenticated user
-    '''
-
-    for user in data.data['users']:
-        if user['token'] == token:
-            return True
-    return False
-
-# later modify this as store_And_generate_token(email):, i.e. this will generate
-# token, store it and then return it
-def store_generated_token(email, user_token):
-    '''
-    Given the email of the user trying of log-in stores the
-    authenticated token in database as necessary which later results in
-    the authentication of the user for the particular session
-    '''
-
-    for user in data.data['users']:
-        if user['email'] == email:
-            user['token'] = user_token
-
-# or do it this way, find the user with matching token and relace the
-# token with invalid token string
-def invalidating_token(token):
-    '''
-    Given the token of authenticated user invalidates it which later
-    leads to unauthentication of the user i.e. logging-out the user
-    '''
-
-    for user in data.data['users']:
-        if user['token'] == token:
-            user['token'] = 'invalidated_the_token'
-    return True
-
-def check_if_first_user():
-    '''
-    Chceks if the registering user is the first user of Flockr, this
-    later leads to giving the first user the admin of Flockr status
-    '''
-    if len(data.data['users']) == 0:
-        return True
-    return False
-
 '''
 WHITE BOX TESTING FOR CHECKING IF IMPLEMENTATION IS AS EXPECTED
-
+'''
 if __name__ == '__main__':
     # check_for_admin_stautus_of_first_user
     clear()
@@ -392,7 +241,8 @@ if __name__ == '__main__':
         if user['u_id'] == user2['u_id']:
             user2_admin_status = user['is_admin']
     assert user1_admin_status != user2_admin_status
-
+    print(user1_admin_status, user2_admin_status)
+'''
     # check for different_handle_With_Same_first_and_last_names
     clear()
     test_user_11 = auth_register('registerationtestvalidemailid11@gmail.com', '123Abc!11', 'fname1', 'lname1')
