@@ -12,7 +12,9 @@
 
 data = {
         'users': [],
-        'channels': []
+        'channels': [],
+        'messages': [],
+        'tokens': []
         }
 
 '''
@@ -111,6 +113,27 @@ data = {
                 },
             ]
         },
+    ],
+
+    'messages': [
+        { # mesages -> message_id : 0
+            'message_id' : 0,
+            'u_id' : 0,
+            'message' : 'messagecontents0',
+            'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
+    ],
+
+    'tokens': [
+        {
+            'u_id': 0
+            'tokens': ['fheu', 'grbehy']
+        },
+
+        {
+            'u_id': 1
+            'tokens': ['rbjh', 'rgbhij']
+        },
     ]
+
 }
 '''
