@@ -12,7 +12,24 @@ import pytest
 from error import InputError, AccessError
 
 '''
-Tests for channel_invite()
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> intialise_user_data() return { users }, { channels }
+-> is_user_in_channel() return True/False
+-> count_instances() return count
+-> test_channel_invite_valid_basic()
+-> test_channel_invite_invalid_channel()
+-> test_channel_invite_invalid_user()
+-> test_channel_invite_invoker_not_in_channel()
+-> test_channel_invite_invalid_token()
+-> test_channel_invite_already_in_channel()
+'''
+
+'''
+----channel_invite Documentation----
 
 Parameters:(token, channel_id, u_id)
 
@@ -33,27 +50,6 @@ Description: Invites a user (with user id u_id) to join a channel with ID
 
 # Jordan Huynh (z5169771)
 # Wed15 Grape 2
-
-#note: these tests also require the functions to be implemented:
-    #auth_register, channels_create, channel_details, channel_join, clear
-
-
-'''
-Current assumptions:
-    1. " " is an invalid token
-    2. User cannot be invited if they are already in the channel -as if function was not called
-    3. ids can only be non-negative integers
-'''
-
-'''
-Test ideas: [description] - [pass / fail / error]
-    1. valid channel_id and users - pass
-    2. channel_id is invalid - InputError
-    3. invalid user is added - InputError
-    4. authorised user is not in channel - AccessError
-    5. user has invalid token - AccessError
-    6. user is already in channel - fail (treat as function was not called)
-'''
 
 def initialise_data():
     #create users
@@ -85,6 +81,13 @@ def is_user_in_channel(user_id, token, channel_id):
             return True
     return False
 
+def count_instances(user_id, token, channel_id):
+    count = 0
+    channel_info = channel_details(token, channel_id)
+    for member in channel_info['all_members']:
+        if member['u_id'] == user_id:
+            count += 1
+    return count
 
 def test_channel_invite_valid_basic():
     clear()
@@ -138,13 +141,6 @@ def test_channel_invite_invalid_token():
     with pytest.raises(AccessError): #expect AccessError as token is invalid
         assert channel_invite(invalid_token, channels['publ']['channel_id'], users['user1']['u_id'])
 
-def count_instances(user_id, token, channel_id):
-    count = 0
-    channel_info = channel_details(token, channel_id)
-    for member in channel_info['all_members']:
-        if member['u_id'] == user_id:
-            count += 1
-    return count
 
 def test_channel_invite_already_in_channel():
     clear()

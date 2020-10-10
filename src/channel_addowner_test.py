@@ -3,29 +3,50 @@
 
 # Iteration 1
 
-from channel import channel_details, channel_addowner, channel_join
-from channels import channels_create
+'''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
+-> channel_details(token, channel_id) return {name, owner_members, all_members}
+-> channel_addowner(token, channel_id, u_id) return {}
+-> channel_join(token, channel_id) return {}
+-> channels_create(token, name, is_public) return {channel_id}
+'''
+
+'''
+EXCEPTIONS
+Error type: InputError
+    -> channel_id is not a valid channel ID
+    -> user with u_id is already an owner of the channel
+Error type: AccessError
+    -> token passed in is not a valid token
+    -> authorised user is not an admin of the flockr or owner of the channel
+'''
+
+'''
+KEEP IN MIND:
+-> channels_create adds user (based on token) as member and owner of the channel
+'''
+
 import pytest
+import auth
+import helper
+from channel import channel_addowner, channel_join
+from channels import channels_create
 from error import InputError, AccessError
 from other import clear
-import auth
 
-# channel_addowner should add the user with the provided u_id to the list of owners of a channel with the provided channel_id
+# channel_addowner should add the user with the provided u_id
+# to the list of owners of a channel with the provided channel_id
 # assumes that u_id is already a member of the channel
 
-### maybe also test for admin vs non-admin (global owners) (an admin is the first user to register in system)
+### maybe also test for admin vs non-admin (global owners)
+### (an admin is the first user to register in system)
 
-# HELPER FUNCTIONS
-
-# checks if user with u_id is an owner of channel with channel_id
-def is_channel_owner(u_id, token, channel_id):
-    channel_info = channel_details(token, channel_id)
-    for owner in channel_info['owner_members']:
-        if owner['u_id'] == u_id:
-            return True
-    return False
-
-# TESTS 
+# TESTS
 
 # basic test with no edge case or errors raised
 def test_channel_addowner_noerrors():
@@ -46,10 +67,10 @@ def test_channel_addowner_noerrors():
     # token1 joins channel, therefore is a member but not an owner
     channel_join(token1, channel_id)
 
-    assert not is_channel_owner(u_id1, token1, channel_id)
+    assert not helper.is_channel_owner(u_id1, channel_id)
     # user0 adds user1 as owner
     channel_addowner(token0, channel_id, u_id1)
-    assert is_channel_owner(u_id1, token1, channel_id)
+    assert helper.is_channel_owner(u_id1, channel_id)
 
 
 # test that channel_addowner raises InputError if channel_id is not a valid channel_id
@@ -79,7 +100,8 @@ def test_channel_addowner_invalidchannel():
         channel_addowner(token0, channel_id, u_id1)
 
 
-# test that channel_addowner raises InputError if user with provided u_id is already an owner of the channel
+# test that channel_addowner raises InputError
+# if user with provided u_id is already an owner of the channel
 def test_channel_addowner_alreadyowner():
     clear()
 
@@ -100,7 +122,7 @@ def test_channel_addowner_alreadyowner():
 
     # add user1 as owner
     channel_addowner(token0, channel_id, u_id1)
-    assert is_channel_owner(u_id1, token0, channel_id)
+    assert helper.is_channel_owner(u_id1, channel_id)
 
     # attempt to add owner twice
     # assert that channel_addowner raises InputError
@@ -108,12 +130,13 @@ def test_channel_addowner_alreadyowner():
         channel_addowner(token0, channel_id, u_id1)
 
 
-# test that channel_addowner raises AccessError if the authorised user is not an owner of the channel
+# test that channel_addowner raises AccessError
+# if the authorised user is not an owner of the channel
 def test_channel_addowner_authnotowner():
     clear()
 
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    u_id0, token0 = user0_details['u_id'], user0_details['token']
+    token0 = user0_details['token']
 
     channel_info = channels_create(token0, "ch_name0", True)
     channel_id = channel_info['channel_id']
@@ -122,14 +145,15 @@ def test_channel_addowner_authnotowner():
 
     # create second user
     user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
-    token1 = user1_details['token']
+    u_id1, token1 = user1_details['u_id'], user1_details['token']
 
     # second user is not an owner of the channel
     channel_join(token1, channel_id)
 
     # assert that channel_addowner raises AccessError
     with pytest.raises(AccessError):
-        channel_addowner(token1, channel_id, u_id0)
+        channel_addowner(token1, channel_id, u_id1)
+
 
 # test that channel_addowner raises AccessError if the provided token is not valid
 def test_channel_addowner_invalidtoken():

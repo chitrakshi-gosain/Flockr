@@ -7,7 +7,22 @@ import pytest
 from error import InputError, AccessError
 
 '''
-Tests for channel_leave()
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> intialise_user_data() return { users }, { channels }
+-> is_user_in_channel() return True/False
+-> test_channel_leave_basic()
+-> test_channel_leave_invalid_channel()
+-> test_channel_leave_not_in_channel()
+-> test_channel_leave_invalid_token()
+-> test_channel_leave_owner()
+'''
+
+'''
+----channel_leave Documentation----
 
 Parameters:(token, channel_id)
 
@@ -24,23 +39,6 @@ Description: Given a channel ID, the user removed as a member of this channel
 
 # Jordan Huynh (z5169771)
 # Wed15 Grape 2
-
-#note: these tests also require the functions to be implemented:
-    #auth_register, channels_create, channel_details, channel_join, clear
-
-'''
-Current assumptions:
-    1. " " is an invalid token
-    2. ids can only be non-negative integers
-'''
-
-'''
-Test ideas: [description] - [pass / fail / error]
-    1. channel_id is valid and user is in channel - pass
-    2. Channel does not exist - InputError
-    3. User is not part of the channel when they try leave - AccessError
-    4. user has invalid token - AccessError
-'''
 
 def initialise_data():
     #create users
@@ -116,7 +114,7 @@ def is_owner_in_channel(user_id, token, channel_id):
             return True
     return False
 
-def test_channel_leave_member():
+def test_channel_leave_owner():
     clear()
     users, channels = initialise_data()
 

@@ -1,22 +1,48 @@
-from channel import channel_details, channel_addowner, channel_removeowner, channel_join
-from channels import channels_create
+# Created collaboratively by Wed15Team2 2020 T3
+# Contributer - Joseph Knox
+
+# Iteration 1
+
+'''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
+-> channel_details(token, channel_id) return {name, owner_members, all_members}
+-> channel_addowner(token, channel_id, u_id) return {}
+-> channel_removeowner(token, channel_id, u_id) return {}
+-> channel_join(token, channel_id) return {}
+-> channels_create(token, name, is_public) return {channel_id}
+'''
+
+'''
+EXCEPTIONS
+Error type: InputError
+    -> channel_id is not a valid channel ID
+    -> user with u_id is already an owner of the channel
+Error type: AccessError
+    -> token passed in is not a valid token
+    -> authorised user is not an admin of the flockr or owner of the channel
+'''
+
+'''
+KEEP IN MIND:
+-> channels_create adds user (based on token) as member and owner of the channel
+'''
+
 import pytest
+import auth
+from helper import is_channel_owner
+from channel import channel_addowner, channel_removeowner, channel_join
+from channels import channels_create
 from error import InputError, AccessError
 from other import clear
-import auth
 
-# channel_removeowner should remove the user with the provided u_id to the list of owners of a channel with the provided channel_id
+# channel_removeowner should remove the user with the provided u_id
+# from the list of owners of a channel with the provided channel_id
 # assumes that u_id is already a member of the channel
-
-# HELPER FUNCTIONS
-
-# checks if user with u_id is an owner of channel with channel_id
-def is_channel_owner(u_id, token, channel_id):
-    channel_info = channel_details(token, channel_id)
-    for owner in channel_info['owner_members']:
-        if owner['u_id'] == u_id:
-            return True
-    return False
 
 # TESTS
 
@@ -31,12 +57,12 @@ def test_channel_removeowner_noerrors():
     channel_id = channel_info['channel_id']
     channel_join(user0['token'], channel_id)
 
-    assert is_channel_owner(user0['u_id'], admin['token'], channel_id) == False
+    assert not is_channel_owner(user0['u_id'], channel_id)
     channel_addowner(admin['token'], channel_id, user0['u_id'])
 
-    assert is_channel_owner(user0['u_id'], admin['token'], channel_id) == True
+    assert is_channel_owner(user0['u_id'], channel_id)
     channel_removeowner(admin['token'], channel_id, user0['u_id'])
-    assert is_channel_owner(user0['u_id'], admin['token'], channel_id) == False
+    assert not is_channel_owner(user0['u_id'], channel_id)
 
 
 # test that channel_removeowner raises InputError if channel_id is not a valid channel_id
@@ -60,7 +86,8 @@ def test_channel_removeowner_invalidchannel():
     with pytest.raises(InputError):
         channel_removeowner(admin['token'], invalid_channel_id, user0['u_id'])
 
-# test that channel_removeowner raises InputError if user with provided u_id is not an owner of the channel
+# test that channel_removeowner raises InputError
+# if user with provided u_id is not an owner of the channel
 def test_channel_removeowner_notowner():
     clear()
 
@@ -74,17 +101,18 @@ def test_channel_removeowner_notowner():
 
     # add owner
     channel_addowner(admin['token'], channel_id, user0['u_id'])
-    assert is_channel_owner(user0['u_id'], admin['token'], channel_id) == True
+    assert is_channel_owner(user0['u_id'], channel_id)
 
     # attempt to remove owner twice
     channel_removeowner(admin['token'], channel_id, user0['u_id'])
-    assert is_channel_owner(user0['u_id'], admin['token'], channel_id) == False
+    assert not is_channel_owner(user0['u_id'], channel_id)
 
     # assert that channel_removeowner raises InputError
     with pytest.raises(InputError):
         channel_removeowner(admin['token'], channel_id, user0['u_id'])
 
-# test that channel_removeowner raises AccessError if the authorised user is not an owner of the channel or admin of the flockr
+# test that channel_removeowner raises AccessError
+# if the authorised user is not an owner of the channel or admin of the flockr
 def test_channel_removeowner_authnotowner():
     clear()
 
@@ -100,7 +128,8 @@ def test_channel_removeowner_authnotowner():
     with pytest.raises(AccessError):
         channel_removeowner(user0['token'], channel_id, admin['u_id'])
 
-# test that channel_removeowner raises AccessError if the authorised user is not an owner of the channel or the flockr
+# test that channel_removeowner raises AccessError
+# if the authorised user is not an owner of the channel or the flockr
 # i.e. test that channel_removeowner raises AccessError if token is invalid
 def test_channel_removeowner_accesserror():
     clear()
