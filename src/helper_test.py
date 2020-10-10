@@ -20,7 +20,7 @@ def test_check_if_valid_email():
 def test_check_if_valid_password():
     pass
 
-def test_check_name_length_and_is_a_whitesapce():
+def test_check_name_length_and_is_a_whitespace():
     pass
 
 def test_invalidating_token():
