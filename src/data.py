@@ -133,7 +133,7 @@ data = {
             'tokens': ['fheu', 'grbehy']
         },
 
-        { # valid(active) tokens for user with u_id : 0
+        { # valid(active) tokens for user with u_id : 1
             'u_id': 1
             'tokens': ['rbjh', 'rgbhij']
         }
