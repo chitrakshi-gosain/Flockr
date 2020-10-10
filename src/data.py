@@ -127,7 +127,15 @@ data = {
         }
     ],
 
-    'valid_tokens': [
+    'valid_tokens': [ # format  => token : u_id
+    
+        'fheu' : 0
+        'grbehy' : 0 
+        'rbjh' : 1 
+        'rgbhij' : 1
+        (this will be way more easier to look through)
+        (Ask Hayden or Michael for suggestions.)
+      
         { # valid(active) tokens for user with u_id : 0
             'u_id': 0
             'tokens': ['fheu', 'grbehy']
