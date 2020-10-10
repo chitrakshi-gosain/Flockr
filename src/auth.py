@@ -1,4 +1,4 @@
-l'''
+'''
 Created collaboratively by Wed15Team2 2020 T3
 Contributer - Chitrakshi Gosain
 
@@ -177,7 +177,7 @@ def auth_register(email, password, name_first, name_last):
         raise InputError(description='Insufficient parameters. Please enter: \
                         email, password, name_first, name_last')
 
-    if check_if_valid_email(email) is False:
+    if check_if_valid_email(email) is None:
         raise InputError(description='Email entered is not a valid email')
 
     if check_if_valid_password(password) is False:
