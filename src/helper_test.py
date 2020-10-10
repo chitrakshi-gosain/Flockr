@@ -1,3 +1,12 @@
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributers - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
+               Ahmet Karatas, Joseph Knox
+
+Iteration 1
+'''
+
+import unittest
 from helper import *
 import data
 import auth
