@@ -358,8 +358,8 @@ def channel_addowner(token, channel_id, u_id):
     # append the given user to the list of owners
     for channel in data.data["channels"]:
         if channel["channel_id"] == channel_id:
-                data.data["channels"][channel_id]["owner_members"].append(user_dict.copy())
-                break
+            data.data["channels"][channel_id]["owner_members"].append(user_dict.copy())
+            break
 
     return {
     }
