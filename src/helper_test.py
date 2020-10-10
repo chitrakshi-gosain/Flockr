@@ -47,5 +47,5 @@ def test_generate_handle():
 def test_check_password():
     pass
 
-def store_generated_token():
+def test_store_generated_token():
     pass
