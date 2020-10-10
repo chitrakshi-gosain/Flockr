@@ -322,33 +322,22 @@ def channel_addowner(token, channel_id, u_id):
     '''
 
     # check if token is not valid
-    if token not in [user["token"] for user in data.data["users"]]:
+    user_info = helper.get_user_info("token", token)
+    if not user_info:
         raise AccessError('invalid token')
 
-    # check if authorised user (based on token) is admin of the flockr, or owner of the channel
-    token_uid = find_user_id(token)
-    channel_dict = is_channel_valid(channel_id)
-    if not is_user_authorised(token, token_uid, channel_dict) or not is_channel_owner(token_uid, channel_id):
-        raise AccessError('authorised user is not an admin of the flockr, or an owner of the channel')
-
-    # check if authorised user is owner of the channel
-    token_uid = find_user_id(token)
-    if not is_channel_owner(token_uid, channel_id):
-        raise AccessError('authorised user is not an owner of the channel')
-
     # check if channel_id is not a valid channel id
-    if channel_id not in [channel['channel_id'] for channel in data.data['channels']]:
+    channel_info = helper.get_channel_info(channel_id)
+    if not channel_info:
         raise InputError('channel_id not valid')
 
-    # searches through data and finds the channel dictionary with the provided channel_id
-    for channel in data.data['channels']:
-        if channel['channel_id'] == channel_id:
-            channel_from_id = channel
-            break
+    # check if authorised user (based on token) is admin of the flockr, or owner of the channel
+    if not (user_info["is_admin"] or helper.is_channel_owner(user_info["u_id"], channel_id)):
+        raise AccessError('authorised user is not an admin of the flockr, or an owner of the channel')
 
     # check if u_id is in the list of the u_ids of existing owners
     # i.e. if the provided u_id is already an owner
-    if u_id in [owner['u_id'] for owner in channel_from_id['owner_members']]:
+    if helper.is_channel_owner(u_id, channel_id):
         raise InputError('u_id is already an owner')
 
     # extracts first and last names from channel dict
@@ -389,28 +378,22 @@ def channel_removeowner(token, channel_id, u_id):
     '''
 
     # check if token is not valid
-    if token not in [user["token"] for user in data.data["users"]]:
+    user_info = helper.get_user_info("token", token)
+    if not user_info:
         raise AccessError('invalid token')
 
-    # check if authorised user (based on token) is admin of the flockr, or owner of the channel
-    token_uid = find_user_id(token)
-    channel_dict = is_channel_valid(channel_id)
-    if not is_user_authorised(token, token_uid, channel_dict) or not is_channel_owner(token_uid, channel_id):
-        raise AccessError('authorised user is not an admin of the flockr, or an owner of the channel')
-
     # check if channel_id is not a valid channel id
-    if channel_id not in [channel['channel_id'] for channel in data.data['channels']]:
+    channel_info = helper.get_channel_info(channel_id)
+    if not channel_info:
         raise InputError('channel_id not valid')
 
-    # searches through data and finds the channel dictionary with the provided channel_id
-    for channel in data.data['channels']:
-        if channel['channel_id'] == channel_id:
-            channel_from_id = channel
-            break
+    # check if authorised user (based on token) is admin of the flockr, or owner of the channel
+    if not (user_info["is_admin"] or helper.is_channel_owner(user_info["u_id"], channel_id)):
+        raise AccessError('authorised user is not an admin of the flockr, or an owner of the channel')
 
     # check if u_id is not in the list of the u_ids of existing owners
     # i.e. if the provided u_id is not an owner
-    if u_id not in [owner['u_id'] for owner in channel_from_id['owner_members']]:
+    if not helper.is_channel_owner(u_id, channel_id):
         raise InputError('u_id is not an owner')
 
     # remove the given user from the list of owners
