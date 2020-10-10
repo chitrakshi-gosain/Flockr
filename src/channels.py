@@ -1,4 +1,5 @@
 import data
+from helper import get_user_info
 from error import AccessError, InputError
 
 # Created collaboratively by Wed15Team2 2020 T3
@@ -44,13 +45,10 @@ def channels_list(token):
     '''
 
     # Checking token validity and finding user that accessed listall
-    current_user = {}
-    # Loops through users until matching token is found
-    for user in data.data['users']:
-        if user['token'] == token:
-            current_user = user
+    current_user = get_user_info('token', token)
+    
     # If matching token is not found then AccessError is raised
-    if current_user == {}:
+    if current_user == False:
         raise AccessError("Invalid Token")
 
     # Constructing list of all channels
@@ -87,13 +85,10 @@ def channels_listall(token):
     '''
 
     # Checking token validity and finding user that accessed listall
-    current_user = {}
-    # Loops through users until matching token is found
-    for user in data.data['users']:
-        if user['token'] == token:
-            current_user = user
+    current_user = get_user_info('token', token)
+    
     # If matching token is not found then AccessError is raised
-    if current_user == {}:
+    if current_user == False:
         raise AccessError("Invalid Token")
 
     # Constructing list of all channels
@@ -131,13 +126,10 @@ def channels_create(token, name, is_public):
     '''
 
     # Checking token validity and finding user that created channel
-    current_user = {}
-    # Loops through users until matching token is found
-    for user in data.data['users']:
-        if user['token'] == token:
-            current_user = user
+    current_user = get_user_info('token', token)
+    
     # If matching token is not found then AccessError is raised
-    if current_user == {}:
+    if current_user == False:
         raise AccessError("Invalid Token")
 
     # Checking channel name size

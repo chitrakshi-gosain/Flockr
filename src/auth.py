@@ -6,7 +6,6 @@ Iteration 1
 '''
 
 import data
-from other import clear
 from error import InputError, AccessError
 from helper import check_if_valid_email, check_if_valid_password, \
 check_name_length_and_is_a_whitesapce, invalidating_token, get_user_info, \
@@ -139,7 +138,7 @@ def auth_logout(token):
                         token')
 
     # Checking for AccessError:
-    if not get_user_info('token', token):
+    if get_user_info('token', token) is False:
         raise AccessError(description='Token passed in is not a valid token')
 
     # Since there is no InputError or AccessError, hence proceeding
@@ -178,7 +177,7 @@ def auth_register(email, password, name_first, name_last):
         raise InputError(description='Insufficient parameters. Please enter: \
                         email, password, name_first, name_last')
 
-    if check_if_valid_email(email) is False:
+    if check_if_valid_email(email) is None:
         raise InputError(description='Email entered is not a valid email')
 
     if check_if_valid_password(password) is False:

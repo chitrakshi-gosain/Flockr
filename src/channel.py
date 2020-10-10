@@ -144,29 +144,31 @@ def channel_details(token, channel_id):
         raise InputError('Insufficient parameters given')
 
     # Testing for token validity
-    valid_token = helper.is_token_valid(token)
-    if not valid_token:
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
         raise AccessError('Invalid Token')
 
     # Retrieving the u_id from the given token
-    user_id = helper.get_user_info('token', token)['u_id']
+
     # Finding if channel is valid and assigning the current channel to a dictionary
-    channel_info = helper.is_channel_valid(channel_id)
-    channel_valid = channel_info[0]
-    channel_dict = channel_info[1]
-    if not channel_valid:
+    channel_info = helper.get_channel_info(channel_id)
+
+    if channel_info == False:
         raise InputError('Channel ID is not a valid channel')
 
-    # Finding if the user is authorised or not
-    user_authorised = helper.is_user_authorised1(token, u_id, channel_dict)
-    if not user_authorised:
+    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info['u_id'], channel_id):
         raise AccessError('Authorised user is not a member of channel with channel_id')
+
+    # Finding if the user is authorised or not
+    # user_authorised = helper.is_user_authorised1(token, u_id, channel_info)
+    # if not user_authorised:
+    #     raise AccessError('Authorised user is not a member of channel with channel_id')
 
     # Retrieving the information from the assigned dictionary and returning the new dictionary
     channel_contents = {}
-    channel_contents.update({'name': channel_dict['name']})
-    channel_contents.update({'owner_members': channel_dict['owner_members']})
-    channel_contents.update({'all_members': channel_dict['all_members']})
+    channel_contents.update({'name': channel_info['name']})
+    channel_contents.update({'owner_members': channel_info['owner_members']})
+    channel_contents.update({'all_members': channel_info['all_members']})
     return channel_contents
 
 
@@ -185,33 +187,30 @@ def channel_messages(token, channel_id, start):
     # order of checks: insuficient parameters, token validity, channel validity, user authorisation
     '''
 
-
     # Testing for insufficient parameters
+ # Testing for insufficient parameters
     if None in {token, channel_id}:
         raise InputError('Insufficient parameters given')
 
     # Testing for token validity
-    valid_token = helper.is_token_valid(token)
-    if not valid_token:
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
         raise AccessError('Invalid Token')
 
     # Retrieving the u_id from the given token
-    user_id = helper.get_user_info('token', token)['u_id']
+
     # Finding if channel is valid and assigning the current channel to a dictionary
-    channel_info = helper.is_channel_valid(channel_id)
-    channel_valid = channel_info[0]
-    channel_dict = channel_info[1]
-    if not channel_valid:
+    channel_info = helper.get_channel_info(channel_id)
+
+    if channel_info == False:
         raise InputError('Channel ID is not a valid channel')
 
-    # Finding if the user is authorised or not
-    user_authorised = helper.is_user_authorised1(token, u_id, channel_dict)
-    if not user_authorised:
+    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info['u_id'], channel_id):
         raise AccessError('Authorised user is not a member of channel with channel_id')
 
     # Finding the number of messages in the channel
     num_message = 0
-    for message in (channel_dict['messages']):
+    for message in (channel_info['messages']):
         num_message += 1
 
     # Checking if the start input given does not exceed the number of messages in the channel
@@ -226,13 +225,13 @@ def channel_messages(token, channel_id, start):
     messages_list = []
 
     # The goal is to load the message dict's from start_index to (start_index - 50)
-    for (loop_index, message) in enumerate(channel_dict['messages'][start_index:start_index - 50:-1]):
+    for (loop_index, message) in enumerate(channel_info['messages'][start_index:start_index - 50:-1]):
         messages_list.append(message)
         if (start_index - loop_index == 0):
             messages_history.update({'end': -1})
             break
 
-    if len(channel_dict['messages']) == 0:
+    if len(channel_info['messages']) == 0:
         messages_history.update({'end': -1})
 
     else:
@@ -285,7 +284,7 @@ def channel_join(token, channel_id):
 
     RETURN VALUES:
     '''
-    
+
     # order of checks: invalid token, invalid channel, private channel
     user_info = helper.get_user_info('token', token)
     if not user_info:
@@ -406,19 +405,3 @@ def channel_removeowner(token, channel_id, u_id):
 
     return {
     }
-
-
-################ HELPER FUNCTIONS
-
-def is_channel_owner(u_id, channel_id):
-    for channel in data.data['channels']:
-        if channel["channel_id"] == channel_id and u_id in [owner["u_id"] for owner in channel["owner_members"]]:
-            return True
-    return False
-
-
-def is_channel_owner(u_id, channel_id):
-    for channel in data.data['channels']:
-        if channel["channel_id"] == channel_id and u_id in [owner["u_id"] for owner in channel["owner_members"]]:
-            return True
-    return False
