@@ -34,6 +34,7 @@ KEEP IN MIND:
 
 import pytest
 import auth
+from helper import is_channel_owner
 from channel import channel_details, channel_addowner, channel_removeowner, channel_join
 from channels import channels_create
 from error import InputError, AccessError
@@ -42,16 +43,6 @@ from other import clear
 # channel_removeowner should remove the user with the provided u_id
 # from the list of owners of a channel with the provided channel_id
 # assumes that u_id is already a member of the channel
-
-# HELPER FUNCTIONS
-
-# checks if user with u_id is an owner of channel with channel_id
-def is_channel_owner(u_id, token, channel_id):
-    channel_info = channel_details(token, channel_id)
-    for owner in channel_info['owner_members']:
-        if owner['u_id'] == u_id:
-            return True
-    return False
 
 # TESTS
 
@@ -66,12 +57,12 @@ def test_channel_removeowner_noerrors():
     channel_id = channel_info['channel_id']
     channel_join(user0['token'], channel_id)
 
-    assert not is_channel_owner(user0['u_id'], admin['token'], channel_id)
+    assert not is_channel_owner(user0['u_id'], channel_id)
     channel_addowner(admin['token'], channel_id, user0['u_id'])
 
-    assert is_channel_owner(user0['u_id'], admin['token'], channel_id)
+    assert is_channel_owner(user0['u_id'], channel_id)
     channel_removeowner(admin['token'], channel_id, user0['u_id'])
-    assert not is_channel_owner(user0['u_id'], admin['token'], channel_id)
+    assert not is_channel_owner(user0['u_id'], channel_id)
 
 
 # test that channel_removeowner raises InputError if channel_id is not a valid channel_id
@@ -110,11 +101,11 @@ def test_channel_removeowner_notowner():
 
     # add owner
     channel_addowner(admin['token'], channel_id, user0['u_id'])
-    assert is_channel_owner(user0['u_id'], admin['token'], channel_id)
+    assert is_channel_owner(user0['u_id'], channel_id)
 
     # attempt to remove owner twice
     channel_removeowner(admin['token'], channel_id, user0['u_id'])
-    assert not is_channel_owner(user0['u_id'], admin['token'], channel_id)
+    assert not is_channel_owner(user0['u_id'], channel_id)
 
     # assert that channel_removeowner raises InputError
     with pytest.raises(InputError):
