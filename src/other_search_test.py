@@ -20,6 +20,7 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 -> test_other_search_no_messages()
 -> test_other_search_empty_query()
 -> test_other_search_admin()
+-> test_other_search_multiple_channels()
 -> test_other_search_invalid_token()
 '''
 
