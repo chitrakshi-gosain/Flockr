@@ -59,13 +59,16 @@ def admin_userpermission_change(token, u_id, permission_id):
         raise InputError('permission_id is invalid')
 
 def search(token, query_str):
-    return {
-        'messages': [
-            {
-                'message_id': 1,
-                'u_id': 1,
-                'message': 'Hello world',
-                'time_created': 1582426789,
-            }
-        ],
-    }
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
+        raise AccesError('invalid token')
+
+
+    #find channels user is part of
+    visible_messages = []
+
+    for channel in data.data['channels']:
+        if helper.is_user_in_channel(user_info['u_id'], channel['channel_id']) or user_info['is_admin']:
+            visible_messages.append(channel['messages'])
+
+    return {'messages': list(filter(lambda message: query_str in message, visible_messages)) }

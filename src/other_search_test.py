@@ -104,8 +104,10 @@ def test_other_search_join_channel():
         'message' : 'Now Im in a channel',
     }
 
-    searched_messages = search(users['user0']['token'], 'channel')
-    assert pop_datetimes(searched_messages['messages']) == [message1_info, message2_info]
+    searched_messages = search(users['user0']['token'], 'no channels')
+    popped = pop_datetimes(searched_messages['messages'])
+    assert message1_info in popped
+    assert message2_info not in popped
 
 def test_other_search_no_messages():
     clear()
@@ -134,7 +136,9 @@ def test_other_search_empty_query():
     }
 
     searched_messages = search(users['user0']['token'], '')
-    assert pop_datetimes(searched_messages['messages']) == [message1_info, message2_info]
+    popped =  pop_datetimes(searched_messages['messages'])
+    assert message1_info in popped
+    assert message2_info in popped
 
 def test_other_search_admin():
     clear()
@@ -148,7 +152,31 @@ def test_other_search_admin():
     }
 
     searched_messages = search(users['admin']['token'], 'priv')
-    assert pop_datetimes(searched_messages['messages']) == [message1_info]
+    popped = pop_datetimes(searched_messages['messages'])
+    assert message1_info in popped
+
+def test_other_search_multiple_channels():
+    clear()
+    users, channels = initialise_data()
+
+    message1_id = message_send(users['admin']['token'], channels['publ']['channel_id'], 'channel1')
+    message1_info = {
+        'message_id' : message1_id,
+        'u_id' : users['admin']['u_id'],
+        'message' : 'channel1',
+    }
+
+    message2_id = message_send(users['admin']['token'], channels['priv']['channel_id'], 'channel2')
+    message2_info = {
+        'message_id' : message2_id,
+        'u_id' : users['admin']['u_id'],
+        'message' : 'channel2',
+    }
+
+    searched_messages = search(users['admin']['token'], 'channel')
+    popped = pop_datetimes(searched_messages['messages'])
+    assert message1_info in popped
+    assert message2_info in popped
 
 def test_other_search_invalid_token():
     clear()
