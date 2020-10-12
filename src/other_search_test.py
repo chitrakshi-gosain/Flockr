@@ -1,4 +1,5 @@
 from other import clear, search
+from message import message_send
 from auth import auth_register
 from channels import channels_create
 from channel import channel_join
@@ -151,7 +152,6 @@ def test_other_search_admin():
 
 def test_other_search_invalid_token():
     clear()
-    users = initialise_data()[0]
 
     invalid_token = ' '
 
