@@ -1,7 +1,7 @@
-from channel import channel_join
-from other import clear, admin_userpermission_change
+from other import clear, search
 from auth import auth_register
 from channels import channels_create
+from channel import channel_join
 
 import pytest
 from error import InputError, AccessError
@@ -13,7 +13,13 @@ from error import InputError, AccessError
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 -> intialise_data() return { users }, { channels }
--> test_other_search_()
+-> pop_datetimes(messages) return {messages} (without 'time_created')
+-> test_other_search_not_in_channels()
+-> test_other_search_join_channel()
+-> test_other_search_no_messages()
+-> test_other_search_empty_query()
+-> test_other_search_admin()
+-> test_other_search_invalid_token()
 '''
 
 '''
@@ -37,14 +43,7 @@ Description: Given a query string, return a collection of messages in
 Assumptions:
 1. ' ' is an invalid token
 2. Admins can see all messages
-'''
-
-'''
-message: [{'message_id':0,
-           'u_id' : 0,
-           'message' : 'fwidwsadwad',
-           'time_created' : datetime
-        }]
+3. '' will return all visible messages
 '''
 
 def initialise_data():
@@ -70,12 +69,12 @@ def initialise_data():
         'user_priv' : channel_priv_user_details,
     })
 
-def test_other_search_basic():
-    clear()
-    users, channels = initialise_data()
-    pass
+def pop_datetimes(messages):
+    for entry in messages:
+        entry.pop('time_created')
+    return messages
 
-def test_other_search_in_no_channels():
+def test_other_search_not_in_channels():
     clear()
     users, channels = initialise_data()
 
@@ -86,29 +85,75 @@ def test_other_search_join_channel():
     clear()
     users, channels = initialise_data()
 
-    message_id = message_send(users['admin']['token'], channels['publ']['channel_id'], 'I am in no channels')
-    assert search(users['user0']['token'], 'I am in no channels') == { 'messages': [] }
+    message1_id = message_send(users['admin']['token'], channels['publ']['channel_id'], 'I am in no channels')
+    message1_info = {
+        'message_id' : message1_id,
+        'u_id' : users['admin']['u_id'],
+        'message' : 'I am in no channels',
+    }
+
+    assert search(users['user0']['token'], 'channel') == { 'messages': [] }
 
     channel_join(users['user0']['token'], channels['publ']['channel_id'])
-    #We can't get exact channel details
-    assert search(users['user0']['token'], 'I am in no channels') == { 'messages': [] }
+
+    message2_id = message_send(users['admin']['token'], channels['publ']['channel_id'], 'Now Im in a channel')
+    message2_info = {
+        'message_id' : message2_id,
+        'u_id' : users['admin']['u_id'],
+        'message' : 'Now Im in a channel',
+    }
+
+    searched_messages = search(users['user0']['token'], 'channel')
+    assert pop_datetimes(searched_messages['messages']) == [message1_info, message2_info]
 
 def test_other_search_no_messages():
     clear()
-    users, channels = initialise_data()
-    pass
+    users = initialise_data()[0]
+
+    assert search(users['user0']['token'], 'There are no messages') == { 'messages': [] }
 
 def test_other_search_empty_query():
     clear()
     users, channels = initialise_data()
-    pass
 
-def test_other_seach_admin():
+    channel_join(users['user0']['token'], channels['publ']['channel_id'])
+
+    message1_id = message_send(users['admin']['token'], channels['publ']['channel_id'], 'this is message1')
+    message1_info = {
+        'message_id' : message1_id,
+        'u_id' : users['admin']['u_id'],
+        'message' : 'this is message1',
+    }
+
+    message2_id = message_send(users['admin']['token'], channels['publ']['channel_id'], 'this is message2')
+    message2_info = {
+        'message_id' : message2_id,
+        'u_id' : users['admin']['u_id'],
+        'message' : 'this is message2',
+    }
+
+    searched_messages = search(users['user0']['token'], '')
+    assert pop_datetimes(searched_messages['messages']) == [message1_info, message2_info]
+
+def test_other_search_admin():
     clear()
     users, channels = initialise_data()
-    pass
 
-def test_other_seach_invalid_token():
+    message1_id = message_send(users['user0']['token'], channels['user_priv']['channel_id'], 'private')
+    message1_info = {
+        'message_id' : message1_id,
+        'u_id' : users['user0']['u_id'],
+        'message' : 'private',
+    }
+
+    searched_messages = search(users['admin']['token'], 'priv')
+    assert pop_datetimes(searched_messages['messages']) == [message1_info]
+
+def test_other_search_invalid_token():
     clear()
-    users, channels = initialise_data()
-    pass
+    users = initialise_data()[0]
+
+    invalid_token = ' '
+
+    with pytest.raises(AccessError):
+        search(invalid_token, 'This should be illegal')
