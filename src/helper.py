@@ -34,7 +34,7 @@ def check_if_valid_password(password):
     return True
 
 
-def check_name_length_and_is_a_whitesapce(name_to_check):
+def check_name_length_and_is_a_whitespace(name_to_check):
     '''
     Given the first or last name of the user to be registered checks if
     it's length is in valid range and if it is not completely a

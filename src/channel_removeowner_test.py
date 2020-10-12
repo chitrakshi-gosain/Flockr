@@ -35,7 +35,7 @@ KEEP IN MIND:
 import pytest
 import auth
 from helper import is_channel_owner
-from channel import channel_details, channel_addowner, channel_removeowner, channel_join
+from channel import channel_addowner, channel_removeowner, channel_join
 from channels import channels_create
 from error import InputError, AccessError
 from other import clear

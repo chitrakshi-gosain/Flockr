@@ -136,7 +136,7 @@ def test_channel_addowner_authnotowner():
     clear()
 
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    u_id0, token0 = user0_details['u_id'], user0_details['token']
+    token0 = user0_details['token']
 
     channel_info = channels_create(token0, "ch_name0", True)
     channel_id = channel_info['channel_id']
@@ -153,7 +153,7 @@ def test_channel_addowner_authnotowner():
     # assert that channel_addowner raises AccessError
     with pytest.raises(AccessError):
         channel_addowner(token1, channel_id, u_id1)
-    
+
 
 # test that channel_addowner raises AccessError if the provided token is not valid
 def test_channel_addowner_invalidtoken():

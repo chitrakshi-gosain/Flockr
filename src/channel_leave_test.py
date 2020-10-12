@@ -13,7 +13,8 @@ from error import InputError, AccessError
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 -> intialise_user_data() return { users }, { channels }
--> is_user_in_channel() return True/False
+-> is_user_in_channel(user_id, token, channel_id) return amount of times u_id was found in channel
+-> is_owner_in_channel(user_id, token, channel_id) return amount of times u_id was found in owner_members
 -> test_channel_leave_basic()
 -> test_channel_leave_invalid_channel()
 -> test_channel_leave_not_in_channel()
@@ -61,12 +62,12 @@ def initialise_data():
     })
 
 def is_user_in_channel(user_id, token, channel_id):
-    channel_info = channel_details(token, channel_id)
-    for member in channel_info['all_members']:
-        if (member['u_id'] == user_id):
-            return True
-    return False
+    channel_members = channel_details(token, channel_id)['all_members']
+    return len(list(filter(lambda user: user_id == user['u_id'], channel_members)))
 
+def is_owner_in_channel(user_id, token, channel_id):
+    owner_members = channel_details(token, channel_id)['owner_members']
+    return len(list(filter(lambda user: user_id == user['u_id'], owner_members)))
 
 def test_channel_leave_basic():
     clear()
@@ -107,12 +108,6 @@ def test_channel_join_invalid_token():
     with pytest.raises(AccessError): #expect AccessError as token is invalid
         assert channel_leave(invalid_token, channels['publ']['channel_id'])
 
-def is_owner_in_channel(user_id, token, channel_id):
-    channel_info = channel_details(token, channel_id)
-    for owner in channel_info['owner_members']:
-        if (owner['u_id'] == user_id):
-            return True
-    return False
 
 def test_channel_leave_owner():
     clear()

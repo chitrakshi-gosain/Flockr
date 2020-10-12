@@ -6,10 +6,9 @@ Iteration 1
 '''
 
 import data
-from other import clear
 from error import InputError, AccessError
 from helper import check_if_valid_email, check_if_valid_password, \
-check_name_length_and_is_a_whitesapce, invalidating_token, get_user_info, \
+check_name_length_and_is_a_whitespace, invalidating_token, get_user_info, \
 generate_handle, check_password, store_generated_token
 
 '''
@@ -139,7 +138,7 @@ def auth_logout(token):
                         token')
 
     # Checking for AccessError:
-    if not get_user_info('token', token):
+    if get_user_info('token', token) is False:
         raise AccessError(description='Token passed in is not a valid token')
 
     # Since there is no InputError or AccessError, hence proceeding
@@ -178,7 +177,7 @@ def auth_register(email, password, name_first, name_last):
         raise InputError(description='Insufficient parameters. Please enter: \
                         email, password, name_first, name_last')
 
-    if check_if_valid_email(email) is False:
+    if check_if_valid_email(email) is None:
         raise InputError(description='Email entered is not a valid email')
 
     if check_if_valid_password(password) is False:
@@ -186,11 +185,11 @@ def auth_register(email, password, name_first, name_last):
                         characters long or more than 32 characters long or \
                             contains Non-ASCII characters')
 
-    if check_name_length_and_is_a_whitesapce(name_first) is False:
+    if check_name_length_and_is_a_whitespace(name_first) is False:
         raise InputError(description='name_first is not between 1 and 50 \
                         characters inclusively in length or is a whitespace')
 
-    if check_name_length_and_is_a_whitesapce(name_last) is False:
+    if check_name_length_and_is_a_whitespace(name_last) is False:
         raise InputError(description='name_last is not between 1 and 50 \
                         characters inclusively in length or is a whitespace')
 
