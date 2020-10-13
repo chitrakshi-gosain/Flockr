@@ -9,8 +9,11 @@ import user
 from error import InputError, AccessError
 from other import clear
 
-# basic test with no edge case or errors raised
 def test_user_profile_setname_noerrors():
+    '''
+    basic test with no edge case or errors raised
+    '''
+
     clear()
 
     name_first_old = 'name_first_old'
@@ -20,7 +23,7 @@ def test_user_profile_setname_noerrors():
                                       "name_first_old", "name_last_old")
     token = user_details['token']
     u_id = user_details['u_id']
-    
+
     user_dict = user.user_profile(token, u_id)
 
     assert user_dict['name_first'] == name_first_old
@@ -36,10 +39,12 @@ def test_user_profile_setname_noerrors():
     assert user_dict['name_first'] == name_first_new
     assert user_dict['name_last'] == name_last_new
 
-
-# test that user_profile_setname raises InputError
-# if provided name_first is <1 characters in length
 def test_user_profile_setname_firstname_tooshort():
+    '''
+    test that user_profile_setname raises InputError
+    if provided name_first is <1 characters in length
+    '''
+
     clear()
 
     name_first_old = 'name_first_old'
@@ -49,7 +54,7 @@ def test_user_profile_setname_firstname_tooshort():
                                       "name_first_old", "name_last_old")
     token = user_details['token']
     u_id = user_details['u_id']
-    
+
     user_dict = user.user_profile(token, u_id)
 
     assert user_dict['name_first'] == name_first_old
@@ -62,10 +67,12 @@ def test_user_profile_setname_firstname_tooshort():
     with pytest.raises(InputError):
         user.user_profile_setname(token, name_first_new, name_last_new)
 
-
-# test that user_profile_setname raises InputError
-# if provided name_first is >50 characters in length
 def test_user_profile_setname_firstname_toolong():
+    '''
+    test that user_profile_setname raises InputError
+    if provided name_first is >50 characters in length
+    '''
+
     clear()
 
     name_first_old = 'name_first_old'
@@ -75,7 +82,7 @@ def test_user_profile_setname_firstname_toolong():
                                       "name_first_old", "name_last_old")
     token = user_details['token']
     u_id = user_details['u_id']
-    
+
     user_dict = user.user_profile(token, u_id)
 
     assert user_dict['name_first'] == name_first_old
@@ -88,10 +95,12 @@ def test_user_profile_setname_firstname_toolong():
     with pytest.raises(InputError):
         user.user_profile_setname(token, name_first_new, name_last_new)
 
-
-# test that user_profile_setname raises InputError
-# if provided name_last is <1 characters in length
 def test_user_profile_setname_lastname_tooshort():
+    '''
+    test that user_profile_setname raises InputError
+    if provided name_last is <1 characters in length
+    '''
+
     clear()
 
     name_first_old = 'name_first_old'
@@ -101,7 +110,7 @@ def test_user_profile_setname_lastname_tooshort():
                                       "name_first_old", "name_last_old")
     token = user_details['token']
     u_id = user_details['u_id']
-    
+
     user_dict = user.user_profile(token, u_id)
 
     assert user_dict['name_first'] == name_first_old
@@ -114,12 +123,14 @@ def test_user_profile_setname_lastname_tooshort():
     with pytest.raises(InputError):
         user.user_profile_setname(token, name_first_new, name_last_new)
 
-
-# test that user_profile_setname raises InputError
-# if provided name_last is >50 characters in length
 def test_user_profile_setname_lastname_toolong():
+    '''
+    test that user_profile_setname raises InputError
+    if provided name_last is >50 characters in length
+    '''
+
     clear()
-    
+
     name_first_old = 'name_first_old'
     name_last_old = 'name_last_old'
 
@@ -127,7 +138,7 @@ def test_user_profile_setname_lastname_toolong():
                                       "name_first_old", "name_last_old")
     token = user_details['token']
     u_id = user_details['u_id']
-    
+
     user_dict = user.user_profile(token, u_id)
 
     assert user_dict['name_first'] == name_first_old
@@ -140,9 +151,12 @@ def test_user_profile_setname_lastname_toolong():
     with pytest.raises(InputError):
         user.user_profile_setname(token, name_first_new, name_last_new)
 
-# test that user_profile_setname raises AccessError
-# if provided token is invalid
 def test_user_profile_setname_accesserror():
+    '''
+    test that user_profile_setname raises AccessError
+    if provided token is invalid
+    '''
+
     clear()
 
     name_first_old = 'name_first_old'
