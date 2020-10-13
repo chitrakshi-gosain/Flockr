@@ -16,53 +16,59 @@ Iteration 2
 
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> auth_register(email, password, name_first, name_last) return
-   {u_id, token}
--> auth_login(email,password) return {u_id, token}
--> auth_logout(token) return {is_sucess}
+-> user_profile(token, u_id) return {user}
+-> user_profile_setname(token, name_first, name_last) return {}
+-> user_profile_setemail(token, email) return {}
+-> user_profile_sethandle(toke, handle_str) return {}
 '''
 
 '''
 DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
-    -> email: string
-    -> password: string
-    -> name_first: string
-    -> name_last: string
     -> token: string
     -> u_id: inetger
-    -> is_success: boolean
+    -> user: dictionary containing u_id, email, name_first, name_last,
+             handle_str
+    -> name_first: string
+    -> name_last: string
+    -> email: string
+    -> handle_str: string
 '''
 
 '''
 EXCEPTIONS
-    * auth_login
+    * user_profile
         Error type: InputError
             -> insufficient parameters
-            -> email entered is not a valid email
-            -> email entered does not belong to a user
-            -> password is not correct
-    * auth_logout
-        Error type: InputError
-            -> insufficient parameters
+            -> user with u_id is not a valid_user
         Error type: AccessError
             -> token passed in is not a valid token
-    * auth_register
+    * user_profile_setname
         Error type: InputError
             -> insufficient parameters
-            -> email entered is not a valid email
-            -> email address is already being used by another user
-            -> password entered is less than 6 characters long or more
-               than 32 characters long
             -> name_first is not between 1 and 50 characters inclusively
                in length
             -> name_last is not between 1 and 50 characters inclusively
                in length
+        Error type: AccessError
+            -> token passed in is not a valid token
+    * user_profile_setemail
+        Error type: InputError
+            -> insufficient parameters
+            -> email entered is not a valid email
+            -> email address is already being used by another user
+        Error type: AccessError
+            -> token passed in is not a valid token
+    * user_profile_sethandle
+        Error type: InputError
+            -> insufficient parameters
+            -> handle_str must be between 3 and 20 characters
+            -> handle is already being used by another user
+        Error type: AccessError
+            -> token passed in is not a valid token
 '''
 
 '''
 KEEP IN MIND:
--> make one function to check if user is registered and use it for both
-   re-registration check and registered before login check
 -> allow multiple session log-ins,
    * for this make a data.data['valid_tokens'] dict in data.py, have
    tokens as key, and value as u_id this way we can keep track of
@@ -84,35 +90,33 @@ def user_profile(token, u_id):
     }
 
 def user_profile_setname(token, name_first, name_last):
-    '''
-    DESCRIPTION:
-    here
-
-    PARAMETERS:
-        -> param : elab what param is eg email : email of a user
-
-    RETURN VALUES:
-        -> return_vales : elab it eg u_id : user-id of the user
-    '''
-
     return {
     }
 
 def user_profile_setemail(token, email):
     '''
     DESCRIPTION:
-    here
+    Updates the authorised user's email address
 
     PARAMETERS:
-        -> param : elab what param is eg email : email of a user
-
-    RETURN VALUES:
-        -> return_vales : elab it eg u_id : user-id of the user
+        -> token : token of a user for the particular session (may or
+                   may not be authorised)
+        -> email : email of a user
     '''
 
     return {
     }
 
 def user_profile_sethandle(token, handle_str):
+    '''
+    DESCRIPTION:
+    Updates the authorised user's handle (i.e. display name)
+
+    PARAMETERS:
+        -> token : token of a user for the particular session (may or
+                   may not be authorised)
+        -> handle_str : handle of a user
+    '''
+
     return {
     }

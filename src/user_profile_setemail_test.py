@@ -7,8 +7,9 @@ Iteration 2
 
 import pytest
 from other import clear
-from error import InputError
-from user import user_profile, user_profile_setemail, user_profile_sethandle
+from error import InputError, AccessError
+from user import user_profile, user_profile_setemail
+from auth import auth_register
 
 # edit basic template to fit this file
 
@@ -17,11 +18,11 @@ from user import user_profile, user_profile_setemail, user_profile_sethandle
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> auth_register(email, password, name_first, name_last) return
-   {u_id, token}
--> auth_login(email,password) return {u_id, token}
--> auth_logout(token) return {is_sucess}
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> user_profile(token, u_id) return {user}
+-> user_profile_setname(token, name_first, name_last) return {}
+-> user_profile_setemail(token, email) return {}
+-> user_profile_sethandle(toke, handle_str) return {}
 '''
 
 '''
@@ -29,16 +30,13 @@ EXCEPTIONS
 Error type: InputError
     -> insufficient parameters
     -> email entered is not a valid email
-    -> email entered does not belong to a user
-    -> password is not correct
+    -> email address is already being used by another user
+Error type: AccessError
+    -> token passed in is not a valid token
 '''
 
 '''
 KEEP IN MIND:
--> user can be registered/non-registered, hence check
--> allow multiple logins
--> do we keep track of passwords? if in case user enters old password,
-   then??, ask Hayden if this needs to be done
 '''
 
 def test_insufficient_parameters():
@@ -47,10 +45,58 @@ def test_insufficient_parameters():
     '''
 
     clear()
+    with pytest.raises(InputError):
+        user_profile_setemail(None, None)
 
 def test_return_type():
     '''
     ADD DOCSTRING HERE
+    '''
+
+    clear()
+    test_user_0_register = auth_register('myemailid0@gmail.com', '123Abc!0', \
+                                        'Valid', 'User0')
+    test_user_0_updatedemail = user_profile_setemail(test_user_0_register['token'], \
+                                       'mynewemail0@gmail.com')
+    assert isinstance(test_user_0_updatedemail, dict)
+    # checking if returned is empty, may or may not work 3 this line is
+    # dic_is_empty == True, but pythonic
+    dict_is_empty = not test_user_0_updatedemail
+    assert dict_is_empty
+
+def test_invalid_token():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    clear()
+
+def test_invalid_email():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    clear()
+
+def test_existing_email():
+    '''
+    ADD DOCSTRING HERE
+    # not unique email
+    '''
+
+    clear()
+
+def test_succesful_email_updatation():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    clear()
+
+def test_only_unique_changes_accepted():
+    '''
+    ADD DOCSTRING HERE
+    # reguister two users, then change emails of both, but unique and everything should be successful
     '''
 
     clear()
