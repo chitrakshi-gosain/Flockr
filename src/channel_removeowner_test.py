@@ -46,8 +46,10 @@ from other import clear
 
 # TESTS
 
-# basic test with no edge case or errors raised
 def test_channel_removeowner_noerrors():
+    '''
+    basic test with no edge case or errors raised
+    '''
     clear()
 
     admin = auth.auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
@@ -64,9 +66,11 @@ def test_channel_removeowner_noerrors():
     channel_removeowner(admin['token'], channel_id, user0['u_id'])
     assert not is_channel_owner(user0['u_id'], channel_id)
 
-
-# test that channel_removeowner raises InputError if channel_id is not a valid channel_id
 def test_channel_removeowner_invalidchannel():
+    '''
+    test that channel_removeowner raises InputError
+    if channel_id is not a valid channel_id
+    '''
     clear()
 
     admin = auth.auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
@@ -86,9 +90,11 @@ def test_channel_removeowner_invalidchannel():
     with pytest.raises(InputError):
         channel_removeowner(admin['token'], invalid_channel_id, user0['u_id'])
 
-# test that channel_removeowner raises InputError
-# if user with provided u_id is not an owner of the channel
 def test_channel_removeowner_notowner():
+    '''
+    test that channel_removeowner raises InputError
+    if user with provided u_id is not an owner of the channel
+    '''
     clear()
 
     admin = auth.auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
@@ -111,9 +117,11 @@ def test_channel_removeowner_notowner():
     with pytest.raises(InputError):
         channel_removeowner(admin['token'], channel_id, user0['u_id'])
 
-# test that channel_removeowner raises AccessError
-# if the authorised user is not an owner of the channel or admin of the flockr
 def test_channel_removeowner_authnotowner():
+    '''
+    test that channel_removeowner raises AccessError
+    if the authorised user is not an owner of the channel or admin of the flockr
+    '''
     clear()
 
     admin = auth.auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
@@ -128,10 +136,12 @@ def test_channel_removeowner_authnotowner():
     with pytest.raises(AccessError):
         channel_removeowner(user0['token'], channel_id, admin['u_id'])
 
-# test that channel_removeowner raises AccessError
-# if the authorised user is not an owner of the channel or the flockr
-# i.e. test that channel_removeowner raises AccessError if token is invalid
 def test_channel_removeowner_accesserror():
+    '''
+    test that channel_removeowner raises AccessError
+    if the authorised user is not an owner of the channel or the flockr
+    i.e. test that channel_removeowner raises AccessError if token is invalid
+    '''
     clear()
 
     admin = auth.auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
