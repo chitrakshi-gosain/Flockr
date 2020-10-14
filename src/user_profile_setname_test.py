@@ -13,7 +13,6 @@ def test_user_profile_setname_noerrors():
     '''
     basic test with no edge case or errors raised
     '''
-
     clear()
 
     name_first_old = 'name_first_old'
@@ -24,7 +23,8 @@ def test_user_profile_setname_noerrors():
     token = user_details['token']
     u_id = user_details['u_id']
 
-    user_dict = user.user_profile(token, u_id)
+    user_profile = user.user_profile(token, u_id)
+    user_dict = user_profile["user"]
 
     assert user_dict['name_first'] == name_first_old
     assert user_dict['name_last'] == name_last_old
@@ -34,7 +34,8 @@ def test_user_profile_setname_noerrors():
 
     user.user_profile_setname(token, name_first_new, name_last_new)
 
-    user_dict = user.user_profile(token, u_id)
+    user_profile = user.user_profile(token, u_id)
+    user_dict = user_profile["user"]
 
     assert user_dict['name_first'] == name_first_new
     assert user_dict['name_last'] == name_last_new
@@ -44,7 +45,6 @@ def test_user_profile_setname_firstname_tooshort():
     test that user_profile_setname raises InputError
     if provided name_first is <1 characters in length
     '''
-
     clear()
 
     name_first_old = 'name_first_old'
@@ -55,7 +55,8 @@ def test_user_profile_setname_firstname_tooshort():
     token = user_details['token']
     u_id = user_details['u_id']
 
-    user_dict = user.user_profile(token, u_id)
+    user_profile = user.user_profile(token, u_id)
+    user_dict = user_profile["user"]
 
     assert user_dict['name_first'] == name_first_old
     assert user_dict['name_last'] == name_last_old
@@ -72,7 +73,6 @@ def test_user_profile_setname_firstname_toolong():
     test that user_profile_setname raises InputError
     if provided name_first is >50 characters in length
     '''
-
     clear()
 
     name_first_old = 'name_first_old'
@@ -83,7 +83,8 @@ def test_user_profile_setname_firstname_toolong():
     token = user_details['token']
     u_id = user_details['u_id']
 
-    user_dict = user.user_profile(token, u_id)
+    user_profile = user.user_profile(token, u_id)
+    user_dict = user_profile["user"]
 
     assert user_dict['name_first'] == name_first_old
     assert user_dict['name_last'] == name_last_old
@@ -100,7 +101,6 @@ def test_user_profile_setname_lastname_tooshort():
     test that user_profile_setname raises InputError
     if provided name_last is <1 characters in length
     '''
-
     clear()
 
     name_first_old = 'name_first_old'
@@ -111,7 +111,8 @@ def test_user_profile_setname_lastname_tooshort():
     token = user_details['token']
     u_id = user_details['u_id']
 
-    user_dict = user.user_profile(token, u_id)
+    user_profile = user.user_profile(token, u_id)
+    user_dict = user_profile["user"]
 
     assert user_dict['name_first'] == name_first_old
     assert user_dict['name_last'] == name_last_old
@@ -128,7 +129,6 @@ def test_user_profile_setname_lastname_toolong():
     test that user_profile_setname raises InputError
     if provided name_last is >50 characters in length
     '''
-
     clear()
 
     name_first_old = 'name_first_old'
@@ -139,7 +139,8 @@ def test_user_profile_setname_lastname_toolong():
     token = user_details['token']
     u_id = user_details['u_id']
 
-    user_dict = user.user_profile(token, u_id)
+    user_profile = user.user_profile(token, u_id)
+    user_dict = user_profile["user"]
 
     assert user_dict['name_first'] == name_first_old
     assert user_dict['name_last'] == name_last_old
@@ -167,7 +168,8 @@ def test_user_profile_setname_accesserror():
     token = user_details['token']
     u_id = user_details['u_id']
 
-    user_dict = user.user_profile(token, u_id)
+    user_profile = user.user_profile(token, u_id)
+    user_dict = user_profile["user"]
 
     assert user_dict['name_first'] == name_first_old
     assert user_dict['name_last'] == name_last_old
