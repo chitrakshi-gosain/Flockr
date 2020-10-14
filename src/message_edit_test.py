@@ -12,6 +12,27 @@ from message import message_send, message_edit
 from error import AccessError
 from other import clear
 
+'''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
+-> channel_join(token, channel_id) return {}
+-> channels_create(token, name, is_public) return {channel_id}
+-> message_send(token, channel_id, message) return {message_id}
+-> message_edit(token, message_id, message) return {}
+'''
+
+'''
+EXCEPTIONS
+Error type: AccessError
+    -> token passed in is not a valid token
+    -> authorised user is not an admin of the flockr or owner of the channel
+    -> Message with message_id was not sent by the authorised user making this request
+'''
+
 def test_message_edit_noerrors():
     '''
     basic test with no edge case or errors raised
