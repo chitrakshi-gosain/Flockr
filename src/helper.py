@@ -137,6 +137,24 @@ def is_user_in_channel(u_id, channel_id):
     channel_members = get_channel_info(channel_id)['all_members']
     return any(user['u_id'] == u_id for user in channel_members)
 
+def get_message_info(message_id):
+    '''
+    Given a potential message_id, returns the message dictionary
+    of the matching channel, else returns false
+
+    Example:
+    message_info = helper.get_channel_info(channel_id)
+    if not message_info:
+        raise InputError('message does not exist')
+    '''
+
+    for channel in data.data['channels']:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                return message
+
+    return False
+
 
 ########################################################################################
 
