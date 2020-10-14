@@ -27,6 +27,7 @@ def message_edit(token, message_id, message):
     Given a token, a message_id, and a message,
     finds the sent message with the provided message_id
     and updates its text with the given message.
+    If the given message is an empty string, delete the message.
 
     PARAMETERS:
         -> token : token of user who called the function
@@ -57,15 +58,18 @@ def message_edit(token, message_id, message):
         raise AccessError('authorised user is not an admin of the flockr,'
                           + ' or an owner of the channel')
 
-    channel_index = 0
+    c_index = 0
     for channel in data.data['channels']:
-        message_index = 0
+        m_index = 0
         for message_dict in channel['messages']:
             if message_dict['message_id'] == message_id:
-                data.data['channels'][channel_index]['messages'][message_index]['message'] = message
+                if message == "":
+                    del data.data['channels'][c_index]['messages'][m_index]
+                else:
+                    data.data['channels'][c_index]['messages'][m_index]['message'] = message
                 break
-            message_index += 1
-        channel_index += 1
+            m_index += 1
+        c_index += 1
 
     return {
     }
