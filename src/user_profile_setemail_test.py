@@ -84,7 +84,7 @@ def initialise_user_data():
 
 def test_insufficient_parameters():
     '''
-    ADD DOCTSRING HERE
+    ADD DOCSTRING HERE
     '''
 
     clear()
@@ -109,7 +109,7 @@ def test_invalid_token():
     ADD DOCSTRING HERE
     '''
 
-    with pytest.raises(InputError):
+    with pytest.raises(AccessError):
         user_profile_setemail('some_token', 'logintestvalidemailid@email.com')
 
 def test_invalid_email(initialise_user_data):
@@ -128,7 +128,7 @@ def test_existing_email(initialise_user_data):
     # not unique email
     '''
 
-    test_user_2 = initialise_user_data['user1']
+    test_user_2 = initialise_user_data['user2']
     with pytest.raises(InputError):
         user_profile_setemail(test_user_2['token'], 'user1@email.com')
 
@@ -139,7 +139,7 @@ def test_successful_email_updatation(initialise_user_data):
 
     test_user_john = initialise_user_data['john']
     user_profile_setemail(test_user_john['token'], 'john.smith@gmail.com')
-    john_details = user_profile(test_user_john['token'],test_user_john['u_id'])
+    john_details = user_profile(test_user_john['token'], test_user_john['u_id'])
     assert john_details['email'] == 'john.smith@gmail.com'
 
 def test_only_unique_changes_accepted(initialise_user_data):
@@ -151,7 +151,7 @@ def test_only_unique_changes_accepted(initialise_user_data):
 
     test_user_jane = initialise_user_data['jane']
     user_profile_setemail(test_user_jane['token'], 'jane.smith@gmail.com')
-    jane_details = user_profile(test_user_jane['token'],test_user_jane['u_id'])
+    jane_details = user_profile(test_user_jane['token'], test_user_jane['u_id'])
     assert jane_details['email'] == 'jane.smith@gmail.com'
 
     test_user_ingrid = initialise_user_data['ingrid']
@@ -170,10 +170,10 @@ def test_no_change(initialise_user_data):
     '''
 
     test_user_noah = initialise_user_data['noah']
-    test_user_noah_updateemail = user_profile_setemail(test_user_noah['token'],\
+    test_user_noah_updatedemail = user_profile_setemail(test_user_noah['token'],\
                                                       'noah_navarro@yahoo.com')
-    noah_details = user_profile(test_user_noah['token'],test_user_noah['u_id'])
+    noah_details = user_profile(test_user_noah['token'], test_user_noah['u_id'])
 
     assert noah_details['email'] == 'noah_navarro@yahoo.com'
-    assert isinstance(test_user_noah_updateemail, dict)
-    assert not test_user_noah_updateemail
+    assert isinstance(test_user_noah_updatedemail, dict)
+    assert not test_user_noah_updatedemail
