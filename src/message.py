@@ -12,6 +12,38 @@ from channels import channels_create
 from error import AccessError
 from other import clear
 
+'''
+*********************************BASIC TEMPLATE*********************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> message_send(token, channel_id, message) return {message_id}
+-> message_remove(token, message_id) return {}
+-> message_edit(token, message_id, message) return {}
+'''
+
+'''
+DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
+    -> token: string
+    -> channel_id: integer
+    -> message: string
+    -> message_id: integer
+'''
+
+'''
+EXCEPTIONS
+    * message_send
+
+    * message_remove
+    
+    * message_edit
+        Error type: AccessError
+            -> token passed in is not a valid token
+            -> authorised user is not an admin of the flockr or owner of the channel
+            -> Message with message_id was not sent by the authorised user making this request
+'''
+
 def message_send(token, channel_id, message):
     return {
         'message_id': 1,
@@ -47,6 +79,7 @@ def message_edit(token, message_id, message):
     if user_info["u_id"] != message_info["u_id"]:
         raise AccessError("message not sent by user")
 
+    # get channel_id for channel in which the message with message_id was sent
     channel_id = -1
     for channel in data.data['channels']:
         for message_dict in channel['messages']:
