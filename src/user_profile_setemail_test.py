@@ -68,8 +68,6 @@ def initialise_user_data():
                                 'Noah', 'Navarro')
     ingrid_details = auth_register('ingrid.cline@gmail.com', '572o7563O*', \
                                   'Ingrid', 'Cline')
-    donald_details = auth_register('donaldrichards@gmail.com', 'kjDf2g@h@@df',\
-                                  'Donald', 'Richards')
 
     return {
         'user0': user0_details,
@@ -81,8 +79,7 @@ def initialise_user_data():
         'john': john_details,
         'jane': jane_details,
         'noah': noah_details,
-        'ingrid': ingrid_details,
-        'donald': donald_details
+        'ingrid': ingrid_details
     }
 
 def test_insufficient_parameters():
@@ -101,36 +98,49 @@ def test_return_type(initialise_user_data):
 
     test_user_0 = initialise_user_data['user0']
     test_user_0_updatedemail = user_profile_setemail(test_user_0['token'], \
-                                       'mynewemail0@gmail.com')
+                                       'mynewemail0@email.com')
     assert isinstance(test_user_0_updatedemail, dict)
-    # checking if returned is empty, may or may not work 3 this line is
-    # dic_is_empty == True, but pythonic
-    dict_is_empty = not test_user_0_updatedemail
-    assert dict_is_empty
+    # checking if returned is empty, may or may not work this line is
+    #  == True, but pythonic
+    assert not test_user_0_updatedemail
 
-def test_invalid_token(initialise_user_data):
+def test_invalid_token():
     '''
     ADD DOCSTRING HERE
     '''
+
+    with pytest.raises(InputError):
+        user_profile_setemail('some_token', 'logintestvalidemailid@email.com')
 
 def test_invalid_email(initialise_user_data):
     '''
     ADD DOCSTRING HERE
     '''
-    pass
+
+    test_user_1 = initialise_user_data['user1']
+    with pytest.raises(InputError):
+        user_profile_setemail(test_user_1['token'], \
+                             'logintestinvalidemailid_email.com')
 
 def test_existing_email(initialise_user_data):
     '''
     ADD DOCSTRING HERE
     # not unique email
     '''
-    pass
+
+    test_user_2 = initialise_user_data['user1']
+    with pytest.raises(InputError):
+        user_profile_setemail(test_user_2['token'], 'user1@email.com')
 
 def test_successful_email_updatation(initialise_user_data):
     '''
     ADD DOCSTRING HERE
     '''
-    pass
+
+    test_user_john = initialise_user_data['john']
+    user_profile_setemail(test_user_john['token'], 'john.smith@gmail.com')
+    john_details = user_profile(test_user_john['token'],test_user_john['u_id'])
+    assert john_details['email'] == 'john.smith@gmail.com'
 
 def test_only_unique_changes_accepted(initialise_user_data):
     '''
@@ -138,4 +148,32 @@ def test_only_unique_changes_accepted(initialise_user_data):
     # register two users, then change emails of both, but unique and
     # everything should be successful
     '''
-    pass
+
+    test_user_jane = initialise_user_data['jane']
+    user_profile_setemail(test_user_jane['token'], 'jane.smith@gmail.com')
+    jane_details = user_profile(test_user_jane['token'],test_user_jane['u_id'])
+    assert jane_details['email'] == 'jane.smith@gmail.com'
+
+    test_user_ingrid = initialise_user_data['ingrid']
+    user_profile_setemail(test_user_ingrid['token'], 'janesmith@hotmail.com')
+    ingrid_details = user_profile(test_user_ingrid['token'], \
+                                 test_user_ingrid['u_id'])
+    assert ingrid_details['email'] == 'janesmith@hotmail.com'
+
+    assert jane_details['email'] != ingrid_details['email']
+
+def test_no_change(initialise_user_data):
+    '''
+    ADD DOCSTRING HERE
+    # user tries to change email to the one which he is using already
+    # do not throw an error
+    '''
+
+    test_user_noah = initialise_user_data['noah']
+    test_user_noah_updateemail = user_profile_setemail(test_user_noah['token'],\
+                                                      'noah_navarro@yahoo.com')
+    noah_details = user_profile(test_user_noah['token'],test_user_noah['u_id'])
+
+    assert noah_details['email'] == 'noah_navarro@yahoo.com'
+    assert isinstance(test_user_noah_updateemail, dict)
+    assert not test_user_noah_updateemail
