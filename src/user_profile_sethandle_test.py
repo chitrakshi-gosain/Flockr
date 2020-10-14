@@ -45,8 +45,9 @@ def initialise_user_data():
     Resets the internal data of the application to it's initial state
     and sets up various user sample data (descriptive and realistic) for
     testing purposes and returns user data which is implementation
-    dependent.
+    dependent
     '''
+
     clear()
 
     user0_details = auth_register('user0@email.com', 'user0_pass1!', \
@@ -207,3 +208,25 @@ def test_no_change(initialise_user_data):
     assert noah_details['handle_str'] == 'noah_navarro@yahoo.com'
     assert isinstance(test_user_noah_newhandle, dict)
     assert not test_user_noah_newhandle
+
+def test_only_unique_changes_accepted(initialise_user_data):
+    '''
+    ADD DOCSTRING HERE
+    # register two users, then change handles of both, but unique and
+    # everything should be successful, basically change handle of first
+    # one to something new then second user successfully is able to take
+    # the handle which previous user had first
+    '''
+
+    test_user_jane = initialise_user_data['jane']
+    user_profile_sethandle(test_user_jane['token'], 'jane_handle')
+    jane_details = user_profile(test_user_jane['token'], test_user_jane['u_id'])
+    assert jane_details['handle_str'] == 'jane_handle'
+
+    test_user_ingrid = initialise_user_data['ingrid']
+    user_profile_sethandle(test_user_ingrid['token'], 'jane_older_handle')
+    ingrid_details = user_profile(test_user_ingrid['token'], \
+                                 test_user_ingrid['u_id'])
+    assert ingrid_details['handle_str'] == 'jane_older_handle'
+
+    assert jane_details['handle_str'] != ingrid_details['handle_str']
