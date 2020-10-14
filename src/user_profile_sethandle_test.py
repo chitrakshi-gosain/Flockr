@@ -80,7 +80,7 @@ def initialise_user_data():
         'user3': user3_details,
         'user4': user4_details,
         'user5': user5_details,
-        'user5': user5_details,
+        'user6': user6_details,
         'john': john_details,
         'jane': jane_details,
         'noah': noah_details,
