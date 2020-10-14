@@ -1,7 +1,6 @@
 from auth import auth_register, auth_logout
 from user import user_profile
 from other import clear
-from helper import get_user_info
 from error import AccessError, InputError
 import pytest
 
@@ -16,7 +15,7 @@ import pytest
 
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> intialise_user_data() return {users}
+-> user_data() return {users}
 -> test_user_profile_valid_own(user_data)
 -> test_user_profile_valid_else(user_data)
 -> test_user_profile_valid_logout(user_data)
@@ -159,7 +158,7 @@ def test_user_profile_invalid_uid(user_data):
     invalid_uid = -1
 
     with pytest.raises(InputError):
-        profile_data = profile_data = user_profile(user_data['jane']['token'], invalid_uid)
+        user_profile(user_data['jane']['token'], invalid_uid)
 
 def test_user_profile_invalid_token(user_data):
     '''
@@ -170,4 +169,4 @@ def test_user_profile_invalid_token(user_data):
     auth_logout(user_data['john']['token'])
 
     with pytest.raises(AccessError):
-        profile_data = profile_data = user_profile(invalid_token, user_data['jane']['u_id'])
+        user_profile(invalid_token, user_data['jane']['u_id'])
