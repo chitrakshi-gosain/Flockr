@@ -10,7 +10,7 @@ def test_insufficient_parameters():
     clear()
     with pytest.raises(InputError):
         channel_messages(None, None, None)
-
+        
 def test_user1_not_authorised():
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')

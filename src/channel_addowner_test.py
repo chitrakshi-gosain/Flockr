@@ -43,12 +43,13 @@ from other import clear
 # to the list of owners of a channel with the provided channel_id
 # assumes that u_id is already a member of the channel
 
+### maybe also test for admin vs non-admin (global owners)
+### (an admin is the first user to register in system)
+
 # TESTS
 
+# basic test with no edge case or errors raised
 def test_channel_addowner_noerrors():
-    '''
-    basic test with no edge case or errors raised
-    '''
     clear()
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
@@ -71,11 +72,9 @@ def test_channel_addowner_noerrors():
     channel_addowner(token0, channel_id, u_id1)
     assert helper.is_channel_owner(u_id1, channel_id)
 
+
+# test that channel_addowner raises InputError if channel_id is not a valid channel_id
 def test_channel_addowner_invalidchannel():
-    '''
-    test that channel_addowner raises InputError
-    if channel_id is not a valid channel_id
-    '''
     clear()
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
@@ -100,11 +99,10 @@ def test_channel_addowner_invalidchannel():
     with pytest.raises(InputError):
         channel_addowner(token0, channel_id, u_id1)
 
+
+# test that channel_addowner raises InputError
+# if user with provided u_id is already an owner of the channel
 def test_channel_addowner_alreadyowner():
-    '''
-    test that channel_addowner raises InputError
-    if user with provided u_id is already an owner of the channel
-    '''
     clear()
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
@@ -131,11 +129,10 @@ def test_channel_addowner_alreadyowner():
     with pytest.raises(InputError):
         channel_addowner(token0, channel_id, u_id1)
 
+
+# test that channel_addowner raises AccessError
+# if the authorised user is not an owner of the channel
 def test_channel_addowner_authnotowner():
-    '''
-    test that channel_addowner raises AccessError
-    if the authorised user is not an owner of the channel
-    '''
     clear()
 
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
@@ -157,11 +154,9 @@ def test_channel_addowner_authnotowner():
     with pytest.raises(AccessError):
         channel_addowner(token1, channel_id, u_id1)
 
+
+# test that channel_addowner raises AccessError if the provided token is not valid
 def test_channel_addowner_invalidtoken():
-    '''
-    test that channel_addowner raises AccessError
-    if the provided token is not valid
-    '''
     clear()
 
     user_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")

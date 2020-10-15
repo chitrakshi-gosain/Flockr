@@ -8,17 +8,45 @@ def clear():
     data.data = {'users': [], 'channels': []}
 
 def users_all(token):
-    return {
-        'users': [
-            {
-                'u_id': 1,
-                'email': 'cs1531@cse.unsw.edu.au',
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-                'handle_str': 'hjacobs',
-            },
-        ],
+    '''
+    DESCRIPTION:
+    Returns a list of all users and
+    their associated details
+
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {users}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+
+    # Checking token validity
+    caller = helper.get_user_info('token', token)
+
+    if caller == False:
+        raise AccessError('Invalid Token')
+
+    # Processing and appending each user dictionary entry
+    # to the appropriate return format dictionary
+    return_dict = {
+        'users': [],
     }
+
+    for user in data.data['users']:
+        curr_user = {
+                'u_id': user['u_id'],
+                'email': user['email'],
+                'name_first': user['name_first'],
+                'name_last': user['name_last'],
+                'handle_str': user['handle_str'],
+            }
+
+        return_dict['users'].append(curr_user)
+
+    return return_dict
 
 def admin_userpermission_change(token, u_id, permission_id):
     '''
@@ -59,13 +87,27 @@ def admin_userpermission_change(token, u_id, permission_id):
         raise InputError('permission_id is invalid')
 
 def search(token, query_str):
-    return {
-        'messages': [
-            {
-                'message_id': 1,
-                'u_id': 1,
-                'message': 'Hello world',
-                'time_created': 1582426789,
-            }
-        ],
-    }
+    '''
+    DESCRIPTION:
+    Given a query string, return a collection of messages in
+    all of the channels that the user has joined that match the query
+
+    Parameters:
+        -> token : token of the invoker
+        -> query_str : the target string to search with
+
+    RETURN VALUES:
+        -> { messages } : all messages visible to the user that contains query_str
+    '''
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
+        raise AccessError('invalid token')
+
+    #find channels user is part of and add messages
+    visible_messages = []
+
+    for channel in data.data['channels']:
+        if helper.is_user_in_channel(user_info['u_id'], channel['channel_id']) or user_info['is_admin']:
+            visible_messages += channel['messages']
+
+    return {'messages': list(filter(lambda message: query_str in message['message'], visible_messages)) }
