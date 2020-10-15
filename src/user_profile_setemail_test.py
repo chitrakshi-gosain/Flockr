@@ -18,9 +18,7 @@ from auth import auth_register
 '''
 FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> user_profile(token, u_id) return {user}
--> user_profile_setname(token, name_first, name_last) return {}
 -> user_profile_setemail(token, email) return {}
--> user_profile_sethandle(toke, handle_str) return {}
 '''
 
 '''
@@ -59,15 +57,18 @@ def initialise_user_data():
                                  'user4_first', 'user4_last')
     user5_details = auth_register('user5@email.com', 'user5_pass!', \
                                  'user5_first', 'user5_last')
-
-    john_details = auth_register('johnsmith@gmail.com', 'qweRt1uiop!', 'John',\
-                                'Smith')
-    jane_details = auth_register('janesmith@hotmail.com', 'm3yDate0fb!rth', \
-                                'Jane', 'Smith')
-    noah_details = auth_register('noah_navarro@yahoo.com', 'aP00RP&ssWord1', \
-                                'Noah', 'Navarro')
-    ingrid_details = auth_register('ingrid.cline@gmail.com', '572o7563O*', \
-                                  'Ingrid', 'Cline')
+    user6_details = auth_register('user6@email.com', 'user6_pass!', \
+                                 'user6_first', 'user6_last')
+    user7_details = auth_register('user7@email.com', 'user7_pass!', \
+                                 'user7_first', 'user7_last')
+    user8_details = auth_register('user8@email.com', 'user8_pass!', \
+                                 'user8_first', 'user8_last')
+    user9_details = auth_register('user9@email.com', 'user9_pass!', \
+                                 'user9_first', 'user9_last')
+    user10_details = auth_register('user10@email.com', 'user10_pass!', \
+                                 'user10_first', 'user10_last')
+    user11_details = auth_register('user11@email.com', 'user11_pass!', \
+                                 'user11_first', 'user11_last')
 
     return {
         'user0': user0_details,
@@ -76,10 +77,12 @@ def initialise_user_data():
         'user3': user3_details,
         'user4': user4_details,
         'user5': user5_details,
-        'john': john_details,
-        'jane': jane_details,
-        'noah': noah_details,
-        'ingrid': ingrid_details
+        'user6': user6_details,
+        'user7': user7_details,
+        'user8': user8_details,
+        'user9': user9_details,
+        'user10': user10_details,       
+        'user11': user11_details
     }
 
 def test_insufficient_parameters():
@@ -137,10 +140,10 @@ def test_successful_email_updatation(initialise_user_data):
     ADD DOCSTRING HERE
     '''
 
-    test_user_john = initialise_user_data['john']
-    user_profile_setemail(test_user_john['token'], 'john.smith@gmail.com')
-    john_details = user_profile(test_user_john['token'], test_user_john['u_id'])
-    assert john_details['email'] == 'john.smith@gmail.com'
+    test_user_2 = initialise_user_data['user2']
+    user_profile_setemail(test_user_2['token'], 'user2newemailid@email.com')
+    user_2_details = user_profile(test_user_2['token'], test_user_2['u_id'])
+    assert user_2_details['email'] == 'user2newemailid@email.com'
 
 def test_only_unique_changes_accepted(initialise_user_data):
     '''
@@ -149,18 +152,17 @@ def test_only_unique_changes_accepted(initialise_user_data):
     # everything should be successful
     '''
 
-    test_user_jane = initialise_user_data['jane']
-    user_profile_setemail(test_user_jane['token'], 'jane.smith@gmail.com')
-    jane_details = user_profile(test_user_jane['token'], test_user_jane['u_id'])
-    assert jane_details['email'] == 'jane.smith@gmail.com'
+    test_user_3 = initialise_user_data['user3']
+    user_profile_setemail(test_user_3['token'], 'user3newemailid@email.com')
+    user_3_details = user_profile(test_user_3['token'], test_user_3['u_id'])
+    assert user_3_details['email'] == 'user3newemailid@email.com'
 
-    test_user_ingrid = initialise_user_data['ingrid']
-    user_profile_setemail(test_user_ingrid['token'], 'janesmith@hotmail.com')
-    ingrid_details = user_profile(test_user_ingrid['token'], \
-                                 test_user_ingrid['u_id'])
-    assert ingrid_details['email'] == 'janesmith@hotmail.com'
+    test_user_4 = initialise_user_data['user4']
+    user_profile_setemail(test_user_4['token'], 'user3@email.com')
+    user_4_details = user_profile(test_user_4['token'], test_user_4['u_id'])
+    assert user_4_details['email'] == 'user3@email.com'
 
-    assert jane_details['email'] != ingrid_details['email']
+    assert user_3_details['email'] != user_4_details['email']
 
 def test_no_change(initialise_user_data):
     '''
@@ -169,11 +171,11 @@ def test_no_change(initialise_user_data):
     # do not throw an error
     '''
 
-    test_user_noah = initialise_user_data['noah']
-    test_user_noah_updatedemail = user_profile_setemail(test_user_noah['token'],\
-                                                      'noah_navarro@yahoo.com')
-    noah_details = user_profile(test_user_noah['token'], test_user_noah['u_id'])
+    test_user_5 = initialise_user_data['user5']
+    test_user_5_updatedemail = user_profile_setemail(test_user_5['token'], \
+                                                       'user5@email.com')
+    user_5_details = user_profile(test_user_5['token'], test_user_5['u_id'])
 
-    assert noah_details['email'] == 'noah_navarro@yahoo.com'
-    assert isinstance(test_user_noah_updatedemail, dict)
-    assert not test_user_noah_updatedemail
+    assert user_5_details['email'] == 'user5@email.com'
+    assert isinstance(test_user_5_updatedemail, dict)
+    assert not test_user_5_updatedemail

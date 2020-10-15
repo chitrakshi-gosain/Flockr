@@ -18,8 +18,6 @@ from auth import auth_register
 '''
 FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> user_profile(token, u_id) return {user}
--> user_profile_setname(token, name_first, name_last) return {}
--> user_profile_setemail(token, email) return {}
 -> user_profile_sethandle(toke, handle_str) return {}
 '''
 
@@ -43,8 +41,8 @@ KEEP IN MIND:
 def initialise_user_data():
     '''
     Resets the internal data of the application to it's initial state
-    and sets up various user sample data (descriptive and realistic) for
-    testing purposes and returns user data which is implementation
+    and sets up various descriptive user sample data for testing
+    purposes and returns user data which is implementation
     dependent
     '''
 
@@ -64,15 +62,16 @@ def initialise_user_data():
                                  'user5_first', 'user5_last')
     user6_details = auth_register('user6@email.com', 'user6_pass!', \
                                  'user6_first', 'user6_last')
-
-    john_details = auth_register('johnsmith@gmail.com', 'qweRt1uiop!', 'John',\
-                                'Smith')
-    jane_details = auth_register('janesmith@hotmail.com', 'm3yDate0fb!rth', \
-                                'Jane', 'Smith')
-    noah_details = auth_register('noah_navarro@yahoo.com', 'aP00RP&ssWord1', \
-                                'Noah', 'Navarro')
-    ingrid_details = auth_register('ingrid.cline@gmail.com', '572o7563O*', \
-                                  'Ingrid', 'Cline')
+    user7_details = auth_register('user7@email.com', 'user7_pass!', \
+                                 'user7_first', 'user7_last')
+    user8_details = auth_register('user8@email.com', 'user8_pass!', \
+                                 'user8_first', 'user8_last')
+    user9_details = auth_register('user9@email.com', 'user9_pass!', \
+                                 'user9_first', 'user9_last')  
+    user10_details = auth_register('user10@email.com', 'user10_pass!', \
+                                 'user10_first', 'user10_last')                                                                                              
+    user11_details = auth_register('user11@email.com', 'user11_pass!', \
+                                 'user11_first', 'user11_last')
 
     return {
         'user0': user0_details,
@@ -82,10 +81,11 @@ def initialise_user_data():
         'user4': user4_details,
         'user5': user5_details,
         'user6': user6_details,
-        'john': john_details,
-        'jane': jane_details,
-        'noah': noah_details,
-        'ingrid': ingrid_details
+        'user7': user7_details,
+        'user8': user8_details,
+        'user9': user9_details,
+        'user10': user10_details,       
+        'user11': user11_details
     }
 
 def test_insufficient_parameters():
@@ -139,30 +139,30 @@ def test_successful_handle_updatation(initialise_user_data):
     ADD DOCSTRING HERE
     '''
 
-    test_user_jane = initialise_user_data['jane']
-    user_profile_sethandle(test_user_jane['token'], 'jane.smith')
-    jane_details = user_profile(test_user_jane['token'], test_user_jane['u_id'])
-    assert jane_details['handle_str'] == 'jane.smith'
+    test_user_3 = initialise_user_data['user3']
+    user_profile_sethandle(test_user_3['token'], 'user_3_handle')
+    user_3_details = user_profile(test_user_3['token'], test_user_3['u_id'])
+    assert user_3_details['handle_str'] == 'user_3_handle'
 
 def test_handle_3_chars(initialise_user_data):
     '''
     ADD DOCSTRING HERE
     '''
 
-    test_user_3 = initialise_user_data['user3']
-    user_profile_sethandle(test_user_3['token'], 'me_')
-    user_3_details = user_profile(test_user_3['token'], test_user_3['u_id'])
-    assert user_3_details['handle_str'] == 'me_'
+    test_user_4 = initialise_user_data['user4']
+    user_profile_sethandle(test_user_4['token'], 'me_')
+    user_4_details = user_profile(test_user_4['token'], test_user_4['u_id'])
+    assert user_4_details['handle_str'] == 'me_'
 
 def test_handle_20_chars(initialise_user_data):
     '''
     ADD DOCSTRING HERE
     '''
 
-    test_user_4 = initialise_user_data['user4']
-    user_profile_sethandle(test_user_4['token'], 'hi' * 10)
-    user_4_details = user_profile(test_user_4['token'], test_user_4['u_id'])
-    assert user_4_details['handle_str'] == 'hi' * 10
+    test_user_5 = initialise_user_data['user5']
+    user_profile_sethandle(test_user_5['token'], 'hi' * 10)
+    user_5_details = user_profile(test_user_5['token'], test_user_5['u_id'])
+    assert user_5_details['handle_str'] == 'hi' * 10
 
 def test_non_ascii_handle(initialise_user_data):
     '''
@@ -171,19 +171,19 @@ def test_non_ascii_handle(initialise_user_data):
     non ascii characters for jôhnsmïth
     '''
 
-    test_user_john = initialise_user_data['john']
-    user_profile_sethandle(test_user_john['token'], 'jôhnsmïth')
-    john_details = user_profile(test_user_john['token'], test_user_john['u_id'])
-    assert john_details['handle_str'] == 'jôhnsmïth'
+    test_user_6 = initialise_user_data['user6']
+    user_profile_sethandle(test_user_6['token'], 'âêîôû é àèù ëïü')
+    user_6_details = user_profile(test_user_6['token'], test_user_6['u_id'])
+    assert user_6_details['handle_str'] == 'âêîôû é àèù ëïü'
 
 def test_existing_handle(initialise_user_data):
     '''
     ADD DOCSTRING HERE
     '''
 
-    test_user_5 = initialise_user_data['user5']
+    test_user_7 = initialise_user_data['user7']
     with pytest.raises(InputError):
-        user_profile_sethandle(test_user_5['token'], 'user4_firstuser4_las')
+        user_profile_sethandle(test_user_7['token'], 'user1_firstuser1_las')
 
 def test_whitespace_handle(initialise_user_data):
     '''
@@ -191,23 +191,22 @@ def test_whitespace_handle(initialise_user_data):
     # this is an assumption like names that only white space cant be valid handle
     '''
 
-    test_user_6 = initialise_user_data['user6']
+    test_user_8 = initialise_user_data['user8']
     with pytest.raises(InputError):
-        user_profile_sethandle(test_user_6['token'], '       ')
+        user_profile_sethandle(test_user_8['token'], '       ')
 
 def test_no_change(initialise_user_data):
     '''
     ADD DOCSTRING HERE
     '''
+    test_user_9 = initialise_user_data['user9']
+    test_user_9_newhandle = user_profile_sethandle(test_user_9['token'], \
+                                                  'user9_firstuser9_las')
+    user_9_details = user_profile(test_user_9['token'], test_user_9['u_id'])
 
-    test_user_noah = initialise_user_data['noah']
-    test_user_noah_newhandle = user_profile_sethandle(test_user_noah['token'],\
-                                                      'noah_navarro@yahoo.com')
-    noah_details = user_profile(test_user_noah['token'], test_user_noah['u_id'])
-
-    assert noah_details['handle_str'] == 'noah_navarro@yahoo.com'
-    assert isinstance(test_user_noah_newhandle, dict)
-    assert not test_user_noah_newhandle
+    assert user_9_details['handle_str'] == 'user9_firstuser9_las'
+    assert isinstance(test_user_9_newhandle, dict)
+    assert not test_user_9_newhandle
 
 def test_only_unique_changes_accepted(initialise_user_data):
     '''
@@ -218,15 +217,14 @@ def test_only_unique_changes_accepted(initialise_user_data):
     # the handle which previous user had first
     '''
 
-    test_user_jane = initialise_user_data['jane']
-    user_profile_sethandle(test_user_jane['token'], 'jane_handle')
-    jane_details = user_profile(test_user_jane['token'], test_user_jane['u_id'])
-    assert jane_details['handle_str'] == 'jane_handle'
+    test_user_10 = initialise_user_data['user10']
+    user_profile_sethandle(test_user_10['token'], 'user_10_handle')
+    user_10_details = user_profile(test_user_10['token'], test_user_10['u_id'])
+    assert user_10_details['handle_str'] == 'user_10_handle'
 
-    test_user_ingrid = initialise_user_data['ingrid']
-    user_profile_sethandle(test_user_ingrid['token'], 'jane_older_handle')
-    ingrid_details = user_profile(test_user_ingrid['token'], \
-                                 test_user_ingrid['u_id'])
-    assert ingrid_details['handle_str'] == 'jane_older_handle'
+    test_user_11 = initialise_user_data['user11']
+    user_profile_sethandle(test_user_11['token'], 'user10_firstuser10_l')
+    user_11_details = user_profile(test_user_11['token'], test_user_11['u_id'])
+    assert user_11_details['handle_str'] == 'user10_firstuser10_l'
 
-    assert jane_details['handle_str'] != ingrid_details['handle_str']
+    assert user_10_details['handle_str'] != user_11_details['handle_str']
