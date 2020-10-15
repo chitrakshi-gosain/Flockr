@@ -98,7 +98,7 @@ def auth_login(email, password):
     # Checking for InputError(s):
     if None in {email, password}:
         raise InputError(description='Insufficient parameters, please enter: \
-                         email, password')
+        email, password')
 
     if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')
@@ -182,29 +182,29 @@ def auth_register(email, password, name_first, name_last):
     # Checking for InputError(s):
     if None in {email, password, name_first, name_last}:
         raise InputError(description='Insufficient parameters. Please enter: \
-                        email, password, name_first, name_last')
+        email, password, name_first, name_last')
 
     if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')
 
     if not check_if_valid_password(password):
         raise InputError(description='Password entered is less than 6 \
-                        characters long or more than 32 characters long or \
-                            contains Non-ASCII characters')
+        characters long or more than 32 characters long or contains Non-ASCII \
+            characters')
 
     if not check_string_length_and_whitespace(MIN_CHAR_NAME_FIRST, \
                                               MAX_CHAR_NAME_FIRST, name_first):
         raise InputError(description='name_first is not between 1 and 50 \
-                        characters inclusively in length or is a whitespace')
+        characters inclusively in length or is a whitespace')
 
     if not check_string_length_and_whitespace(MIN_CHAR_NAME_LAST, \
                                                 MAX_CHAR_NAME_LAST, name_last):
         raise InputError(description='name_last is not between 1 and 50 \
-                        characters inclusively in length or is a whitespace')
+        characters inclusively in length or is a whitespace')
 
     if get_user_info('email', email):
         raise InputError(description='Email address is already being used by \
-                        another user')
+        another user')
 
     # Since there are no InputError(s), hence proceeding forward:
 
