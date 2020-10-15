@@ -25,11 +25,18 @@ def message_send(token, channel_id, message):
     if not user_info['is_admin'] and not helper.is_user_in_channel(user_info['u_id'], channel_id):
         raise AccessError('Authorised user is not a member of channel with channel_id')
 
-    message_id = 0
+    messages_list_created = False
+    for group in data.data:
+        if group == 'messages':
+            messages_list_created = True
 
-    data.data['messages'] = []
-    if data.data['messages'] != []:
+    if messages_list_created:
         message_id = data.data['messages'][-1]['message_id'] + 1
+
+    else:
+        data.data['messages'] = []    
+        message_id = 0
+    
 
     date = datetime.now()
     Y = int(datetime.strftime(date, "%Y"))
@@ -58,10 +65,42 @@ def message_send(token, channel_id, message):
     }
 
 def message_remove(token, message_id):
-    '''
-    checks that the user if authorised in the channel and deletes the message
-    '''
-    
+
+    # Testing for insufficient parameters
+    if None in {token, message_id}:
+        raise InputError("Insufficient parameters given")
+
+    # Testing to see if the message exists
+    message_exists = False
+    for channel in data.data['channels']:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                message_exists = True
+                channel_info = channel
+                message_info = message
+                break
+
+
+    if not message_exists:
+        raise InputError('message_id does not correlate to an existing message_id')
+
+    # Testing for token validity
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
+        raise AccessError('Invalid Token')
+
+    # if the user did not send the message
+
+    if message_info['u_id'] != user_info['u_id']:
+        # if the user is not an owner of the channel
+        for owner in channel_info['owner_members']:
+            if owner['u_id'] != user_info['u_id']:
+                raise AccessError('User has neither sent the message, now is an owner of the channel')
+
+    for (i, message) in enumerate(channel_info['messages']):
+        if message['message_id'] == message_id:
+            del channel_info['messages'][i]
+
     return {
     }
 
