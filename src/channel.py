@@ -156,13 +156,9 @@ def channel_details(token, channel_id):
     if channel_info == False:
         raise InputError('Channel ID is not a valid channel')
 
+    # Finding if the user is authorised or not
     if not user_info['is_admin'] and not helper.is_user_in_channel(user_info['u_id'], channel_id):
         raise AccessError('Authorised user is not a member of channel with channel_id')
-
-    # Finding if the user is authorised or not
-    # user_authorised = helper.is_user_authorised1(token, u_id, channel_info)
-    # if not user_authorised:
-    #     raise AccessError('Authorised user is not a member of channel with channel_id')
 
     # Retrieving the information from the assigned dictionary and returning the new dictionary
     channel_contents = {}
