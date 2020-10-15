@@ -90,19 +90,19 @@ def get_channel_info(channel_id):
 def is_user_authorised(token, channel_id):
     '''
     Given a VALID token and VALID channel_id, returns True if the
-    user is in the channel or if the user is admin
+    user is an owner of the channel or if the user is admin
 
     (You should check if these arguments are valid before calling the functions)
     '''
 
     user_info = get_user_info('token', token)
 
-    in_channel = is_user_in_channel(user_info['u_id'], channel_id)
+    is_owner = is_channel_owner(user_info['u_id'], channel_id)
 
     # why are we taking u_id as a parameter, if not using it?, keep in
     # mind to change it whereever necessary
 
-    return user_info['is_admin'] or in_channel
+    return user_info['is_admin'] or is_owner
 
 
 def is_channel_owner(u_id, channel_id):
@@ -140,6 +140,24 @@ def is_user_in_channel(u_id, channel_id):
 
     channel_members = get_channel_info(channel_id)['all_members']
     return any(user['u_id'] == u_id for user in channel_members)
+
+def get_message_info(message_id):
+    '''
+    Given a potential message_id, returns the message dictionary
+    of the matching channel, else returns false
+
+    Example:
+    message_info = helper.get_channel_info(channel_id)
+    if not message_info:
+        raise InputError('message does not exist')
+    '''
+
+    for channel in data.data['channels']:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                return message
+
+    return False
 
 
 ########################################################################################
