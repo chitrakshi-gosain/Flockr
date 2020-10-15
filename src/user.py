@@ -141,9 +141,9 @@ def user_profile_setname(token, name_first, name_last):
         raise AccessError('invalid token')
 
     # check if name_first and name_last are of invalid length
-    if len(name_first) <= 1 or len(name_first) >= 50:
+    if len(name_first) < 1 or len(name_first) > 50:
         raise InputError("Invalid length of first name")
-    if len(name_last) <= 1 or len(name_last) >= 50:
+    if len(name_last) < 1 or len(name_last) > 50:
         raise InputError("Invalid length of last name")
 
     u_id = user_info["u_id"]
