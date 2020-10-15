@@ -82,4 +82,4 @@ def search(token, query_str):
         if helper.is_user_in_channel(user_info['u_id'], channel['channel_id']) or user_info['is_admin']:
             visible_messages += channel['messages']
 
-    return {'messages': list(filter(lambda message: query_str in message, visible_messages)) }
+    return {'messages': list(filter(lambda message: query_str in message['message'], visible_messages)) }
