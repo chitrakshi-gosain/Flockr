@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15Team2 2020 T3
-Contributer - Chitrakshi Gosain
+Contributor - Chitrakshi Gosain
 
 Iteration 1
 '''
@@ -8,8 +8,8 @@ Iteration 1
 import data
 from error import InputError, AccessError
 from helper import check_if_valid_email, check_if_valid_password, \
-check_name_length_and_is_a_whitesapce, invalidating_token, get_user_info, \
-generate_handle, check_password, store_generated_token
+check_string_length_and_whitespace, invalidating_token, get_user_info, \
+check_password, store_generated_token
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -20,7 +20,7 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 -> auth_register(email, password, name_first, name_last) return
    {u_id, token}
 -> auth_login(email,password) return {u_id, token}
--> auth_logout(token) return {is_sucess}
+-> auth_logout(token) return {is_success}
 '''
 
 '''
@@ -30,7 +30,7 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
     -> name_first: string
     -> name_last: string
     -> token: string
-    -> u_id: inetger
+    -> u_id: integer
     -> is_success: boolean
 '''
 
@@ -67,11 +67,18 @@ KEEP IN MIND:
 -> allow multiple session log-ins,
    * for this make a data.data['valid_tokens'] dict in data.py, have
    tokens as key, and value as u_id this way we can keep track of
-   multiple logins very easily, but dont do it now everyone will have to
+   multiple logins very easily, but don't do it now everyone will have to
    change implementation, do it after we are done merging all branches
    once, so if anything ever goes wrong we have A BACKUP. also, this
-   aint imp for itr 1 so dont stress. :)
+   ain't imp for itr 1 so don't stress. :)
 '''
+
+# CONSTANTS
+MIN_CHAR_NAME_FIRST = 1
+MAX_CHAR_NAME_FIRST = 50
+MIN_CHAR_NAME_LAST = 1
+MAX_CHAR_NAME_LAST = 50
+MAX_CHAR_HANDLE_STR = 20
 
 def auth_login(email, password):
     '''
@@ -96,10 +103,10 @@ def auth_login(email, password):
     if check_if_valid_email(email) is None:
         raise InputError(description='Email entered is not a valid email')
 
-    if get_user_info('email', email) is False:
+    if not get_user_info('email', email):
         raise InputError(description='Email entered does not belong to a user')
 
-    if check_password(email, password) is False:
+    if not check_password(email, password):
         raise InputError(description='Password is not correct')
 
     # Since there are no InputError(s), hence proceeding forward:
@@ -138,7 +145,7 @@ def auth_logout(token):
                         token')
 
     # Checking for AccessError:
-    if get_user_info('token', token) is False:
+    if not get_user_info('token', token):
         raise AccessError(description='Token passed in is not a valid token')
 
     # Since there is no InputError or AccessError, hence proceeding
@@ -159,12 +166,12 @@ def auth_register(email, password, name_first, name_last):
     characters. If the handle is already taken, user's u_id is
     concatenated at the very end, incase this exceeds the length of 20
     characters, the last characters of handle string are adjusted to
-    accomodate the user's u_id
+    accommodate the user's u_id
 
     PARAMETERS:
         -> email : email-id of user
         -> password : password of the user
-        -> name_first : first anme of the user
+        -> name_first : first name of the user
         -> name_last : last name of the user
 
     RETURN VALUES:
@@ -180,28 +187,44 @@ def auth_register(email, password, name_first, name_last):
     if check_if_valid_email(email) is None:
         raise InputError(description='Email entered is not a valid email')
 
-    if check_if_valid_password(password) is False:
+    if not check_if_valid_password(password):
         raise InputError(description='Password entered is less than 6 \
                         characters long or more than 32 characters long or \
                             contains Non-ASCII characters')
 
-    if check_name_length_and_is_a_whitesapce(name_first) is False:
+    if not check_string_length_and_whitespace(MIN_CHAR_NAME_FIRST, \
+                                              MAX_CHAR_NAME_FIRST, name_first):
         raise InputError(description='name_first is not between 1 and 50 \
                         characters inclusively in length or is a whitespace')
 
-    if check_name_length_and_is_a_whitesapce(name_last) is False:
+    if not check_string_length_and_whitespace(MIN_CHAR_NAME_LAST, \
+                                                MAX_CHAR_NAME_LAST, name_last):
         raise InputError(description='name_last is not between 1 and 50 \
                         characters inclusively in length or is a whitespace')
 
-    if get_user_info('email', email) is not False:
+    if get_user_info('email', email):
         raise InputError(description='Email address is already being used by \
                         another user')
 
     # Since there are no InputError(s), hence proceeding forward:
 
+    # Generating handle_str
+    concatenated_names = name_first.lower() + name_last.lower()
+    handle_string = concatenated_names[:MAX_CHAR_HANDLE_STR]
+    status = False
+
+    for user_with_same_handle in data.data['users']:
+        if user_with_same_handle['handle_str'] == handle_string:
+            status = True
+
+    if status is True:
+        user_id = str(len(data.data['users']))
+        cut_handle_till = MAX_CHAR_HANDLE_STR - len(user_id)
+        handle_string = handle_string[:cut_handle_till] + user_id
+
     # making a new dictionary for new_user and adding values to the keys
     # respectively some keys' values are parameters from the user, others are
-    # obtained using both helper fucntions and user's innput(as parameters
+    # obtained using both helper functions and user's innput(as parameters
     # for these)
     new_user = {
         'u_id' : len(data.data['users']),
@@ -209,7 +232,7 @@ def auth_register(email, password, name_first, name_last):
         'email' : email,
         'name_first' : name_first,
         'name_last' : name_last,
-        'handle_str' : generate_handle(name_first, name_last, email),
+        'handle_str' : handle_string,
         'token' : '**token_not_assigned**',
         'password' : password
     }
@@ -230,7 +253,7 @@ def auth_register(email, password, name_first, name_last):
 WHITE BOX TESTING FOR CHECKING IF IMPLEMENTATION IS AS EXPECTED
 
 if __name__ == '__main__':
-    # check_for_admin_stautus_of_first_user
+    # check_for_admin_status_of_first_user
     clear()
     user1 = auth_register('registerationtestvalidemailid0@gmail.com', \
                          '123Abc!0', 'Valid', 'User0')

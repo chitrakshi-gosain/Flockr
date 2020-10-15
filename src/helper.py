@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15Team2 2020 T3
-Contributers - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
+Contributors - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
                Ahmet Karatas, Joseph Knox
 
 Iteration 1
@@ -9,9 +9,13 @@ Iteration 1
 import re
 import data
 
+# CONSTANTS
+MIN_LENGTH_PASSWORD = 6
+MAX_LENGTH_PASSWORD = 32
+
 def check_if_valid_email(email):
     '''
-    Given the email of the user to be registeredd checks if it is a
+    Given the email of the user to be registered checks if it is a
     valid email using a regex
     '''
 
@@ -26,7 +30,7 @@ def check_if_valid_password(password):
     is in valid range and if it has printable ASCII characters only
     '''
 
-    if not 6 <= len(password) <= 32:
+    if not MIN_LENGTH_PASSWORD <= len(password) <= MAX_LENGTH_PASSWORD:
         return False
     if not password.isprintable():
         return False
@@ -34,14 +38,14 @@ def check_if_valid_password(password):
     return True
 
 
-def check_name_length_and_is_a_whitesapce(name_to_check):
+def check_string_length_and_whitespace(min_length, max_length, name_to_check):
     '''
     Given the first or last name of the user to be registered checks if
     it's length is in valid range and if it is not completely a
     whitespace
     '''
 
-    if not 1 <= len(name_to_check) <= 50:
+    if not min_length <= len(name_to_check) <= max_length:
         return False
     if name_to_check.isspace():
         return False
@@ -158,34 +162,6 @@ def get_message_info(message_id):
 
 ########################################################################################
 
-
-def generate_handle(name_first, name_last, email):
-    '''
-    Given the first and last name of the user, a handle is generated
-    that is the concatentation of a lowercase-only first name and last
-    name. If the concatenation is longer than 20 characters, it is
-    cutoff at 20 characters. If the handle is already taken, user's u_id
-    is concatenated at the very end, incase this concatenation exceeds
-    the length of 20 characters, the last characters of handle string
-    (which already belongs to another user) are adjusted to accomodate
-    the user's u_id in the very end
-    '''
-
-    concatenated_names = name_first.lower() + name_last.lower()
-    handle_string = concatenated_names[:20]
-    status = False
-
-    for user_with_same_handle in data.data['users']:
-        if user_with_same_handle['handle_str'] == handle_string:
-            status = True
-
-    if status is True:
-        user_id = str(len(data.data['users']))
-        cut_handle_till = 20 - len(user_id)
-        handle_string = handle_string[:cut_handle_till] + user_id
-    return handle_string
-
-
 def check_password(email, password):
     '''
     Given the password of the user while logging-in matches the password
@@ -217,7 +193,3 @@ def store_generated_token(email, user_token):
     for user in data.data['users']:
         if user['email'] == email:
             user['token'] = user_token
-
-if __name__ == '__main__':
-    print(check_if_valid_email("whatever@gmail.com"))
-    print(check_if_valid_email("whatnot.com"))
