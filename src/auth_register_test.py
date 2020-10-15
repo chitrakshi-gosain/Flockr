@@ -6,6 +6,7 @@ Iteration 1
 '''
 
 import pytest
+import data
 from other import clear
 from error import InputError
 from user import user_profile
@@ -20,7 +21,7 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> auth_register(email, password, name_first, name_last) return
    {u_id, token}
 -> auth_login(email,password) return {u_id, token}
--> auth_logout(token) return {is_sucess}
+-> auth_logout(token) return {is_success}
 '''
 
 '''
@@ -64,7 +65,7 @@ def test_invalid_email():
         auth_register('registerationtestinvalidemailid0_gmail.com', \
                      '123Abc!!', 'Invalid', 'User0')
 
-def test_existing_email_registeration():
+def test_existing_email_registration():
     '''
     Tests that auth_register raises an InputError when a user tries to
     register with an existing email-id in database registered with
@@ -135,7 +136,7 @@ def test_password_too_short_():
 
 def test_password_too_long_():
     '''
-    Tests that auth_register raises an InputError when a passowrd more
+    Tests that auth_register raises an InputError when a password more
     than 32 characters long
     '''
 
@@ -247,9 +248,8 @@ def test_unique_handle():
     '''
     Tests that auth_register implements handle_str as per
     specifications, i.e. concatenates lowercase name_first and name_last
-    and cuts it if greater than 20 characters. For a new user with
-    similar name_first and name_last as one/more existing users there is
-    some modification to new user's handle
+    and cuts it if greater than 20 characters. Each user has valid and
+    different handle
     '''
 
     clear()
@@ -265,7 +265,7 @@ def test_too_long_handle():
     '''
     Tests that auth_register implements handle_str as per
     specifications, i.e. concatenates lowercase name_first and name_last
-    and cuts it if greater than 20 characters 
+    and cuts it if greater than 20 characters
     '''
 
     clear()
@@ -274,31 +274,33 @@ def test_too_long_handle():
     test_profile_11 = user_profile(test_user_11['token'], test_user_11['u_id'])
     assert test_profile_11['user']['handle_str'] == 'validvaliduser11user'
 
-# add a test with 3 ppl having same first name and last name, have
-# intervals in their u_id(register diff user in between) as well for
-# better check
+def test_handle_for_users_With_similar_first_last_names():
+    '''
+    Tests that auth_register implements handle_str as per
+    specifications, i.e. concatenates lowercase name_first and name_last
+    and cuts it if greater than 20 characters. For a new user with
+    similar name_first and name_last as one/more existing users there is
+    some modification to new user's handle
+    '''
 
-# NOT NEEDED SINCE REMOVED THE PASSWORD PATTERN CHECK:
-# def test_password_without_lowercase():
-#     clear()
-#     with pytest.raises(InputError):
-#         auth_register('registerationtestvalidemailid10@gmail.com', \
-#                      '123ABC!10', 'Valid', 'User10')
+    clear()
+    test_user_12 = auth_register('registerationtestvalidemailid12@gmail.com', \
+                                '123Abc!12', 'Valid', 'User12')
+    test_user_13 = auth_register('registerationtestvalidemailid13@gmail.com', \
+                                '123Abc!13', 'Valid', 'User13')
+    test_user_14 = auth_register('registerationtestvalidemailid14@gmail.com', \
+                                '123Abc!14', 'Valid', 'User13')
+    test_user_15 = auth_register('registerationtestvalidemailid15@gmail.com', \
+                                '123Abc!15', 'Valid', 'User12')
+    for user in data.data['users']:
+        if user['u_id'] == test_user_12['u_id']:
+            user12_handle = user['handle_str']
+        if user['u_id'] == test_user_13['u_id']:
+            user13_handle = user['handle_str']
+        if user['u_id'] == test_user_14['u_id']:
+            user14_handle = user['handle_str']
+        if user['u_id'] == test_user_15['u_id']:
+            user15_handle = user['handle_str']
 
-# def test_password_without_uppercase():
-#     clear()
-#     with pytest.raises(InputError):
-#         auth_register('registerationtestvalidemailid11@gmail.com', \
-#                      '123abc!11', 'Valid', 'User11')
-
-# def test_password_without_digit():
-#     clear()
-#     with pytest.raises(InputError):
-#         auth_register('registerationtestvalidemailid12@gmail.com', \
-#                      'Abc!twelve', 'Valid', 'User12')
-
-# def test_password_without_allowed_special_symbols():
-#     clear()
-#     with pytest.raises(InputError):
-#         auth_register('registerationtestvalidemailid13@gmail.com', \
-#                      '123abc 13', 'Valid', 'User13')
+    assert user12_handle != user15_handle
+    assert user13_handle != user14_handle
