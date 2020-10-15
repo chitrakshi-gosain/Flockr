@@ -141,18 +141,15 @@ def user_profile_setname(token, name_first, name_last):
         raise AccessError('invalid token')
 
     # check if name_first and name_last are of invalid length
-    if len(name_first) < 1 or len(name_first) > 50:
+    if not helper.check_string_length_and_whitespace(1, 50, name_first):
         raise InputError("Invalid length of first name")
-    if len(name_last) < 1 or len(name_last) > 50:
+    if not helper.check_string_length_and_whitespace(1, 50, name_last):
         raise InputError("Invalid length of last name")
 
     u_id = user_info["u_id"]
 
-    for user in data.data["users"]:
-        if user["u_id"] == u_id:
-            user["name_first"] = name_first
-            user["name_last"] = name_last
-            break
+    helper.update_data("name_first", u_id, name_first)
+    helper.update_data("name_last", u_id, name_last)
 
     return {
     }
