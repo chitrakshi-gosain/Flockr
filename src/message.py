@@ -51,7 +51,7 @@ def message_send(token, channel_id, message):
         'message_id': message_id,
         'u_id': user_info['u_id'],
         'message': message,
-        'timecreated': timecreated
+        'time_created': time_created
     } 
 
     data.data['messages'].append(message_dict)
