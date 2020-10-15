@@ -45,7 +45,7 @@ def message_send(token, channel_id, message):
     H = int(datetime.strftime(date, "%H"))
     M = int(datetime.strftime(date, "%M"))
     S = int(datetime.strftime(date, "%S"))
-    timecreated = datetime(Y, m, d, H, M, S)
+    time_created = datetime(Y, m, d, H, M, S)
     
     message_dict = {
         'message_id': message_id,
