@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15Team2 2020 T3
-Contributer - Chitrakshi Gosain
+Contributor - Chitrakshi Gosain
 
 Iteration 1
 '''
@@ -231,31 +231,48 @@ def test_whitespace_last_name():
         auth_register('registerationtestvalidemailid15@gmail.com', \
                      '123Abc!15', '     ', 'User15')
 
-# NOT NEEDED ATM:
+def test_lowercase_handle():
+    '''
+    Tests that auth_register implements handle_str as per
+    specifications, i.e. concatenates lowercase name_first and name_last
+    '''
 
-# def test_lowercase_handle():
-#     clear()
-#     test_user_8 = auth_register('registerationtestvalidemailid8@gmail.com', \
-#                                '123Abc!8', 'Valid', 'User8')
-#     test_profile_8 = user_profile(test_user_8['token'], test_user_8['u_id'])
-#     assert test_profile_8['handle_str'] == 'validuser8'
+    clear()
+    test_user_8 = auth_register('registerationtestvalidemailid8@gmail.com', \
+                               '123Abc!8', 'Valid', 'User8')
+    test_profile_8 = user_profile(test_user_8['token'], test_user_8['u_id'])
+    assert test_profile_8['user']['handle_str'] == 'validuser8'
 
-# def test_unique_handle():
-#     clear()
-#     test_user_9 = auth_register('registerationtestvalidemailid9@gmail.com', \
-#                                '123Abc!9', 'Valid', 'User9')
-#     test_profile_9 = user_profile(test_user_9['token'], test_user_9['u_id'])
-#     test_user_10 = auth_register('registerationtestvalidemailid10@gmail.com', \
-#                                 '123Abc!10', 'Valid', 'User10')
-#     test_profile_10 = user_profile(test_user_10['token'], test_user_10['u_id'])
-#     assert test_profile_9['handle_str'] != test_profile_10['handle_str']
+def test_unique_handle():
+    '''
+    Tests that auth_register implements handle_str as per
+    specifications, i.e. concatenates lowercase name_first and name_last
+    and cuts it if greater than 20 characters. For a new user with
+    similar name_first and name_last as one/more existing users there is
+    some modification to new user's handle
+    '''
 
-# def test_too_long_handle():
-#     clear()
-#     test_user_11 = auth_register('registerationtestvalidemailid11@gmail.com', \
-#                                 '123Abc!11', 'Valid' * 2, 'User11' * 3)
-#     test_profile_11 = user_profile(test_user_11['token'], test_user_11['u_id'])
-#     assert test_profile_11['handle_str'] == 'validvaliduser11user'
+    clear()
+    test_user_9 = auth_register('registerationtestvalidemailid9@gmail.com', \
+                               '123Abc!9', 'Valid', 'User9')
+    test_profile_9 = user_profile(test_user_9['token'], test_user_9['u_id'])
+    test_user_10 = auth_register('registerationtestvalidemailid10@gmail.com', \
+                                '123Abc!10', 'Valid', 'User10')
+    test_profile_10 = user_profile(test_user_10['token'], test_user_10['u_id'])
+    assert test_profile_9['user']['handle_str'] != test_profile_10['user']['handle_str']
+
+def test_too_long_handle():
+    '''
+    Tests that auth_register implements handle_str as per
+    specifications, i.e. concatenates lowercase name_first and name_last
+    and cuts it if greater than 20 characters 
+    '''
+
+    clear()
+    test_user_11 = auth_register('registerationtestvalidemailid11@gmail.com', \
+                                '123Abc!11', 'Valid' * 2, 'User11' * 3)
+    test_profile_11 = user_profile(test_user_11['token'], test_user_11['u_id'])
+    assert test_profile_11['user']['handle_str'] == 'validvaliduser11user'
 
 # add a test with 3 ppl having same first name and last name, have
 # intervals in their u_id(register diff user in between) as well for
