@@ -61,13 +61,10 @@ def test_sample():
     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)                                 # create a public channel
     channel_join(user1_credentials['token'], channel1_id['channel_id'])
 
-    message_id1 = message_send(owner_credentials['token'], channel1_id['channel_id'], "Hey, how are you")
-    message_id2 = message_send(user1_credentials['token'], channel1_id['channel_id'], "Good thank you, how are you!")
-    message_id3 = message_send(owner_credentials['token'], channel1_id['channel_id'], "Very well, thanks.")
+    message_send(owner_credentials['token'], channel1_id['channel_id'], "Hey, how are you")
+    message_id = message_send(user1_credentials['token'], channel1_id['channel_id'], "Good thank you, how are you!")
+    message_send(owner_credentials['token'], channel1_id['channel_id'], "Very well, thanks.")
 
     for message in data.data['messages']:
-        if message['message_id'] == message_id2:
+        if message['message_id'] == message_id:
             assert message['message'] == "Good thank you, how are you!"
-
-
-
