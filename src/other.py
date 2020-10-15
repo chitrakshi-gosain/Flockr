@@ -8,17 +8,45 @@ def clear():
     data.data = {'users': [], 'channels': []}
 
 def users_all(token):
-    return {
-        'users': [
-            {
-                'u_id': 1,
-                'email': 'cs1531@cse.unsw.edu.au',
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-                'handle_str': 'hjacobs',
-            },
-        ],
+    '''
+    DESCRIPTION:
+    Returns a list of all users and
+    their associated details
+
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {users}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+
+    # Checking token validity
+    caller = helper.get_user_info('token', token)
+
+    if caller == False:
+        raise AccessError('Invalid Token')
+
+    # Processing and appending each user dictionary entry
+    # to the appropriate return format dictionary
+    return_dict = {
+        'users': [],
     }
+
+    for user in data.data['users']:
+        curr_user = {
+                'u_id': user['u_id'],
+                'email': user['email'],
+                'name_first': user['name_first'],
+                'name_last': user['name_last'],
+                'handle_str': user['handle_str'],
+            }
+
+        return_dict['users'].append(curr_user)
+
+    return return_dict
 
 def admin_userpermission_change(token, u_id, permission_id):
     '''
