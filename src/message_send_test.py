@@ -44,7 +44,7 @@ def test_return_type():
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register user_1
     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)                                 # create a public channel
 
-    message_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "Sample message")
+    message_send(owner_credentials['token'], channel1_id['channel_id'], "Sample message")
     assert isinstance(data.data['messages'], list)
     assert isinstance(data.data['messages'][0], dict)
     assert isinstance(data.data['messages'][0]['message_id'], int)
