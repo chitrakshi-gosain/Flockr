@@ -1,12 +1,10 @@
+import pytest
 from auth import auth_register
-from channel import channel_messages, channel_details
 from channels import channels_create
 from message import message_send, message_remove
 import data
-import pytest
 from other import clear
-from error import InputError
-from error import AccessError
+from error import InputError, AccessError
 
 def test_insufficient_parameters():
     clear()

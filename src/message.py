@@ -3,8 +3,10 @@ import helper
 import data
 from error import InputError, AccessError
 
-# checks that the user if authorised in the channel and sends the message
 def message_send(token, channel_id, message):
+    '''
+    checks that the user if authorised in the channel and sends the message
+    '''
 
     if None in {token, channel_id, message}:
         raise InputError('Insufficient parameters given')
@@ -55,8 +57,11 @@ def message_send(token, channel_id, message):
         'message_id': message_id,
     }
 
-# checks that the user if authorised in the channel and deletes the message
 def message_remove(token, message_id):
+    '''
+    checks that the user if authorised in the channel and deletes the message
+    '''
+    
     return {
     }
 
