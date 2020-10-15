@@ -83,13 +83,42 @@ MIN_CHAR_HANDLE_STR = 3
 MAX_CHAR_HANDLE_STR = 20
 
 def user_profile(token, u_id):
+    '''
+    DESCRIPTION:
+    For a valid user, returns information about 
+    their user_id, email, first name, last name, 
+    and handle
+
+    PARAMETERS:
+        -> token, u_id
+
+    RETURN VALUES:
+        -> {user}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+        -> InputError: User with u_id is not a valid user
+    '''
+
+    # Checking token validity
+    user = get_user_info('token', token)
+
+    if user == False:
+        raise AccessError('Invalid Token')
+
+    # Checking u_id validity and getting user data
+    user = get_user_info('u_id', u_id)
+
+    if user == False:
+        raise InputError('Not a valid user')
+
     return {
         'user': {
-        	'u_id': 1,
-        	'email': 'cs1531@cse.unsw.edu.au',
-        	'name_first': 'Hayden',
-        	'name_last': 'Jacobs',
-        	'handle_str': 'hjacobs',
+        	'u_id': u_id,
+        	'email': user['email'],
+        	'name_first': user['name_first'],
+        	'name_last': user['name_last'],
+        	'handle_str': user['handle_str'],
         },
     }
 
@@ -116,27 +145,31 @@ def user_profile_setemail(token, email):
             -> token passed in is not a valid token
     '''
 
-    # Checking for InputError(s):
+    # Checking for InputError(s) or AccessError:
     if None in {token, email}:
         raise InputError(description='Insufficient parameters. Please enter: \
         token, email')
 
+    if not get_user_info('token', token):
+        raise AccessError(description='Token passed in is not a valid token')
+
     if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')
+
+    user_info = get_user_info('token', token)
+    if user_info['email'] == email:
+        return {
+        }
 
     if get_user_info('email', email):
         raise InputError(description='Email address is already being used by \
         another user')
 
-    # Checking for AccessError:
-    if not get_user_info('token', token):
-        raise AccessError(description='Token passed in is not a valid token')
-
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
-    user_id = get_user_info('token', token)['u_id']
+
     for user in data.data['users']:
-        if user['u_id'] == user_id:
+        if user['u_id'] == user_info['u_id']:
             user['email'] = email
 
     return {
@@ -161,24 +194,27 @@ def user_profile_sethandle(token, handle_str):
             -> token passed in is not a valid token
     '''
 
-    # Checking for InputError(s):
+    # Checking for InputError(s) or AccessError:
     if None in {token, handle_str}:
         raise InputError(description='Insufficient parameters. Please enter: \
         token, handle_str')
+
+    if not get_user_info('token', token):
+        raise AccessError(description='Token passed in is not a valid token')
 
     if not check_string_length_and_whitespace(MIN_CHAR_HANDLE_STR, \
                                              MAX_CHAR_HANDLE_STR, handle_str):
         raise InputError(description='handle_str is not between 3 and 20 \
         characters inclusively in length or is a whitespace')
 
+    user_info = get_user_info('token', token)
+    if user_info['handle_str'] == handle_str:
+        return {
+        }
+
     if get_user_info('handle_str', handle_str):
         raise InputError(description='Handle is already being used by \
         another user')
-
-    # Checking for AccessError:
-    if not get_user_info('token', token):
-        raise AccessError(description='Token passed in is not a valid token')
-
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
 
