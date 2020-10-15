@@ -162,6 +162,9 @@ def test_is_user_in_channel():
     assert is_user_in_channel(1, 0) == True
     assert is_user_in_channel(1, 1) == True
 
+def test_update_data():
+    pass
+
 def test_check_password():
     pass
 

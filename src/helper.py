@@ -56,7 +56,7 @@ def check_string_length_and_whitespace(min_length, max_length, name_to_check):
 def invalidating_token(token):
     '''
     Given the token of authenticated user invalidates it which later
-    leads to unauthentication of the user i.e. logging-out the user
+    leads to un-authentication of the user i.e. logging-out the user
     '''
 
     for user in data.data['users']:
@@ -142,7 +142,47 @@ def is_user_in_channel(u_id, channel_id):
     return any(user['u_id'] == u_id for user in channel_members)
 
 
+def update_data(keyword, user_id, identifier):
+    '''
+    Given a VALID variable ('name_first'|'name_last'|'email'|'handle_str'),
+    u_id of the user who wants to update his/her data and potential
+    UNIQUE identifier (name_first|name_last|email|handle_str), updates
+    their data under data['users'] in data.py
+    '''
+
+    for user in data.data['users']:
+        if user['u_id'] == user_id:
+            user[keyword] = identifier
+
 ########################################################################################
+
+'''
+def generate_handle(name_first, name_last, email):
+
+    Given the first and last name of the user, a handle is generated
+    that is the concatentation of a lowercase-only first name and last
+    name. If the concatenation is longer than 20 characters, it is
+    cutoff at 20 characters. If the handle is already taken, user's u_id
+    is concatenated at the very end, incase this concatenation exceeds
+    the length of 20 characters, the last characters of handle string
+    (which already belongs to another user) are adjusted to accomodate
+    the user's u_id in the very end
+
+
+    concatenated_names = name_first.lower() + name_last.lower()
+    handle_string = concatenated_names[:20]
+    status = False
+
+    for user_with_same_handle in data.data['users']:
+        if user_with_same_handle['handle_str'] == handle_string:
+            status = True
+
+    if status is True:
+        user_id = str(len(data.data['users']))
+        cut_handle_till = 20 - len(user_id)
+        handle_string = handle_string[:cut_handle_till] + user_id
+    return handle_string
+'''
 
 def check_password(email, password):
     '''
