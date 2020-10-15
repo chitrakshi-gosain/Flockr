@@ -5,7 +5,9 @@ Contributors - Cyrus Wilkie, Chitrakshi Gosain, Joseph Knox
 Iteration 2
 '''
 
-# import stuff here
+from error import InputError, AccessError
+from helper import get_user_info, check_if_valid_email, \
+check_string_length_and_whitespace
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -75,6 +77,10 @@ KEEP IN MIND:
    ain't imp for itr 1 so don't stress. :)
 '''
 
+# CONSTANTS
+MIN_CHAR_HANDLE_STR = 3
+MAX_CHAR_HANDLE_STR = 20
+
 def user_profile(token, u_id):
     return {
         'user': {
@@ -99,7 +105,34 @@ def user_profile_setemail(token, email):
         -> token : token of a user for the particular session (may or
                    may not be authorized)
         -> email : email of a user
+        
+    * user_profile_setemail
+        Error type: InputError
+            -> insufficient parameters
+            -> email entered is not a valid email
+            -> email address is already being used by another user
+        Error type: AccessError
+            -> token passed in is not a valid token
     '''
+
+    # Checking for InputError(s):
+    if None in {token, email}:
+        raise InputError(description='Insufficient parameters. Please enter: \
+                        token, email')
+
+    if not check_if_valid_email(email):
+        raise InputError(description='Email entered is not a valid email')
+
+    if get_user_info('email', email):
+        raise InputError(description='Email address is already being used by \
+                        another user')
+
+    # Checking for AccessError:
+    if not get_user_info('token', token):
+        raise AccessError(description='Token passed in is not a valid token')
+
+    # Since there is no InputError or AccessError, hence proceeding
+    # forward:
 
     return {
     }
@@ -113,7 +146,36 @@ def user_profile_sethandle(token, handle_str):
         -> token : token of a user for the particular session (may or
                    may not be authorized)
         -> handle_str : handle of a user
+
+    * user_profile_sethandle
+        Error type: InputError
+            -> insufficient parameters
+            -> handle_str must be between 3 and 20 characters
+            -> handle is already being used by another user
+        Error type: AccessError
+            -> token passed in is not a valid token
     '''
+
+    # Checking for InputError(s):
+    if None in {token, handle_str}:
+        raise InputError(description='Insufficient parameters. Please enter: \
+                        token, handle_str')
+
+    if not check_string_length_and_whitespace(MIN_CHAR_HANDLE_STR, \
+                                             MAX_CHAR_HANDLE_STR, handle_str):
+        raise InputError(description='handle_str is not between 3 and 20 \
+                        characters inclusively in length or is a whitespace')
+
+    if get_user_info('handle_str', handle_str):
+        raise InputError(description='Handle is already being used by \
+                        another user')
+
+    # Checking for AccessError:
+    if not get_user_info('token', token):
+        raise AccessError(description='Token passed in is not a valid token')
+
+    # Since there is no InputError or AccessError, hence proceeding
+    # forward:
 
     return {
     }
