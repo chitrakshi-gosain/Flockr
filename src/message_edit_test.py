@@ -42,11 +42,13 @@ def test_message_edit_noerrors():
     user_details = auth.auth_register("user@email.com", "user_pass", "user_first", "user_last")
     token = user_details['token']
 
-    channel_id = channels_create(token, "A Channel Name", True)
+    channel_dict = channels_create(token, "A Channel Name", True)
+    channel_id = channel_dict["channel_id"]
 
     first_message = "This is the original message."
 
-    message_id = message_send(token, channel_id, first_message)
+    message_info = message_send(token, channel_id, first_message)
+    message_id = message_info["message_id"]
     message_dict = helper.get_message_info(message_id)
     assert message_dict['message'] == first_message
 
@@ -67,11 +69,13 @@ def test_message_edit_emptystring():
     user_details = auth.auth_register("user@email.com", "user_pass", "user_first", "user_last")
     token = user_details['token']
 
-    channel_id = channels_create(token, "A Channel Name", True)
+    channel_dict = channels_create(token, "A Channel Name", True)
+    channel_id = channel_dict["channel_id"]
 
     first_message = "This is the original message."
 
-    message_id = message_send(token, channel_id, first_message)
+    message_info = message_send(token, channel_id, first_message)
+    message_id = message_info["message_id"]
     message_dict = helper.get_message_info(message_id)
     assert message_dict['message'] == first_message
 
@@ -98,12 +102,14 @@ def test_message_edit_notsender():
     token1 = user1_details['token']
 
     # user0 creates channel, user1 joins it
-    channel_id = channels_create(token0, "A Channel Name", True)
+    channel_dict = channels_create(token0, "A Channel Name", True)
+    channel_id = channel_dict["channel_id"]
     channel_join(token1, channel_id)
 
     first_message = "This is the original message."
 
-    message_id = message_send(token0, channel_id, first_message)
+    message_info = message_send(token0, channel_id, first_message)
+    message_id = message_info["message_id"]
     message_dict = helper.get_message_info(message_id)
     assert message_dict['message'] == first_message
 
@@ -123,11 +129,13 @@ def test_message_edit_notauth():
     user_details = auth.auth_register("user@email.com", "user_pass", "user_first", "user_last")
     token = user_details['token']
 
-    channel_id = channels_create(token, "A Channel Name", True)
+    channel_dict = channels_create(token, "A Channel Name", True)
+    channel_id = channel_dict["channel_id"]
 
     first_message = "This is the original message."
 
-    message_id = message_send(token, channel_id, first_message)
+    message_info = message_send(token, channel_id, first_message)
+    message_id = message_info["message_id"]
     message_dict = helper.get_message_info(message_id)
     assert message_dict['message'] == first_message
 
