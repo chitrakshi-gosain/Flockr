@@ -119,7 +119,9 @@ def test_check_if_valid_email():
 def test_check_if_valid_password():
     pass
 
-def test_check_name_length_and_is_a_whitespace():
+def test_check_string_length_and_whitespace():
+    # check name_first(1-50 char limit), name_last(1-50 char limit) and
+    # handle_str(3-20 char limit), all char limits are inclusive
     pass
 
 def test_invalidating_token():

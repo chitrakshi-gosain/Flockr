@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15Team2 2020 T3
-Contributers - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
+Contributors - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
                Ahmet Karatas, Joseph Knox
 
 Iteration 1
@@ -9,9 +9,13 @@ Iteration 1
 import re
 import data
 
+# CONSTANTS
+MIN_LENGTH_PASSWORD = 6
+MAX_LENGTH_PASSWORD = 32
+
 def check_if_valid_email(email):
     '''
-    Given the email of the user to be registeredd checks if it is a
+    Given the email of the user to be registered checks if it is a
     valid email using a regex
     '''
 
@@ -26,7 +30,7 @@ def check_if_valid_password(password):
     is in valid range and if it has printable ASCII characters only
     '''
 
-    if not 6 <= len(password) <= 32:
+    if not MIN_LENGTH_PASSWORD <= len(password) <= MAX_LENGTH_PASSWORD:
         return False
     if not password.isprintable():
         return False
@@ -34,14 +38,14 @@ def check_if_valid_password(password):
     return True
 
 
-def check_name_length_and_is_a_whitespace(name_to_check):
+def check_string_length_and_whitespace(min_length, max_length, name_to_check):
     '''
     Given the first or last name of the user to be registered checks if
     it's length is in valid range and if it is not completely a
     whitespace
     '''
 
-    if not 1 <= len(name_to_check) <= 50:
+    if not min_length <= len(name_to_check) <= max_length:
         return False
     if name_to_check.isspace():
         return False
