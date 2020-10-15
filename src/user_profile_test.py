@@ -67,7 +67,7 @@ def test_user_profile_valid_own(user_data):
     '''
     Testing users checking their own profiles
     '''
-    profile_data = user_profile(user_data['owner']['token'], user_data['owner']['uid'])
+    profile_data = user_profile(user_data['owner']['token'], user_data['owner']['u_id'])
 
     exp_dict = {
         'user': {
