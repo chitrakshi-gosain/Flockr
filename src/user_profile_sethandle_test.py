@@ -142,7 +142,7 @@ def test_successful_handle_updatation(initialise_user_data):
     test_user_3 = initialise_user_data['user3']
     user_profile_sethandle(test_user_3['token'], 'user_3_handle')
     user_3_details = user_profile(test_user_3['token'], test_user_3['u_id'])
-    assert user_3_details['handle_str'] == 'user_3_handle'
+    assert user_3_details['user']['handle_str'] == 'user_3_handle'
 
 def test_handle_3_chars(initialise_user_data):
     '''
@@ -152,7 +152,7 @@ def test_handle_3_chars(initialise_user_data):
     test_user_4 = initialise_user_data['user4']
     user_profile_sethandle(test_user_4['token'], 'me_')
     user_4_details = user_profile(test_user_4['token'], test_user_4['u_id'])
-    assert user_4_details['handle_str'] == 'me_'
+    assert user_4_details['user']['handle_str'] == 'me_'
 
 def test_handle_20_chars(initialise_user_data):
     '''
@@ -162,7 +162,7 @@ def test_handle_20_chars(initialise_user_data):
     test_user_5 = initialise_user_data['user5']
     user_profile_sethandle(test_user_5['token'], 'hi' * 10)
     user_5_details = user_profile(test_user_5['token'], test_user_5['u_id'])
-    assert user_5_details['handle_str'] == 'hi' * 10
+    assert user_5_details['user']['handle_str'] == 'hi' * 10
 
 def test_non_ascii_handle(initialise_user_data):
     '''
@@ -174,7 +174,7 @@ def test_non_ascii_handle(initialise_user_data):
     test_user_6 = initialise_user_data['user6']
     user_profile_sethandle(test_user_6['token'], 'âêîôû é àèù ëïü')
     user_6_details = user_profile(test_user_6['token'], test_user_6['u_id'])
-    assert user_6_details['handle_str'] == 'âêîôû é àèù ëïü'
+    assert user_6_details['user']['handle_str'] == 'âêîôû é àèù ëïü'
 
 def test_existing_handle(initialise_user_data):
     '''
@@ -204,7 +204,7 @@ def test_no_change(initialise_user_data):
                                                   'user9_firstuser9_las')
     user_9_details = user_profile(test_user_9['token'], test_user_9['u_id'])
 
-    assert user_9_details['handle_str'] == 'user9_firstuser9_las'
+    assert user_9_details['user']['handle_str'] == 'user9_firstuser9_las'
     assert isinstance(test_user_9_newhandle, dict)
     assert not test_user_9_newhandle
 
@@ -220,11 +220,11 @@ def test_only_unique_changes_accepted(initialise_user_data):
     test_user_10 = initialise_user_data['user10']
     user_profile_sethandle(test_user_10['token'], 'user_10_handle')
     user_10_details = user_profile(test_user_10['token'], test_user_10['u_id'])
-    assert user_10_details['handle_str'] == 'user_10_handle'
+    assert user_10_details['user']['handle_str'] == 'user_10_handle'
 
     test_user_11 = initialise_user_data['user11']
     user_profile_sethandle(test_user_11['token'], 'user10_firstuser10_l')
     user_11_details = user_profile(test_user_11['token'], test_user_11['u_id'])
-    assert user_11_details['handle_str'] == 'user10_firstuser10_l'
+    assert user_11_details['user']['handle_str'] == 'user10_firstuser10_l'
 
-    assert user_10_details['handle_str'] != user_11_details['handle_str']
+    assert user_10_details['user']['handle_str'] != user_11_details['user']['handle_str']

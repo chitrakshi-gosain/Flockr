@@ -143,7 +143,7 @@ def test_successful_email_updatation(initialise_user_data):
     test_user_2 = initialise_user_data['user2']
     user_profile_setemail(test_user_2['token'], 'user2newemailid@email.com')
     user_2_details = user_profile(test_user_2['token'], test_user_2['u_id'])
-    assert user_2_details['email'] == 'user2newemailid@email.com'
+    assert user_2_details['user']['email'] == 'user2newemailid@email.com'
 
 def test_only_unique_changes_accepted(initialise_user_data):
     '''
@@ -155,14 +155,14 @@ def test_only_unique_changes_accepted(initialise_user_data):
     test_user_3 = initialise_user_data['user3']
     user_profile_setemail(test_user_3['token'], 'user3newemailid@email.com')
     user_3_details = user_profile(test_user_3['token'], test_user_3['u_id'])
-    assert user_3_details['email'] == 'user3newemailid@email.com'
+    assert user_3_details['user']['email'] == 'user3newemailid@email.com'
 
     test_user_4 = initialise_user_data['user4']
     user_profile_setemail(test_user_4['token'], 'user3@email.com')
     user_4_details = user_profile(test_user_4['token'], test_user_4['u_id'])
-    assert user_4_details['email'] == 'user3@email.com'
+    assert user_4_details['user']['email'] == 'user3@email.com'
 
-    assert user_3_details['email'] != user_4_details['email']
+    assert user_3_details['user']['email'] != user_4_details['user']['email']
 
 def test_no_change(initialise_user_data):
     '''
@@ -176,6 +176,6 @@ def test_no_change(initialise_user_data):
                                                        'user5@email.com')
     user_5_details = user_profile(test_user_5['token'], test_user_5['u_id'])
 
-    assert user_5_details['email'] == 'user5@email.com'
+    assert user_5_details['user']['email'] == 'user5@email.com'
     assert isinstance(test_user_5_updatedemail, dict)
     assert not test_user_5_updatedemail
