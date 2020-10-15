@@ -149,7 +149,6 @@ def test_is_user_authorised():
     assert is_user_authorised(token1, 1)
     assert not is_user_authorised(token1, 0)
 
-
 def test_is_channel_owner():
     other.clear()
     initialise_data()
