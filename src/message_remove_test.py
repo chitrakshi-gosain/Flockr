@@ -1,6 +1,6 @@
 import pytest
 from auth import auth_register
-from channel import channel_messages, channel_details, channel_join
+from channel import channel_join
 from channels import channels_create
 from message import message_send, message_remove
 import data
