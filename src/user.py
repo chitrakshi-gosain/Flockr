@@ -5,6 +5,7 @@ Contributors - Cyrus Wilkie, Chitrakshi Gosain, Joseph Knox
 Iteration 2
 '''
 
+import data
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
 check_string_length_and_whitespace
@@ -118,14 +119,14 @@ def user_profile_setemail(token, email):
     # Checking for InputError(s):
     if None in {token, email}:
         raise InputError(description='Insufficient parameters. Please enter: \
-                        token, email')
+        token, email')
 
     if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')
 
     if get_user_info('email', email):
         raise InputError(description='Email address is already being used by \
-                        another user')
+        another user')
 
     # Checking for AccessError:
     if not get_user_info('token', token):
@@ -133,6 +134,10 @@ def user_profile_setemail(token, email):
 
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
+    user_id = get_user_info('token', token)['u_id']
+    for user in data.data['users']:
+        if user['u_id'] == user_id:
+            user['email'] = email
 
     return {
     }
@@ -159,16 +164,16 @@ def user_profile_sethandle(token, handle_str):
     # Checking for InputError(s):
     if None in {token, handle_str}:
         raise InputError(description='Insufficient parameters. Please enter: \
-                        token, handle_str')
+        token, handle_str')
 
     if not check_string_length_and_whitespace(MIN_CHAR_HANDLE_STR, \
                                              MAX_CHAR_HANDLE_STR, handle_str):
         raise InputError(description='handle_str is not between 3 and 20 \
-                        characters inclusively in length or is a whitespace')
+        characters inclusively in length or is a whitespace')
 
     if get_user_info('handle_str', handle_str):
         raise InputError(description='Handle is already being used by \
-                        another user')
+        another user')
 
     # Checking for AccessError:
     if not get_user_info('token', token):
@@ -176,6 +181,11 @@ def user_profile_sethandle(token, handle_str):
 
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
+
+    user_id = get_user_info('token', token)['u_id']
+    for user in data.data['users']:
+        if user['u_id'] == user_id:
+            user['handle_str'] = handle_str
 
     return {
     }

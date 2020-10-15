@@ -104,7 +104,7 @@ def test_return_type(initialise_user_data):
 
     test_user_0 = initialise_user_data['user0']
     test_user_0_newhandle = user_profile_sethandle(test_user_0['token'], \
-                                       'mynewemail0@gmail.com')
+                                       'my_new_handle')
     assert isinstance(test_user_0_newhandle, dict)
     assert not test_user_0_newhandle
 
