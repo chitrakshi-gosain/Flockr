@@ -5,6 +5,8 @@ Contributors - Cyrus Wilkie, Chitrakshi Gosain, Joseph Knox
 Iteration 2
 '''
 
+import helper
+import data
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
 check_string_length_and_whitespace, update_data
@@ -120,8 +122,38 @@ def user_profile(token, u_id):
     }
 
 def user_profile_setname(token, name_first, name_last):
+    '''
+    DESCRIPTION:
+    Given a token, replaces the authorised user's first and last name
+    with the provided name_first and name_last respectively.
+
+    PARAMETERS:
+        -> token : token of user who called the function
+        -> name_first : replacement first name
+        -> name_last : replacement last name
+
+    RETURN VALUES:
+    '''
+
+    # check if token is valid
+    user_info = helper.get_user_info("token", token)
+    if not user_info:
+        raise AccessError('invalid token')
+
+    # check if name_first and name_last are of invalid length
+    if not helper.check_string_length_and_whitespace(1, 50, name_first):
+        raise InputError("Invalid length of first name")
+    if not helper.check_string_length_and_whitespace(1, 50, name_last):
+        raise InputError("Invalid length of last name")
+
+    u_id = user_info["u_id"]
+
+    helper.update_data("name_first", u_id, name_first)
+    helper.update_data("name_last", u_id, name_last)
+
     return {
     }
+
 
 def user_profile_setemail(token, email):
     '''

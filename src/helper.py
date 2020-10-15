@@ -97,12 +97,9 @@ def is_user_authorised(token, channel_id):
 
     user_info = get_user_info('token', token)
 
-    in_channel = is_user_in_channel(user_info['u_id'], channel_id)
+    is_owner = is_channel_owner(user_info['u_id'], channel_id)
 
-    # why are we taking u_id as a parameter, if not using it?, keep in
-    # mind to change it whereever necessary
-
-    return user_info['is_admin'] or in_channel
+    return user_info['is_admin'] or is_owner
 
 
 def is_channel_owner(u_id, channel_id):
