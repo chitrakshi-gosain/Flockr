@@ -1,12 +1,11 @@
 from auth import auth_register
-from channel import channel_messages, channel_details
+from channel import channel_messages, channel_details, channel_join
 from channels import channels_create
 from message import message_send
 import data
 import pytest
 from other import clear
-from error import InputError
-from error import AccessError
+from error import InputError, AccessError
 
 def test_insufficient_parameters():
     clear()
@@ -46,17 +45,29 @@ def test_return_type():
     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)                                 # create a public channel
 
     message_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "Sample message")
-    assert isinstance(message_id, dict)
-    assert isinstance(message_id['message_id'], int)
-    assert isinstance(data.data['messages']['message'][0], str)
+    assert isinstance(data.data['messages'], list)
+    assert isinstance(data.data['messages'][0], dict)
+    assert isinstance(data.data['messages'][0]['message_id'], int)
+    assert isinstance(data.data['messages'][0]['u_id'], int)
+    assert isinstance(data.data['messages'][0]['message'], str)
+    assert isinstance(data.data['messages'][0]['message'], object)
 
 def test_sample():
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register user_1
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)                                 # create a public channel
-    message_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "Sample message")
-    assert data.data['messages']['message'][0] == "Sample message"
+    user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')             # Register user_1
 
+
+    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)                                 # create a public channel
+    channel_join(user1_credentials['token'], channel1_id['channel_id'])
+
+    message_id1 = message_send(owner_credentials['token'], channel1_id['channel_id'], "Hey, how are you")
+    message_id2 = message_send(user1_credentials['token'], channel1_id['channel_id'], "Good thank you, how are you!")
+    message_id3 = message_send(owner_credentials['token'], channel1_id['channel_id'], "Very well, thanks.")
+
+    for message in data.data['messages']:
+        if message['message_id'] == message_id2:
+            assert message['message'] == "Good thank you, how are you!"
 
 
 
