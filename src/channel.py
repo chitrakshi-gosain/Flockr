@@ -336,15 +336,8 @@ def channel_addowner(token, channel_id, u_id):
         raise InputError('u_id is already an owner')
 
     # extracts first and last names from channel dict
-    '''
     user_info = user.user_profile(token, u_id)
     user_info = user_info['user']
-    '''
-    # manual get user as user_profile isn't implemented
-    user_info = data.data["users"][0]
-    for u in data.data["users"]:
-        if u["u_id"] == u_id:
-            user_info = u
 
     name_first = user_info['name_first']
     name_last = user_info['name_last']
