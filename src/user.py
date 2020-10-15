@@ -5,10 +5,9 @@ Contributors - Cyrus Wilkie, Chitrakshi Gosain, Joseph Knox
 Iteration 2
 '''
 
-import data
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
-check_string_length_and_whitespace
+check_string_length_and_whitespace, update_data
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -85,8 +84,8 @@ MAX_CHAR_HANDLE_STR = 20
 def user_profile(token, u_id):
     '''
     DESCRIPTION:
-    For a valid user, returns information about 
-    their user_id, email, first name, last name, 
+    For a valid user, returns information about
+    their user_id, email, first name, last name,
     and handle
 
     PARAMETERS:
@@ -102,14 +101,12 @@ def user_profile(token, u_id):
 
     # Checking token validity
     user = get_user_info('token', token)
-
-    if user == False:
+    if not user:
         raise AccessError('Invalid Token')
 
     # Checking u_id validity and getting user data
     user = get_user_info('u_id', u_id)
-
-    if user == False:
+    if not user:
         raise InputError('Not a valid user')
 
     return {
@@ -135,7 +132,7 @@ def user_profile_setemail(token, email):
         -> token : token of a user for the particular session (may or
                    may not be authorized)
         -> email : email of a user
-        
+
     * user_profile_setemail
         Error type: InputError
             -> insufficient parameters
@@ -168,9 +165,7 @@ def user_profile_setemail(token, email):
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
 
-    for user in data.data['users']:
-        if user['u_id'] == user_info['u_id']:
-            user['email'] = email
+    update_data('email', user_info['u_id'], email)
 
     return {
     }
@@ -215,13 +210,11 @@ def user_profile_sethandle(token, handle_str):
     if get_user_info('handle_str', handle_str):
         raise InputError(description='Handle is already being used by \
         another user')
+
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
 
-    user_id = get_user_info('token', token)['u_id']
-    for user in data.data['users']:
-        if user['u_id'] == user_id:
-            user['handle_str'] = handle_str
+    update_data('handle_str', user_info['u_id'], handle_str)
 
     return {
     }
