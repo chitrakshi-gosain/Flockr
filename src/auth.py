@@ -266,33 +266,6 @@ if __name__ == '__main__':
             user2_admin_status = user['is_admin']
     assert user1_admin_status != user2_admin_status
     print(user1_admin_status, user2_admin_status)
-
-    # check for different_handle_With_Same_first_and_last_names
-    clear()
-    test_user_11 = auth_register('registerationtestvalidemailid11@gmail.com', \
-                                '123Abc!11', 'fname1', 'lname1')
-    test_user_12 = auth_register('registerationtestvalidemailid12@gmail.com', \
-                                \'123Abc!12', 'Valid', 'User12')
-    test_user_13 = auth_register('registerationtestvalidemailid13@gmail.com', \
-                                '123Abc!13', 'Valid', 'User12')
-    test_user_14 = auth_register('registerationtestvalidemailid14@gmail.com', \
-                                '123Abc!14', 'fname1', 'lname1')
-    for user in data.data['users']:
-        if user['u_id'] == test_user_11['u_id']:
-            user11_handle = user['handle_str']
-        if user['u_id'] == test_user_12['u_id']:
-            user12_handle = user['handle_str']
-        if user['u_id'] == test_user_13['u_id']:
-            user13_handle = user['handle_str']
-        if user['u_id'] == test_user_14['u_id']:
-            user14_handle = user['handle_str']
-    print('fname1', 'lname1', user11_handle, test_user_11['u_id'])
-    print('Valid', 'User12', user12_handle, test_user_12['u_id'])
-    print('Valid', 'User12', user13_handle, test_user_13['u_id'])
-    print('fname1', 'lname1', user14_handle, test_user_14['u_id'])
-
-    assert user11_handle != user14_handle
-    assert user12_handle != user13_handle
 '''
 
 # NOT NEEDED ATM:

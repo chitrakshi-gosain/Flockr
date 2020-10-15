@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15Team2 2020 T3
-Contributer - Chitrakshi Gosain
+Contributor - Chitrakshi Gosain
 
 Iteration 1
 '''
@@ -8,7 +8,6 @@ Iteration 1
 import pytest
 from other import clear
 from error import InputError
-from user import user_profile
 from auth import auth_login, auth_logout, auth_register
 
 '''
@@ -20,7 +19,7 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> auth_register(email, password, name_first, name_last) return
    {u_id, token}
 -> auth_login(email,password) return {u_id, token}
--> auth_logout(token) return {is_sucess}
+-> auth_logout(token) return {is_success}
 '''
 
 '''
