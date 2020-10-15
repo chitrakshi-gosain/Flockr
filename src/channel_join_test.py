@@ -14,8 +14,7 @@ from error import InputError, AccessError
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 -> intialise_user_data() return { users }, { channels }
--> is_user_in_channel() return True/False
--> count_instances() return count
+-> is_user_in_channel(user_id, token, channel_id) return amount of times u_id was found in channel
 -> test_channel_join_basic()
 -> test_channel_join_invalid_channel()
 -> test_channel_join_private_user()
@@ -72,19 +71,8 @@ def initialise_data():
     })
 
 def is_user_in_channel(user_id, token, channel_id):
-    channel_info = channel_details(token, channel_id)
-    for member in channel_info['all_members']:
-        if (member['u_id'] == user_id):
-            return True
-    return False
-
-def count_instances(user_id, token, channel_id):
-    count = 0
-    channel_info = channel_details(token, channel_id)
-    for member in channel_info['all_members']:
-        if (member['u_id'] == user_id):
-            count += 1
-    return count
+    channel_members = channel_details(token, channel_id)['all_members']
+    return len(list(filter(lambda user: user_id == user['u_id'], channel_members)))
 
 def test_channel_join_basic():
     clear()
@@ -152,4 +140,4 @@ def test_channel_join_already_member():
     #Try join a second time
     channel_join(users['user0']['token'], channels['publ']['channel_id'])
     #there should only ever one instance of user in each channel
-    assert count_instances(users['user0']['u_id'], users['admin']['token'], channels['publ']['channel_id']) == 1
+    assert is_user_in_channel(users['user0']['u_id'], users['admin']['token'], channels['publ']['channel_id']) == 1

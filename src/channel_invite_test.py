@@ -74,20 +74,10 @@ def initialise_data():
         'user_priv' : channel_priv_user_details
     })
 
-def is_user_in_channel(user_id, token, channel_id):
-    channel_info = channel_details(token, channel_id)
-    for member in channel_info['all_members']:
-        if member['u_id'] == user_id:
-            return True
-    return False
 
-def count_instances(user_id, token, channel_id):
-    count = 0
-    channel_info = channel_details(token, channel_id)
-    for member in channel_info['all_members']:
-        if member['u_id'] == user_id:
-            count += 1
-    return count
+def is_user_in_channel(user_id, token, channel_id):
+    channel_members = channel_details(token, channel_id)['all_members']
+    return len(list(filter(lambda user: user_id == user['u_id'], channel_members)))
 
 def test_channel_invite_valid_basic():
     clear()
@@ -157,4 +147,4 @@ def test_channel_invite_already_in_channel():
     #now try invite for a second time
     channel_invite(users['user0']['token'], channels['publ']['channel_id'], users['user1']['u_id'])
     #there should only ever one instance of user in each channel
-    assert count_instances(users['user1']['u_id'], users['user0']['token'], channels['publ']['channel_id']) == 1
+    assert is_user_in_channel(users['user1']['u_id'], users['user0']['token'], channels['publ']['channel_id']) == 1
