@@ -136,8 +136,6 @@ def test_get_channel_info():
     assert get_channel_info(1) == data.data['channels'][1]
 
 def test_is_user_authorised():
-    pass
-
     other.clear()
     initialise_data()
 
