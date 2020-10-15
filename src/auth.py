@@ -100,7 +100,7 @@ def auth_login(email, password):
         raise InputError(description='Insufficient parameters, please enter: \
                          email, password')
 
-    if check_if_valid_email(email) is None:
+    if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')
 
     if not get_user_info('email', email):
@@ -140,7 +140,7 @@ def auth_logout(token):
     '''
 
     # Checking for InputError:
-    if token is None:
+    if not token:
         raise InputError(description='Insufficient parameters. Please enter: \
                         token')
 
@@ -184,7 +184,7 @@ def auth_register(email, password, name_first, name_last):
         raise InputError(description='Insufficient parameters. Please enter: \
                         email, password, name_first, name_last')
 
-    if check_if_valid_email(email) is None:
+    if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')
 
     if not check_if_valid_password(password):
@@ -217,7 +217,7 @@ def auth_register(email, password, name_first, name_last):
         if user_with_same_handle['handle_str'] == handle_string:
             status = True
 
-    if status is True:
+    if status:
         user_id = str(len(data.data['users']))
         cut_handle_till = MAX_CHAR_HANDLE_STR - len(user_id)
         handle_string = handle_string[:cut_handle_till] + user_id
