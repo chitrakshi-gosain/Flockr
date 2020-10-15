@@ -327,7 +327,7 @@ def channel_addowner(token, channel_id, u_id):
         raise InputError('channel_id not valid')
 
     # check if authorised user (based on token) is admin of the flockr, or owner of the channel
-    if not (user_info["is_admin"] or helper.is_channel_owner(user_info["u_id"], channel_id)):
+    if not helper.is_user_authorised(token, channel_id):
         raise AccessError('authorised user is not an admin of the flockr, or an owner of the channel')
 
     # check if u_id is in the list of the u_ids of existing owners
@@ -383,7 +383,7 @@ def channel_removeowner(token, channel_id, u_id):
         raise InputError('channel_id not valid')
 
     # check if authorised user (based on token) is admin of the flockr, or owner of the channel
-    if not (user_info["is_admin"] or helper.is_channel_owner(user_info["u_id"], channel_id)):
+    if not helper.is_user_authorised(token, channel_id):
         raise AccessError('authorised user is not an admin of the flockr, or an owner of the channel')
 
     # check if u_id is not in the list of the u_ids of existing owners
