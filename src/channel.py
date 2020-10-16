@@ -330,9 +330,9 @@ def channel_addowner(token, channel_id, u_id):
     if not channel_info:
         raise InputError('channel_id not valid')
 
-    # check if authorised user (based on token) is admin of the flockr, or owner of the channel
-    if not (user_info["is_admin"] or helper.is_channel_owner(user_info["u_id"], channel_id)):
-        raise AccessError('authorised user is not an admin of the flockr, or an owner of the channel')
+     # check if authorised user (based on token) is admin of the flockr, or owner of the channel
+    if not helper.is_user_authorised(token, channel_id):
+        raise AccessError('authorised user is not flockr admin, or an owner of the channel')
 
     # check if u_id is in the list of the u_ids of existing owners
     # i.e. if the provided u_id is already an owner
@@ -340,15 +340,8 @@ def channel_addowner(token, channel_id, u_id):
         raise InputError('u_id is already an owner')
 
     # extracts first and last names from channel dict
-    '''
     user_info = user.user_profile(token, u_id)
     user_info = user_info['user']
-    '''
-    # manual get user as user_profile isn't implemented
-    user_info = data.data["users"][0]
-    for u in data.data["users"]:
-        if u["u_id"] == u_id:
-            user_info = u
 
     name_first = user_info['name_first']
     name_last = user_info['name_last']
@@ -387,8 +380,8 @@ def channel_removeowner(token, channel_id, u_id):
         raise InputError('channel_id not valid')
 
     # check if authorised user (based on token) is admin of the flockr, or owner of the channel
-    if not (user_info["is_admin"] or helper.is_channel_owner(user_info["u_id"], channel_id)):
-        raise AccessError('authorised user is not an admin of the flockr, or an owner of the channel')
+    if not helper.is_user_authorised(token, channel_id):
+        raise AccessError('authorised user is not flockr admin, or an owner of the channel')
 
     # check if u_id is not in the list of the u_ids of existing owners
     # i.e. if the provided u_id is not an owner
