@@ -17,6 +17,8 @@ from auth import auth_register
 
 '''
 FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return
+   {u_id, token}
 -> user_profile(token, u_id) return {user}
 -> user_profile_setemail(token, email) return {}
 '''

@@ -1,26 +1,26 @@
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributor - Cyrus Wilkie
+
+Iteration 2
+'''
+
+import pytest
 from auth import auth_register, auth_logout
 from user import user_profile
 from other import clear
 from error import AccessError, InputError
-import pytest
-
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Cyrus Wilkie
-
-# Iteration 1
 
 '''
-*********************************BASIC TEMPLATE*********************************
+****************************BASIC TEMPLATE******************************
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> user_data() return {users}
--> test_user_profile_valid_own(user_data)
--> test_user_profile_valid_else(user_data)
--> test_user_profile_valid_logout(user_data)
--> test_user_profile_invalid_uid(user_data)
--> test_user_profile_invalid_token(user_data)
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> user_profile(token, u_id) return {user}
+-> auth_register(email, password, name_first, name_last) return
+   {u_id, token}
+-> auth_logout(token) return {is_success}
 '''
 
 @pytest.fixture

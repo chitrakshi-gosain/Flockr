@@ -17,6 +17,8 @@ from auth import auth_register
 
 '''
 FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return
+   {u_id, token}
 -> user_profile(token, u_id) return {user}
 -> user_profile_sethandle(toke, handle_str) return {}
 '''
@@ -67,9 +69,9 @@ def initialise_user_data():
     user8_details = auth_register('user8@email.com', 'user8_pass!', \
                                  'user8_first', 'user8_last')
     user9_details = auth_register('user9@email.com', 'user9_pass!', \
-                                 'user9_first', 'user9_last')  
+                                 'user9_first', 'user9_last')
     user10_details = auth_register('user10@email.com', 'user10_pass!', \
-                                 'user10_first', 'user10_last')                                                                                              
+                                 'user10_first', 'user10_last')
     user11_details = auth_register('user11@email.com', 'user11_pass!', \
                                  'user11_first', 'user11_last')
 
@@ -84,7 +86,7 @@ def initialise_user_data():
         'user7': user7_details,
         'user8': user8_details,
         'user9': user9_details,
-        'user10': user10_details,       
+        'user10': user10_details,
         'user11': user11_details
     }
 
