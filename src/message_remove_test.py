@@ -37,6 +37,15 @@ def test_token_invalid():
     with pytest.raises(AccessError):
         message_remove('incorrect_user1_token', message_id['message_id'])
 
+def test_invalid_message_id():
+    clear()
+    owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
+    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
+
+    incorrect_message_id = -1
+    with pytest.raises(InputError):
+        message_remove(owner_credentials['token'], incorrect_message_id)
+
 def test_empty():
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register user_1
