@@ -38,6 +38,38 @@ def test_message_edit_noerrors():
     message_dict = helper.get_message_info(message_id)
     assert message_dict['message'] == second_message
 
+def test_message_edit_secondmessage():
+    '''
+    edits the second sent message, not the first
+    '''
+    clear()
+
+    user_details = auth.auth_register("user@email.com", "user_pass", "user_first", "user_last")
+    token = user_details['token']
+
+    channel_dict = channels_create(token, "A Channel Name", True)
+    channel_id = channel_dict["channel_id"]
+
+    first_message0 = "This is the first original message."
+    first_message1 = "This is the second original message."
+
+    message_info0 = message_send(token, channel_id, first_message0)
+    message_id0 = message_info0["message_id"]
+    message_dict0 = helper.get_message_info(message_id0)
+    assert message_dict0['message'] == first_message0
+
+    message_info1 = message_send(token, channel_id, first_message1)
+    message_id1 = message_info1["message_id"]
+    message_dict1 = helper.get_message_info(message_id1)
+    assert message_dict1['message'] == first_message1
+
+    second_message1 = "This is the second edited message."
+
+    message_edit(token, message_id1, second_message1)
+
+    message_dict1 = helper.get_message_info(message_id1)
+    assert message_dict1['message'] == second_message1
+
 def test_message_edit_emptystring():
     '''
     test that message_edit deletes the message
