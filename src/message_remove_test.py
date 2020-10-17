@@ -3,7 +3,6 @@ from auth import auth_register
 from channel import channel_join, channel_messages
 from channels import channels_create
 from message import message_send, message_remove
-import data
 from other import clear, search
 from error import InputError, AccessError
 
@@ -63,14 +62,14 @@ def test_multiple_dicts():
     message_send(user1_credentials['token'], channel1_id['channel_id'], "Mum, there's something I need to tell you")
     message_send(owner_credentials['token'], channel1_id['channel_id'], "What is it?")
     message_id = message_send(user1_credentials['token'], channel1_id['channel_id'], "I failed my assignment")
+    messages = get_messages(admin_token)
+    assert messages['messages'][2]['message'] == "I failed my assignment"
+
     message_remove(user1_credentials['token'], message_id['message_id'])
     message_send(owner_credentials['token'], channel1_id['channel_id'], "Sorry hunny I missed that. What did you delete?")
     message_send(user1_credentials['token'], channel1_id['channel_id'], "Oh it's nothing, I'll be home soon! Byee")
     message_send(user1_credentials['token'], channel1_id['channel_id'], "Bye son")
 
     # Check to see if the message has been deleted in the channel
-    messages_history = channel_messages(owner_credentials['token'], channel1_id['channel_id'], 0)
-    assert messages_history['messages'][2]['message'] == "Sorry hunny I missed that. What did you delete?"
-    # Ensure that message_id still exists in the message bank:
     messages = get_messages(admin_token)
-    assert messages['messages'][2]['message'] == "I failed my assignment"  
+    assert messages['messages'][2]['message'] == "Sorry hunny I missed that. What did you delete?"
