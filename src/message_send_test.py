@@ -30,7 +30,7 @@ def test_channel_id_not_valid():
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
 
-    invalid_channel_id = -1 
+    invalid_channel_id = -1
     with pytest.raises(InputError):
         message_send(owner_credentials['token'], invalid_channel_id, "Sample message")
 
@@ -75,5 +75,5 @@ def test_sample():
     admin_token = owner_credentials['token']
     messages = get_messages(admin_token)
     for message in messages['messages']:
-        if message['message_id'] == message_id:
+        if message['message_id'] == message_id['message_id']:
             assert message['message'] == "Good thank you, how are you!"
