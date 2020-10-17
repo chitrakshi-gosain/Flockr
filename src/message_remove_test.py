@@ -40,7 +40,7 @@ def test_token_invalid():
 def test_invalid_message_id():
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
+    channels_create(owner_credentials['token'], 'channel1_name', False)
 
     incorrect_message_id = -1
     with pytest.raises(InputError):
