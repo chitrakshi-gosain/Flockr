@@ -196,6 +196,7 @@ def test_get_message_info():
         'message': 'messagecontents1',
         'timecreated': 'datetime(YYYY, MM, DD, HH, MM)'
     }
+    assert not get_message_info(2)
 
 def test_update_data():
     pass
