@@ -187,6 +187,23 @@ def test_is_user_in_channel():
     assert is_user_in_channel(1, 0) == True
     assert is_user_in_channel(1, 1) == True
 
+def test_get_message_info():
+    other.clear()
+    initialise_data()
+
+    assert get_message_info(0) == {
+        'message_id': 0,
+        'u_id': 0,
+        'message': 'messagecontents0',
+        'timecreated': 'datetime(YYYY, MM, DD, HH, MM)'
+    }
+    assert get_message_info(1) == {
+        'message_id': 1,
+        'u_id': 0,
+        'message': 'messagecontents1',
+        'timecreated': 'datetime(YYYY, MM, DD, HH, MM)'
+    }
+
 def test_update_data():
     pass
 
