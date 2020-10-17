@@ -114,7 +114,14 @@ def initialise_data():
     }
 
 def test_check_if_valid_email():
-    pass
+    #Out of length range
+    assert check_string_length_and_whitespace(6,32,'123') == False
+    assert check_string_length_and_whitespace(6,32,'0123456789012345678901234567890123') == False
+    #Edge
+    assert check_string_length_and_whitespace(6,32,'123456') == True
+    assert check_string_length_and_whitespace(6,32,'01234567890123456789012345678901') == True
+    #Spaces
+    assert check_string_length_and_whitespace(5,20,'        ') == False
 
 def test_check_if_valid_password():
     pass
