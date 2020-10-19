@@ -1,5 +1,5 @@
 '''
-Created collaboratively by Wed15Team2 2020 T3
+Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributor - Chitrakshi Gosain
 
 Iteration 1
@@ -39,152 +39,144 @@ KEEP IN MIND:
    then??, ask Hayden if this needs to be done
 '''
 
-def test_successful_login_with_everything_valid():
+@pytest.fixture
+def reset():
+    '''
+    Resets the internal data of the application to it's initial state
+    '''
+
+    clear()
+
+@pytest.fixture
+def initialise_user_data():
+    '''
+    Sets up various descriptive user sample data for testing
+    purposes and returns user data which is implementation dependent
+    '''
+
+    user0_details = auth_register('user0@email.com', 'user0_pass1!', \
+                                 'user0_first', 'user0_last')
+    user1_details = auth_register('user1@email.com', 'user1_pass1!', \
+                                 'user1_first', 'user1_last')
+
+    return {
+        'user0': user0_details,
+        'user1': user1_details
+    }
+
+def test_successful_login_with_everything_valid(reset, initialise_user_data):
     '''
     Tests that auth_login logs the user in successfully
     '''
 
-    clear()
-    test_user_0 = auth_register('logintestvalidemailid0@gmail.com', \
-                                    '123Abc!0', 'Valid', 'User0')
+    test_user_0 = initialise_user_data['user0']
     auth_logout(test_user_0['token'])
-    auth_login('logintestvalidemailid0@gmail.com', '123Abc!0')
+    auth_login('user0@email.com', 'user0_pass1!')
 
-def test_invalid_email():
+def test_invalid_email(reset, initialise_user_data):
     '''
     Tests that auth_login raises an InputError when an invalid email-id
     is passed as one of the parameters
     '''
 
-    clear()
-    test_user_invalid = auth_register('logintestinvalidemailid@gmail.com',\
-                                          '123Abc!!', 'Valid', 'User!')
-    auth_logout(test_user_invalid['token'])
+    test_user_0 = initialise_user_data['user0']
+    auth_logout(test_user_0['token'])
     with pytest.raises(InputError):
-        auth_login('logintestinvalidemailid_gmail.com', '123Abc!!')
+        auth_login('user0_email.com', 'user0_pass1!')
 
-def test_unregistered_user():
+def test_unregistered_user(reset, initialise_user_data):
     '''
     Tests that auth_login raises an InputError when an unregistered user
     tries to log-in
     '''
 
-    clear()
-    test_user_1 = auth_register('logintestvalidemailid1@gmail.com', \
-                                    '123Abc!1', 'Valid', 'User1')
-    auth_logout(test_user_1['token'])
     with pytest.raises(InputError):
-        auth_login('unregisteredemail1@gmail.com', '123Abc!!')
+        auth_login('user00@email.com', 'user0_pass1!')
 
-def test_wrong_password():
+def test_wrong_password(reset, initialise_user_data):
     '''
     Tests that auth_login raises an InputError when a wrong password is
     passed as one of the parameters
     '''
-    clear()
-    test_user_2 = auth_register('logintestvalidemailid2@gmail.com', \
-                                    '123Abc!2', 'Valid', 'User2')
-    auth_logout(test_user_2['token'])
-    with pytest.raises(InputError):
-        auth_login('logintestvalidemailid2@gmail.com', 'cbA321!!')
 
-def test_insufficient_parameters():
+    test_user_0 = initialise_user_data['user0']
+    auth_logout(test_user_0['token'])
+    with pytest.raises(InputError):
+        auth_login('user0@email.com', 'user0_Pass1!')
+
+def test_insufficient_parameters(reset, initialise_user_data):
     '''
     Tests that auth_login raises an InputError when less than expected
     parameters are passed
     '''
 
-    clear()
-    test_user_3 = auth_register('logintestvalidemailid3@gmail.com', \
-                                    '123Abc!3', 'Valid', 'User3')
-    auth_logout(test_user_3['token'])
+    test_user_0 = initialise_user_data['user0']
+    auth_logout(test_user_0['token'])
     with pytest.raises(InputError):
-        auth_login('logintestvalidemailid3@gmail.com', None)
+        auth_login('user0@email.com', None)
 
-def test_return_type():
+def test_return_type(reset, initialise_user_data):
     '''
     Tests that auth_login returns the expected datatype i.e.
     {u_id : int, token : str}
     '''
 
-    clear()
-    test_user_4 = auth_register('registerationtestvalidemailid4@gmail.com', \
-                               '123Abc!4', 'Valid', 'User4')
-    auth_logout(test_user_4['token'])
-    test_user_4_login = auth_login('registerationtestvalidemailid4@gmail.com',\
-                                  '123Abc!4')
+    test_user_0 = initialise_user_data['user0']
+    auth_logout(test_user_0['token'])
+    test_user_0_login = auth_login('user0@email.com', 'user0_pass1!')
 
-    assert isinstance(test_user_4_login, dict)
-    assert isinstance(test_user_4_login['u_id'], int)
-    assert isinstance(test_user_4_login['token'], str)
+    assert isinstance(test_user_0_login, dict)
+    assert isinstance(test_user_0_login['u_id'], int)
+    assert isinstance(test_user_0_login['token'], str)
 
-def test_login_u_id():
+def test_login_u_id(reset, initialise_user_data):
     '''
     Tests that auth_register and auth_login return same values of token
     and u_id, as there may be a slightest possibility that token or u_id
     of the user might be played around with
     '''
 
-    clear()
-    test_user_5 = auth_register('registerationtestvalidemailid5@gmail.com', \
-                               '123Abc!5', 'Valid', 'User5')
-    test_user_5_login = auth_login('registerationtestvalidemailid5@gmail.com',\
-                                  '123Abc!5')
-    assert test_user_5_login['u_id'] == test_user_5['u_id']
+    test_user_0 = initialise_user_data['user0']
+    test_user_0_login = auth_login('user0@email.com', 'user0_pass1!')
+    assert test_user_0_login['u_id'] == test_user_0['u_id']
 
-def test_login_unique_token_and_u_id():
+def test_login_unique_token_and_u_id(reset, initialise_user_data):
     '''
     Tests that auth_login returns a unique u_id and token for each user
     '''
 
-    clear()
-    test_user_6 = auth_register('registerationtestvalidemailid6@gmail.com', \
-                               '123Abc!6', 'Valid', 'User6')
-    auth_logout(test_user_6['token'])
-    test_user_6_login = auth_login('registerationtestvalidemailid6@gmail.com',\
-                                  '123Abc!6')
-    test_user_7 = auth_register('registerationtestvalidemailid7@gmail.com', \
-                               '123Abc!7', 'Valid', 'User7')
-    auth_logout(test_user_7['token'])
-    test_user_7_login = auth_login('registerationtestvalidemailid7@gmail.com',\
-                                  '123Abc!7')
+    test_user_0_login = auth_login('user0@email.com', 'user0_pass1!')
+    test_user_1_login = auth_login('user1@email.com', 'user1_pass1!')
 
-    assert test_user_6_login != test_user_7_login
+    assert test_user_0_login != test_user_1_login
 
-    tokens = [test_user_6_login['token'], test_user_7_login['token']]
+    tokens = [test_user_0_login['token'], test_user_1_login['token']]
     assert len(set(tokens)) == len(tokens)
 
 # later modify this to check each login from multiple logins has
 # different token
-def test_multiple_logins():
+def test_multiple_logins(reset, initialise_user_data):
     '''
     Tests that auth_login allows multiple logins
     '''
 
-    clear()
-    auth_register('registerationtestvalidemailid8@gmail.com', '123Abc!8', \
-                 'Valid', 'User8')
-    auth_login('registerationtestvalidemailid8@gmail.com', '123Abc!8')
-    auth_login('registerationtestvalidemailid8@gmail.com', '123Abc!8')
+    auth_login('user0@email.com', 'user0_pass1!')
+    auth_login('user0@email.com', 'user0_pass1!')
+    auth_login('user0@email.com', 'user0_pass1!')
 
-def test_looking_for_negative_u_id():
+def test_looking_for_negative_u_id(reset, initialise_user_data):
     '''
     Tests that auth_login does not return a negative u_id for a user
     '''
 
-    clear()
-    auth_register('registerationtestvalidemailid9@gmail.com', '123Abc!9', \
-                 'Valid', 'User9')
-    test_user_9_login = auth_login('registerationtestvalidemailid9@gmail.com',\
-                                  '123Abc!9')
-    assert test_user_9_login['u_id'] >= 0
+    test_user_0_login = auth_login('user0@email.com', 'user0_pass1!')
+    assert test_user_0_login['u_id'] >= 0
 
-def test_non_ascii_password():
+def test_non_ascii_password(reset, initialise_user_data):
     '''
     Tests that auth_login does not accept a Non-ASCII password as one
     the parameters passed to it
     '''
-    clear()
+
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid13@gmail.com', \
-                     'pass \n word', 'Valid', 'User13')
+        auth_login('user0@email.com', 'user0 \n pass1!')
