@@ -1,10 +1,20 @@
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Joseph Knox
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributor - Joseph Knox
 
-# Iteration 1
+Iteration 1
+'''
+
+import pytest
+import auth
+from helper import is_channel_owner
+from channel import channel_addowner, channel_removeowner, channel_join
+from channels import channels_create
+from error import InputError, AccessError
+from other import clear
 
 '''
-*********************************BASIC TEMPLATE*********************************
+****************************BASIC TEMPLATE******************************
 '''
 
 '''
@@ -31,14 +41,6 @@ Error type: AccessError
 KEEP IN MIND:
 -> channels_create adds user (based on token) as member and owner of the channel
 '''
-
-import pytest
-import auth
-from helper import is_channel_owner
-from channel import channel_addowner, channel_removeowner, channel_join
-from channels import channels_create
-from error import InputError, AccessError
-from other import clear
 
 # channel_removeowner should remove the user with the provided u_id
 # from the list of owners of a channel with the provided channel_id

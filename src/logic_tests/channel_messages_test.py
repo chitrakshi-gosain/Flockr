@@ -1,7 +1,14 @@
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - 
+
+Iteration 1
+'''
+
+import pytest
 from auth import auth_register
 from channel import channel_messages
 from channels import channels_create
-import pytest
 from other import clear
 from error import InputError
 from error import AccessError

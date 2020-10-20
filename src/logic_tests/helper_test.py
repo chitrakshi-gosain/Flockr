@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15Team2 2020 T3
-Contributers - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
+Contributors - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
                Ahmet Karatas, Joseph Knox
 
 Iteration 1
@@ -9,10 +9,11 @@ Iteration 1
 import unittest
 from helper import *
 import data
-import auth
-import channel
-import channels
 import other
+
+'''
+****************************BASIC TEMPLATE******************************
+'''
 
 def initialise_data():
     data.data = {
@@ -24,7 +25,7 @@ def initialise_data():
                 'name_first' : 'fname0',
                 'name_last' : 'lname0',
                 'handle_str' : 'fname0lname0',
-                'token' : 'blah0@domain',
+                'token' : '0',
                 'password' : 'password0'
             },
             { # user -> u_id : 1
@@ -34,7 +35,7 @@ def initialise_data():
                 'name_first' : 'fname1',
                 'name_last' : 'lname1',
                 'handle_str' : 'fname1lname1',
-                'token' : 'blah1@domain',
+                'token' : '1',
                 'password' : 'password1'
             }
         ],
@@ -110,8 +111,23 @@ def initialise_data():
                     }
                 ]
             }
+        ],
+
+        'messages': [
+            { # mesages -> message_id : 0
+                'message_id' : 0,
+                'u_id' : 0,
+                'message' : 'messagecontents0',
+                'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
+            }
+        ],
+
+        'valid_tokens': [ # format  => token : u_id
         ]
     }
+    
+
+ 
 
 def test_check_if_valid_email():
     '''
@@ -152,13 +168,13 @@ def test_check_string_length_and_whitespace():
     # handle_str(3-20 char limit), all char limits are inclusive
 
     #Out of length range
-    assert check_string_length_and_whitespace(6,32,'123') == False
-    assert check_string_length_and_whitespace(6,32,'0123456789012345678901234567890123') == False
+    assert not check_string_length_and_whitespace(6,32,'123')
+    assert not check_string_length_and_whitespace(6,32,'0123456789012345678901234567890123')
     #Edge
-    assert check_string_length_and_whitespace(6,32,'123456') == True
-    assert check_string_length_and_whitespace(6,32,'01234567890123456789012345678901') == True
+    assert check_string_length_and_whitespace(6,32,'123456')
+    assert check_string_length_and_whitespace(6,32,'01234567890123456789012345678901')
     #Spaces
-    assert check_string_length_and_whitespace(5,20,'        ') == False
+    assert not check_string_length_and_whitespace(5,20,'        ')
 
 def test_invalidating_token():
     pass
@@ -167,7 +183,7 @@ def test_get_channel_info():
     other.clear()
     initialise_data()
 
-    assert get_channel_info(-1) == False
+    assert not get_channel_info(-1)
     assert get_channel_info(0) == data.data['channels'][0]
     assert get_channel_info(1) == data.data['channels'][1]
 
@@ -176,14 +192,14 @@ def test_is_user_authorised():
     initialise_data()
 
     user0 = get_user_info('u_id', 0)
-    token0 = user0["token"]
+    token0 = user0['token']
     user1 = get_user_info('u_id', 1)
-    token1 = user1["token"]
+    token1 = user1['token']
 
-    assert is_user_authorised(token0, 0)
-    assert is_user_authorised(token0, 1)
-    assert is_user_authorised(token1, 1)
-    assert not is_user_authorised(token1, 0)
+    assert is_user_authorised(generate_encoded_token(token0), 0)
+    assert is_user_authorised(generate_encoded_token(token0), 1)
+    assert is_user_authorised(generate_encoded_token(token1), 1)
+    assert not is_user_authorised(generate_encoded_token(token1), 0)
 
 
 def test_is_channel_owner():
@@ -199,22 +215,22 @@ def test_get_user_info():
     other.clear()
     initialise_data()
 
-    assert get_user_info('u_id', -1) == False
-    assert get_user_info('token', ' ') == False
-    assert get_user_info('email', ' ') == False
+    assert not get_user_info('u_id', -1)
+    assert not get_user_info('token', ' ')
+    assert not get_user_info('email', ' ')
 
     assert get_user_info('u_id', 0) == data.data['users'][0]
-    assert get_user_info('token', 'blah1@domain') == data.data['users'][1]
+    assert get_user_info('token', generate_encoded_token('0')) == data.data['users'][0]
     assert get_user_info('email', 'blah1@domain') == data.data['users'][1]
 
 def test_is_user_in_channel():
     other.clear()
     initialise_data()
 
-    assert is_user_in_channel(0, 0) == True
-    assert is_user_in_channel(0, 1) == True
-    assert is_user_in_channel(1, 0) == True
-    assert is_user_in_channel(1, 1) == True
+    assert is_user_in_channel(0, 0)
+    assert is_user_in_channel(0, 1)
+    assert is_user_in_channel(1, 0)
+    assert is_user_in_channel(1, 1)
 
 def test_get_message_info():
     other.clear()
@@ -236,8 +252,16 @@ def test_get_message_info():
 def test_update_data():
     pass
 
-def test_check_password():
-    pass
+def test_encrypt_same_password_with_hash():
+    password = 'user0_pass1!'
+    pass_hash = encrypt_password_with_hash(password)
+    assert pass_hash == encrypt_password_with_hash(password)
+    
+def test_encrypt_different_password_with_hash():
+    password1 = 'user0_pass1'
+    password2 = 'user1_pass1'
+    pass_hash1 = encrypt_password_with_hash(password1)
+    assert pass_hash1 != encrypt_password_with_hash(password2)
 
 def test_store_generated_token():
     pass

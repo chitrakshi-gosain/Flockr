@@ -1,17 +1,18 @@
-from auth import auth_register, auth_logout
-from channel import channel_details
-from channels import channels_create, channels_listall, channels_list
-from other import clear
-from error import AccessError, InputError
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributor - Cyrus Wilkie
+
+Iteration 1
+'''
+
 import pytest
-
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Cyrus Wilkie
-
-# Iteration 1
+from auth import auth_register, auth_logout
+from channels import channels_create, channels_listall
+from other import clear
+from error import AccessError
 
 '''
-*********************************BASIC TEMPLATE*********************************
+****************************BASIC TEMPLATE******************************
 '''
 
 '''

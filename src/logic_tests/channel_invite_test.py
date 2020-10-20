@@ -1,55 +1,38 @@
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Jordan Hunyh
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributer - Jordan Hunyh
 
-# Iteration 1
+Iteration 1
+'''
 
+import pytest
 from channel import channel_invite, channel_join, channel_details
 from other import clear
 from auth import auth_register
 from channels import channels_create
-
-import pytest
 from error import InputError, AccessError
 
 '''
-*********************************BASIC TEMPLATE*********************************
+****************************BASIC TEMPLATE******************************
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> intialise_user_data() return { users }, { channels }
--> is_user_in_channel() return True/False
--> count_instances() return count
--> test_channel_invite_valid_basic()
--> test_channel_invite_invalid_channel()
--> test_channel_invite_invalid_user()
--> test_channel_invite_invoker_not_in_channel()
--> test_channel_invite_invalid_token()
--> test_channel_invite_already_in_channel()
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> channels_create(token) return {channel_id}
+-> channel_join(token, channel_id) return {}
+-> channel_invite(token, channel_id, u_id) return {}
+-> channel_details(token, channel_id) return
+   {name, owner_members, all_members}
 '''
 
 '''
-----channel_invite Documentation----
-
-Parameters:(token, channel_id, u_id)
-
-Return type: {}
-
-Exceptions: InputError ->
-                channel_id does not reffer to a valid channel that the
-                    authorised user is part of
-                u_id does not refer to valid user
-            AccessError ->
-                the authorised user is not already a member of the channel
-
-Description: Invites a user (with user id u_id) to join a channel with ID
-             channel_id. Once invited the user is added to the channel
-             immediately
-
+EXCEPTIONS
+Error type: InputError
+    -> channel_id does not refer to a valid channel
+    -> u_id does not refer to a valid user
+Error type: AccessError
+    -> the authorised user is not already a member of the channel
 '''
-
-# Jordan Huynh (z5169771)
-# Wed15 Grape 2
 
 def initialise_data():
     #create users

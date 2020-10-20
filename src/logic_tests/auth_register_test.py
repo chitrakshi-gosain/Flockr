@@ -1,12 +1,11 @@
 '''
-Created collaboratively by Wed15Team2 2020 T3
+Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributor - Chitrakshi Gosain
 
 Iteration 1
 '''
 
 import pytest
-import data
 from other import clear
 from error import InputError
 from user import user_profile
@@ -41,210 +40,191 @@ Error type: InputError
 '''
 KEEP IN MIND:
 -> user can be registered/non-registered, hence check
--> check re registeration of a user
+-> check re registration of a user
 -> handle_str checks need to be done, will have to user user.py for it
 '''
 
-def test_trying_to_register_and_login_with_everything_valid():
+@pytest.fixture
+def reset():
+    '''
+    Resets the internal data of the application to it's initial state
+    '''
+
+    clear()
+
+def test_trying_to_register_with_everything_valid(reset):
     '''
     Tests that auth_register registers a new user successfully
     '''
 
-    clear()
-    auth_register('registerationtestvalidemailid0@gmail.com', '123Abc!0', \
-                 'Valid', 'User0')
+    auth_register('user0@email.com', 'user0_pass1!', 'user0_first', \
+                 'user0_last')
 
-def test_invalid_email():
+def test_invalid_email(reset):
     '''
     Tests that auth_register raises an InputError when an invalid email
     is passed as one of the parameters
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestinvalidemailid0_gmail.com', \
-                     '123Abc!!', 'Invalid', 'User0')
+        auth_register('user0_email.com', 'user0_pass1!', 'user0_first', \
+                     'user0_last')
 
-def test_existing_email_registration():
+def test_existing_email_registration(reset):
     '''
     Tests that auth_register raises an InputError when a user tries to
     register with an existing email-id in database registered with
     another user
     '''
 
-    clear()
-    auth_register('registerationtestvalidemailid1@gmail.com', '123Abc!1', \
-                 'Valid', 'User1')
+    auth_register('user0@email.com', 'user0_pass1!', 'user0_first', \
+                 'user0_last')
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid1@gmail.com', '123Abc!1', \
-                     'Valid', 'User1again')
+        auth_register('user0@email.com', 'user0_pass1!', 'user0_first_again', \
+                     'user0_last_again')
 
-def test_too_short_first_name():
+def test_too_short_first_name(reset):
     '''
-    Tests that auth_register raises an InputError when a name_first less
-    than 1 characters long
+    Tests that auth_register raises an InputError when a name_first is
+    less than 1 characters long
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid2@gmail.com', '123Abc!2', \
-                     '', 'User2')
+        auth_register('user0@email.com', 'user0_pass1!', '', 'user0_last')
 
-def test_too_long_first_name():
+def test_too_long_first_name(reset):
     '''
-    Tests that auth_register raises an InputError when a name_first more
-    than 50 characters long
+    Tests that auth_register raises an InputError when a name_first is
+    more than 50 characters long
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid3@gmail.com', '123Abc!3', \
-                     'Valid' * 11, 'User3')
+        auth_register('user0@email.com', 'user0_pass1!', 'user0_first' * 5, \
+                     'user0_last')
 
-def test_too_short_last_name():
+def test_too_short_last_name(reset):
     '''
-    Tests that auth_register raises an InputError when a name_last less
-    than 1 characters long
+    Tests that auth_register raises an InputError when a name_last is
+    less than 1 characters long
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid4@gmail.com', '123Abc!4', \
-                     '', 'User4')
+        auth_register('user0@email.com', 'user0_pass1!', 'user0_first', '')
 
-def test_too_long_last_name():
+def test_too_long_last_name(reset):
     '''
-    Tests that auth_register raises an InputError when a name_last more
-    than 50 characters long
+    Tests that auth_register raises an InputError when a name_last is
+    more than 50 characters long
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid5@gmail.com', '123Abc!5', \
-                     'Valid', 'User5' * 11)
+        auth_register('user0@email.com', 'user0_pass1!', 'user0_first', \
+                     'user0_last' * 11)
 
-def test_password_too_short_():
+def test_password_too_short_(reset):
     '''
-    Tests that auth_register raises an InputError when a password less
-    than 6 characters long
+    Tests that auth_register raises an InputError when a password is
+    less than 6 characters long
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid6@gmail.com', '1Ab!6', \
-                     'Valid', 'User6')
+        auth_register('user0@email.com', 'user0', 'user0_first', 'user0_last')
 
-def test_password_too_long_():
+def test_password_too_long_(reset):
     '''
-    Tests that auth_register raises an InputError when a password more
-    than 32 characters long
+    Tests that auth_register raises an InputError when a password is
+    more than 32 characters long
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid7@gmail.com', \
-                     '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*7', 'Valid',\
-                            'User7')
+        auth_register('user0@email.com', '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+                     !@#$%^&*7', 'user0_first', 'user0_last')
 
-def test_insufficient_parameters():
+def test_insufficient_parameters(reset):
     '''
     Tests that auth_login raises an InputError when less than expected
     parameters are passed
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid8@gmail.com', None, \
-                     'Valid', 'User8')
+        auth_register('user0@email.com', None, 'user0_first', 'user0_last')
 
-def test_return_type():
+def test_return_type(reset):
     '''
     Tests that auth_register returns the expected datatype i.e.
     {u_id : int, token : str}
     '''
 
-    clear()
-    test_user_9 = auth_register('registerationtestvalidemailid9@gmail.com', \
-                               '123Abc!9', 'Valid', 'User9')
-    assert isinstance(test_user_9['u_id'], int)
-    assert isinstance(test_user_9['token'], str)
+    test_user_0 = auth_register('user0@email.com', 'user0_pass1!', \
+                               'user0_first', 'user0_last')
+    assert isinstance(test_user_0['u_id'], int)
+    assert isinstance(test_user_0['token'], str)
 
-def test_non_ascii_name_first():
+def test_non_ascii_name_first(reset):
     '''
     Tests that auth_register raises an InputError when a name_first is
     Non-ASCII
     '''
 
-    clear()
-    auth_register('registerationtestvalidemailid10@gmail.com', '123Abc!10', \
-                 'Anaïs', 'User10')
+    auth_register('user0@email.com', 'user0_pass1!', 'Anaïs', 'user0_last')
 
-def test_non_ascii_name_last():
+def test_non_ascii_name_last(reset):
     '''
     Tests that auth_register raises an InputError when a name_last is
     Non-ASCII
     '''
 
-    clear()
-    auth_register('registerationtestvalidemailid11@gmail.com', '123Abc!11', \
-                 'Valid', 'सिंह')
+    auth_register('user0@email.com', 'user0_pass1!', 'user0_first', 'सिंह')
 
-def test_looking_for_negative_u_id():
+def test_looking_for_negative_u_id(reset):
     '''
     Tests that auth_register does not return a negative u_id
     '''
 
-    clear()
-    test_user_12 = auth_register('registerationtestvalidemailid12@gmail.com', \
-                                '123Abc!12', 'Valid', 'User12')
+    test_user_12 = auth_register('user0@email.com', 'user0_pass1!', \
+                                'user0_first', 'user0_last')
     assert test_user_12['u_id'] >= 0
 
-def test_non_ascii_password():
+def test_non_ascii_password(reset):
     '''
     Tests that auth_register raises an InputError when a password is
     Non-ASCII
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid13@gmail.com', \
-                     'pass \n word', 'Valid', 'User13')
+        auth_register('user0@email.com', 'user0 \n pass1!', 'user0_first', \
+                     'user0_last')
 
-def test_whitespace_first_name():
+def test_whitespace_first_name(reset):
     '''
     Tests that auth_register raises an InputError when a name_first is
     completely whitespace
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid14@gmail.com', \
-                     '123Abc!14', '     ', 'User14')
+        auth_register('user0@email.com', 'user0_pass1!', '    ', 'user0_last')
 
-def test_whitespace_last_name():
+def test_whitespace_last_name(reset):
     '''
     Tests that auth_register raises an InputError when a name_first is
     completely whitespace
     '''
 
-    clear()
     with pytest.raises(InputError):
-        auth_register('registerationtestvalidemailid15@gmail.com', \
-                     '123Abc!15', '     ', 'User15')
+        auth_register('user0@email.com', 'user0_pass1!', 'user0_first', '    ')
 
-def test_lowercase_handle():
+def test_lowercase_handle(reset):
     '''
     Tests that auth_register implements handle_str as per
     specifications, i.e. concatenates lowercase name_first and name_last
     '''
 
-    clear()
-    test_user_8 = auth_register('registerationtestvalidemailid8@gmail.com', \
-                               '123Abc!8', 'Valid', 'User8')
-    test_profile_8 = user_profile(test_user_8['token'], test_user_8['u_id'])
-    assert test_profile_8['user']['handle_str'] == 'validuser8'
+    test_user_0 = auth_register('user0@email.com', 'user0_pass1!', \
+                               'user0_FIRST', 'user0_LAST')
+    user_profile_0 = user_profile(test_user_0['token'], test_user_0['u_id'])
+    assert user_profile_0['user']['handle_str'] == 'user0_firstuser0_las'
 
-def test_unique_handle():
+def test_unique_handle(reset):
     '''
     Tests that auth_register implements handle_str as per
     specifications, i.e. concatenates lowercase name_first and name_last
@@ -252,29 +232,42 @@ def test_unique_handle():
     different handle
     '''
 
-    clear()
-    test_user_9 = auth_register('registerationtestvalidemailid9@gmail.com', \
-                               '123Abc!9', 'Valid', 'User9')
-    test_profile_9 = user_profile(test_user_9['token'], test_user_9['u_id'])
-    test_user_10 = auth_register('registerationtestvalidemailid10@gmail.com', \
-                                '123Abc!10', 'Valid', 'User10')
-    test_profile_10 = user_profile(test_user_10['token'], test_user_10['u_id'])
-    assert test_profile_9['user']['handle_str'] != test_profile_10['user']['handle_str']
+    test_user_0 = auth_register('user0@email.com', 'user0_pass1!', \
+                               'user0_FIRST', 'user0_LAST')
+    user_profile_0 = user_profile(test_user_0['token'], test_user_0['u_id'])
 
-def test_too_long_handle():
+    test_user_1 = auth_register('user1@email.com', 'user1_pass1!', \
+                               'user1_FIRST', 'user1_LAST')
+    user_profile_1 = user_profile(test_user_1['token'], test_user_1['u_id'])
+
+    assert user_profile_0['user']['handle_str'] != user_profile_1['user']\
+        ['handle_str']
+
+def test_too_long_handle_first_name(reset):
     '''
     Tests that auth_register implements handle_str as per
     specifications, i.e. concatenates lowercase name_first and name_last
     and cuts it if greater than 20 characters
     '''
 
-    clear()
-    test_user_11 = auth_register('registerationtestvalidemailid11@gmail.com', \
-                                '123Abc!11', 'Valid' * 2, 'User11' * 3)
-    test_profile_11 = user_profile(test_user_11['token'], test_user_11['u_id'])
-    assert test_profile_11['user']['handle_str'] == 'validvaliduser11user'
+    test_user_0 = auth_register('user0@email.com', 'user0_pass1!', \
+                               'user0_FIRST' * 2, 'user0_LAST' * 2)
+    user_profile_0 = user_profile(test_user_0['token'], test_user_0['u_id'])
+    assert user_profile_0['user']['handle_str'] == 'user0_firstuser0_fir'
 
-def test_handle_for_users_With_similar_first_last_names():
+def test_too_long_handle_last_name(reset):
+    '''
+    Tests that auth_register implements handle_str as per
+    specifications, i.e. concatenates lowercase name_first and name_last
+    and cuts it if greater than 20 characters
+    '''
+
+    test_user_0 = auth_register('user0@email.com', 'user0_pass1!', \
+                               'u', 'user0_LAST' * 2)
+    user_profile_0 = user_profile(test_user_0['token'], test_user_0['u_id'])
+    assert user_profile_0['user']['handle_str'] == 'uuser0_lastuser0_las'
+
+def test_handle_for_users_with_similar_first_last_names(reset):
     '''
     Tests that auth_register implements handle_str as per
     specifications, i.e. concatenates lowercase name_first and name_last
@@ -283,24 +276,91 @@ def test_handle_for_users_With_similar_first_last_names():
     some modification to new user's handle
     '''
 
-    clear()
-    test_user_12 = auth_register('registerationtestvalidemailid12@gmail.com', \
-                                '123Abc!12', 'Valid', 'User12')
-    test_user_13 = auth_register('registerationtestvalidemailid13@gmail.com', \
-                                '123Abc!13', 'Valid', 'User13')
-    test_user_14 = auth_register('registerationtestvalidemailid14@gmail.com', \
-                                '123Abc!14', 'Valid', 'User13')
-    test_user_15 = auth_register('registerationtestvalidemailid15@gmail.com', \
-                                '123Abc!15', 'Valid', 'User12')
-    for user in data.data['users']:
-        if user['u_id'] == test_user_12['u_id']:
-            user12_handle = user['handle_str']
-        if user['u_id'] == test_user_13['u_id']:
-            user13_handle = user['handle_str']
-        if user['u_id'] == test_user_14['u_id']:
-            user14_handle = user['handle_str']
-        if user['u_id'] == test_user_15['u_id']:
-            user15_handle = user['handle_str']
+    test_user_0 = auth_register('user0@email.com', 'user0_pass1!', \
+                               'user0_first', 'user0_last')
+    user_profile_0 = user_profile(test_user_0['token'], test_user_0['u_id'])
 
-    assert user12_handle != user15_handle
-    assert user13_handle != user14_handle
+    test_user_1 = auth_register('user1@email.com', 'user1_pass1!', \
+                               'user1_first', 'user1_last')
+    user_profile_1 = user_profile(test_user_1['token'], test_user_1['u_id'])
+
+    test_user_2 = auth_register('user2@email.com', 'user2_pass1!', \
+                               'user0_first', 'user0_last')
+    user_profile_2 = user_profile(test_user_2['token'], test_user_2['u_id'])
+
+    test_user_3 = auth_register('user3@email.com', 'user3_pass1!', \
+                               'user1_first', 'user1_last')
+    user_profile_3 = user_profile(test_user_3['token'], test_user_3['u_id'])
+
+    assert user_profile_0['user']['handle_str'] != user_profile_2['user']\
+        ['handle_str']
+    assert user_profile_1['user']['handle_str'] != user_profile_3['user']\
+        ['handle_str']
+
+def test_first_name_1_char(reset):
+    '''
+    Tests that auth_register accepts a name_first which is 1 character
+    long
+    '''
+
+    auth_register('user0@email.com', 'user0_pass1!', 'u', 'user0_last')
+
+def test_first_name_50_chars(reset):
+    '''
+    Tests that auth_register accepts a name_first which is 50 characters
+    long
+    '''
+
+    auth_register('user0@email.com', 'user0_pass1!', 'u' * 50, 'user0_last')
+
+def test_last_name_1_char(reset):
+    '''
+    Tests that auth_register accepts a name_last which is 1 character
+    long
+    '''
+
+    auth_register('user0@email.com', 'user0_pass1!', 'user0_first', 'u')
+
+def test_last_name_50_chars(reset):
+    '''
+    Tests that auth_register accepts a name_last which is 50 characters
+    long
+    '''
+
+    auth_register('user0@email.com', 'user0_pass1!', 'user0_first', 'u' * 50)
+
+def test_password_6_chars(reset):
+    '''
+    Tests that auth_register accepts a password which is 6 characters
+    long
+    '''
+
+    auth_register('user0@email.com', 'user0_', 'user0_first', 'user0_last')
+
+def test_password_32_chars(reset):
+    '''
+    Tests that auth_register accepts a password which is 32 characters
+    long
+    '''
+
+    auth_register('user0@email.com', 'user0_password1!' * 2, 'user0_first', \
+                 'user0_last')
+
+def test_details_registered_by_auth_register(reset):
+    '''
+    Tests that auth_register has stored all the general details of a
+    user correctly
+    '''
+
+    test_user_0 = auth_register('user0@email.com', 'user0_pass1!', \
+                               'user0_first', 'user0_last')
+    user_profile_0 = user_profile(test_user_0['token'], test_user_0['u_id'])
+    assert user_profile_0 == {
+        'user': {
+            'u_id': test_user_0['u_id'],
+            'email': 'user0@email.com',
+            'name_first': 'user0_first',
+            'name_last': 'user0_last',
+            'handle_str': 'user0_firstuser0_las'
+        }
+    }

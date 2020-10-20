@@ -1,6 +1,6 @@
 from auth import auth_register, auth_logout
 from channel import channel_details, channel_join
-from channels import channels_create, channels_listall, channels_list
+from channels import channels_create, channels_listall
 from other import clear
 from error import AccessError, InputError
 import pytest
