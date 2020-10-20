@@ -118,7 +118,17 @@ def test_check_if_valid_email():
     Given the email of the user to be registered checks if it is a
     valid email using a regex
     '''
-    pass
+    # Invalid Cases
+    assert check_if_valid_email('blatantlywrong') == None
+    assert check_if_valid_email('vaguelytrying@') == None
+    assert check_if_valid_email('abitcloser@gmail') == None
+    assert check_if_valid_email('@ozemail.com.au') == None
+    assert check_if_valid_email('') == None
+
+    # Valid Cases
+    assert check_if_valid_email('ingridcline@gmail.com') != None
+    assert check_if_valid_email('myemail@email.com') != None
+    assert check_if_valid_email('hi@hello.com') != None
 
 def test_check_if_valid_password():
     '''
