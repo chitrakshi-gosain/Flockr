@@ -263,5 +263,18 @@ def test_encrypt_different_password_with_hash():
     pass_hash1 = encrypt_password_with_hash(password1)
     assert pass_hash1 != encrypt_password_with_hash(password2)
 
-def test_store_generated_token():
+def test_generate_encoded_token():
+    # Jordan
+    pass
+
+def test_decode_encoded_token():
+    # Chitrakshi
+    pass
+
+def test_update_data():
+    # Cyrus
+    pass
+
+def test_invalidating_token():
+    # Ahmet
     pass
