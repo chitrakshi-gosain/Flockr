@@ -44,7 +44,8 @@ their associated details) that the
 authorised user is part of
 '''
 
-def initialise_user_data():
+@pytest.fixture
+def users():
     '''
     Sets up various user sample data for testing purposes
     '''
@@ -84,12 +85,10 @@ def initialise_user_data():
     }
 
 
-def test_channels_list_valid_single():
+def test_channels_list_valid_single(users):
     '''
     Listing a single created channel
     '''
-
-    users = initialise_user_data()
 
     # Creating a basic public channel
     channel_id = channels_create(users['owner']['token'], 'A Basic Channel', True)
@@ -107,12 +106,10 @@ def test_channels_list_valid_single():
     clear()
 
 
-def test_channels_list_valid_same():
+def test_channels_list_valid_same(users):
     '''
     Listing multiple created channels from the same user
     '''
-
-    users = initialise_user_data()
 
     # Creating channels and storing ids
     channel_id = []
@@ -143,12 +140,10 @@ def test_channels_list_valid_same():
     clear()
 
 
-def test_channels_list_valid_different():
+def test_channels_list_valid_different(users):
     '''
     Listing multiple created channels from different users
     '''
-
-    users = initialise_user_data()
 
     # Creating channels and storing ids
     channel_id = []
@@ -183,12 +178,10 @@ def test_channels_list_valid_different():
     clear()
 
 
-def test_channels_list_valid_private():
+def test_channels_list_valid_private(users):
     '''
     Listing multiple created private channels from different users
     '''
-
-    users = initialise_user_data()
 
     # Creating channels and storing ids
     channel_id = []
@@ -220,12 +213,10 @@ def test_channels_list_valid_private():
     clear()
 
 
-def test_channels_list_valid_mix():
+def test_channels_list_valid_mix(users):
     '''
     Listing a mix of multiple public and private channels from different users with some sharing names
     '''
-
-    users = initialise_user_data()
 
     # Creating channels and storing ids
     channel_id = []
@@ -271,12 +262,10 @@ def test_channels_list_valid_mix():
     clear()
 
 
-def test_channels_list_valid_empty():
+def test_channels_list_valid_empty(users):
     '''
     Listing channels when none have been created
     '''
-
-    users = initialise_user_data()
 
     # Checking channels_list return is correct
     assert channels_list(users['user1']['token']) == {'channels': []}
@@ -284,12 +273,10 @@ def test_channels_list_valid_empty():
     clear()
 
 
-def test_channels_list_invalid_token():
+def test_channels_list_invalid_token(users):
     '''
     Attempting to call channels_list without a valid token
     '''
-
-    users = initialise_user_data()
 
     # Only way to guarrantee a token is invalid is to invalidate an existing token
     invalid_token = users['owner']['token']
