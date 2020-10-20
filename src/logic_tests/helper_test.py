@@ -115,13 +115,13 @@ def initialise_data():
 
 def test_check_if_valid_email():
     #Out of length range
-    assert check_string_length_and_whitespace(6,32,'123') == False
-    assert check_string_length_and_whitespace(6,32,'0123456789012345678901234567890123') == False
+    assert not check_string_length_and_whitespace(6,32,'123')
+    assert not check_string_length_and_whitespace(6,32,'0123456789012345678901234567890123')
     #Edge
-    assert check_string_length_and_whitespace(6,32,'123456') == True
-    assert check_string_length_and_whitespace(6,32,'01234567890123456789012345678901') == True
+    assert check_string_length_and_whitespace(6,32,'123456')
+    assert check_string_length_and_whitespace(6,32,'01234567890123456789012345678901')
     #Spaces
-    assert check_string_length_and_whitespace(5,20,'        ') == False
+    assert not check_string_length_and_whitespace(5,20,'        ')
 
 def test_check_if_valid_password():
     pass
@@ -138,7 +138,7 @@ def test_get_channel_info():
     other.clear()
     initialise_data()
 
-    assert get_channel_info(-1) == False
+    assert not get_channel_info(-1)
     assert get_channel_info(0) == data.data['channels'][0]
     assert get_channel_info(1) == data.data['channels'][1]
 
@@ -170,9 +170,9 @@ def test_get_user_info():
     other.clear()
     initialise_data()
 
-    assert get_user_info('u_id', -1) == False
-    assert get_user_info('token', ' ') == False
-    assert get_user_info('email', ' ') == False
+    assert not get_user_info('u_id', -1)
+    assert not get_user_info('token', ' ')
+    assert not get_user_info('email', ' ')
 
     assert get_user_info('u_id', 0) == data.data['users'][0]
     assert get_user_info('token', 'blah1@domain') == data.data['users'][1]
@@ -182,10 +182,10 @@ def test_is_user_in_channel():
     other.clear()
     initialise_data()
 
-    assert is_user_in_channel(0, 0) == True
-    assert is_user_in_channel(0, 1) == True
-    assert is_user_in_channel(1, 0) == True
-    assert is_user_in_channel(1, 1) == True
+    assert is_user_in_channel(0, 0)
+    assert is_user_in_channel(0, 1)
+    assert is_user_in_channel(1, 1)
+    assert is_user_in_channel(1, 0)
 
 def test_get_message_info():
     other.clear()
