@@ -176,8 +176,6 @@ def test_check_string_length_and_whitespace():
     #Spaces
     assert not check_string_length_and_whitespace(5,20,'        ')
 
-def test_invalidating_token():
-    pass
 
 def test_get_channel_info():
     other.clear()
@@ -248,9 +246,6 @@ def test_get_message_info():
         'message': 'messagecontents1',
         'timecreated': 'datetime(YYYY, MM, DD, HH, MM)'
     }
-
-def test_update_data():
-    pass
 
 def test_encrypt_same_password_with_hash():
     password = 'user0_pass1!'
