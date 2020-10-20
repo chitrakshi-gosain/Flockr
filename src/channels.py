@@ -48,8 +48,8 @@ def channels_list(token):
     current_user = get_user_info('token', token)
     
     # If matching token is not found then AccessError is raised
-    if current_user == False:
-        raise AccessError("Invalid Token")
+    #if current_user == False:
+        #raise AccessError("Invalid Token")
 
     # Constructing list of all channels
     channel_list = []
