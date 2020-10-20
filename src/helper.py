@@ -7,11 +7,15 @@ Iteration 1
 '''
 
 import re
+import hashlib
+import jwt
 import data
+from error import AccessError
 
 # CONSTANTS
 MIN_LENGTH_PASSWORD = 6
 MAX_LENGTH_PASSWORD = 32
+SECRET = 'wed15grapeteam2'
 
 def check_if_valid_email(email):
     '''
@@ -62,8 +66,8 @@ def invalidating_token(token):
     for user in data.data['users']:
         if user['token'] == token:
             user['token'] = 'invalidated_the_token'
-
-    return True
+            return True
+    return False
 
 
 def get_channel_info(channel_id):
@@ -168,64 +172,31 @@ def update_data(keyword, user_id, identifier):
         if user['u_id'] == user_id:
             user[keyword] = identifier
 
-########################################################################################
-
-'''
-def generate_handle(name_first, name_last, email):
-
-    Given the first and last name of the user, a handle is generated
-    that is the concatentation of a lowercase-only first name and last
-    name. If the concatenation is longer than 20 characters, it is
-    cutoff at 20 characters. If the handle is already taken, user's u_id
-    is concatenated at the very end, incase this concatenation exceeds
-    the length of 20 characters, the last characters of handle string
-    (which already belongs to another user) are adjusted to accomodate
-    the user's u_id in the very end
-
-
-    concatenated_names = name_first.lower() + name_last.lower()
-    handle_string = concatenated_names[:20]
-    status = False
-
-    for user_with_same_handle in data.data['users']:
-        if user_with_same_handle['handle_str'] == handle_string:
-            status = True
-
-    if status is True:
-        user_id = str(len(data.data['users']))
-        cut_handle_till = 20 - len(user_id)
-        handle_string = handle_string[:cut_handle_till] + user_id
-    return handle_string
-'''
-
-def check_password(email, password):
+def encrypt_password_with_hash(password):
     '''
-    Given the password of the user while logging-in matches the password
-    with the database file which stores the password of user made while
-    registering
+    Given the password of the user encrypts it using hashlib for secured
+    authentication
     '''
 
-    for user in data.data['users']:
-        if user['email'] == email:
-            if user['password'] == password:
-                return True
+    return hashlib.sha256(password.encode()).hexdigest()
 
-    return False
-
-    #user = get_user_info('email', 'dhwu@hjufe')
-    #return user['password'] == password
-
-
-
-# later modify this as store_And_generate_token(email):, i.e. this will generate
-# token, store it and then return it
-def store_generated_token(email, user_token):
+def generate_encoded_token(user_id):
     '''
-    Given the email of the user trying of log-in stores the
+    Given the u_id of the user trying of log-in stores the
     authenticated token in database as necessary which later results in
     the authentication of the user for the particular session
     '''
 
-    for user in data.data['users']:
-        if user['email'] == email:
-            user['token'] = user_token
+    encoded_token = jwt.encode({'token': str(user_id)}, SECRET, algorithm=\
+        'HS256').decode()
+
+    data.data['valid_tokens'].append({encoded_token: user_id})
+
+    return encoded_token
+
+def decode_encoded_token(token):
+    try:
+        payload = jwt.decode(token.encode('utf-8'), SECRET, algorithms='HS256')
+        return payload['token']
+    except:
+        raise AccessError(description='Token passed in is not a valid token')

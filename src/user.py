@@ -5,11 +5,9 @@ Contributors - Cyrus Wilkie, Chitrakshi Gosain, Joseph Knox
 Iteration 2
 '''
 
-import helper
-import data
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
-check_string_length_and_whitespace, update_data
+check_string_length_and_whitespace, update_data, decode_encoded_token
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -80,6 +78,10 @@ KEEP IN MIND:
 '''
 
 # CONSTANTS
+MIN_CHAR_NAME_FIRST = 1
+MAX_CHAR_NAME_FIRST = 50
+MIN_CHAR_NAME_LAST = 1
+MAX_CHAR_NAME_LAST = 50
 MIN_CHAR_HANDLE_STR = 3
 MAX_CHAR_HANDLE_STR = 20
 
@@ -91,25 +93,25 @@ def user_profile(token, u_id):
     and handle
 
     PARAMETERS:
-        -> token, u_id
+        -> token : token of a user for the particular session (may or
+                   may not be authorized)
+        -> u_id : user id of a user
 
     RETURN VALUES:
-        -> {user}
-
-    EXCEPTIONS:
-        -> AccessError: Invalid token
-        -> InputError: User with u_id is not a valid user
+        -> user : dictionary containing u_id, email, name_first,
+                  name_last, handle_str of the user
     '''
 
     # Checking token validity
-    user = get_user_info('token', token)
+    decoded_token = decode_encoded_token(token)
+    user = get_user_info('token', decoded_token)
     if not user:
-        raise AccessError('Invalid Token')
+        raise AccessError(description='Token passed in is not a valid token')
 
     # Checking u_id validity and getting user data
     user = get_user_info('u_id', u_id)
     if not user:
-        raise InputError('Not a valid user')
+        raise InputError(description='User with u_id is not a valid user')
 
     return {
         'user': {
@@ -128,28 +130,31 @@ def user_profile_setname(token, name_first, name_last):
     with the provided name_first and name_last respectively.
 
     PARAMETERS:
-        -> token : token of user who called the function
-        -> name_first : replacement first name
-        -> name_last : replacement last name
-
-    RETURN VALUES:
+        -> token : token of a user for the particular session (may or
+                   may not be authorized)
+        -> name_first : new first name of a user
+        -> name_last : new last name of a user
     '''
 
     # check if token is valid
-    user_info = helper.get_user_info("token", token)
+    decoded_token = decode_encoded_token(token)
+    user_info = get_user_info('token', decoded_token)
     if not user_info:
-        raise AccessError('invalid token')
+        raise AccessError(description='Token passed in is not a valid token')
 
     # check if name_first and name_last are of invalid length
-    if not helper.check_string_length_and_whitespace(1, 50, name_first):
-        raise InputError("Invalid length of first name")
-    if not helper.check_string_length_and_whitespace(1, 50, name_last):
-        raise InputError("Invalid length of last name")
+    if not check_string_length_and_whitespace(MIN_CHAR_NAME_FIRST, \
+                                             MAX_CHAR_NAME_FIRST, name_first):
+        raise InputError(description='name_first is not between 1 and 50 \
+        characters inclusively in length or is a whitespace')
 
-    u_id = user_info["u_id"]
+    if not check_string_length_and_whitespace(MIN_CHAR_NAME_LAST, \
+                                             MAX_CHAR_NAME_LAST, name_last):                                             
+        raise InputError(description='name_last is not between 1 and 50 \
+        characters inclusively in length or is a whitespace')
 
-    helper.update_data("name_first", u_id, name_first)
-    helper.update_data("name_last", u_id, name_last)
+    update_data('name_first', user_info['u_id'], name_first)
+    update_data('name_last', user_info['u_id'], name_last)
 
     return {
     }
@@ -163,15 +168,7 @@ def user_profile_setemail(token, email):
     PARAMETERS:
         -> token : token of a user for the particular session (may or
                    may not be authorized)
-        -> email : email of a user
-
-    * user_profile_setemail
-        Error type: InputError
-            -> insufficient parameters
-            -> email entered is not a valid email
-            -> email address is already being used by another user
-        Error type: AccessError
-            -> token passed in is not a valid token
+        -> email : new email of a user
     '''
 
     # Checking for InputError(s) or AccessError:
@@ -179,13 +176,14 @@ def user_profile_setemail(token, email):
         raise InputError(description='Insufficient parameters. Please enter: \
         token, email')
 
-    if not get_user_info('token', token):
+    decoded_token = decode_encoded_token(token)
+    user_info = get_user_info('token', decoded_token)
+    if not user_info:
         raise AccessError(description='Token passed in is not a valid token')
 
     if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')
 
-    user_info = get_user_info('token', token)
     if user_info['email'] == email:
         return {
         }
@@ -210,15 +208,7 @@ def user_profile_sethandle(token, handle_str):
     PARAMETERS:
         -> token : token of a user for the particular session (may or
                    may not be authorized)
-        -> handle_str : handle of a user
-
-    * user_profile_sethandle
-        Error type: InputError
-            -> insufficient parameters
-            -> handle_str must be between 3 and 20 characters
-            -> handle is already being used by another user
-        Error type: AccessError
-            -> token passed in is not a valid token
+        -> handle_str : new handle_str of a user
     '''
 
     # Checking for InputError(s) or AccessError:
@@ -226,7 +216,9 @@ def user_profile_sethandle(token, handle_str):
         raise InputError(description='Insufficient parameters. Please enter: \
         token, handle_str')
 
-    if not get_user_info('token', token):
+    decoded_token = decode_encoded_token(token)
+    user_info = get_user_info('token', decoded_token)
+    if not user_info:
         raise AccessError(description='Token passed in is not a valid token')
 
     if not check_string_length_and_whitespace(MIN_CHAR_HANDLE_STR, \
@@ -234,7 +226,6 @@ def user_profile_sethandle(token, handle_str):
         raise InputError(description='handle_str is not between 3 and 20 \
         characters inclusively in length or is a whitespace')
 
-    user_info = get_user_info('token', token)
     if user_info['handle_str'] == handle_str:
         return {
         }

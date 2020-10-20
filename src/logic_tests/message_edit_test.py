@@ -99,18 +99,16 @@ def test_message_edit_emptystring():
     message_dict = helper.get_message_info(message_id)
     assert not message_dict
 
-def test_message_edit_notsenderorauth():
+def test_message_edit_notsender():
     '''
     test that message_edit raises AccessError
     if user (based on token) is not the sender of message with message ID message_id
-    and user is not admin of the flockr or owner of the channel message is in
     '''
     clear()
 
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
     token0 = user0_details['token']
 
-    # user1 is not admin of the flockr
     user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
     token1 = user1_details['token']
 
@@ -136,6 +134,7 @@ def test_message_edit_notauth():
     '''
     test that message_edit raises AccessError
     if token is not authorised
+    i.e. user is not admin of the flockr or owner of the channel message is in
     '''
     clear()
 

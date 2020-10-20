@@ -1,7 +1,9 @@
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Joseph Knox
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributor - Joseph Knox
 
-# Iteration 2
+Iteration 2
+'''
 
 import pytest
 import auth
@@ -10,14 +12,15 @@ from error import InputError, AccessError
 from other import clear
 
 '''
-*********************************BASIC TEMPLATE*********************************
+****************************BASIC TEMPLATE******************************
 '''
 
 '''
 FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
--> auth_register(email, password, name_first, name_last) return {u_id, token}
+-> auth_register(email, password, name_first, name_last) return
+   {u_id, token}
 -> user_profile(token, u_id) return {user}
--> user_profle_setname(token, name_first, name_last) return {}
+-> user_profile_setname(token, name_first, name_last) return {}
 '''
 
 '''
@@ -29,7 +32,7 @@ Error type: AccessError
     -> token passed in is not a valid token
 '''
 
-def test_user_profile_setname_noerrors():
+def test_user_profile_setname_no_errors():
     '''
     basic test with no edge case or errors raised
     '''
@@ -198,8 +201,5 @@ def test_user_profile_setname_accesserror():
     name_first_new = 'name_first_new'
     name_last_new = 'name_last_new'
 
-    # assume ' ' is an invalid token
-    token = " "
-
     with pytest.raises(AccessError):
-        user_profile_setname(token, name_first_new, name_last_new)
+        user_profile_setname(' ', name_first_new, name_last_new)

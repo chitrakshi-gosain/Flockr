@@ -5,7 +5,12 @@ from error import AccessError, InputError
 # therefore i made not tests for this
 
 def clear():
-    data.data = {'users': [], 'channels': []}
+    data.data = {
+        'users': [],
+        'channels': [],
+        'valid_tokens': []
+    }
+
 
 def users_all(token):
     '''
