@@ -144,24 +144,6 @@ def initialise_data():
         ]
     }
 
-def test_check_if_valid_email(reset, initialise_data):
-    '''
-    Tests the email of the user to be registered checks is a
-    valid email using a regex
-    '''
-
-    # Invalid Cases
-    assert not check_if_valid_email('blatantlywrong')
-    assert not check_if_valid_email('vaguelytrying@')
-    assert not check_if_valid_email('abitcloser@gmail')
-    assert not check_if_valid_email('@ozemail.com.au')
-    assert not check_if_valid_email('')
-
-    # Valid Cases
-    assert check_if_valid_email('ingridcline@gmail.com')
-    assert check_if_valid_email('myemail@email.com')
-    assert check_if_valid_email('hi@hello.com')
-
 def test_check_if_valid_email():
     '''
     Given the email of the user to be registered checks if it is a
