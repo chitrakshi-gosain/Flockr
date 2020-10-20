@@ -9,7 +9,7 @@ import data
 from error import InputError, AccessError
 from helper import check_if_valid_email, check_if_valid_password, \
 check_string_length_and_whitespace, invalidating_token, get_user_info, \
-check_password, store_generated_token
+encrypt_password_with_hash, store_generated_token
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -103,16 +103,18 @@ def auth_login(email, password):
     if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')
 
-    if not get_user_info('email', email):
+    user_info = get_user_info('email', email)
+
+    if not user_info:
         raise InputError(description='Email entered does not belong to a user')
 
-    if not check_password(email, password):
+    if not user_info['password'] == encrypt_password_with_hash(password):
         raise InputError(description='Password is not correct')
 
     # Since there are no InputError(s), hence proceeding forward:
 
     # generating token
-    user_token = email
+    user_token = str(user_info['u_id'])
 
     # updating token in data.data['users']
     store_generated_token(email, user_token)
@@ -120,7 +122,7 @@ def auth_login(email, password):
     # returning the dictionary with users' u_id, and token authenticated
     # for their session
     return {
-        'u_id': get_user_info('email', email)['u_id'],
+        'u_id': user_info['u_id'],
         'token': user_token
     }
 
@@ -234,7 +236,7 @@ def auth_register(email, password, name_first, name_last):
         'name_last' : name_last,
         'handle_str' : handle_string,
         'token' : '**token_not_assigned**',
-        'password' : password
+        'password' : encrypt_password_with_hash(password)
     }
 
     # appending the data of new_user to data dictionary in data file

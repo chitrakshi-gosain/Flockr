@@ -50,7 +50,6 @@ def initialise_user_data():
     '''
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
-
     '''
 
     user0_details = auth_register('user0@email.com', 'user0_pass1!', \
