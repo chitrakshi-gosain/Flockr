@@ -114,6 +114,43 @@ def initialise_data():
     }
 
 def test_check_if_valid_email():
+    '''
+    Given the email of the user to be registered checks if it is a
+    valid email using a regex
+    '''
+    # Invalid Cases
+    assert check_if_valid_email('blatantlywrong') == None
+    assert check_if_valid_email('vaguelytrying@') == None
+    assert check_if_valid_email('abitcloser@gmail') == None
+    assert check_if_valid_email('@ozemail.com.au') == None
+    assert check_if_valid_email('') == None
+
+    # Valid Cases
+    assert check_if_valid_email('ingridcline@gmail.com') != None
+    assert check_if_valid_email('myemail@email.com') != None
+    assert check_if_valid_email('hi@hello.com') != None
+
+def test_check_if_valid_password():
+    '''
+    Given the password of the user to be registered checks it's length
+    is in valid range and if it has printable ASCII characters only
+    '''
+    # Invalid Cases
+    assert check_if_valid_password('') == False
+    assert check_if_valid_password('hello') == False
+    assert check_if_valid_password('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824helloworld') == False
+    assert check_if_valid_password('hello\nworld') == False
+
+    # Valid Cases
+    assert check_if_valid_password('mysecuredateofbirth') ==  True
+    assert check_if_valid_password('1234567890') == True
+    assert check_if_valid_password('another valid pasword') == True
+    assert check_if_valid_password('*&%&%*)^*#$') == True
+
+def test_check_string_length_and_whitespace():
+    # check name_first(1-50 char limit), name_last(1-50 char limit) and
+    # handle_str(3-20 char limit), all char limits are inclusive
+
     #Out of length range
     assert check_string_length_and_whitespace(6,32,'123') == False
     assert check_string_length_and_whitespace(6,32,'0123456789012345678901234567890123') == False
@@ -122,14 +159,6 @@ def test_check_if_valid_email():
     assert check_string_length_and_whitespace(6,32,'01234567890123456789012345678901') == True
     #Spaces
     assert check_string_length_and_whitespace(5,20,'        ') == False
-
-def test_check_if_valid_password():
-    pass
-
-def test_check_string_length_and_whitespace():
-    # check name_first(1-50 char limit), name_last(1-50 char limit) and
-    # handle_str(3-20 char limit), all char limits are inclusive
-    pass
 
 def test_invalidating_token():
     pass
