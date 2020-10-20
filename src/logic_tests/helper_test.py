@@ -162,7 +162,25 @@ def test_check_if_valid_email(reset, initialise_data):
     assert check_if_valid_email('myemail@email.com')
     assert check_if_valid_email('hi@hello.com')
 
-def test_check_if_valid_password(reset, initialise_data):
+def test_check_if_valid_email():
+    '''
+    Given the email of the user to be registered checks if it is a
+    valid email using a regex
+    '''
+    # Invalid Cases
+    assert not check_if_valid_email('blatantlywrong')
+    assert not check_if_valid_email('vaguelytrying@')
+    assert not check_if_valid_email('abitcloser@gmail')
+    assert not check_if_valid_email('@ozemail.com.au')
+    assert not check_if_valid_email('')
+
+    # Valid Cases
+    assert check_if_valid_email('ingridcline@gmail.com')
+    assert check_if_valid_email('myemail@email.com')
+    assert check_if_valid_email('hi@hello.com')
+
+
+def test_check_if_valid_password():
     '''
     Tests the password of the user to be registered checks it's length
     is in valid range and if it has printable ASCII characters only
@@ -171,8 +189,8 @@ def test_check_if_valid_password(reset, initialise_data):
     # Invalid Cases
     assert not check_if_valid_password('')
     assert not check_if_valid_password('hello')
-    assert not check_if_valid_password('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161\
-        e5c1fa7425e73043362938b9824helloworld')
+    assert not check_if_valid_password('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c\
+        1fa7425e73043362938b9824helloworld')
     assert not check_if_valid_password('hello\nworld')
 
     # Valid Cases
