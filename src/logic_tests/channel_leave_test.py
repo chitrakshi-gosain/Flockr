@@ -1,13 +1,19 @@
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - 
+
+Iteration 1
+'''
+
+import pytest
 from channel import channel_leave, channel_join, channel_details, channel_addowner
 from other import clear
 from auth import auth_register
 from channels import channels_create
-
-import pytest
 from error import InputError, AccessError
 
 '''
-*********************************BASIC TEMPLATE*********************************
+****************************BASIC TEMPLATE******************************
 '''
 
 '''

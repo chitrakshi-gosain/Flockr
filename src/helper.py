@@ -1,5 +1,5 @@
 '''
-Created collaboratively by Wed15Team2 2020 T3
+Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributors - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
                Ahmet Karatas, Joseph Knox
 

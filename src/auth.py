@@ -1,5 +1,5 @@
 '''
-Created collaboratively by Wed15Team2 2020 T3
+Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributor - Chitrakshi Gosain
 
 Iteration 1
@@ -141,7 +141,6 @@ def auth_logout(token):
                         token')
 
     # Checking for AccessError:
-    #decoded_token = decode_encoded_token(token)
     if not get_user_info('token', token):
         raise AccessError(description='Token passed in is not a valid token')
 

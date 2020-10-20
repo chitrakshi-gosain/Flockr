@@ -1,5 +1,5 @@
 '''
-Created collaboratively by Wed15Team2 2020 T3
+Created collaboratively by Wed15GrapeTeam2 2020 T3
 Used to store data for our Flockr implementation
 '''
 
@@ -30,7 +30,7 @@ data = {
             'name_first' : 'fname0',
             'name_last' : 'lname0',
             'handle_str' : 'fname0lname0',
-            'token' : 'blah0@domain',
+            'token' : '0',
             'password' : 'password0'
         },
         { # user -> u_id : 1
@@ -40,7 +40,7 @@ data = {
             'name_first' : 'fname1',
             'name_last' : 'lname1',
             'handle_str' : 'fname1lname1',
-            'token' : 'blah1@domain',
+            'token' : '1',
             'password' : 'password1'
         }
     ],
@@ -50,7 +50,7 @@ data = {
             'channel_id' : 0,
             'name' : 'ch_name0',
             'is_public' : True,
-            'owner_members' : [ # owner_memebers of channel_id : 0
+            'owner_members' : [ # owner_members of channel_id : 0
                 {
                     'u_id' : 0,
                     'name_first' : 'fname0',
@@ -88,14 +88,14 @@ data = {
             'channel_id' : 1,
             'name' : 'ch_name1',
             'is_public' : False,
-            'owner_members' : [ # owner_memebers of channel_id : 1
+            'owner_members' : [ # owner_members of channel_id : 1
                 {
                     'u_id' : 1,
                     'name_first' : 'fname1',
                     'name_last' : 'fname1',
                 }
             ],
-            'all_members' : [# all_memebers of channel_id : 1
+            'all_members' : [# all_members of channel_id : 1
                 {
                     'u_id' : 0,
                     'name_first' : 'fname0',
@@ -128,26 +128,6 @@ data = {
     ],
 
     'valid_tokens': { # format  => token : u_id
-    
-        'fheu' : 0
-        'grbehy' : 0 
-        'rbjh' : 1 
-        'rgbhij' : 1
-        # (this will be way more easier to look through)
-        # (Ask Hayden or Michael for suggestions.)
     }
-    
-    # [  
-    #     { # valid(active) tokens for user with u_id : 0
-    #         'u_id': 0
-    #         'tokens': ['fheu', 'grbehy']
-    #     },
-
-    #     { # valid(active) tokens for user with u_id : 1
-    #         'u_id': 1
-    #         'tokens': ['rbjh', 'rgbhij']
-    #     }
-    # ]
-    
 }
 '''

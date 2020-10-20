@@ -1,3 +1,10 @@
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - Ahmet Karatas, Joseph Knox
+
+Iteration 1
+'''
+
 from datetime import datetime
 import helper
 import data
@@ -17,13 +24,16 @@ def message_send(token, channel_id, message):
         raise AccessError('Invalid Token')
 
     # Retrieving the u_id from the given token
-    # Finding if channel is valid and assigning the current channel to a dictionary
+    # Finding if channel is valid and assigning the current channel to a
+    # dictionary
     channel_info = helper.get_channel_info(channel_id)
-    if channel_info == False:
+    if not channel_info:
         raise InputError('Channel ID is not a valid channel')
 
-    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info['u_id'], channel_id):
-        raise AccessError('Authorised user is not a member of channel with channel_id')
+    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info\
+        ['u_id'], channel_id):
+        raise AccessError('Authorised user is not a member of channel with \
+            channel_id')
 
     messages_list_created = False
     for group in data.data:
@@ -34,7 +44,7 @@ def message_send(token, channel_id, message):
         message_id = data.data['messages'][-1]['message_id'] + 1
 
     else:
-        data.data['messages'] = []    
+        data.data['messages'] = []
         message_id = 0
     
     date = datetime.now()
@@ -51,19 +61,22 @@ def message_send(token, channel_id, message):
         'u_id': user_info['u_id'],
         'message': message,
         'time_created': time_created
-    } 
+    }
 
     data.data['messages'].append(message_dict)
 
     for channel in data.data['channels']:
         if channel['channel_id'] == channel_id:
             channel['messages'].append(message_dict)
-    
+
     return {
         'message_id': message_id,
     }
 
 def message_remove(token, message_id):
+    '''
+    ADD DOCSTRING HERE
+    '''
 
     # Testing for insufficient parameters
     if None in {token, message_id}:
@@ -81,7 +94,8 @@ def message_remove(token, message_id):
 
 
     if not message_exists:
-        raise InputError('message_id does not correlate to an existing message_id')
+        raise InputError('message_id does not correlate to an existing \
+            message_id')
 
     # Testing for token validity
     user_info = helper.get_user_info('token', token)
@@ -94,7 +108,8 @@ def message_remove(token, message_id):
         # if the user is not an owner of the channel
         for owner in channel_info['owner_members']:
             if owner['u_id'] != user_info['u_id']:
-                raise AccessError('User has neither sent the message, now is an owner of the channel')
+                raise AccessError('User has neither sent the message, now is \
+                    an owner of the channel')
 
     for (i, message) in enumerate(channel_info['messages']):
         if message['message_id'] == message_id:
@@ -131,7 +146,8 @@ def message_edit(token, message_id, message):
 
     # check if message with message_id was sent by the authorised user
     message_info = helper.get_message_info(message_id)
-    if user_info["u_id"] != message_info["u_id"] and not helper.is_user_authorised(token, channel_id):
+    if user_info["u_id"] != message_info["u_id"] and not \
+        helper.is_user_authorised(token, channel_id):
         raise AccessError("message not sent by user, or user is not authorised")
 
     channel_index = 0
@@ -140,9 +156,11 @@ def message_edit(token, message_id, message):
         for message_dict in channel['messages']:
             if message_dict['message_id'] == message_id:
                 if message == "":
-                    del data.data['channels'][channel_index]['messages'][message_index]
+                    del data.data['channels'][channel_index]['messages']\
+                        [message_index]
                 else:
-                    data.data['channels'][channel_index]['messages'][message_index]['message'] = message
+                    data.data['channels'][channel_index]['messages']\
+                        [message_index]['message'] = message
                 break
             message_index += 1
         channel_index += 1
