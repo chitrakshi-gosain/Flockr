@@ -9,7 +9,7 @@ import data
 from error import InputError, AccessError
 from helper import check_if_valid_email, check_if_valid_password, \
 check_string_length_and_whitespace, invalidating_token, get_user_info, \
-encrypt_password_with_hash, store_generated_token
+encrypt_password_with_hash, generate_encoded_token, decode_encoded_token
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -113,17 +113,11 @@ def auth_login(email, password):
 
     # Since there are no InputError(s), hence proceeding forward:
 
-    # generating token
-    user_token = str(user_info['u_id'])
-
-    # updating token in data.data['users']
-    store_generated_token(email, user_token)
-
-    # returning the dictionary with users' u_id, and token authenticated
-    # for their session
+    # returning the dictionary with users' u_id, and encoded token
+    # authenticated for their session
     return {
         'u_id': user_info['u_id'],
-        'token': user_token
+        'token': generate_encoded_token(user_info['u_id'])
     }
 
 def auth_logout(token):
@@ -147,14 +141,15 @@ def auth_logout(token):
                         token')
 
     # Checking for AccessError:
-    if not get_user_info('token', token):
+    decoded_token = decode_encoded_token(token)
+    if not get_user_info('token', decoded_token):
         raise AccessError(description='Token passed in is not a valid token')
 
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
 
     return {
-        'is_success': invalidating_token(token)
+        'is_success': invalidating_token(decoded_token)
     }
 
 def auth_register(email, password, name_first, name_last):
@@ -235,7 +230,7 @@ def auth_register(email, password, name_first, name_last):
         'name_first' : name_first,
         'name_last' : name_last,
         'handle_str' : handle_string,
-        'token' : '**token_not_assigned**',
+        'token' : str(len(data.data['users'])),
         'password' : encrypt_password_with_hash(password)
     }
 

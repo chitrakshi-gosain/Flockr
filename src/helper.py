@@ -8,11 +8,14 @@ Iteration 1
 
 import re
 import hashlib
+import jwt
 import data
+from error import AccessError
 
 # CONSTANTS
 MIN_LENGTH_PASSWORD = 6
 MAX_LENGTH_PASSWORD = 32
+SECRET = 'wed15grapeteam2'
 
 def check_if_valid_email(email):
     '''
@@ -169,7 +172,6 @@ def update_data(keyword, user_id, identifier):
         if user['u_id'] == user_id:
             user[keyword] = identifier
 
-
 def encrypt_password_with_hash(password):
     '''
     Given the password of the user encrypts it using hashlib for secured
@@ -178,17 +180,23 @@ def encrypt_password_with_hash(password):
 
     return hashlib.sha256(password.encode()).hexdigest()
 
-
-
-# later modify this as store_And_generate_token(email):, i.e. this will generate
-# token, store it and then return it
-def store_generated_token(email, user_token):
+def generate_encoded_token(user_id):
     '''
-    Given the email of the user trying of log-in stores the
+    Given the u_id of the user trying of log-in stores the
     authenticated token in database as necessary which later results in
     the authentication of the user for the particular session
     '''
 
-    for user in data.data['users']:
-        if user['email'] == email:
-            user['token'] = user_token
+    encoded_token = jwt.encode({'token': str(user_id)}, SECRET, algorithm=\
+        'HS256').decode()
+
+    data.data['valid_tokens'].append({encoded_token: user_id})
+
+    return encoded_token
+
+def decode_encoded_token(token):
+    try:
+        payload = jwt.decode(token.encode('utf-8'), SECRET, algorithms='HS256')
+        return payload['token']
+    except:
+        raise AccessError(description='Token passed in is not a valid token')

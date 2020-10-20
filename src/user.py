@@ -7,7 +7,7 @@ Iteration 2
 
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
-check_string_length_and_whitespace, update_data
+check_string_length_and_whitespace, update_data, decode_encoded_token
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -103,7 +103,8 @@ def user_profile(token, u_id):
     '''
 
     # Checking token validity
-    user = get_user_info('token', token)
+    decoded_token = decode_encoded_token(token)
+    user = get_user_info('token', decoded_token)
     if not user:
         raise AccessError(description='Token passed in is not a valid token')
 
@@ -136,7 +137,8 @@ def user_profile_setname(token, name_first, name_last):
     '''
 
     # check if token is valid
-    user_info = get_user_info('token', token)
+    decoded_token = decode_encoded_token(token)
+    user_info = get_user_info('token', decoded_token)
     if not user_info:
         raise AccessError(description='Token passed in is not a valid token')
 
@@ -174,7 +176,8 @@ def user_profile_setemail(token, email):
         raise InputError(description='Insufficient parameters. Please enter: \
         token, email')
 
-    user_info = get_user_info('token', token)
+    decoded_token = decode_encoded_token(token)
+    user_info = get_user_info('token', decoded_token)
     if not user_info:
         raise AccessError(description='Token passed in is not a valid token')
 
@@ -213,7 +216,8 @@ def user_profile_sethandle(token, handle_str):
         raise InputError(description='Insufficient parameters. Please enter: \
         token, handle_str')
 
-    user_info = get_user_info('token', token)
+    decoded_token = decode_encoded_token(token)
+    user_info = get_user_info('token', decoded_token)
     if not user_info:
         raise AccessError(description='Token passed in is not a valid token')
 
