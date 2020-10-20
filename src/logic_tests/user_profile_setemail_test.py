@@ -150,9 +150,6 @@ def test_no_change(reset, initialise_user_data):
     Tests that user_profile_setemail does not raise an InputError when a
     user tries to update his email-id to an existing email-id in
     database registered with himself
-
-    # assumption: user tries to change email to the one which he is using already
-    # do not throw an error
     '''
 
     test_user_0 = initialise_user_data['user0']

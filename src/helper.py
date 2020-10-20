@@ -1,5 +1,5 @@
 '''
-Created collaboratively by Wed15Team2 2020 T3
+Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributors - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
                Ahmet Karatas, Joseph Knox
 
@@ -125,11 +125,15 @@ def get_user_info(variable, identifier):
     Else returns False
     '''
 
+    if variable == 'token':
+        try:
+            identifier = decode_encoded_token(identifier)
+        except:
+            return False
+
     for user in data.data['users']:
         if user[variable] == identifier:
             return user
-
-    return False
 
 def is_user_in_channel(u_id, channel_id):
     '''

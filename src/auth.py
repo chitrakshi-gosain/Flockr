@@ -1,5 +1,5 @@
 '''
-Created collaboratively by Wed15Team2 2020 T3
+Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributor - Chitrakshi Gosain
 
 Iteration 1
@@ -141,15 +141,14 @@ def auth_logout(token):
                         token')
 
     # Checking for AccessError:
-    decoded_token = decode_encoded_token(token)
-    if not get_user_info('token', decoded_token):
+    if not get_user_info('token', token):
         raise AccessError(description='Token passed in is not a valid token')
 
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
 
     return {
-        'is_success': invalidating_token(decoded_token)
+        'is_success': invalidating_token(decode_encoded_token(token))
     }
 
 def auth_register(email, password, name_first, name_last):

@@ -1,14 +1,16 @@
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - Cyrus Wilkie
+
+Iteration 1
+'''
+
 import data
 from helper import get_user_info
 from error import AccessError, InputError
 
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Cyrus Wilkie
-
-# Iteration 1
-
 '''
-*********************************BASIC TEMPLATE*********************************
+****************************BASIC TEMPLATE******************************
 '''
 
 '''
@@ -46,9 +48,9 @@ def channels_list(token):
 
     # Checking token validity and finding user that accessed listall
     current_user = get_user_info('token', token)
-    
+
     # If matching token is not found then AccessError is raised
-    if current_user == False:
+    if not current_user:
         raise AccessError("Invalid Token")
 
     # Constructing list of all channels
@@ -86,9 +88,9 @@ def channels_listall(token):
 
     # Checking token validity and finding user that accessed listall
     current_user = get_user_info('token', token)
-    
+
     # If matching token is not found then AccessError is raised
-    if current_user == False:
+    if not current_user:
         raise AccessError("Invalid Token")
 
     # Constructing list of all channels
@@ -127,9 +129,9 @@ def channels_create(token, name, is_public):
 
     # Checking token validity and finding user that created channel
     current_user = get_user_info('token', token)
-    
+
     # If matching token is not found then AccessError is raised
-    if current_user == False:
+    if not current_user:
         raise AccessError("Invalid Token")
 
     # Checking channel name size
