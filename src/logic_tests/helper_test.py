@@ -125,9 +125,9 @@ def initialise_data():
         'valid_tokens': [ # format  => token : u_id
         ]
     }
-    
 
- 
+
+
 
 def test_check_if_valid_email():
     '''
@@ -256,7 +256,7 @@ def test_encrypt_same_password_with_hash():
     password = 'user0_pass1!'
     pass_hash = encrypt_password_with_hash(password)
     assert pass_hash == encrypt_password_with_hash(password)
-    
+
 def test_encrypt_different_password_with_hash():
     password1 = 'user0_pass1'
     password2 = 'user1_pass1'
@@ -264,8 +264,19 @@ def test_encrypt_different_password_with_hash():
     assert pass_hash1 != encrypt_password_with_hash(password2)
 
 def test_generate_encoded_token():
-    # Jordan
-    pass
+
+    other.clear()
+    u_id0 = 0
+    token0 = generate_encoded_token(u_id0)
+
+    u_id1 = 1
+    token1 = generate_encoded_token(u_id1)
+
+    assert token0 != str(u_id0)
+    assert token1 != str(u_id1)
+    #check if stored in data
+    assert {token0 : u_id0} in data.data['valid_tokens']
+    assert {token1 : u_id1} in data.data['valid_tokens']
 
 def test_decode_encoded_token():
     # Chitrakshi
