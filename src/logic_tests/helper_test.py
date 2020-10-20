@@ -130,14 +130,22 @@ def initialise_data():
 
 
 def test_check_if_valid_email():
-    #Out of length range
-    assert not check_string_length_and_whitespace(6,32,'123')
-    assert not check_string_length_and_whitespace(6,32,'0123456789012345678901234567890123')
-    #Edge
-    assert check_string_length_and_whitespace(6,32,'123456')
-    assert check_string_length_and_whitespace(6,32,'01234567890123456789012345678901')
-    #Spaces
-    assert not check_string_length_and_whitespace(5,20,'        ')
+    '''
+    Given the email of the user to be registered checks if it is a
+    valid email using a regex
+    '''
+    # Invalid Cases
+    assert not check_if_valid_email('blatantlywrong')
+    assert not check_if_valid_email('vaguelytrying@')
+    assert not check_if_valid_email('abitcloser@gmail')
+    assert not check_if_valid_email('@ozemail.com.au')
+    assert not check_if_valid_email('')
+
+    # Valid Cases
+    assert check_if_valid_email('ingridcline@gmail.com')
+    assert check_if_valid_email('myemail@email.com')
+    assert check_if_valid_email('hi@hello.com')
+
 
 def test_check_if_valid_password():
     '''
@@ -167,8 +175,7 @@ def test_check_string_length_and_whitespace():
         1234567890123')
     #Edge
     assert check_string_length_and_whitespace(6,32,'123456')
-    assert check_string_length_and_whitespace(6,32,'0123456789012345678901234\
-        5678901')
+    assert check_string_length_and_whitespace(6,32,'01234567890123456789012345678901')
     #Spaces
     assert not check_string_length_and_whitespace(5,20,'        ')
 
