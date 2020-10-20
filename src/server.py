@@ -36,7 +36,7 @@ def defaultHandler(err):
     response.content_type = 'application/json'
     return response
 
-APP = Flask(_name_)
+APP = Flask(__name__)
 CORS(APP)
 
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
@@ -222,5 +222,5 @@ def echo():
 
 # DO NOT EDIT ANYTHING BELOW THIS LINE
 
-if _name_ == "main":
+if __name__ == "__main__":
     APP.run(port=0) # Do not edit this port
