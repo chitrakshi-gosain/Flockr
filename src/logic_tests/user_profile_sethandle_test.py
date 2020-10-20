@@ -33,11 +33,6 @@ Error type: AccessError
     -> token passed in is not a valid token
 '''
 
-'''
-KEEP IN MIND:
--> i have some assumptions testing in test, add them to assumptions.md
-'''
-
 @pytest.fixture
 def reset():
     '''
@@ -153,9 +148,6 @@ def test_non_ascii_handle(reset, initialise_user_data):
     '''
     Tests that user_profile_sethandle accepts a new handle by user which
     has Non-ASCII characters
-
-    # this is an assumption like names that handles can have non ascii chars
-    non ascii characters for jôhnsmïth
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -178,8 +170,6 @@ def test_whitespace_handle(reset, initialise_user_data):
     '''
     Tests that user_profile_sethandle raises an InputError when a handle
     entered by user for updatation is completely whitespace
-
-    # this is an assumption like names that only white space cant be a valid handle
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -191,9 +181,6 @@ def test_no_change(reset, initialise_user_data):
     Tests that user_profile_sethandle does not raise an InputError when
     a user tries to update his handle to an existing handle in
     database registered with himself
-
-    # assumption: user tries to change handle to the one which he is using already
-    # do not throw an error
     '''
 
     test_user_0 = initialise_user_data['user0']
