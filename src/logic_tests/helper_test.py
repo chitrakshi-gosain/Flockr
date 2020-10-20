@@ -45,7 +45,7 @@ def initialise_data():
                 'channel_id' : 0,
                 'name' : 'ch_name0',
                 'is_public' : True,
-                'owner_members' : [ # owner_memebers of channel_id : 0
+                'owner_members' : [ # owner_members of channel_id : 0
                     {
                         'u_id' : 0,
                         'name_first' : 'fname0',
@@ -83,14 +83,14 @@ def initialise_data():
                 'channel_id' : 1,
                 'name' : 'ch_name1',
                 'is_public' : False,
-                'owner_members' : [ # owner_memebers of channel_id : 1
+                'owner_members' : [ # owner_members of channel_id : 1
                     {
                         'u_id' : 1,
                         'name_first' : 'fname1',
                         'name_last' : 'fname1',
                     }
                 ],
-                'all_members' : [# all_memebers of channel_id : 1
+                'all_members' : [# all_members of channel_id : 1
                     {
                         'u_id' : 0,
                         'name_first' : 'fname0',
@@ -131,20 +131,21 @@ def initialise_data():
 
 def test_check_if_valid_email():
     '''
-    Given the email of the user to be registered checks if it is a
+    Tests the email of the user to be registered checks is a
     valid email using a regex
     '''
+
     # Invalid Cases
-    assert check_if_valid_email('blatantlywrong') == None
-    assert check_if_valid_email('vaguelytrying@') == None
-    assert check_if_valid_email('abitcloser@gmail') == None
-    assert check_if_valid_email('@ozemail.com.au') == None
-    assert check_if_valid_email('') == None
+    assert not check_if_valid_email('blatantlywrong')
+    assert not check_if_valid_email('vaguelytrying@')
+    assert not check_if_valid_email('abitcloser@gmail')
+    assert not check_if_valid_email('@ozemail.com.au')
+    assert not check_if_valid_email('')
 
     # Valid Cases
-    assert check_if_valid_email('ingridcline@gmail.com') != None
-    assert check_if_valid_email('myemail@email.com') != None
-    assert check_if_valid_email('hi@hello.com') != None
+    assert check_if_valid_email('ingridcline@gmail.com')
+    assert check_if_valid_email('myemail@email.com')
+    assert check_if_valid_email('hi@hello.com')
 
 def test_check_if_valid_password():
     '''
@@ -152,16 +153,17 @@ def test_check_if_valid_password():
     is in valid range and if it has printable ASCII characters only
     '''
     # Invalid Cases
-    assert check_if_valid_password('') == False
-    assert check_if_valid_password('hello') == False
-    assert check_if_valid_password('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824helloworld') == False
-    assert check_if_valid_password('hello\nworld') == False
+    assert check_if_valid_password('')
+    assert check_if_valid_password('hello')
+    assert check_if_valid_password('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c\
+        1fa7425e73043362938b9824helloworld')
+    assert check_if_valid_password('hello\nworld')
 
     # Valid Cases
-    assert check_if_valid_password('mysecuredateofbirth') ==  True
-    assert check_if_valid_password('1234567890') == True
-    assert check_if_valid_password('another valid pasword') == True
-    assert check_if_valid_password('*&%&%*)^*#$') == True
+    assert check_if_valid_password('mysecuredateofbirth')
+    assert check_if_valid_password('1234567890') 
+    assert check_if_valid_password('another valid pasword') 
+    assert check_if_valid_password('*&%&%*)^*#$') 
 
 def test_check_string_length_and_whitespace():
     # check name_first(1-50 char limit), name_last(1-50 char limit) and
@@ -169,10 +171,12 @@ def test_check_string_length_and_whitespace():
 
     #Out of length range
     assert not check_string_length_and_whitespace(6,32,'123')
-    assert not check_string_length_and_whitespace(6,32,'0123456789012345678901234567890123')
+    assert not check_string_length_and_whitespace(6,32,'012345678901234567890\
+        1234567890123')
     #Edge
     assert check_string_length_and_whitespace(6,32,'123456')
-    assert check_string_length_and_whitespace(6,32,'01234567890123456789012345678901')
+    assert check_string_length_and_whitespace(6,32,'0123456789012345678901234\
+        5678901')
     #Spaces
     assert not check_string_length_and_whitespace(5,20,'        ')
 
@@ -218,7 +222,8 @@ def test_get_user_info():
     assert not get_user_info('email', ' ')
 
     assert get_user_info('u_id', 0) == data.data['users'][0]
-    assert get_user_info('token', generate_encoded_token('0')) == data.data['users'][0]
+    assert get_user_info('token', generate_encoded_token('0')) == \
+        data.data['users'][0]
     assert get_user_info('email', 'blah1@domain') == data.data['users'][1]
 
 def test_is_user_in_channel():

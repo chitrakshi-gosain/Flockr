@@ -14,13 +14,13 @@ import pytest
 ****************************BASIC TEMPLATE******************************
 '''
 
-def test_url(url):
-    '''
-    A simple sanity test to check that your server is set up properly
-    '''
-    assert url.startswith("http")
+# def test_url(url):
+#     '''
+#     A simple sanity test to check that your server is set up properly
+#     '''
+#     assert url.startswith("http")
 
-def test_something(url):
-    '''
-    ADD DOCSTRING HERE
-    '''
+# def test_something(url):
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
