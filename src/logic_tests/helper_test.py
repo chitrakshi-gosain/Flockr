@@ -145,11 +145,11 @@ def test_check_if_valid_password():
     is in valid range and if it has printable ASCII characters only
     '''
     # Invalid Cases
-    assert check_if_valid_password('')
-    assert check_if_valid_password('hello')
-    assert check_if_valid_password('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c\
+    assert not check_if_valid_password('')
+    assert not check_if_valid_password('hello')
+    assert not check_if_valid_password('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c\
         1fa7425e73043362938b9824helloworld')
-    assert check_if_valid_password('hello\nworld')
+    assert not check_if_valid_password('hello\nworld')
 
     # Valid Cases
     assert check_if_valid_password('mysecuredateofbirth')
