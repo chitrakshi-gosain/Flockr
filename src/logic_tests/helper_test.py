@@ -207,8 +207,16 @@ def test_get_message_info():
 def test_update_data():
     pass
 
-def test_check_password():
-    pass
+def test_encrypt_same_password_with_hash():
+    password = 'user0_pass1!'
+    pass_hash = encrypt_password_with_hash(password)
+    assert pass_hash == encrypt_password_with_hash(password)
+    
+def test_encrypt_different_password_with_hash():
+    password1 = 'user0_pass1'
+    password2 = 'user1_pass1'
+    pass_hash1 = encrypt_password_with_hash(password1)
+    assert pass_hash1 != encrypt_password_with_hash(password2)
 
 def test_store_generated_token():
     pass
