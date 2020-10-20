@@ -125,11 +125,15 @@ def get_user_info(variable, identifier):
     Else returns False
     '''
 
+    if variable == 'token':
+        try:
+            identifier = decode_encoded_token(identifier)
+        except:
+            return False
+
     for user in data.data['users']:
         if user[variable] == identifier:
             return user
-
-    return False
 
 def is_user_in_channel(u_id, channel_id):
     '''
