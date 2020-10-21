@@ -46,7 +46,7 @@ def reset():
     clear()
 
 @pytest.fixture
-def initialise_user_data():
+def initialise_user_data(reset):
     '''
     Sets up various user descriptive sample data for testing
     purposes and returns user data which is implementation dependent
@@ -62,7 +62,7 @@ def initialise_user_data():
         'user1': user1_details
     }
 
-def test_insufficient_parameters(reset, initialise_user_data):
+def test_insufficient_parameters(initialise_user_data):
     '''
     Tests that user_profile_setemail raises an InputError when less than
     expected parameters are passed
@@ -71,7 +71,7 @@ def test_insufficient_parameters(reset, initialise_user_data):
     with pytest.raises(InputError):
         user_profile_setemail(None, None)
 
-def test_return_type(reset, initialise_user_data):
+def test_return_type(initialise_user_data):
     '''
     Tests that user_profile_setemail returns the expected datatype i.e.
     {}
@@ -83,7 +83,7 @@ def test_return_type(reset, initialise_user_data):
     assert isinstance(test_user_0_updatedemail, dict)
     assert not test_user_0_updatedemail
 
-def test_invalid_token(reset, initialise_user_data):
+def test_invalid_token(initialise_user_data):
     '''
     Tests that user_profile_setemail raises an AccessError when an
     invalid token is passed as one of the parameters
@@ -92,7 +92,7 @@ def test_invalid_token(reset, initialise_user_data):
     with pytest.raises(AccessError):
         user_profile_setemail('some_token', 'logintestvalidemailid@email.com')
 
-def test_invalid_email(reset, initialise_user_data):
+def test_invalid_email(initialise_user_data):
     '''
     Tests that user_profile_setemail raises an InputError when an
     invalid email is passed as one of the parameters
@@ -103,7 +103,7 @@ def test_invalid_email(reset, initialise_user_data):
         user_profile_setemail(test_user_0['token'], \
                              'logintestinvalidemailid_email.com')
 
-def test_existing_email(reset, initialise_user_data):
+def test_existing_email(initialise_user_data):
     '''
     Tests that user_profile_setemail raises an InputError when a user
     tries to update his email-id to an existing email-id in database
@@ -114,7 +114,7 @@ def test_existing_email(reset, initialise_user_data):
     with pytest.raises(InputError):
         user_profile_setemail(test_user_0['token'], 'user1@email.com')
 
-def test_successful_email_updatation(reset, initialise_user_data):
+def test_successful_email_updatation(initialise_user_data):
     '''
     Tests that user_profile_setemail updates email-id of a user to an
     email-id entered by user, if it does not exist in database i.e. it
@@ -126,7 +126,7 @@ def test_successful_email_updatation(reset, initialise_user_data):
     user_0_details = user_profile(test_user_0['token'], test_user_0['u_id'])
     assert user_0_details['user']['email'] == 'user0newemailid@email.com'
 
-def test_only_unique_changes_accepted(reset, initialise_user_data):
+def test_only_unique_changes_accepted(initialise_user_data):
     '''
     Tests that user_profile_setemail accepts to update an email-id which
     previously belonged to another user and is now not a part of the
@@ -145,7 +145,7 @@ def test_only_unique_changes_accepted(reset, initialise_user_data):
 
     assert user_0_details['user']['email'] != user_1_details['user']['email']
 
-def test_no_change(reset, initialise_user_data):
+def test_no_change(initialise_user_data):
     '''
     Tests that user_profile_setemail does not raise an InputError when a
     user tries to update his email-id to an existing email-id in
