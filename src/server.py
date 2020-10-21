@@ -10,14 +10,14 @@ from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
-# import sys
+import sys
 from auth import auth_login, auth_register, auth_logout
-# from channel import channel_invite, channel_details, channel_messages, \
-#     channel_leave, channel_join, channel_addowner, channel_removeowner
+from channel import channel_invite, channel_details, channel_messages, \
+    channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_list, channels_listall, channels_create
-# from message import message_send, message_remove, message_edit
+from message import message_send, message_remove, message_edit
 from  user import user_profile, user_profile_setname, user_profile_setemail, \
-#     user_profile_sethandle  
+    user_profile_sethandle  
 from other import users_all, admin_userpermission_change, search, clear
 
 # need to plan how to write things here
@@ -221,7 +221,7 @@ def user_profile_route():
     '''
     
     token = request.args.get('token')
-    u_id = request.args.get('u_id')
+    u_id = int(request.args.get('u_id'))
 
     return dumps(user_profile(token, u_id))
 
