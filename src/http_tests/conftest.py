@@ -48,7 +48,7 @@ def reset(url):
     requests.post(f"{url}/clear")
 
 @pytest.fixture
-def initialise_user_data(reset):
+def initialise_user_data(url, reset):
     '''
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
