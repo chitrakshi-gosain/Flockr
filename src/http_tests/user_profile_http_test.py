@@ -240,3 +240,32 @@ def test_user_profile_valid_logout(url, initialise_users):
     }
 
     assert profile_data == exp_dict
+
+def test_user_profile_invalid_uid(url, initialise_users):
+    '''
+    Testing user_profile with an invalid u_id parameter
+    '''
+    user_data = initialise_users
+    
+    invalid_uid = -1
+
+    assert requests.get(f'{url}/user/profile', json={
+        'token': user_data['jane']['token'],
+        'u_id': invalid_uid,
+    }).status_code == 400
+
+def test_user_profile_invalid_token(url, initialise_users):
+    '''
+    Testing user_profile with an invalid token parameter
+    '''
+    user_data = initialise_users
+
+    invalid_token = user_data['john']['token']
+    requests.post(f'{url}/auth/logout', json={
+        'token': invalid_token,
+    })
+
+    assert requests.get(f'{url}/user/profile', json={
+        'token': invalid_token,
+        'u_id': user_data['jane']['u_id'],
+    }).status_code == 400
