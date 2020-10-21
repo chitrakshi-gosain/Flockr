@@ -17,6 +17,7 @@ import pytest
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
 -> APP.route("/user/profile", methods=['GET']) return json.dumps({user})
+-> APP.route("/auth/logout", methods=['POST']) return json.dumps({is_success})
 '''
 
 '''
@@ -136,7 +137,7 @@ def test_user_profile_valid_own(url, initialise_users):
     '''
     Testing users checking their own profiles
     '''
-    users = initialise_users
+    user_data = initialise_users
 
     profile_data = requests.get(f'{url}/user/profile', json={
         'token': user_data['owner']['token'],
@@ -176,7 +177,7 @@ def test_user_profile_valid_else(url, initialise_users):
     '''
     Testing users checking other user's profiles
     '''
-    users = initialise_users
+    user_data = initialise_users
 
     profile_data = requests.get(f'{url}/user/profile', json={
         'token': user_data['john']['token'],
@@ -207,6 +208,34 @@ def test_user_profile_valid_else(url, initialise_users):
             'name_first': 'Ingrid',
             'name_last': 'Cline',
             'handle_str': 'ingridcline',
+        },
+    }
+
+    assert profile_data == exp_dict
+
+def test_user_profile_valid_logout(url, initialise_users):
+    '''
+    Testing the retrieval of profile data from a user that is logged out
+    by a user that is logged in
+    '''
+    user_data = initialise_users
+
+    requests.post(f'{url}/auth/logout', json={
+        'token': user_data['john']['token'],
+    })
+
+    profile_data = requests.get(f'{url}/user/profile', json={
+        'token': user_data['jane']['token'],
+        'u_id': user_data['john']['u_id'],
+    }).json()
+
+    exp_dict = {
+        'user': {
+            'u_id': user_data['john']['u_id'],
+            'email': 'johnsmith@gmail.com',
+            'name_first': 'John',
+            'name_last': 'Smith',
+            'handle_str': 'johnsmith',
         },
     }
 
