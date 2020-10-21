@@ -420,4 +420,4 @@ def test_channels_listall_invalid_token(url, initialise_users):
     # Checking that AccessError is thrown
     assert requests.get(f'{url}/channels/listall', json={
         'token': invalid_token,
-    })
+    }).status_code == 400

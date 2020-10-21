@@ -281,6 +281,7 @@ def test_channels_list_valid_private(url, initialise_users):
     '''
     Listing multiple created private channels from different users
     '''
+    users = initialise_users
 
     # Creating channels and storing ids
     channel_id = []
@@ -333,3 +334,123 @@ def test_channels_list_valid_private(url, initialise_users):
     assert john_channel_list['channels'][1]['name'] == 'Chatter'
     assert john_channel_list['channels'][2]['name'] == '3rd Channel'
 
+def test_channels_list_valid_mix(url, initialise_users):
+    '''
+    Listing a mix of multiple public and private channels from different users with some sharing names
+    '''
+    users = initialise_users
+
+    # Creating channels and storing ids
+    channel_id = []
+
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['user1']['token'],
+        'name': 'First Channel',
+        'is_public': True,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['user2']['token'],
+        'name': 'Channel 2',
+        'is_public': True,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['donald']['token'],
+        'name': 'Discussion',
+        'is_public': True,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['john']['token'],
+        'name': 'Chatter',
+        'is_public': True,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['ingrid']['token'],
+        'name': '3rd Channel',
+        'is_public': True,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['user1']['token'],
+        'name': 'First Channel',
+        'is_public': False,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['user3']['token'],
+        'name': 'Channel 2',
+        'is_public': False,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['jane']['token'],
+        'name': 'Private',
+        'is_public': False,
+    }).json())
+
+    # Checking channels_list return is correct
+    user1_channel_list = requests.get(f'{url}/channels/list', json={
+        'token': users['user1']['token'],
+    }).json()
+    user2_channel_list = requests.get(f'{url}/channels/list', json={
+        'token': users['user2']['token'],
+    }).json()
+    donald_channel_list = requests.get(f'{url}/channels/list', json={
+        'token': users['donald']['token'],
+    }).json()
+    john_channel_list = requests.get(f'{url}/channels/list', json={
+        'token': users['john']['token'],
+    }).json()
+    ingrid_channel_list = requests.get(f'{url}/channels/list', json={
+        'token': users['ingrid']['token'],
+    }).json()
+    user3_channel_list = requests.get(f'{url}/channels/list', json={
+        'token': users['user3']['token'],
+    }).json()
+    jane_channel_list = requests.get(f'{url}/channels/list', json={
+        'token': users['jane']['token'],
+    }).json()
+
+    # Id checks
+    assert user1_channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
+    assert user2_channel_list['channels'][0]['channel_id'] == channel_id[1]['channel_id']
+    assert donald_channel_list['channels'][0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list['channels'][0]['channel_id'] == channel_id[3]['channel_id']
+    assert ingrid_channel_list['channels'][0]['channel_id'] == channel_id[4]['channel_id']
+    assert user1_channel_list['channels'][1]['channel_id'] == channel_id[5]['channel_id']
+    assert user3_channel_list['channels'][0]['channel_id'] == channel_id[6]['channel_id']
+    assert jane_channel_list['channels'][0]['channel_id'] == channel_id[7]['channel_id']
+
+    # Name checks
+    assert user1_channel_list['channels'][0]['name'] == 'First Channel'
+    assert user2_channel_list['channels'][0]['name'] == 'Channel 2'
+    assert donald_channel_list['channels'][0]['name'] == 'Discussion'
+    assert john_channel_list['channels'][0]['name'] == 'Chatter'
+    assert ingrid_channel_list['channels'][0]['name'] == '3rd Channel'
+    assert user1_channel_list['channels'][1]['name'] == 'First Channel'
+    assert user3_channel_list['channels'][0]['name'] == 'Channel 2'
+    assert jane_channel_list['channels'][0]['name'] == 'Private'
+
+def test_channels_list_valid_empty(url, initialise_users):
+    '''
+    Listing channels when none have been created
+    '''
+    users = initialise_users
+
+    # Checking channels_list return is correct
+    assert requests.get(f'{url}/channels/listall', json={
+        'token': users['user1']['token'],
+    }).json() == {'channels': []}
+
+def test_channels_list_invalid_token(url, initialise_users):
+    '''
+    Attempting to call channels_list without a valid token
+    '''
+    users = initialise_users
+
+    # Only way to guarrantee a token is invalid is to invalidate an existing token
+    invalid_token = users['owner']['token']
+    requests.post(f'{url}/auth/logout', json={
+        'token': invalid_token,
+    })
+
+    # Checking that AccessError is thrown
+    assert requests.get(f'{url}/channels/list', json={
+        'token': invalid_token,
+    }).status_code == 400
