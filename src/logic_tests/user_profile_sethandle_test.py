@@ -42,7 +42,7 @@ def reset():
     clear()
 
 @pytest.fixture
-def initialise_user_data():
+def initialise_user_data(reset):
     '''
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
@@ -58,7 +58,7 @@ def initialise_user_data():
         'user1': user1_details
     }
 
-def test_insufficient_parameters(reset, initialise_user_data):
+def test_insufficient_parameters(initialise_user_data):
     '''
     Tests that user_profile_sethandle raises an InputError when less
     than expected parameters are passed
@@ -67,7 +67,7 @@ def test_insufficient_parameters(reset, initialise_user_data):
     with pytest.raises(InputError):
         user_profile_sethandle(None, None)
 
-def test_return_type(reset, initialise_user_data):
+def test_return_type(initialise_user_data):
     '''
     Tests that user_profile_sethandle returns the expected datatype i.e.
     {}
@@ -79,7 +79,7 @@ def test_return_type(reset, initialise_user_data):
     assert isinstance(test_user_0_newhandle, dict)
     assert not test_user_0_newhandle
 
-def test_invalid_token(reset, initialise_user_data):
+def test_invalid_token(initialise_user_data):
     '''
     Tests that user_profile_sethandle raises an AccessError when an
     invalid token is passed as one of the parameters
@@ -88,7 +88,7 @@ def test_invalid_token(reset, initialise_user_data):
     with pytest.raises(AccessError):
         user_profile_sethandle('some_token', 'a_new_handle')
 
-def test_too_short_handle_str(reset, initialise_user_data):
+def test_too_short_handle_str(initialise_user_data):
     '''
     Tests that user_profile_sethandle raises an InputError when a
     handle entered by user for updatation is less than 3 characters
@@ -99,7 +99,7 @@ def test_too_short_handle_str(reset, initialise_user_data):
     with pytest.raises(InputError):
         user_profile_sethandle(test_user_0['token'], 'me')
 
-def test_too_long_handle_str(reset, initialise_user_data):
+def test_too_long_handle_str(initialise_user_data):
     '''
     Tests that user_profile_sethandle raises an InputError when a
     handle entered by user for updatation is more than 20 characters
@@ -110,7 +110,7 @@ def test_too_long_handle_str(reset, initialise_user_data):
     with pytest.raises(InputError):
         user_profile_sethandle(test_user_0['token'], 'me_' * 7)
 
-def test_successful_handle_updatation(reset, initialise_user_data):
+def test_successful_handle_updatation(initialise_user_data):
     '''
     Tests that user_profile_sethandle updates handle of a user to an
     handle entered by user, if it does not exist in database i.e. it
@@ -122,7 +122,7 @@ def test_successful_handle_updatation(reset, initialise_user_data):
     user_0_details = user_profile(test_user_0['token'], test_user_0['u_id'])
     assert user_0_details['user']['handle_str'] == 'user_0_handle'
 
-def test_handle_3_chars(reset, initialise_user_data):
+def test_handle_3_chars(initialise_user_data):
     '''
     Tests that user_profile_sethandle accepts a new handle by user which
     is 3 characters long
@@ -133,7 +133,7 @@ def test_handle_3_chars(reset, initialise_user_data):
     user_0_details = user_profile(test_user_0['token'], test_user_0['u_id'])
     assert user_0_details['user']['handle_str'] == 'me_'
 
-def test_handle_20_chars(reset, initialise_user_data):
+def test_handle_20_chars(initialise_user_data):
     '''
     Tests that user_profile_sethandle accepts a new handle by user which
     is 20 characters long
@@ -144,7 +144,7 @@ def test_handle_20_chars(reset, initialise_user_data):
     user_0_details = user_profile(test_user_0['token'], test_user_0['u_id'])
     assert user_0_details['user']['handle_str'] == 'hi' * 10
 
-def test_non_ascii_handle(reset, initialise_user_data):
+def test_non_ascii_handle(initialise_user_data):
     '''
     Tests that user_profile_sethandle accepts a new handle by user which
     has Non-ASCII characters
@@ -155,7 +155,7 @@ def test_non_ascii_handle(reset, initialise_user_data):
     user_0_details = user_profile(test_user_0['token'], test_user_0['u_id'])
     assert user_0_details['user']['handle_str'] == 'âêîôû é àèù ëïü'
 
-def test_existing_handle(reset, initialise_user_data):
+def test_existing_handle(initialise_user_data):
     '''
     Tests that user_profile_sethandle raises an InputError when a user
     tries to update his handle to an existing handle in database
@@ -166,7 +166,7 @@ def test_existing_handle(reset, initialise_user_data):
     with pytest.raises(InputError):
         user_profile_sethandle(test_user_0['token'], 'user1_firstuser1_las')
 
-def test_whitespace_handle(reset, initialise_user_data):
+def test_whitespace_handle(initialise_user_data):
     '''
     Tests that user_profile_sethandle raises an InputError when a handle
     entered by user for updatation is completely whitespace
@@ -176,7 +176,7 @@ def test_whitespace_handle(reset, initialise_user_data):
     with pytest.raises(InputError):
         user_profile_sethandle(test_user_0['token'], '       ')
 
-def test_no_change(reset, initialise_user_data):
+def test_no_change(initialise_user_data):
     '''
     Tests that user_profile_sethandle does not raise an InputError when
     a user tries to update his handle to an existing handle in
@@ -192,7 +192,7 @@ def test_no_change(reset, initialise_user_data):
     assert isinstance(test_user_0_newhandle, dict)
     assert not test_user_0_newhandle
 
-def test_only_unique_changes_accepted(reset, initialise_user_data):
+def test_only_unique_changes_accepted(initialise_user_data):
     '''
     Tests that user_profile_sethandle accepts to update a handle which
     previously belonged to another user and is now not a part of the
