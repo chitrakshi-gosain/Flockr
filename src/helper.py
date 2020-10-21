@@ -1,17 +1,25 @@
 '''
-Created collaboratively by Wed15Team2 2020 T3
-Contributers - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributors - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
                Ahmet Karatas, Joseph Knox
 
 Iteration 1
 '''
 
 import re
+import hashlib
+import jwt
 import data
+from error import AccessError
+
+# CONSTANTS
+MIN_LENGTH_PASSWORD = 6
+MAX_LENGTH_PASSWORD = 32
+SECRET = 'wed15grapeteam2'
 
 def check_if_valid_email(email):
     '''
-    Given the email of the user to be registeredd checks if it is a
+    Given the email of the user to be registered checks if it is a
     valid email using a regex
     '''
 
@@ -26,7 +34,7 @@ def check_if_valid_password(password):
     is in valid range and if it has printable ASCII characters only
     '''
 
-    if not 6 <= len(password) <= 32:
+    if not MIN_LENGTH_PASSWORD <= len(password) <= MAX_LENGTH_PASSWORD:
         return False
     if not password.isprintable():
         return False
@@ -34,14 +42,14 @@ def check_if_valid_password(password):
     return True
 
 
-def check_name_length_and_is_a_whitespace(name_to_check):
+def check_string_length_and_whitespace(min_length, max_length, name_to_check):
     '''
     Given the first or last name of the user to be registered checks if
     it's length is in valid range and if it is not completely a
     whitespace
     '''
 
-    if not 1 <= len(name_to_check) <= 50:
+    if not min_length <= len(name_to_check) <= max_length:
         return False
     if name_to_check.isspace():
         return False
@@ -52,14 +60,14 @@ def check_name_length_and_is_a_whitespace(name_to_check):
 def invalidating_token(token):
     '''
     Given the token of authenticated user invalidates it which later
-    leads to unauthentication of the user i.e. logging-out the user
+    leads to un-authentication of the user i.e. logging-out the user
     '''
 
     for user in data.data['users']:
         if user['token'] == token:
             user['token'] = 'invalidated_the_token'
-
-    return True
+            return True
+    return False
 
 
 def get_channel_info(channel_id):
@@ -93,12 +101,9 @@ def is_user_authorised(token, channel_id):
 
     user_info = get_user_info('token', token)
 
-    in_channel = is_user_in_channel(user_info['u_id'], channel_id)
+    is_owner = is_channel_owner(user_info['u_id'], channel_id)
 
-    # why are we taking u_id as a parameter, if not using it?, keep in
-    # mind to change it whereever necessary
-
-    return user_info['is_admin'] or in_channel
+    return user_info['is_admin'] or is_owner
 
 
 def is_channel_owner(u_id, channel_id):
@@ -120,11 +125,15 @@ def get_user_info(variable, identifier):
     Else returns False
     '''
 
+    if variable == 'token':
+        try:
+            identifier = decode_encoded_token(identifier)
+        except:
+            return False
+
     for user in data.data['users']:
         if user[variable] == identifier:
             return user
-
-    return False
 
 def is_user_in_channel(u_id, channel_id):
     '''
@@ -137,69 +146,61 @@ def is_user_in_channel(u_id, channel_id):
     channel_members = get_channel_info(channel_id)['all_members']
     return any(user['u_id'] == u_id for user in channel_members)
 
-
-########################################################################################
-
-
-def generate_handle(name_first, name_last, email):
+def get_message_info(message_id):
     '''
-    Given the first and last name of the user, a handle is generated
-    that is the concatentation of a lowercase-only first name and last
-    name. If the concatenation is longer than 20 characters, it is
-    cutoff at 20 characters. If the handle is already taken, user's u_id
-    is concatenated at the very end, incase this concatenation exceeds
-    the length of 20 characters, the last characters of handle string
-    (which already belongs to another user) are adjusted to accomodate
-    the user's u_id in the very end
+    Given a potential message_id, returns the message dictionary
+    of the matching channel, else returns false
+
+    Example:
+    message_info = helper.get_channel_info(channel_id)
+    if not message_info:
+        raise InputError('message does not exist')
     '''
 
-    concatenated_names = name_first.lower() + name_last.lower()
-    handle_string = concatenated_names[:20]
-    status = False
-
-    for user_with_same_handle in data.data['users']:
-        if user_with_same_handle['handle_str'] == handle_string:
-            status = True
-
-    if status is True:
-        user_id = str(len(data.data['users']))
-        cut_handle_till = 20 - len(user_id)
-        handle_string = handle_string[:cut_handle_till] + user_id
-    return handle_string
-
-
-def check_password(email, password):
-    '''
-    Given the password of the user while logging-in matches the password
-    with the database file which stores the password of user made while
-    registering
-    '''
-
-    for user in data.data['users']:
-        if user['email'] == email:
-            if user['password'] == password:
-                return True
+    for channel in data.data['channels']:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                return message
 
     return False
 
-    #user = get_user_info('email', 'dhwu@hjufe')
-    #return user['password'] == password
-
-
-
-# later modify this as store_And_generate_token(email):, i.e. this will generate
-# token, store it and then return it
-def store_generated_token(email, user_token):
+def update_data(keyword, user_id, identifier):
     '''
-    Given the email of the user trying of log-in stores the
+    Given a VALID variable ('name_first'|'name_last'|'email'|'handle_str'),
+    u_id of the user who wants to update his/her data and potential
+    UNIQUE identifier (name_first|name_last|email|handle_str), updates
+    their data under data['users'] in data.py
+    '''
+
+    for user in data.data['users']:
+        if user['u_id'] == user_id:
+            user[keyword] = identifier
+
+def encrypt_password_with_hash(password):
+    '''
+    Given the password of the user encrypts it using hashlib for secured
+    authentication
+    '''
+
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def generate_encoded_token(user_id):
+    '''
+    Given the u_id of the user trying of log-in stores the
     authenticated token in database as necessary which later results in
     the authentication of the user for the particular session
     '''
 
-    for user in data.data['users']:
-        if user['email'] == email:
-            user['token'] = user_token
+    encoded_token = jwt.encode({'token': str(user_id)}, SECRET, algorithm=\
+        'HS256').decode()
 
-if __name__ == '__main__':
-    print(check_if_valid_email("whatever@gmail.com"))
-    print(check_if_valid_email("whatnot.com"))
+    data.data['valid_tokens'].append({encoded_token: user_id})
+
+    return encoded_token
+
+def decode_encoded_token(token):
+    try:
+        payload = jwt.decode(token.encode('utf-8'), SECRET, algorithms='HS256')
+        return payload['token']
+    except:
+        raise AccessError(description='Token passed in is not a valid token')

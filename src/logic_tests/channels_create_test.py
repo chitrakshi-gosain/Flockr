@@ -1,6 +1,6 @@
 from auth import auth_register, auth_logout
 from channel import channel_details, channel_join
-from channels import channels_create, channels_listall, channels_list
+from channels import channels_create, channels_listall
 from other import clear
 from error import AccessError, InputError
 import pytest
@@ -42,7 +42,8 @@ Creates a new channel with that name
 that is either a public or private channel
 '''
 
-def initialise_user_data():
+@pytest.fixture
+def users():
     '''
     Sets up various user sample data for testing purposes
     '''
@@ -82,12 +83,10 @@ def initialise_user_data():
     }
 
 
-def test_channels_create_valid_basic():
+def test_channels_create_valid_basic(users):
     '''
     Creating channel with valid data
     '''
-
-    users = initialise_user_data()
 
     # Creating a basic public channel
     channel_id = channels_create(users['owner']['token'], 'A Basic Channel', True)
@@ -109,12 +108,10 @@ def test_channels_create_valid_basic():
     clear()
 
 
-def test_channels_create_valid_empty():
+def test_channels_create_valid_empty(users):
     '''
     Creating channel with empty string name
     '''
-
-    users = initialise_user_data()
 
     # Creating public channel with empty string as name
     channel_id = channels_create(users['user1']['token'], '', True)
@@ -136,12 +133,10 @@ def test_channels_create_valid_empty():
     clear()
 
 
-def test_channels_create_valid_private():
+def test_channels_create_valid_private(users):
     '''
     Creating private channel
     '''
-
-    users = initialise_user_data()
 
     # Creating private channel
     channel_id = channels_create(users['john']['token'], 'Private Disc', False)
@@ -167,12 +162,10 @@ def test_channels_create_valid_private():
     clear()
 
 
-def test_channels_create_invalid_namesize():
+def test_channels_create_invalid_namesize(users):
     '''
     Creating channel with too large of a name
     '''
-
-    users = initialise_user_data()
 
     # Creating public channel with namesize > 20 characters
     with pytest.raises(InputError):
@@ -185,12 +178,10 @@ def test_channels_create_invalid_namesize():
     clear()
 
 
-def test_channels_create_valid_samename():
+def test_channels_create_valid_samename(users):
     '''
     Creating two channels with the same name
     '''
-
-    users = initialise_user_data()
 
     # Creating public channels with the same name
     channel_id1 = channels_create(users['user1']['token'], 'Hello World!', True)
@@ -205,12 +196,10 @@ def test_channels_create_valid_samename():
     assert channel_list['channels'][1]['channel_id'] == channel_id2['channel_id']
 
 
-def test_channels_create_invalid_token():
+def test_channels_create_invalid_token(users):
     '''
     Attempting to call channels_listall without a valid token
     '''
-
-    users = initialise_user_data()
 
     # Only way to guarrantee a token is invalid is to invalidate an existing token
     invalid_token = users['owner']['token']
