@@ -153,7 +153,7 @@ def test_channels_create_valid_basic(url, initialise_users):
     assert isinstance(channel_id['channel_id'], int)
 
     # Check that channel details have all been set correctly
-    basic_channel_details = requests.get(f'{url}/channel/details', json={
+    basic_channel_details = requests.get(f'{url}/channel/details', params={
         'token': users['owner']['token'],
         'channel_id': channel_id['channel_id'],
     }).json()
@@ -183,7 +183,7 @@ def test_channels_create_valid_empty(url, initialise_users):
     assert isinstance(channel_id['channel_id'], int)
 
     # Check that channel details have all been set correctly
-    empty_channel_details = requests.get(f'{url}/channel/details', json={
+    empty_channel_details = requests.get(f'{url}/channel/details', params={
         'token': users['user1']['token'],
         'channel_id': channel_id['channel_id'],
     }).json()
@@ -213,7 +213,7 @@ def test_channels_create_valid_private(url, initialise_users):
     assert isinstance(channel_id['channel_id'], int)
 
     # Check that channel details have all been set correctly
-    private_channel_details = requests.get(f'{url}/channel/details', json={
+    private_channel_details = requests.get(f'{url}/channel/details', params={
         'token': users['john']['token'],
         'channel_id': channel_id['channel_id'],
     }).json()
@@ -271,7 +271,7 @@ def test_channels_create_valid_samename(url, initialise_users):
     }).json()
 
     # Checking both channels exist and have the same name
-    channel_list = requests.get(f'{url}/channels/listall', json={
+    channel_list = requests.get(f'{url}/channels/listall', params={
         'token': users['user3']['token'],
     }).json()
 

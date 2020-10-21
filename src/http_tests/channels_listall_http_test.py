@@ -146,7 +146,7 @@ def test_channels_listall_valid_single(url, initialise_users):
     }).json()
 
     # Checking channels_list return is correct
-    channel_list = requests.get(f'{url}/channels/listall', json={
+    channel_list = requests.get(f'{url}/channels/listall', params={
         'token': users['owner']['token'],
     }).json()
 
@@ -193,7 +193,7 @@ def test_channels_listall_valid_same(url, initialise_users):
     }).json())
 
     # Checking channels_list return is correct
-    channel_list = requests.get(f'{url}/channels/listall', json={
+    channel_list = requests.get(f'{url}/channels/listall', params={
         'token': users['user1']['token'],
     }).json()
 
@@ -247,7 +247,7 @@ def test_channels_listall_valid_different(url, initialise_users):
     }).json())
 
     # Checking channels_list return is correct
-    channel_list = requests.get(f'{url}/channels/listall', json={
+    channel_list = requests.get(f'{url}/channels/listall', params={
         'token': users['user1']['token'],
     }).json()
 
@@ -301,7 +301,7 @@ def test_channels_listall_valid_private(url, initialise_users):
     }).json())
 
     # Checking channels_list return is correct
-    channel_list = requests.get(f'{url}/channels/listall', json={
+    channel_list = requests.get(f'{url}/channels/listall', params={
         'token': users['user1']['token'],
     }).json()
 
@@ -370,7 +370,7 @@ def test_channels_listall_valid_mix(url, initialise_users):
     }).json())
 
     # Checking channels_list return is correct
-    channel_list = requests.get(f'{url}/channels/listall', json={
+    channel_list = requests.get(f'{url}/channels/listall', params={
         'token': users['user1']['token'],
     }).json()
 
@@ -401,7 +401,7 @@ def test_channels_listall_valid_empty(url, initialise_users):
     users = initialise_users
 
     # Checking channels_list return is correct
-    assert requests.get(f'{url}/channels/listall', json={
+    assert requests.get(f'{url}/channels/listall', params={
         'token': users['user1']['token'],
     }).json() == {'channels': []}
 
@@ -418,6 +418,6 @@ def test_channels_listall_invalid_token(url, initialise_users):
     })
 
     # Checking that AccessError is thrown
-    assert requests.get(f'{url}/channels/listall', json={
+    assert requests.get(f'{url}/channels/listall', params={
         'token': invalid_token,
     }).status_code == 400

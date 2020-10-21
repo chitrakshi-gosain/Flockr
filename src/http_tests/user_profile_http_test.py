@@ -139,7 +139,7 @@ def test_user_profile_valid_own(url, initialise_users):
     '''
     user_data = initialise_users
 
-    profile_data = requests.get(f'{url}/user/profile', json={
+    profile_data = requests.get(f'{url}/user/profile', params={
         'token': user_data['owner']['token'],
         'u_id': user_data['owner']['u_id'],
     }).json()
@@ -156,7 +156,7 @@ def test_user_profile_valid_own(url, initialise_users):
 
     assert profile_data == exp_dict
 
-    profile_data = requests.get(f'{url}/user/profile', json={
+    profile_data = requests.get(f'{url}/user/profile', params={
         'token': user_data['john']['token'],
         'u_id': user_data['john']['u_id'],
     }).json()
@@ -179,7 +179,7 @@ def test_user_profile_valid_else(url, initialise_users):
     '''
     user_data = initialise_users
 
-    profile_data = requests.get(f'{url}/user/profile', json={
+    profile_data = requests.get(f'{url}/user/profile', params={
         'token': user_data['john']['token'],
         'u_id': user_data['jane']['u_id'],
     }).json()
@@ -196,7 +196,7 @@ def test_user_profile_valid_else(url, initialise_users):
 
     assert profile_data == exp_dict
 
-    profile_data = requests.get(f'{url}/user/profile', json={
+    profile_data = requests.get(f'{url}/user/profile', params={
         'token': user_data['jane']['token'],
         'u_id': user_data['ingrid']['u_id'],
     }).json()
@@ -224,7 +224,7 @@ def test_user_profile_valid_logout(url, initialise_users):
         'token': user_data['john']['token'],
     })
 
-    profile_data = requests.get(f'{url}/user/profile', json={
+    profile_data = requests.get(f'{url}/user/profile', params={
         'token': user_data['jane']['token'],
         'u_id': user_data['john']['u_id'],
     }).json()
@@ -249,7 +249,7 @@ def test_user_profile_invalid_uid(url, initialise_users):
     
     invalid_uid = -1
 
-    assert requests.get(f'{url}/user/profile', json={
+    assert requests.get(f'{url}/user/profile', params={
         'token': user_data['jane']['token'],
         'u_id': invalid_uid,
     }).status_code == 400
@@ -265,7 +265,7 @@ def test_user_profile_invalid_token(url, initialise_users):
         'token': invalid_token,
     })
 
-    assert requests.get(f'{url}/user/profile', json={
+    assert requests.get(f'{url}/user/profile', params={
         'token': invalid_token,
         'u_id': user_data['jane']['u_id'],
     }).status_code == 400

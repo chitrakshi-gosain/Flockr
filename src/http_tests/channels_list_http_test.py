@@ -146,7 +146,7 @@ def test_channels_list_valid_single(url, initialise_users):
     }).json()
 
     # Checking channels_list return is correct
-    channel_list = requests.get(f'{url}/channels/list', json={
+    channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['owner']['token'],
     }).json()
 
@@ -193,7 +193,7 @@ def test_channels_list_valid_same(url, initialise_users):
     }).json())
 
     # Checking channels_list return is correct
-    channel_list = requests.get(f'{url}/channels/list', json={
+    channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['user1']['token'],
     }).json()
 
@@ -247,19 +247,19 @@ def test_channels_list_valid_different(url, initialise_users):
     }).json())
 
     # Checking channels_list return is correct
-    user1_channel_list = requests.get(f'{url}/channels/list', json={
+    user1_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['user1']['token'],
     }).json()
-    user2_channel_list = requests.get(f'{url}/channels/list', json={
+    user2_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['user2']['token'],
     }).json()
-    donald_channel_list = requests.get(f'{url}/channels/list', json={
+    donald_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['donald']['token'],
     }).json()
-    john_channel_list = requests.get(f'{url}/channels/list', json={
+    john_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['john']['token'],
     }).json()
-    ingrid_channel_list = requests.get(f'{url}/channels/list', json={
+    ingrid_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['ingrid']['token'],
     }).json()
 
@@ -313,10 +313,10 @@ def test_channels_list_valid_private(url, initialise_users):
     }).json())
 
     # Checking channels_list return is correct
-    user1_channel_list = requests.get(f'{url}/channels/list', json={
+    user1_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['user1']['token'],
     }).json()
-    john_channel_list = requests.get(f'{url}/channels/list', json={
+    john_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['john']['token'],
     }).json()
 
@@ -385,25 +385,25 @@ def test_channels_list_valid_mix(url, initialise_users):
     }).json())
 
     # Checking channels_list return is correct
-    user1_channel_list = requests.get(f'{url}/channels/list', json={
+    user1_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['user1']['token'],
     }).json()
-    user2_channel_list = requests.get(f'{url}/channels/list', json={
+    user2_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['user2']['token'],
     }).json()
-    donald_channel_list = requests.get(f'{url}/channels/list', json={
+    donald_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['donald']['token'],
     }).json()
-    john_channel_list = requests.get(f'{url}/channels/list', json={
+    john_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['john']['token'],
     }).json()
-    ingrid_channel_list = requests.get(f'{url}/channels/list', json={
+    ingrid_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['ingrid']['token'],
     }).json()
-    user3_channel_list = requests.get(f'{url}/channels/list', json={
+    user3_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['user3']['token'],
     }).json()
-    jane_channel_list = requests.get(f'{url}/channels/list', json={
+    jane_channel_list = requests.get(f'{url}/channels/list', params={
         'token': users['jane']['token'],
     }).json()
 
@@ -434,7 +434,7 @@ def test_channels_list_valid_empty(url, initialise_users):
     users = initialise_users
 
     # Checking channels_list return is correct
-    assert requests.get(f'{url}/channels/listall', json={
+    assert requests.get(f'{url}/channels/listall', params={
         'token': users['user1']['token'],
     }).json() == {'channels': []}
 
@@ -451,6 +451,6 @@ def test_channels_list_invalid_token(url, initialise_users):
     })
 
     # Checking that AccessError is thrown
-    assert requests.get(f'{url}/channels/list', json={
+    assert requests.get(f'{url}/channels/list', params={
         'token': invalid_token,
     }).status_code == 400
