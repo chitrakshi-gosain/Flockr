@@ -138,3 +138,63 @@ def test_users_all_basic(url, users_all_initialise_users):
     }
 
     assert all_users == exp_dict
+
+def test_users_all_logout(url, users_all_initialise_users):
+    '''
+    Tests that all user profiles are returned even if
+    some users are logged out
+    '''
+    user_data = users_all_initialise_users
+
+    requests.post(f'{url}/auth/logout', json={
+        'token': user_data['jane']['token'],
+    })
+    requests.post(f'{url}/auth/logout', json={
+        'token': user_data['donald']['token'],
+    })
+
+    all_users = requests.get(f'{url}/users/all', params={
+        'token': user_data['john']['token'],
+    }).json()
+
+    exp_dict = {
+        'users': [
+            {
+                'u_id': user_data['john']['u_id'],
+                'email': 'johnsmith@gmail.com',
+                'name_first': 'John',
+                'name_last': 'Smith',
+                'handle_str': 'johnsmith',
+            },
+            {
+                'u_id': user_data['jane']['u_id'],
+                'email': 'janesmith@hotmail.com',
+                'name_first': 'Jane',
+                'name_last': 'Smith',
+                'handle_str': 'janesmith',
+            },
+            {
+                'u_id': user_data['noah']['u_id'],
+                'email': 'noah_navarro@yahoo.com',
+                'name_first': 'Noah',
+                'name_last': 'Navarro',
+                'handle_str': 'noahnavarro',
+            },
+            {
+                'u_id': user_data['ingrid']['u_id'],
+                'email': 'ingrid.cline@gmail.com',
+                'name_first': 'Ingrid',
+                'name_last': 'Cline',
+                'handle_str': 'ingridcline',
+            },
+            {
+                'u_id': user_data['donald']['u_id'],
+                'email': 'donaldrichards@gmail.com',
+                'name_first': 'Donald',
+                'name_last': 'Richards',
+                'handle_str': 'donaldrichards',
+            },
+        ],
+    }
+
+    assert all_users == exp_dict
