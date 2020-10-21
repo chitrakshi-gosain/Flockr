@@ -198,3 +198,17 @@ def test_users_all_logout(url, users_all_initialise_users):
     }
 
     assert all_users == exp_dict
+
+def test_users_all_invalid_token(url, users_all_initialise_users):
+    '''
+    Testing users_all with an invalid token parameter
+    '''
+
+    invalid_token = user_data['john']['token']
+    requests.post(f'{url}/auth/logout', json={
+        'token': user_data['john']['token'],
+    })
+
+    assert requests.get(f'{url}/users/all', params={
+        'token': invalid_token
+    }).status_code == 400
