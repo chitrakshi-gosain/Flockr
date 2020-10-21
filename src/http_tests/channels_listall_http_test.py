@@ -319,10 +319,11 @@ def test_channels_listall_valid_private(initialise_users):
     assert channel_list['channels'][3]['name'] == 'Chatter'
     assert channel_list['channels'][4]['name'] == '3rd Channel'
 
-def test_channels_listall_valid_mix(users):
+def test_channels_listall_valid_mix(intialise_users):
     '''
     Listing a mix of multiple public and private channels from different users with some sharing names
     '''
+    users = initialise_users
 
     # Creating channels and storing ids
     channel_id = []
@@ -392,3 +393,15 @@ def test_channels_listall_valid_mix(users):
     assert channel_list['channels'][5]['name'] == 'First Channel'
     assert channel_list['channels'][6]['name'] == 'Channel 2'
     assert channel_list['channels'][7]['name'] == 'Private'
+
+def test_channels_listall_valid_empty(initialise_users):
+    '''
+    Listing channels when none have been created
+    '''
+    users = initialise_users
+
+    # Checking channels_list return is correct
+    assert requests.get(f'{url}/channels/listall', json={
+        'token': users['user1']['token'],
+    }).json() == {'channels': []}
+
