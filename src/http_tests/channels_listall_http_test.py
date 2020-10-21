@@ -317,7 +317,7 @@ def test_channels_listall_valid_private(url, initialise_users):
     assert channel_list['channels'][3]['name'] == 'Chatter'
     assert channel_list['channels'][4]['name'] == '3rd Channel'
 
-def test_channels_listall_valid_mix(url, intialise_users):
+def test_channels_listall_valid_mix(url, initialise_users):
     '''
     Listing a mix of multiple public and private channels from different users with some sharing names
     '''
