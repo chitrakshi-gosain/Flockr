@@ -1,9 +1,15 @@
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - Jordan Hunyh
+
+Iteration 2
+'''
+
+import pytest
 from channel import channel_join, channel_leave
 from other import clear, admin_userpermission_change
 from auth import auth_register
 from channels import channels_create
-
-import pytest
 from error import InputError, AccessError
 
 '''

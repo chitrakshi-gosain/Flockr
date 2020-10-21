@@ -1,15 +1,17 @@
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Ahmet Karatas
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributor - Ahmet Karatas
 
-# Iteration 1
+Iteration 1
+'''
 
+import pytest
 from auth import auth_register
 from channel import channel_details, channel_join
 from channels import channels_create
 from other import clear
 from error import InputError
 from error import AccessError
-import pytest
 
 
 def test_insufficient_parameters():

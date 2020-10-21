@@ -1,5 +1,5 @@
 '''
-Created collaboratively by Wed15Team2 2020 T3
+Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributor - Chitrakshi Gosain
 
 Iteration 1
@@ -37,70 +37,82 @@ KEEP IN MIND:
    AccessError
 '''
 
-def test_successful_logout():
+@pytest.fixture
+def reset():
+    '''
+    Resets the internal data of the application to it's initial state
+    '''
+
+    clear()
+
+@pytest.fixture
+def initialise_user_data(reset):
+    '''
+    Sets up various descriptive user sample data for testing
+    purposes and returns user data which is implementation dependent
+    '''
+
+    user0_details = auth_register('user0@email.com', 'user0_pass1!', \
+                                 'user0_first', 'user0_last')
+
+    return {
+        'user0': user0_details
+    }
+
+def test_successful_logout(initialise_user_data):
     '''
     Tests that auth_logout returns True on successful logout
     '''
 
-    clear()
-    test_user_0 = auth_register('logouttestvalidemailid0@gmail.com', \
-                               '123Abc!0', 'Valid', 'User0')
+    test_user_0 = initialise_user_data['user0']
     assert auth_logout(test_user_0['token'])
 
-def test_active_token_now_invalid():
+def test_active_token_now_invalid(initialise_user_data):
     '''
     Tests that auth_logout returns True on successful logout the first
     time, but second time when the same token is passed it raises an
     AccessError
     '''
 
-    clear()
-    auth_register('logouttestvalidemailid1@gmail.com', '123Abc!1', 'Valid', \
-                 'User1')
-    test_user_1 = auth_login('logouttestvalidemailid1@gmail.com', '123Abc!1')
-    assert auth_logout(test_user_1['token'])
+    test_user_0_login = auth_login('user0@email.com', 'user0_pass1!')
+    assert auth_logout(test_user_0_login['token'])
     with pytest.raises(AccessError):
-        auth_logout(test_user_1['token'])
+        auth_logout(test_user_0_login['token'])
 
-def test_invalid_token():
+def test_invalid_token(initialise_user_data):
     '''
     Tests that auth_logout raises an AccessError when an invalid token
-    is passed
+    is passed as one of the parameters
     '''
 
-    clear()
     with pytest.raises(AccessError):
         auth_logout('invalid_token')
 
-def test_whitespace_as_token():
+def test_whitespace_as_token(initialise_user_data):
     '''
     Tests that auth_logout raises an AccessError when a whitespace is
     passed as token
     '''
 
-    clear()
     with pytest.raises(AccessError):
         auth_logout(' ')
 
-def test_insufficient_parameters():
+def test_insufficient_parameters(initialise_user_data):
     '''
     Tests that auth_logout raises an InputError when less than expected
     parameters are passed
     '''
 
-    clear()
     with pytest.raises(InputError):
         auth_logout(None)
 
-def test_return_type():
+def test_return_type(initialise_user_data):
     '''
     Tests that auth_logout returns the expected datatype i.e.
     { is_success : boolean }
     '''
 
-    clear()
-    test_user_2_register = auth_register('logouttestvalidemailid1@gmail.com', \
-                                        '123Abc!1', 'Valid', 'User2')
-    test_user_2_logout_status = auth_logout(test_user_2_register['token'])
-    assert isinstance(test_user_2_logout_status, dict)
-    assert isinstance(test_user_2_logout_status['is_success'], bool)
+    test_user_0 = initialise_user_data['user0']
+    test_user_0_logout_status = auth_logout(test_user_0['token'])
+    assert isinstance(test_user_0_logout_status, dict)
+    assert isinstance(test_user_0_logout_status['is_success'], bool)
