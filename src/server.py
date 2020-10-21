@@ -10,15 +10,15 @@ from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
-# import sys
-# from auth import auth_login, auth_register, auth_logout
-# from channel import channel_invite, channel_details, channel_messages, \
-#     channel_leave, channel_join, channel_addowner, channel_removeowner
-# from channels import channels_list, channels_listall, channels_create
-# from message import message_send, message_remove, message_edit
-# from  user import user_profile, user_profile_setname, user_profile_setemail, \
-#     user_profile_sethandle  
-# from other import users_all, admin_userpermission_change, search, clear
+import sys
+from auth import auth_login, auth_register, auth_logout
+from channel import channel_invite, channel_details, channel_messages, \
+    channel_leave, channel_join, channel_addowner, channel_removeowner
+from channels import channels_list, channels_listall, channels_create
+from message import message_send, message_remove, message_edit
+from  user import user_profile, user_profile_setname, user_profile_setemail, \
+    user_profile_sethandle
+from other import users_all, admin_userpermission_change, search, clear
 
 # need to plan how to write things here
 '''
@@ -98,19 +98,25 @@ APP.register_error_handler(Exception, defaultHandler)
 #     '''
 #     pass
 
-# @APP.route("/channel/addowner", methods=['POST'])
-# def channel_addowner_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/channel/addowner", methods=['POST'])
+def channel_addowner_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    channel_addowner(payload['token'], payload['channel_id'], payload['u_id'])
+    return dumps({
+    })
 
-# @APP.route("/channel/removeowner", methods=['POST'])
-# def channel_removeowner_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/channel/removeowner", methods=['POST'])
+def channel_removeowner_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    channel_removeowner(payload['token'], payload['channel_id'], payload['u_id'])
+    return dumps({
+    })
 
 # @APP.route("/channels/list", methods=['GET'])
 # def channels_list_route():
@@ -147,12 +153,15 @@ APP.register_error_handler(Exception, defaultHandler)
 #     '''
 #     pass
 
-# @APP.route("/message/edit", methods=['PUT'])
-# def message_edit_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/message/edit", methods=['PUT'])
+def message_edit_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    message_edit(payload['token'], payload['message_edit'], payload['message'])
+    return dumps({
+    })
 
 # @APP.route("/user/profile", methods=['GET'])
 # def user_profile_route():
@@ -161,12 +170,16 @@ APP.register_error_handler(Exception, defaultHandler)
 #     '''
 #     pass
 
-# @APP.route("/user/profile/setname", methods=['PUT'])
-# def user_profile_setname_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/user/profile/setname", methods=['PUT'])
+def user_profile_setname_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    payload = request.get_json()
+    user_profile_setname(payload['token'], payload['name_first'], payload['name_last'])
+    dumps({
+    })
 
 # @APP.route("/user/profile/setemail", methods=['PUT'])
 # def user_profile_setemail_route():
