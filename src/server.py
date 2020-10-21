@@ -135,19 +135,34 @@ def channels_list_route():
     return dumps(channels_list(token))
     
 
-# @APP.route("/channels/listall", methods=['GET'])
-# def channels_listall_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/channels/listall", methods=['GET'])
+def channels_listall_route():
+    '''
+    DESCRIPTION:
+    Provide a list of all channels (and
+    their associated details) that the
+    authorised user is part of
 
-# @APP.route("/channels/create", methods=['POST'])
-# def channels_create_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+
+    token = request.args.get('token')
+
+    return dumps(channels_listall(token))
+
+@APP.route("/channels/create", methods=['POST'])
+def channels_create_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    pass
 
 # @APP.route("/message/send", methods=['POST'])
 # def message_send_route():
