@@ -131,3 +131,43 @@ def test_url(url):
     A simple sanity test to check that the server is set up properly
     '''
     assert url.startswith("http")
+
+def test_user_profile_valid_own(url, initialise_users):
+    '''
+    Testing users checking their own profiles
+    '''
+    users = initialise_users
+
+    profile_data = requests.get(f'{url}/user/profile', json={
+        'token': user_data['owner']['token'],
+        'u_id': user_data['owner']['u_id'],
+    }).json()
+
+    exp_dict = {
+        'user': {
+            'u_id': user_data['owner']['u_id'],
+            'email': 'owner@email.com',
+            'name_first': 'owner_first',
+            'name_last': 'owner_last',
+            'handle_str': 'owner_firstowner_las',
+        }
+    }
+
+    assert profile_data == exp_dict
+
+    profile_data = requests.get(f'{url}/user/profile', json={
+        'token': user_data['john']['token'],
+        'u_id': user_data['john']['u_id'],
+    }).json()
+
+    exp_dict = {
+        'user': {
+            'u_id': user_data['john']['u_id'],
+            'email': 'johnsmith@gmail.com',
+            'name_first': 'John',
+            'name_last': 'Smith',
+            'handle_str': 'johnsmith',
+        },
+    }
+
+    assert profile_data == exp_dict
