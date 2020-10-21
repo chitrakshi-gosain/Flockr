@@ -15,8 +15,6 @@ from error import InputError, AccessError
 ****************************BASIC TEMPLATE******************************
 '''
 
-# note to self: add http server stuff to every test
-
 def test_url(url):
     '''
     A simple sanity test to check that your server is set up properly
@@ -33,7 +31,7 @@ def test_http_user_profile_setname_no_errors(initialise_user_data, url):
     name_last_old = 'name_last_old'
 
     user = {
-        'email': 'user_email.com',
+        'email': 'user@email.com',
         'password': 'user_pass1!',
         'name_first': name_first_old,
         'name_last': name_last_old
@@ -81,7 +79,7 @@ def test_http_user_profile_setname_inputerror(initialise_user_data, url):
     name_last_old = 'name_last_old'
 
     user = {
-        'email': 'user_email.com',
+        'email': 'user@email.com',
         'password': 'user_pass1!',
         'name_first': name_first_old,
         'name_last': name_last_old
@@ -157,7 +155,7 @@ def test_http_user_profile_setname_accesserror(initialise_user_data, url):
     name_last_old = 'name_last_old'
 
     user = {
-        'email': 'user_email.com',
+        'email': 'user@email.com',
         'password': 'user_pass1!',
         'name_first': name_first_old,
         'name_last': name_last_old
