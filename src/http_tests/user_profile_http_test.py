@@ -171,3 +171,43 @@ def test_user_profile_valid_own(url, initialise_users):
     }
 
     assert profile_data == exp_dict
+
+def test_user_profile_valid_else(url, initialise_users):
+    '''
+    Testing users checking other user's profiles
+    '''
+    users = initialise_users
+
+    profile_data = requests.get(f'{url}/user/profile', json={
+        'token': user_data['john']['token'],
+        'u_id': user_data['jane']['u_id'],
+    }).json()
+
+    exp_dict = {
+        'user': {
+            'u_id': user_data['jane']['u_id'],
+            'email': 'janesmith@hotmail.com',
+            'name_first': 'Jane',
+            'name_last': 'Smith',
+            'handle_str': 'janesmith',
+        },
+    }
+
+    assert profile_data == exp_dict
+
+    profile_data = requests.get(f'{url}/user/profile', json={
+        'token': user_data['jane']['token'],
+        'u_id': user_data['ingrid']['u_id'],
+    }).json()
+
+    exp_dict = {
+        'user': {
+            'u_id': user_data['ingrid']['u_id'],
+            'email': 'ingrid.cline@gmail.com',
+            'name_first': 'Ingrid',
+            'name_last': 'Cline',
+            'handle_str': 'ingridcline',
+        },
+    }
+
+    assert profile_data == exp_dict
