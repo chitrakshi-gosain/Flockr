@@ -1,11 +1,29 @@
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - Cyrus Wilkie, Jordan Hunyh
+
+Iteration 1
+'''
+
 import data
 import helper
 from error import AccessError, InputError
-# this is not official implementation, this is just to use in my tests.
-# therefore i made not tests for this
+
+# CONSTANTS
+OWNER = 1
+USER = 2
 
 def clear():
-    data.data = {'users': [], 'channels': []}
+    '''
+    ADD DOCSTRING HERE
+    '''
+    
+    data.data = {
+        'users': [],
+        'channels': [],
+        'valid_tokens': []
+    }
+
 
 def users_all(token):
     '''
@@ -26,7 +44,7 @@ def users_all(token):
     # Checking token validity
     caller = helper.get_user_info('token', token)
 
-    if caller == False:
+    if not caller:
         raise AccessError('Invalid Token')
 
     # Processing and appending each user dictionary entry
@@ -73,13 +91,12 @@ def admin_userpermission_change(token, u_id, permission_id):
     if not invoker_info['is_admin']:
         raise AccessError('invoker is not an admin')
 
-
     admin_count = len(list(filter(lambda user: user['is_admin'], data.data['users'])))
 
-    if permission_id == 1:
+    if permission_id == OWNER:
         user_info['is_admin'] = True
 
-    elif (permission_id == 2):
+    elif (permission_id == USER):
         if admin_count > 1: #there has to be at least 1 admin
             user_info['is_admin'] = False
 

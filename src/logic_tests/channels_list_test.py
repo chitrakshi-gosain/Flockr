@@ -1,33 +1,34 @@
-from auth import auth_register, auth_logout
-from channel import channel_details
-from channels import channels_create, channels_listall, channels_list
-from other import clear
-from error import AccessError, InputError
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributor - Cyrus Wilkie
+
+Iteration 1
+'''
+
 import pytest
-
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Cyrus Wilkie
-
-# Iteration 1
+from auth import auth_register, auth_logout
+from channels import channels_create, channels_list
+from other import clear
+from error import AccessError
 
 '''
-*********************************BASIC TEMPLATE*********************************
+****************************BASIC TEMPLATE******************************
 '''
 
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 -> intialise_user_data() return {users}
--> test_channels_listall_valid_single()
--> test_channels_listall_valid_same()
--> test_channels_listall_valid_different()
--> test_channels_listall_valid_private()
--> test_channels_listall_valid_mix()
--> test_channels_listall_valid_empty()
--> test_channels_listall_invalid_token()
+-> test_channels_list_valid_single()
+-> test_channels_list_valid_same()
+-> test_channels_list_valid_different()
+-> test_channels_list_valid_private()
+-> test_channels_list_valid_mix()
+-> test_channels_list_valid_empty()
+-> test_channels_list_invalid_token()
 '''
 
 '''
-----channels_listall Documentation----
+----channels_list Documentation----
 Parameters:
 (token)
 
@@ -39,10 +40,12 @@ N/A
 
 Description:
 Provide a list of all channels (and 
-their associated details)
+their associated details) that the 
+authorised user is part of
 '''
 
-def initialise_user_data():
+@pytest.fixture
+def users():
     '''
     Sets up various user sample data for testing purposes
     '''
@@ -82,18 +85,16 @@ def initialise_user_data():
     }
 
 
-def test_channels_listall_valid_single():
+def test_channels_list_valid_single(users):
     '''
     Listing a single created channel
     '''
-
-    users = initialise_user_data()
 
     # Creating a basic public channel
     channel_id = channels_create(users['owner']['token'], 'A Basic Channel', True)
 
     # Checking channels_list return is correct
-    channel_list = channels_listall(users['owner']['token'])
+    channel_list = channels_list(users['owner']['token'])
 
     assert channel_list['channels'][0]['channel_id'] == channel_id['channel_id']
     assert channel_list['channels'][0]['name'] == 'A Basic Channel'
@@ -105,12 +106,10 @@ def test_channels_listall_valid_single():
     clear()
 
 
-def test_channels_listall_valid_same():
+def test_channels_list_valid_same(users):
     '''
     Listing multiple created channels from the same user
     '''
-
-    users = initialise_user_data()
 
     # Creating channels and storing ids
     channel_id = []
@@ -122,7 +121,7 @@ def test_channels_listall_valid_same():
     channel_id.append(channels_create(users['user1']['token'], '3rd Channel', True))
 
     # Checking channels_list return is correct
-    channel_list = channels_listall(users['user1']['token'])
+    channel_list = channels_list(users['user1']['token'])
 
     # Id checks
     assert channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
@@ -141,12 +140,10 @@ def test_channels_listall_valid_same():
     clear()
 
 
-def test_channels_listall_valid_different():
+def test_channels_list_valid_different(users):
     '''
     Listing multiple created channels from different users
     '''
-
-    users = initialise_user_data()
 
     # Creating channels and storing ids
     channel_id = []
@@ -158,67 +155,68 @@ def test_channels_listall_valid_different():
     channel_id.append(channels_create(users['ingrid']['token'], '3rd Channel', True))
 
     # Checking channels_list return is correct
-    channel_list = channels_listall(users['user1']['token'])
+    user1_channel_list = channels_list(users['user1']['token'])
+    user2_channel_list = channels_list(users['user2']['token'])
+    donald_channel_list = channels_list(users['donald']['token'])
+    john_channel_list = channels_list(users['john']['token'])
+    ingrid_channel_list = channels_list(users['ingrid']['token'])
 
     # Id checks
-    assert channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
-    assert channel_list['channels'][1]['channel_id'] == channel_id[1]['channel_id']
-    assert channel_list['channels'][2]['channel_id'] == channel_id[2]['channel_id']
-    assert channel_list['channels'][3]['channel_id'] == channel_id[3]['channel_id']
-    assert channel_list['channels'][4]['channel_id'] == channel_id[4]['channel_id']
+    assert user1_channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
+    assert user2_channel_list['channels'][0]['channel_id'] == channel_id[1]['channel_id']
+    assert donald_channel_list['channels'][0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list['channels'][0]['channel_id'] == channel_id[3]['channel_id']
+    assert ingrid_channel_list['channels'][0]['channel_id'] == channel_id[4]['channel_id']
 
     # Name checks
-    assert channel_list['channels'][0]['name'] == 'First Channel'
-    assert channel_list['channels'][1]['name'] == 'Channel 2'
-    assert channel_list['channels'][2]['name'] == 'Discussion'
-    assert channel_list['channels'][3]['name'] == 'Chatter'
-    assert channel_list['channels'][4]['name'] == '3rd Channel'
+    assert user1_channel_list['channels'][0]['name'] == 'First Channel'
+    assert user2_channel_list['channels'][0]['name'] == 'Channel 2'
+    assert donald_channel_list['channels'][0]['name'] == 'Discussion'
+    assert john_channel_list['channels'][0]['name'] == 'Chatter'
+    assert ingrid_channel_list['channels'][0]['name'] == '3rd Channel'
 
     clear()
 
 
-def test_channels_listall_valid_private():
+def test_channels_list_valid_private(users):
     '''
     Listing multiple created private channels from different users
     '''
-
-    users = initialise_user_data()
 
     # Creating channels and storing ids
     channel_id = []
 
     channel_id.append(channels_create(users['user1']['token'], 'First Channel', False))
-    channel_id.append(channels_create(users['user2']['token'], 'Channel 2', False))
-    channel_id.append(channels_create(users['donald']['token'], 'Discussion', False))
+    channel_id.append(channels_create(users['user1']['token'], 'Channel 2', False))
+    channel_id.append(channels_create(users['john']['token'], 'Discussion', False))
     channel_id.append(channels_create(users['john']['token'], 'Chatter', False))
-    channel_id.append(channels_create(users['ingrid']['token'], '3rd Channel', False))
+    channel_id.append(channels_create(users['john']['token'], '3rd Channel', False))
 
     # Checking channels_list return is correct
-    channel_list = channels_listall(users['user1']['token'])
+    user1_channel_list = channels_list(users['user1']['token'])
+    john_channel_list = channels_list(users['john']['token'])
 
     # Id checks
-    assert channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
-    assert channel_list['channels'][1]['channel_id'] == channel_id[1]['channel_id']
-    assert channel_list['channels'][2]['channel_id'] == channel_id[2]['channel_id']
-    assert channel_list['channels'][3]['channel_id'] == channel_id[3]['channel_id']
-    assert channel_list['channels'][4]['channel_id'] == channel_id[4]['channel_id']
+    assert user1_channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
+    assert user1_channel_list['channels'][1]['channel_id'] == channel_id[1]['channel_id']
+    assert john_channel_list['channels'][0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list['channels'][1]['channel_id'] == channel_id[3]['channel_id']
+    assert john_channel_list['channels'][2]['channel_id'] == channel_id[4]['channel_id']
 
     # Name checks
-    assert channel_list['channels'][0]['name'] == 'First Channel'
-    assert channel_list['channels'][1]['name'] == 'Channel 2'
-    assert channel_list['channels'][2]['name'] == 'Discussion'
-    assert channel_list['channels'][3]['name'] == 'Chatter'
-    assert channel_list['channels'][4]['name'] == '3rd Channel'
+    assert user1_channel_list['channels'][0]['name'] == 'First Channel'
+    assert user1_channel_list['channels'][1]['name'] == 'Channel 2'
+    assert john_channel_list['channels'][0]['name'] == 'Discussion'
+    assert john_channel_list['channels'][1]['name'] == 'Chatter'
+    assert john_channel_list['channels'][2]['name'] == '3rd Channel'
 
     clear()
 
 
-def test_channels_listall_valid_mix():
+def test_channels_list_valid_mix(users):
     '''
     Listing a mix of multiple public and private channels from different users with some sharing names
     '''
-
-    users = initialise_user_data()
 
     # Creating channels and storing ids
     channel_id = []
@@ -233,50 +231,52 @@ def test_channels_listall_valid_mix():
     channel_id.append(channels_create(users['jane']['token'], 'Private', False))
 
     # Checking channels_list return is correct
-    channel_list = channels_listall(users['user1']['token'])
+    user1_channel_list = channels_list(users['user1']['token'])
+    user2_channel_list = channels_list(users['user2']['token'])
+    donald_channel_list = channels_list(users['donald']['token'])
+    john_channel_list = channels_list(users['john']['token'])
+    ingrid_channel_list = channels_list(users['ingrid']['token'])
+    user3_channel_list = channels_list(users['user3']['token'])
+    jane_channel_list = channels_list(users['jane']['token'])
 
     # Id checks
-    assert channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
-    assert channel_list['channels'][1]['channel_id'] == channel_id[1]['channel_id']
-    assert channel_list['channels'][2]['channel_id'] == channel_id[2]['channel_id']
-    assert channel_list['channels'][3]['channel_id'] == channel_id[3]['channel_id']
-    assert channel_list['channels'][4]['channel_id'] == channel_id[4]['channel_id']
-    assert channel_list['channels'][5]['channel_id'] == channel_id[5]['channel_id']
-    assert channel_list['channels'][6]['channel_id'] == channel_id[6]['channel_id']
-    assert channel_list['channels'][7]['channel_id'] == channel_id[7]['channel_id']
+    assert user1_channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
+    assert user2_channel_list['channels'][0]['channel_id'] == channel_id[1]['channel_id']
+    assert donald_channel_list['channels'][0]['channel_id'] == channel_id[2]['channel_id']
+    assert john_channel_list['channels'][0]['channel_id'] == channel_id[3]['channel_id']
+    assert ingrid_channel_list['channels'][0]['channel_id'] == channel_id[4]['channel_id']
+    assert user1_channel_list['channels'][1]['channel_id'] == channel_id[5]['channel_id']
+    assert user3_channel_list['channels'][0]['channel_id'] == channel_id[6]['channel_id']
+    assert jane_channel_list['channels'][0]['channel_id'] == channel_id[7]['channel_id']
 
     # Name checks
-    assert channel_list['channels'][0]['name'] == 'First Channel'
-    assert channel_list['channels'][1]['name'] == 'Channel 2'
-    assert channel_list['channels'][2]['name'] == 'Discussion'
-    assert channel_list['channels'][3]['name'] == 'Chatter'
-    assert channel_list['channels'][4]['name'] == '3rd Channel'
-    assert channel_list['channels'][5]['name'] == 'First Channel'
-    assert channel_list['channels'][6]['name'] == 'Channel 2'
-    assert channel_list['channels'][7]['name'] == 'Private'
+    assert user1_channel_list['channels'][0]['name'] == 'First Channel'
+    assert user2_channel_list['channels'][0]['name'] == 'Channel 2'
+    assert donald_channel_list['channels'][0]['name'] == 'Discussion'
+    assert john_channel_list['channels'][0]['name'] == 'Chatter'
+    assert ingrid_channel_list['channels'][0]['name'] == '3rd Channel'
+    assert user1_channel_list['channels'][1]['name'] == 'First Channel'
+    assert user3_channel_list['channels'][0]['name'] == 'Channel 2'
+    assert jane_channel_list['channels'][0]['name'] == 'Private'
 
     clear()
 
 
-def test_channels_listall_valid_empty():
+def test_channels_list_valid_empty(users):
     '''
     Listing channels when none have been created
     '''
 
-    users = initialise_user_data()
-
     # Checking channels_list return is correct
-    assert channels_listall(users['user1']['token']) == {'channels': []}
+    assert channels_list(users['user1']['token']) == {'channels': []}
 
     clear()
 
 
-def test_channels_listall_invalid_token():
+def test_channels_list_invalid_token(users):
     '''
-    Attempting to call channels_listall without a valid token
+    Attempting to call channels_list without a valid token
     '''
-
-    users = initialise_user_data()
 
     # Only way to guarrantee a token is invalid is to invalidate an existing token
     invalid_token = users['owner']['token']
@@ -284,6 +284,6 @@ def test_channels_listall_invalid_token():
 
     # Checking that AccessError is thrown
     with pytest.raises(AccessError):
-        channels_listall(invalid_token)
+        channels_list(invalid_token)
 
     clear()

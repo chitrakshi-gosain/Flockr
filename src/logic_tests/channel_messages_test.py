@@ -1,7 +1,14 @@
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - 
+
+Iteration 1
+'''
+
+import pytest
 from auth import auth_register
 from channel import channel_messages
 from channels import channels_create
-import pytest
 from other import clear
 from error import InputError
 from error import AccessError
@@ -37,6 +44,14 @@ def test_token_invalid():
 
     with pytest.raises(AccessError):
         channel_messages('incorrect_user1_token', channel1_id['channel_id'], 0)
+
+def test_start_too_big():
+    clear()
+    owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
+    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
+
+    with pytest.raises(InputError):
+        channel_messages(owner_credentials['token'], channel1_id['channel_id'], 4)
 
 def test_return_type():
     clear()
