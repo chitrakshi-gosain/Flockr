@@ -140,7 +140,7 @@ def test_channels_create_valid_basic(url, initialise_users):
     '''
     Creating channel with valid data
     '''
-    users = intialise_users
+    users = initialise_users
 
     # Creating a basic public channel
     channel_id = requests.post(f'{url}/channels/create', json={
