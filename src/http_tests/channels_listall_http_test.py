@@ -16,7 +16,9 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route(.....) return json.dumps({...})
+-> APP.route("/channels/listall", methods=['GET']) return json.dumps({channels})
+-> APP.route("/channels/create", methods=['POST']) return json.dumps({channel_id})
+-> APP.route("/auth/logout", methods=['POST']) return json.dumps({is_success})
 '''
 
 '''
