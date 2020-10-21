@@ -1,14 +1,7 @@
-'''
-Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - 
-
-Iteration 1
-'''
-
-import pytest
 from auth import auth_register
 from channel import channel_messages
 from channels import channels_create
+import pytest
 from other import clear
 from error import InputError
 from error import AccessError
@@ -17,7 +10,7 @@ def test_insufficient_parameters():
     clear()
     with pytest.raises(InputError):
         channel_messages(None, None, None)
-        
+
 def test_user1_not_authorised():
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')
@@ -27,31 +20,28 @@ def test_user1_not_authorised():
     with pytest.raises(AccessError):
         channel_messages(user1_credentials['token'], channel1_id['channel_id'], 0)
 
-
+    
 def test_channel_id_not_valid():
 
     clear()
+    owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
     user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
-    invalid_channel_id = -1
+
+    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
+    invalid_channel_id = -1 
+
     with pytest.raises(InputError):
         channel_messages(user1_credentials['token'], invalid_channel_id, 0)
 
 def test_token_invalid():
     clear()
     owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
+    user1_credentials = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')                # Register user_1
 
     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
 
     with pytest.raises(AccessError):
         channel_messages('incorrect_user1_token', channel1_id['channel_id'], 0)
-
-def test_start_too_big():
-    clear()
-    owner_credentials = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')             # Register owner
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', False)
-
-    with pytest.raises(InputError):
-        channel_messages(owner_credentials['token'], channel1_id['channel_id'], 4)
 
 def test_return_type():
     clear()
@@ -73,3 +63,4 @@ def test_empty_messages():
 
     messages_history = {'messages': [], 'start': 0, 'end': -1}
     assert (messages_history == channel_messages(owner_credentials['token'], channel1_id['channel_id'], 0))
+
