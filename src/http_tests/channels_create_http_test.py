@@ -229,3 +229,23 @@ def test_channels_create_valid_private(initialise_users):
         'token': users['user1']['token'],
         'channel_id': channel_id['channel_id'],
     }).status_code == 400
+
+def test_channels_create_invalid_namesize(initialise_users):
+    '''
+    Creating channel with too large of a name
+    '''
+    users = initialise_users
+
+    # Creating public channel with namesize > 20 characters
+    requests.post(f'{url}/channels/create', json={
+        'token': users['user1']['token'],
+        'name': 'supercalifragilisticexpialidocious',
+        'is_public': True,
+    }).status_code == 400
+
+    # Creating private channel with namesize > 20 characters
+    requests.post(f'{url}/channels/create', json={
+        'token': users['user2']['token'],
+        'name': 'supercalifragilisticexpialidocious',
+        'is_public': False,
+    }).status_code == 400
