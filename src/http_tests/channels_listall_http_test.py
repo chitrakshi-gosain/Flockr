@@ -211,3 +211,57 @@ def test_channels_listall_valid_same(initialise_users):
     assert channel_list['channels'][3]['name'] == 'Chatter'
     assert channel_list['channels'][4]['name'] == '3rd Channel'
 
+def test_channels_listall_valid_different(initialise_users):
+    '''
+    Listing multiple created channels from different users
+    '''
+    users = initialise_users
+
+    # Creating channels and storing ids
+    channel_id = []
+
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['user1']['token'],
+        'name': 'First Channel',
+        'is_public': True,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['user2']['token'],
+        'name': 'Channel 2',
+        'is_public': True,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['donald']['token'],
+        'name': 'Discussion',
+        'is_public': True,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['john']['token'],
+        'name': 'Chatter',
+        'is_public': True,
+    }).json())
+    channel_id.append(requests.post(f'{url}/channels/create', json={
+        'token': users['ingrid']['token'],
+        'name': '3rd Channel',
+        'is_public': True,
+    }).json())
+
+    # Checking channels_list return is correct
+    channel_list = requests.get(f'{url}/channels/listall', json={
+        'token': users['user1']['token'],
+    }).json()
+
+    # Id checks
+    assert channel_list['channels'][0]['channel_id'] == channel_id[0]['channel_id']
+    assert channel_list['channels'][1]['channel_id'] == channel_id[1]['channel_id']
+    assert channel_list['channels'][2]['channel_id'] == channel_id[2]['channel_id']
+    assert channel_list['channels'][3]['channel_id'] == channel_id[3]['channel_id']
+    assert channel_list['channels'][4]['channel_id'] == channel_id[4]['channel_id']
+
+    # Name checks
+    assert channel_list['channels'][0]['name'] == 'First Channel'
+    assert channel_list['channels'][1]['name'] == 'Channel 2'
+    assert channel_list['channels'][2]['name'] == 'Discussion'
+    assert channel_list['channels'][3]['name'] == 'Chatter'
+    assert channel_list['channels'][4]['name'] == '3rd Channel'
+
