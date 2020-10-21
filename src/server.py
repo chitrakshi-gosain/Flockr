@@ -11,14 +11,14 @@ from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
 # import sys
-# from auth import auth_login, auth_register, auth_logout
+from auth import auth_login, auth_register, auth_logout
 # from channel import channel_invite, channel_details, channel_messages, \
 #     channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_list, channels_listall, channels_create
 # from message import message_send, message_remove, message_edit
-# from  user import user_profile, user_profile_setname, user_profile_setemail, \
+from  user import user_profile, user_profile_setname, user_profile_setemail, \
 #     user_profile_sethandle  
-# from other import users_all, admin_userpermission_change, search, clear
+from other import users_all, admin_userpermission_change, search, clear
 
 # need to plan how to write things here
 '''
@@ -202,12 +202,28 @@ def channels_create_route():
 #     '''
 #     pass
 
-# @APP.route("/user/profile", methods=['GET'])
-# def user_profile_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/user/profile", methods=['GET'])
+def user_profile_route():
+    '''
+    DESCRIPTION:
+    For a valid user, returns information about
+    their user_id, email, first name, last name,
+    and handle
+
+    PARAMETERS:
+        -> token : token of a user for the particular session (may or
+                   may not be authorized)
+        -> u_id : user id of a user
+
+    RETURN VALUES:
+        -> user : dictionary containing u_id, email, name_first,
+                  name_last, handle_str of the user
+    '''
+    
+    token = request.args.get('token')
+    u_id = request.args.get('u_id')
+
+    return dumps(user_profile(token, u_id))
 
 # @APP.route("/user/profile/setname", methods=['PUT'])
 # def user_profile_setname_route():
@@ -230,12 +246,26 @@ def channels_create_route():
 #     '''
 #     pass
 
-# @APP.route("/users/all", methods=['GET'])
-# def users_all_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/users/all", methods=['GET'])
+def users_all_route():
+    '''
+    DESCRIPTION:
+    Returns a list of all users and
+    their associated details
+
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {users}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+    
+    token = request.args.get('token')
+
+    return dumps(users_all(token))
 
 # @APP.route("/admin/userpermission/change", methods=['POST'])
 # def change_userpermission_route():
