@@ -8,10 +8,7 @@ Iteration 2
 import json
 import requests
 import pytest
-import auth
-from user import user_profile, user_profile_setname
 from error import InputError, AccessError
-from other import clear
 
 # need to plan how to format this
 '''
@@ -42,14 +39,14 @@ def test_http_user_profile_setname_no_errors(initialise_user_data, url):
         'name_last': name_last_old
     }
 
-    user_details = requests.post(f"{url}/auth/register", json=user)
+    user_details = requests.post(f"{url}/auth/register", json=user).json()
     token = user_details['token']
     u_id = user_details['u_id']
 
     user_profile_info = requests.get(f"{url}/user/profile", json={
         'token': token,
         'u_id': u_id
-    })
+    }).json()
     user_dict = user_profile_info["user"]
 
     assert user_dict['name_first'] == name_first_old
@@ -62,12 +59,12 @@ def test_http_user_profile_setname_no_errors(initialise_user_data, url):
         'token': token,
         'name_first': name_first_new,
         'name_last': name_last_new
-    })
+    }).json()
 
     user_profile_info = requests.get(f"{url}/user/profile", json={
         'token': token,
         'u_id': u_id
-    })
+    }).json()
     user_dict = user_profile_info["user"]
 
     assert user_dict['name_first'] == name_first_new
@@ -90,14 +87,14 @@ def test_http_user_profile_setname_inputerror(initialise_user_data, url):
         'name_last': name_last_old
     }
 
-    user_details = requests.post(f"{url}/auth/register", json=user)
+    user_details = requests.post(f"{url}/auth/register", json=user).json()
     token = user_details['token']
     u_id = user_details['u_id']
 
-    user_profile_info = requests.get(f"{url}/user/profile", json={
+    user_profile_info = requests.get(f"{url}/user/profile", params={
         'token': token,
         'u_id': u_id
-    })
+    }).json()
     user_dict = user_profile_info["user"]
 
     assert user_dict['name_first'] == name_first_old
@@ -114,7 +111,7 @@ def test_http_user_profile_setname_inputerror(initialise_user_data, url):
             'token': token,
             'name_first': name_first_new,
             'name_last': name_last_new
-        })
+        }).json()
 
     # Tests that auth_register raises an InputError when name_last is
     # less than 1 characters long
@@ -125,7 +122,7 @@ def test_http_user_profile_setname_inputerror(initialise_user_data, url):
             'token': token,
             'name_first': name_first_new,
             'name_last': name_last_new
-        })
+        }).json()
 
     # Tests that auth_register raises an InputError when name_first is
     # more than 50 characters long
@@ -136,7 +133,7 @@ def test_http_user_profile_setname_inputerror(initialise_user_data, url):
             'token': token,
             'name_first': name_first_new,
             'name_last': name_last_new
-        })
+        }).json()
 
     # Tests that auth_register raises an InputError when name_last is
     # more than 50 characters long
@@ -147,7 +144,8 @@ def test_http_user_profile_setname_inputerror(initialise_user_data, url):
             'token': token,
             'name_first': name_first_new,
             'name_last': name_last_new
-        })
+        }).json()
+
 
 def test_http_user_profile_setname_accesserror(initialise_user_data, url):
     '''
@@ -165,14 +163,14 @@ def test_http_user_profile_setname_accesserror(initialise_user_data, url):
         'name_last': name_last_old
     }
 
-    user_details = requests.post(f"{url}/auth/register", json=user)
+    user_details = requests.post(f"{url}/auth/register", json=user).json()
     token = user_details['token']
     u_id = user_details['u_id']
 
-    user_profile_info = requests.get(f"{url}/user/profile", json={
+    user_profile_info = requests.get(f"{url}/user/profile", params={
         'token': token,
         'u_id': u_id
-    })
+    }).json()
     user_dict = user_profile_info["user"]
 
     assert user_dict['name_first'] == name_first_old
@@ -189,4 +187,4 @@ def test_http_user_profile_setname_accesserror(initialise_user_data, url):
             'token': token,
             'name_first': name_first_new,
             'name_last': name_last_new
-        })
+        }).json()
