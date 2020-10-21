@@ -203,6 +203,7 @@ def test_users_all_invalid_token(url, users_all_initialise_users):
     '''
     Testing users_all with an invalid token parameter
     '''
+    user_data = users_all_initialise_users
 
     invalid_token = user_data['john']['token']
     requests.post(f'{url}/auth/logout', json={
