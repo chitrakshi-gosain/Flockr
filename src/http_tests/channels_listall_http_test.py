@@ -102,7 +102,6 @@ def intialise_users(url):
         'name_first': 'Ingrid',
         'name_last': 'Cline',
     }).json()
-    donald_details = auth_register('donaldrichards@gmail.com', 'kjDf2g@h@@df', 'Donald', 'Richards')
     donald_details = requests.post(f'{url}/auth/register', json={
         'email': 'donaldrichards@gmail.com',
         'password': 'kjDf2g@h@@df',
@@ -185,7 +184,6 @@ def test_channels_listall_valid_same(url, initialise_users):
         'name': 'Chatter',
         'is_public': True,
     }).json())
-    channel_id.append(channels_create(users['user1']['token'], '3rd Channel', True))
     channel_id.append(requests.post(f'{url}/channels/create', json={
         'token': users['user1']['token'],
         'name': '3rd Channel',
@@ -418,6 +416,6 @@ def test_channels_listall_invalid_token(url, initialise_users):
     })
 
     # Checking that AccessError is thrown
-    with pytest.raises(AccessError):
-        channels_listall(invalid_token)
-    assert requests.get(f'{url}/channels/listall')
+    assert requests.get(f'{url}/channels/listall', json={
+        'token': invalid_token,
+    })

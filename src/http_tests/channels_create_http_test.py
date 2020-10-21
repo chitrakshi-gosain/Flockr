@@ -107,7 +107,6 @@ def intialise_users(url):
         'name_first': 'Ingrid',
         'name_last': 'Cline',
     }).json()
-    donald_details = auth_register('donaldrichards@gmail.com', 'kjDf2g@h@@df', 'Donald', 'Richards')
     donald_details = requests.post(f'{url}/auth/register', json={
         'email': 'donaldrichards@gmail.com',
         'password': 'kjDf2g@h@@df',
