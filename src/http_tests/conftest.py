@@ -22,7 +22,7 @@ import pytest
 @pytest.fixture
 def url():
     url_re = re.compile(r' \* Running on ([^ ]*)')
-    server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
+    server = Popen(["python", "src/server.py"], stderr=PIPE, stdout=PIPE)
     line = server.stderr.readline()
     local_url = url_re.match(line.decode())
     if local_url:
@@ -44,11 +44,10 @@ def reset(url):
     '''
     Resets the internal data of the application to it's initial state
     '''
-
     requests.post(f"{url}/clear")
 
 @pytest.fixture
-def initialise_user_data(reset):
+def initialise_user_data(url, reset):
     '''
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
@@ -82,7 +81,7 @@ def initialise_user_data(reset):
     }
 
 @pytest.fixture
-def initialise_channel_data(initialise_user_data):
+def initialise_channel_data(url, reset, initialise_user_data):
     '''
     creates 3 channels with descriptive data for testing
     '''
