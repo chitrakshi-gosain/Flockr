@@ -38,7 +38,7 @@ Error type: AccessError
 '''
 
 @pytest.fixture
-def intialise_users(url):
+def initialise_users(url):
     '''
     Sets up various user sample data for testing purposes
     '''
@@ -136,7 +136,7 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
-def test_channels_create_valid_basic(url, intialise_users):
+def test_channels_create_valid_basic(url, initialise_users):
     '''
     Creating channel with valid data
     '''

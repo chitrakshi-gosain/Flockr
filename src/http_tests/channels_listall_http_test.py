@@ -33,7 +33,7 @@ Error type: AccessError
 '''
 
 @pytest.fixture
-def intialise_users(url):
+def initialise_users(url):
     '''
     Sets up various user sample data for testing purposes
     '''
