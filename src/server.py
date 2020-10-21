@@ -14,7 +14,7 @@ from error import InputError
 # from auth import auth_login, auth_register, auth_logout
 # from channel import channel_invite, channel_details, channel_messages, \
 #     channel_leave, channel_join, channel_addowner, channel_removeowner
-# from channels import channels_list, channels_listall, channels_create
+from channels import channels_list, channels_listall, channels_create
 # from message import message_send, message_remove, message_edit
 # from  user import user_profile, user_profile_setname, user_profile_setemail, \
 #     user_profile_sethandle  
@@ -112,12 +112,28 @@ APP.register_error_handler(Exception, defaultHandler)
 #     '''
 #     pass
 
-# @APP.route("/channels/list", methods=['GET'])
-# def channels_list_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/channels/list", methods=['GET'])
+def channels_list_route():
+    '''
+    DESCRIPTION:
+    Provide a list of all channels (and
+    their associated details) that the
+    authorised user is part of
+
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+
+    token = request.args.get('token')
+
+    return dumps(channels_list(token))
+    
 
 # @APP.route("/channels/listall", methods=['GET'])
 # def channels_listall_route():
