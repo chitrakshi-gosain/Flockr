@@ -249,3 +249,31 @@ def test_channels_create_invalid_namesize(initialise_users):
         'name': 'supercalifragilisticexpialidocious',
         'is_public': False,
     }).status_code == 400
+
+def test_channels_create_valid_samename(initialise_users):
+    '''
+    Creating two channels with the same name
+    '''
+    users = initialise_users
+
+    # Creating public channels with the same name
+    channel_id1 = requests.post(f'{url}/channels/create', json={
+        'token': users['user1']['token'],
+        'name': 'Hello World!',
+        'is_public': True,
+    }).json()
+    channel_id2 = requests.post(f'{url}/channels/create', json={
+        'token': users['user2']['token'],
+        'name': 'Hello World!',
+        'is_public': True,
+    }).json()
+
+    # Checking both channels exist and have the same name
+    channel_list = requests.get(f'{url}/channels/listall', json={
+        'token': users['user3']['token'],
+    }).json()
+
+    assert channel_list['channels'][0]['name'] == 'Hello World!'
+    assert channel_list['channels'][1]['name'] == 'Hello World!'
+    assert channel_list['channels'][0]['channel_id'] == channel_id1['channel_id']
+    assert channel_list['channels'][1]['channel_id'] == channel_id2['channel_id']
