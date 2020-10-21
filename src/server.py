@@ -160,9 +160,26 @@ def channels_listall_route():
 @APP.route("/channels/create", methods=['POST'])
 def channels_create_route():
     '''
-    ADD DOCSTRING HERE
+    DESCRIPTION:
+    Creates a new channel with that name
+    that is either a public or private channel
+
+    PARAMETERS:
+        -> token
+        -> name: Name of channel to be created
+        -> is_public: Whether the channel is public
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> InputError when any of:
+            - Name is more than 20 characters long
     '''
-    pass
+    
+    input_data = request.get_json()
+
+    return dumps(channels_create(input_data['token'], input_data['name'], input_data['is_public']))
 
 # @APP.route("/message/send", methods=['POST'])
 # def message_send_route():
