@@ -131,7 +131,7 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
-def test_channels_listall_valid_single(initialise_users):
+def test_channels_listall_valid_single(url, initialise_users):
     '''
     Listing a single created channel
     '''
@@ -156,7 +156,7 @@ def test_channels_listall_valid_single(initialise_users):
     assert isinstance(channel_list['channels'][0]['channel_id'], int)
     assert isinstance(channel_list['channels'][0]['name'], str)
 
-def test_channels_listall_valid_same(initialise_users):
+def test_channels_listall_valid_same(url, initialise_users):
     '''
     Listing multiple created channels from the same user
     '''
@@ -211,7 +211,7 @@ def test_channels_listall_valid_same(initialise_users):
     assert channel_list['channels'][3]['name'] == 'Chatter'
     assert channel_list['channels'][4]['name'] == '3rd Channel'
 
-def test_channels_listall_valid_different(initialise_users):
+def test_channels_listall_valid_different(url, initialise_users):
     '''
     Listing multiple created channels from different users
     '''
@@ -265,7 +265,7 @@ def test_channels_listall_valid_different(initialise_users):
     assert channel_list['channels'][3]['name'] == 'Chatter'
     assert channel_list['channels'][4]['name'] == '3rd Channel'
 
-def test_channels_listall_valid_private(initialise_users):
+def test_channels_listall_valid_private(url, initialise_users):
     '''
     Listing multiple created private channels from different users
     '''
@@ -319,7 +319,7 @@ def test_channels_listall_valid_private(initialise_users):
     assert channel_list['channels'][3]['name'] == 'Chatter'
     assert channel_list['channels'][4]['name'] == '3rd Channel'
 
-def test_channels_listall_valid_mix(intialise_users):
+def test_channels_listall_valid_mix(url, intialise_users):
     '''
     Listing a mix of multiple public and private channels from different users with some sharing names
     '''
@@ -394,7 +394,7 @@ def test_channels_listall_valid_mix(intialise_users):
     assert channel_list['channels'][6]['name'] == 'Channel 2'
     assert channel_list['channels'][7]['name'] == 'Private'
 
-def test_channels_listall_valid_empty(initialise_users):
+def test_channels_listall_valid_empty(url, initialise_users):
     '''
     Listing channels when none have been created
     '''
@@ -405,3 +405,19 @@ def test_channels_listall_valid_empty(initialise_users):
         'token': users['user1']['token'],
     }).json() == {'channels': []}
 
+def test_channels_listall_invalid_token(url, initialise_users):
+    '''
+    Attempting to call channels_listall without a valid token
+    '''
+    users = initialise_users
+
+    # Only way to guarrantee a token is invalid is to invalidate an existing token
+    invalid_token = users['owner']['token']
+    requests.post(f'{url}/auth/logout', json={
+        'token': invalid_token,
+    })
+
+    # Checking that AccessError is thrown
+    with pytest.raises(AccessError):
+        channels_listall(invalid_token)
+    assert requests.get(f'{url}/channels/listall')

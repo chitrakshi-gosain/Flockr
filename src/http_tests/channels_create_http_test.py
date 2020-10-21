@@ -137,7 +137,7 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
-def test_channels_create_valid_basic(intialise_users):
+def test_channels_create_valid_basic(url, intialise_users):
     '''
     Creating channel with valid data
     '''
@@ -167,7 +167,7 @@ def test_channels_create_valid_basic(intialise_users):
     assert basic_channel_details['all_members'][0]['name_first'] == 'owner_first'
     assert basic_channel_details['all_members'][0]['name_last'] == 'owner_last'
 
-def test_channels_create_valid_empty(initialise_users):
+def test_channels_create_valid_empty(url, initialise_users):
     '''
     Creating channel with empty string name
     '''
@@ -197,7 +197,7 @@ def test_channels_create_valid_empty(initialise_users):
     assert empty_channel_details['all_members'][0]['name_first'] == 'user1_first'
     assert empty_channel_details['all_members'][0]['name_last'] == 'user1_last'
 
-def test_channels_create_valid_private(initialise_users):
+def test_channels_create_valid_private(url, initialise_users):
     '''
     Creating private channel
     '''
@@ -233,7 +233,7 @@ def test_channels_create_valid_private(initialise_users):
         'channel_id': channel_id['channel_id'],
     }).status_code == 400
 
-def test_channels_create_invalid_namesize(initialise_users):
+def test_channels_create_invalid_namesize(url, initialise_users):
     '''
     Creating channel with too large of a name
     '''
@@ -253,7 +253,7 @@ def test_channels_create_invalid_namesize(initialise_users):
         'is_public': False,
     }).status_code == 400
 
-def test_channels_create_valid_samename(initialise_users):
+def test_channels_create_valid_samename(url, initialise_users):
     '''
     Creating two channels with the same name
     '''
@@ -281,7 +281,7 @@ def test_channels_create_valid_samename(initialise_users):
     assert channel_list['channels'][0]['channel_id'] == channel_id1['channel_id']
     assert channel_list['channels'][1]['channel_id'] == channel_id2['channel_id']
 
-def test_channels_create_invalid_token(initialise_users):
+def test_channels_create_invalid_token(url, initialise_users):
     '''
     Attempting to call channels_listall without a valid token
     '''
