@@ -277,3 +277,22 @@ def test_channels_create_valid_samename(initialise_users):
     assert channel_list['channels'][1]['name'] == 'Hello World!'
     assert channel_list['channels'][0]['channel_id'] == channel_id1['channel_id']
     assert channel_list['channels'][1]['channel_id'] == channel_id2['channel_id']
+
+def test_channels_create_invalid_token(initialise_users):
+    '''
+    Attempting to call channels_listall without a valid token
+    '''
+    users = initialise_users
+
+    # Only way to guarrantee a token is invalid is to invalidate an existing token
+    invalid_token = users['owner']['token']
+    requests.post(f'{url}/auth/logout', json={
+        'token': invalid_token,
+    })
+
+    # Checking that AccessError is thrown
+    assert requests.post(f'{url}/channels/create', json={
+        'token': invalid_token,
+        'name': 'Name',
+        'is_public': True,
+    }).status_code == 400
