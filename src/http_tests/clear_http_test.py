@@ -55,7 +55,7 @@ def test_clear(url):
      requests.delete(url + "/clear")
      #now valid_token is invalid (expect error)
      logout_input = {"token": valid_token}
-     logout_output = requests.post(url + "/auth/logout")
+     logout_output = requests.post(url + "/auth/logout", json=logout_input)
 
-     assert logout_output.status_code() == 400
+     assert logout_output.status_code == 400
      '''
