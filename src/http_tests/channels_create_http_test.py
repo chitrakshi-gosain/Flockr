@@ -134,7 +134,60 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
-# def test_something(url):
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
+def test_channels_create_valid_basic(intialise_users):
+    '''
+    Creating channel with valid data
+    '''
+    users = intialise_users
+
+    # Creating a basic public channel
+    channel_id = requests.post(f'{url}/channels/create', json={
+        'token': users['owner']['token']
+        'name': 'A Basic Channel'
+        'is_public': True
+    }).json()
+
+    # Check that channels_create has returned a valid id (integer value)
+    assert isinstance(channel_id['channel_id'], int)
+
+    # Check that channel details have all been set correctly
+    basic_channel_details = requests.get(f'{url}/channel/details', json={
+        'token': users['owner']['token']
+        'channel_id': channel_id['channel_id']
+    }).json()
+
+    assert basic_channel_details['name'] == 'A Basic Channel'
+    assert basic_channel_details['owner_members'][0]['u_id'] == users['owner']['u_id']
+    assert basic_channel_details['owner_members'][0]['name_first'] == 'owner_first'
+    assert basic_channel_details['owner_members'][0]['name_last'] == 'owner_last'
+    assert basic_channel_details['all_members'][0]['u_id'] == users['owner']['u_id']
+    assert basic_channel_details['all_members'][0]['name_first'] == 'owner_first'
+    assert basic_channel_details['all_members'][0]['name_last'] == 'owner_last'
+
+def test_channels_create_valid_empty(users):
+    '''
+    Creating channel with empty string name
+    '''
+
+    # Creating public channel with empty string as name
+    channel_id = requests.post(f'{url}/channels/create', json={
+        'token': users['user1']['token']
+        'name': ''
+        'is_public': True
+    }).json()
+
+    # Check that channels_create has returned a valid id (integer value)
+    assert isinstance(channel_id['channel_id'], int)
+
+    # Check that channel details have all been set correctly
+    empty_channel_details = channel_details(users['user1']['token'], channel_id['channel_id'])
+
+    assert empty_channel_details['name'] == ''
+    assert empty_channel_details['owner_members'][0]['u_id'] == users['user1']['u_id']
+    assert empty_channel_details['owner_members'][0]['name_first'] == 'user1_first'
+    assert empty_channel_details['owner_members'][0]['name_last'] == 'user1_last'
+    assert empty_channel_details['all_members'][0]['u_id'] == users['user1']['u_id']
+    assert empty_channel_details['all_members'][0]['name_first'] == 'user1_first'
+    assert empty_channel_details['all_members'][0]['name_last'] == 'user1_last'
+
+    clear()
