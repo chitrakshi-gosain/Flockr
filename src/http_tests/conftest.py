@@ -90,7 +90,7 @@ def initialise_user_dictionary(reset):
     }
     
     return {
-        'admin_dict': admin, #<-- I also added a missing comma here
+        'admin_dict': admin,
         'user0_dict': user0,
         'user1_dict': user1,
         'user2_dict': user2,
