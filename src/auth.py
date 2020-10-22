@@ -115,6 +115,10 @@ def auth_login(email, password):
 
     # returning the dictionary with users' u_id, and encoded token
     # authenticated for their session
+
+    # generating a valid token
+    user_info['token'] = str(user_info['u_id'])
+
     return {
         'u_id': user_info['u_id'],
         'token': generate_encoded_token(user_info['u_id'])
@@ -229,7 +233,7 @@ def auth_register(email, password, name_first, name_last):
         'name_first' : name_first,
         'name_last' : name_last,
         'handle_str' : handle_string,
-        'token' : str(len(data.data['users'])),
+        'token' : 'no_token_generated',
         'password' : encrypt_password_with_hash(password)
     }
 

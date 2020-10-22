@@ -21,8 +21,8 @@ json.dumps({RETURN VALUE})
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
--> url
 -> reset
+-> url
 -> ...
 '''
 
@@ -40,7 +40,20 @@ Error type: AccessError
 #     '''
 #     assert url.startswith("http")
 
-# def test_something(url):
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
+def test_clear(url):
+     '''
+     tests clear by searching for a now deleted token which then throws error
+     '''
+
+     register_input = {"email": "admin@flockr.com", "password": "itsasecret",
+                        "name_first": "adminfirst", "name_last": "adminlast"}
+     register_output = requests.post(url + "/auth/register", json=register_input).json()
+
+     valid_token = register_output['token']
+
+     requests.delete(url + "/clear")
+     #now valid_token is invalid (expect error)
+     logout_input = {"token": valid_token}
+     logout_output = requests.post(url + "/auth/logout", json=logout_input)
+
+     assert logout_output.status_code == 400

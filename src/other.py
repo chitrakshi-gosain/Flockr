@@ -17,10 +17,11 @@ def clear():
     '''
     ADD DOCSTRING HERE
     '''
-    
+
     data.data = {
         'users': [],
         'channels': [],
+        'messages': [],
         'valid_tokens': []
     }
 
