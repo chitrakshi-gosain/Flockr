@@ -68,6 +68,69 @@ def initialise_user_data(url):
         'name_last': 'user1_last'
     }).json()
 
+    user3_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user3@email.com',
+        'password': 'user3_pass1!',
+        'name_first': 'user3_first',
+        'name_last': 'user3_last'
+    }).json()
+
+    user4_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user4@email.com',
+        'password': 'user4_pass1!',
+        'name_first': 'user4_first',
+        'name_last': 'user4_last'
+    }).json()
+
+    user5_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user5@email.com',
+        'password': 'user5_pass1!',
+        'name_first': 'user5_first',
+        'name_last': 'user5_last'
+    }).json()
+
+    user6_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user6@email.com',
+        'password': 'user6_pass1!',
+        'name_first': 'user6_first',
+        'name_last': 'user6_last'
+    }).json()
+
+    user7_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user7@email.com',
+        'password': 'user7_pass1!',
+        'name_first': 'user7_first',
+        'name_last': 'user7_last'
+    }).json()
+
+    user8_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user8@email.com',
+        'password': 'user8_pass1!',
+        'name_first': 'user8_first',
+        'name_last': 'user8_last'
+    }).json()
+
+    user9_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user9@email.com',
+        'password': 'user9_pass1!',
+        'name_first': 'user9_first',
+        'name_last': 'user9_last'
+    }).json()
+
+    user10_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user10@email.com',
+        'password': 'user10_pass1!',
+        'name_first': 'user10_first',
+        'name_last': 'user10_last'
+    }).json()
+
+    user11_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user11@email.com',
+        'password': 'user11_pass1!',
+        'name_first': 'user11_first',
+        'name_last': 'user11_last'
+    }).json()
+
     return {
         'user0': user0_details,
         'user1': user1_details
