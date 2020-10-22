@@ -45,7 +45,8 @@ def test_url(url):
    
 def test_successful_logout(url, initialise_user_data):
     '''
-    Tests that auth_logout returns True on successful logout
+    Tests that App.route("/auth/logout", methods=['POST']) returns True
+    on successful logout
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -57,9 +58,9 @@ def test_successful_logout(url, initialise_user_data):
 
 def test_active_token_now_invalid(url, initialise_user_data):
     '''
-    Tests that auth_logout returns True on successful logout the first
-    time, but second time when the same token is passed it raises an
-    AccessError
+    Tests that App.route("/auth/logout", methods=['POST']) returns True
+    on successful logout the first time, but second time when the same
+    token is passed it raises an AccessError
     '''
  
     test_user_0 = initialise_user_data['user0']
@@ -76,8 +77,8 @@ def test_active_token_now_invalid(url, initialise_user_data):
 
 def test_invalid_token(url, initialise_user_data):
     '''
-    Tests that auth_logout raises an AccessError when an invalid token
-    is passed as one of the parameters
+    Tests that App.route("/auth/logout", methods=['POST']) raises an
+    AccessError when an invalid token is passed as one of the parameters
     '''
 
     logout_response = requests.post(f"{url}/auth/logout", json={
@@ -87,8 +88,8 @@ def test_invalid_token(url, initialise_user_data):
 
 def test_whitespace_as_token(url, initialise_user_data):
     '''
-    Tests that auth_logout raises an AccessError when a whitespace is
-    passed as token
+    Tests that App.route("/auth/logout", methods=['POST']) raises an
+    AccessError when a whitespace is passed as token
     '''
 
     logout_response = requests.post(f"{url}/auth/logout", json={
@@ -98,8 +99,8 @@ def test_whitespace_as_token(url, initialise_user_data):
 
 def test_insufficient_parameters(url, initialise_user_data):
     '''
-    Tests that auth_logout raises an InputError when less than expected
-    parameters are passed
+    Tests that App.route("/auth/logout", methods=['POST']) raises an
+    InputError when less than expected parameters are passed
     '''
 
     logout_response = requests.post(f"{url}/auth/logout", json={
@@ -109,8 +110,8 @@ def test_insufficient_parameters(url, initialise_user_data):
 
 def test_return_type(url, initialise_user_data):
     '''
-    Tests that auth_logout returns the expected datatype i.e.
-    { is_success : boolean }
+    Tests that App.route("/auth/logout", methods=['POST']) returns the
+    expected datatype i.e. { is_success : boolean }
     '''
     test_user_0 = initialise_user_data['user0']
 

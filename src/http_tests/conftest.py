@@ -48,27 +48,64 @@ def reset(url):
     requests.delete(f"{url}/clear")
 
 @pytest.fixture
-def initialise_user_data(url, reset):
+def initialise_user_dictionary(reset):
+
+    user0 = {
+        'email': 'user0@email.com',
+        'password': 'user0_pass1!',
+        'name_first': 'user0_FIRST',
+        'name_last': 'user0_LAST'
+    }
+
+    user1 = {
+        'email': 'user1@email.com',
+        'password': 'user1_pass1!',
+        'name_first': 'user1_FIRST',
+        'name_last': 'user1_LAST'
+    }
+    
+    user2 = {
+        'email': 'user2@email.com',
+        'password': 'user2_pass1!',
+        'name_first': 'user2_FIRST',
+        'name_last': 'user2_LAST'
+    }
+
+    user3 = {
+        'email': 'user3@email.com',
+        'password': 'user3_pass1!',
+        'name_first': 'user3_FIRST',
+        'name_last': 'user3_LAST'
+    }
+    
+    return {
+        'user0_dict': user0,
+        'user1_dict': user1,
+        'user2_dict': user2,
+        'user3_dict': user3
+    }
+
+@pytest.fixture
+def initialise_user_data(url, initialise_user_dictionary):
     '''
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
     '''
+    user0 = initialise_user_dictionary['user0_dict']
+    user0_details = requests.post(f"{url}/auth/register", json=user0).json()
 
-    user0_details = requests.post(f"{url}/auth/register", json={
-        'email': 'user0@email.com',
-        'password': 'user0_pass1!',
-        'name_first': 'user0_first',
-        'name_last': 'user0_last'
-    }).json()
+    user1 = initialise_user_dictionary['user1_dict']
+    user1_details = requests.post(f"{url}/auth/register", json=user1).json()
 
-    user1_details = requests.post(f"{url}/auth/register", json={
-        'email': 'user1@email.com',
-        'password': 'user1_pass1!',
-        'name_first': 'user1_first',
-        'name_last': 'user1_last'
-    }).json()
+    user2 = initialise_user_dictionary['user2_dict']
+    user2_details = requests.post(f"{url}/auth/register", json=user2).json()
+
+    user3 = initialise_user_dictionary['user3_dict']
+    user3_details = requests.post(f"{url}/auth/register", json=user3).json()
 
     return {
         'user0': user0_details,
-        'user1': user1_details
+        'user1': user1_details,
+        'user2': user2_details,
+        'user3': user3_details
     }

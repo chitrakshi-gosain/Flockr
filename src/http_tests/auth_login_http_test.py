@@ -48,7 +48,8 @@ def test_url(url):
 
 def test_successful_login_with_everything_valid(url, initialise_user_data):
     '''
-    Tests that auth_login logs the user in successfully
+    Tests that App.route("/auth/login", methods=['POST']) logs-in  the
+    user successfully
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -66,8 +67,9 @@ def test_successful_login_with_everything_valid(url, initialise_user_data):
 
 def test_invalid_email(url, initialise_user_data):
     '''
-    Tests that auth_login raises an InputError when an invalid email-id
-    is passed as one of the parameters
+    Tests that App.route("/auth/login", methods=['POST']) raises an
+    InputError when an invalid email-id is passed as one of the
+    parameters
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -85,8 +87,8 @@ def test_invalid_email(url, initialise_user_data):
 
 def test_unregistered_user(url, initialise_user_data):
     '''
-    Tests that auth_login raises an InputError when an unregistered user
-    tries to log-in
+    Tests that App.route("/auth/login", methods=['POST']) raises an
+    InputError when an unregistered user tries to log-in
     '''
 
     login_response = requests.post(f"{url}/auth/login", json={
@@ -97,8 +99,8 @@ def test_unregistered_user(url, initialise_user_data):
 
 def test_wrong_password(url, initialise_user_data):
     '''
-    Tests that auth_login raises an InputError when a wrong password is
-    passed as one of the parameters
+    Tests that App.route("/auth/login", methods=['POST']) raises an
+    InputError when a wrong password is passed as one of the parameters
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -116,8 +118,8 @@ def test_wrong_password(url, initialise_user_data):
 
 def test_insufficient_parameters(url, initialise_user_data):
     '''
-    Tests that auth_login raises an InputError when less than expected
-    parameters are passed
+    Tests that App.route("/auth/login", methods=['POST']) raises an
+    InputError when less than expected parameters are passed
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -135,7 +137,7 @@ def test_insufficient_parameters(url, initialise_user_data):
 
 def test_return_type(url, initialise_user_data):
     '''
-    Tests that auth_login returns the expected datatype i.e.
+    Tests that App.route("/auth/login", methods=['POST']) returns the expected datatype i.e.
     {u_id : int, token : str}
     '''
 
@@ -159,9 +161,10 @@ def test_return_type(url, initialise_user_data):
 
 def test_login_u_id(url, initialise_user_data):
     '''
-    Tests that auth_register and auth_login return same values of token
-    and u_id, as there may be a slightest possibility that token or u_id
-    of the user might be played around with
+    Tests that App.route("/auth/register", methods=['POST']) and
+    App.route("/auth/login", methods=['POST']) return same values of
+    token and u_id, as there may be a slightest possibility that token
+    or u_id of the user might be played around with
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -174,6 +177,7 @@ def test_login_u_id(url, initialise_user_data):
     login_response = requests.post(f"{url}/auth/login", json={
         'email': 'user0@email.com',
         'password': 'user0_pass1!'
+
     })
     assert login_response.status_code == 200
     login_payload = login_response.json()
@@ -182,7 +186,8 @@ def test_login_u_id(url, initialise_user_data):
 
 def test_login_unique_token_and_u_id(url, initialise_user_data):
     '''
-    Tests that auth_login returns a unique u_id and token for each user
+    Tests that App.route("/auth/login", methods=['POST']) returns a
+    unique u_id and token for each user
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -217,7 +222,8 @@ def test_login_unique_token_and_u_id(url, initialise_user_data):
 # different token
 def test_multiple_logins(url, initialise_user_data):
     '''
-    Tests that auth_login allows multiple logins
+    Tests that App.route("/auth/login", methods=['POST'] allows
+    multiple logins
     '''
 
     login_response = requests.post(f"{url}/auth/login", json={
@@ -225,25 +231,23 @@ def test_multiple_logins(url, initialise_user_data):
         'password': 'user0_Pass1!'
     })
     assert login_response.status_code == 400
-    login_payload = login_response.json()
 
     login_response = requests.post(f"{url}/auth/login", json={
         'email': 'user0@email.com',
         'password': 'user0_Pass1!'
     })
     assert login_response.status_code == 400
-    login_payload = login_response.json()
     
     login_response = requests.post(f"{url}/auth/login", json={
         'email': 'user0@email.com',
         'password': 'user0_Pass1!'
     })
     assert login_response.status_code == 400
-    login_payload = login_response.json()
 
 def test_looking_for_negative_u_id(url, initialise_user_data):
     '''
-    Tests that auth_login does not return a negative u_id for a user
+    Tests that App.route("/auth/login", methods=['POST']) does not
+    return a negative u_id for a user
     '''
 
     test_user_0 = initialise_user_data['user0']
@@ -264,8 +268,8 @@ def test_looking_for_negative_u_id(url, initialise_user_data):
 
 def test_non_ascii_password(url, initialise_user_data):
     '''
-    Tests that auth_login does not accept a Non-ASCII password as one
-    the parameters passed to it
+    Tests that App.route("/auth/login", methods=['POST']) does not
+    accept a Non-ASCII password as one the parameters passed to it
     '''
 
     test_user_0 = initialise_user_data['user0']

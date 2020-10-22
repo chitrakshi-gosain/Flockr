@@ -11,14 +11,14 @@ from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
 # import sys
-# from auth import auth_login, auth_register, auth_logout
+from auth import auth_login, auth_register, auth_logout
 # from channel import channel_invite, channel_details, channel_messages, \
 #     channel_leave, channel_join, channel_addowner, channel_removeowner
 # from channels import channels_list, channels_listall, channels_create
 # from message import message_send, message_remove, message_edit
 # from  user import user_profile, user_profile_setname, user_profile_setemail, \
 #     user_profile_sethandle  
-# from other import users_all, admin_userpermission_change, search, clear
+from other import users_all, admin_userpermission_change, search, clear
 
 # need to plan how to write things here
 '''
@@ -42,26 +42,44 @@ CORS(APP)
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
 APP.register_error_handler(Exception, defaultHandler)
 
-# @APP.route("/auth/login", methods=['POST'])
-# def auth_login_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/auth/login", methods=['POST'])
+def auth_login_route():
+    '''
+    DONT COMMIT THIS YET
+    '''
+    
+    payload = request.get_json()
+    user_credentials = auth_login(payload['email'], payload['password'])
+    return dumps({
+        'u_id': user_credentials['u_id'],
+        'token': user_credentials['token']
+    })
 
-# @APP.route("/auth/logout", methods=['POST'])
-# def auth_logout_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
 
-# @APP.route("/auth/register", methods=['POST'])
-# def auth_register_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/auth/logout", methods=['POST'])
+def auth_logout_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    payload = request.get_json()
+    user_credentials = auth_logout(payload['token'])
+    return dumps({
+        'is_success': user_credentials['is_success'],
+    })
+
+@APP.route("/auth/register", methods=['POST'])
+def auth_register_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    user_credentials = auth_register(payload['email'], payload['password'], \
+        payload['name_first'], payload['name_last'])
+    return dumps({
+        'u_id': user_credentials['u_id'],
+        'token': user_credentials['token']
+    })
 
 # @APP.route("/channel/invite", methods=['POST'])
 # def channel_invite_route():
@@ -203,22 +221,15 @@ APP.register_error_handler(Exception, defaultHandler)
 #     '''
 #     pass
 
-# @APP.route("/clear", methods=['DELETE'])
-# def clear_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
-
-# Example
-@APP.route("/echo", methods=['GET'])
-def echo():
-    data = request.args.get('data')
-    if data == 'echo':
-        raise InputError(description='Cannot echo "echo"')
-    return dumps({
-        'data': data
-    })
+@APP.route("/clear", methods=['DELETE'])
+def clear_route():
+    '''
+    THIS IS NOT OFFICIAL, THIS IS JUST TO GET AUTH TESTS WORKING
+    THIS FUNCTION IS OFFICIALLY IMPLEMENTED BY Jordan Hunyh
+    '''
+    
+    clear()
+    return dumps({})
 
 # DO NOT EDIT ANYTHING BELOW THIS LINE
 
