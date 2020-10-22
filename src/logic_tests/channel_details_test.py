@@ -105,7 +105,6 @@ def test_channel_details_case(users, channels):
 
     assert channel_contents == channel_details(user1_credentials['token'], channel1_id['channel_id'])
 
-
 def test_channel_details_empty_channel(users, channels):
     admin_credentials = users['admin']
     owner_credentials = users['owner']
