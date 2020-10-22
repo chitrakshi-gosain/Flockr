@@ -231,6 +231,16 @@ def clear_route():
     clear()
     return dumps({})
 
+# Example, it is associated with echo_http_test.py, do not remove it
+@APP.route("/echo", methods=['GET'])
+def echo():
+    data = request.args.get('data')
+    if data == 'echo':
+        raise InputError(description='Cannot echo "echo"')
+    return dumps({
+        'data': data
+    })
+
 # DO NOT EDIT ANYTHING BELOW THIS LINE
 
 if __name__ == "__main__":
