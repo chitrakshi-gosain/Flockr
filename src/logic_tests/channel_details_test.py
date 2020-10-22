@@ -71,25 +71,23 @@ def test_return_type(initialise_user_data, initialise_channel_data):
     # Invite two initialise_user_data to the channel                   
     channel_join(user1_credentials['token'], channel1_id['channel_id'])
 
-    owner = {'u_id': owner_credentials['u_id'], 'name_first': 'owner_firstname', 'name_last': 'owner_lastname'}
+    channel_information = channel_details(user1_credentials['token'], channel1_id['channel_id'])
 
-    user1 = {'u_id': user1_credentials['u_id'], 'name_first': 'user1_firstname', 'name_last': 'user1_lastname'}
-    channel_contents = {'name': 'channel1_name', 'owner_members': [owner], 'all_members': [owner, user1]}
+    assert isinstance(channel_information, dict)
 
-    assert isinstance(channel_contents['name'], str)
+    assert isinstance(channel_information['name'], str)
 
-    assert isinstance(channel_contents['owner_members'], list)
-    assert isinstance(channel_contents['owner_members'][0], dict)
-    assert isinstance(channel_contents['owner_members'][0]['u_id'], int)
-    assert isinstance(channel_contents['owner_members'][0]['name_first'], str)
-    assert isinstance(channel_contents['owner_members'][0]['name_last'], str)
+    assert isinstance(channel_information['owner_members'], list)
+    assert isinstance(channel_information['owner_members'][0], dict)
+    assert isinstance(channel_information['owner_members'][0]['u_id'], int)
+    assert isinstance(channel_information['owner_members'][0]['name_first'], str)
+    assert isinstance(channel_information['owner_members'][0]['name_last'], str)
 
-    assert isinstance(channel_contents['all_members'], list)
-    assert isinstance(channel_contents['all_members'][0], dict)
-    assert isinstance(channel_contents['all_members'][0]['u_id'], int)
-    assert isinstance(channel_contents['all_members'][0]['name_first'], str)
-    assert isinstance(channel_contents['all_members'][0]['name_last'], str)
-
+    assert isinstance(channel_information['all_members'], list)
+    assert isinstance(channel_information['all_members'][0], dict)
+    assert isinstance(channel_information['all_members'][0]['u_id'], int)
+    assert isinstance(channel_information['all_members'][0]['name_first'], str)
+    assert isinstance(channel_information['all_members'][0]['name_last'], str)
 
 def test_channel_details_case(initialise_user_data, initialise_channel_data):
 
