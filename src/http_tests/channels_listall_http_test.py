@@ -317,7 +317,7 @@ def test_channels_listall_invalid_token(url, initialise_user_data):
     '''
     Attempting to call channels_listall without a valid token
     '''
-    users = init
+    users = initialise_user_data
 
 
     # Only way to guarrantee a token is invalid is to invalidate an existing token

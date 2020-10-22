@@ -68,6 +68,13 @@ def initialise_user_data(url):
         'name_last': 'user1_last'
     }).json()
 
+    user2_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user2@email.com',
+        'password': 'user2_pass1!',
+        'name_first': 'user2_first',
+        'name_last': 'user2_last'
+    }).json()
+
     user3_details = requests.post(f"{url}/auth/register", json={
         'email': 'user3@email.com',
         'password': 'user3_pass1!',
@@ -133,15 +140,15 @@ def initialise_user_data(url):
 
     return {
         'user0': user0_details,
-        'user1': user1_details
-        'user2': user0_details,
-        'user3': user0_details,
-        'user4': user0_details,
-        'user5': user0_details,
-        'user6': user0_details,
-        'user7': user0_details,
-        'user8': user0_details,
-        'user9': user0_details,
-        'user10': user0_details,
-        'user12': user0_details,
+        'user1': user1_details,
+        'user2': user2_details,
+        'user3': user3_details,
+        'user4': user4_details,
+        'user5': user5_details,
+        'user6': user6_details,
+        'user7': user7_details,
+        'user8': user8_details,
+        'user9': user9_details,
+        'user10': user10_details,
+        'user11': user11_details,
     }
