@@ -124,7 +124,7 @@ def initialise_user_data(url, initialise_user_dictionary):
         'user0': user0_details,
         'user1': user1_details,
         'user2': user2_details,
-        'user3': user3_deatils
+        'user3': user3_details
     }
 
 @pytest.fixture
@@ -132,7 +132,6 @@ def initialise_channel_data(url, reset, initialise_user_data):
     '''
     creates 3 channels with descriptive data for testing
     '''
-
     public_details = requests.post(f"{url}/channels/create", json={
         'token': initialise_user_data['admin']['token'],
         'name': 'public',
