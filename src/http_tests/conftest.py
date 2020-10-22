@@ -134,4 +134,14 @@ def initialise_user_data(url):
     return {
         'user0': user0_details,
         'user1': user1_details
+        'user2': user0_details,
+        'user3': user0_details,
+        'user4': user0_details,
+        'user5': user0_details,
+        'user6': user0_details,
+        'user7': user0_details,
+        'user8': user0_details,
+        'user9': user0_details,
+        'user10': user0_details,
+        'user12': user0_details,
     }
