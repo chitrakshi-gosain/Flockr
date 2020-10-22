@@ -103,6 +103,43 @@ def initialise_user_data(url, initialise_user_dictionary):
     user3 = initialise_user_dictionary['user3_dict']
     user3_details = requests.post(f"{url}/auth/register", json=user3).json()
 
+    user2_details = requests.post(f"{url}/auth/register", json={
+        'email': 'user2@email.com',
+        'password': 'user2_pass1!',
+        'name_first': 'user2_first',
+        'name_last': 'user2_last'
+    }).json()
+
+    return {
+        'admin': admin_details,
+        'user1': user1_details,
+        'user2': user2_details
+    }
+
+@pytest.fixture
+def initialise_channel_data(url, reset, initialise_user_data):
+    '''
+    creates 3 channels with descriptive data for testing
+    '''
+
+    public_details = requests.post(f"{url}/channels/create", json={
+        'token': initialise_user_data['admin']['token'],
+        'name': 'public',
+        'is_public': True
+    }).json()
+
+    private_details = requests.post(f"{url}/channels/create", json={
+        'token': initialise_user_data['admin']['token'],
+        'name': 'private1',
+        'is_public': False
+    }).json()
+
+    user_private_details = requests.post(f"{url}/channels/create", json={
+        'token': initialise_user_data['user1']['token'],
+        'name': 'private2',
+        'is_public': False
+    }).json()
+
     return {
         'user0': user0_details,
         'user1': user1_details,
