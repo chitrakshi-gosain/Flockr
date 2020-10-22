@@ -49,6 +49,17 @@ def reset(url):
 
 @pytest.fixture
 def initialise_user_dictionary(reset):
+    '''
+    Creates dictionaries with descriptive user data for testing
+    purposes and returns user data which is implementation dependent
+    '''
+
+    admin = {
+        'email': 'admin@email.com',
+        'password': 'admin_pass1!',
+        'name_first': 'admin_first',
+        'name_last': 'admin_last'
+    }
 
     user0 = {
         'email': 'user0@email.com',
@@ -79,6 +90,7 @@ def initialise_user_dictionary(reset):
     }
     
     return {
+        'admin_dict': admin, #<-- I also added a missing comma here
         'user0_dict': user0,
         'user1_dict': user1,
         'user2_dict': user2,
@@ -91,6 +103,10 @@ def initialise_user_data(url, initialise_user_dictionary):
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
     '''
+    
+    admin = initialise_user_dictionary['admin_dict']
+    admin_details = requests.post(f"{url}/auth/register", json=admin).json()
+
     user0 = initialise_user_dictionary['user0_dict']
     user0_details = requests.post(f"{url}/auth/register", json=user0).json()
 
@@ -141,8 +157,38 @@ def initialise_channel_data(url, reset, initialise_user_data):
     }).json()
 
     return {
+        'admin': admin_details,
         'user0': user0_details,
         'user1': user1_details,
         'user2': user2_details,
         'user3': user3_details
+    }
+
+@pytest.fixture
+def initialise_channel_data(url, reset, initialise_user_data):
+    '''
+    creates 3 channels with descriptive data for testing
+    '''
+    public_details = requests.post(f"{url}/channels/create", json={
+        'token': initialise_user_data['admin']['token'],
+        'name': 'public',
+        'is_public': True
+    }).json()
+
+    private_details = requests.post(f"{url}/channels/create", json={
+        'token': initialise_user_data['admin']['token'],
+        'name': 'private1',
+        'is_public': False
+    }).json()
+
+    user_private_details = requests.post(f"{url}/channels/create", json={
+        'token': initialise_user_data['user1']['token'],
+        'name': 'private2',
+        'is_public': False
+    }).json()
+
+    return {
+        'admin_publ': public_details,
+        'admin_priv': private_details,
+        'user1_priv': user_private_details
     }
