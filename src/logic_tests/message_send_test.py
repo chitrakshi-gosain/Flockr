@@ -40,7 +40,7 @@ def test_insufficient_parameters(reset):
         message_send(None, None, None)
 
 def test_user_not_authorised(initialise_user_data, initialise_channel_data):
-    
+
     channel1_id = initialise_channel_data['private']
     user1_credentials = initialise_user_data['user1']      
     with pytest.raises(AccessError):

@@ -30,7 +30,7 @@ def initialise_channel_data(initialise_user_data):
         'private': private_channel
     }
 
-def test_insufficient_parameters(initialise_user_data):
+def test_insufficient_parameters(reset):
     with pytest.raises(InputError):
         channel_messages(None, None, None)
 

@@ -90,7 +90,7 @@ def initialise_user_dictionary(reset):
     }
     
     return {
-        'admin_dict': admin
+        'admin_dict': admin,
         'user0_dict': user0,
         'user1_dict': user1,
         'user2_dict': user2,
@@ -105,7 +105,7 @@ def initialise_user_data(url, initialise_user_dictionary):
     '''
     
     admin = initialise_user_dictionary['admin_dict']
-    admin_details = requests.post(f"{url}/auth/register", json=admin.json()
+    admin_details = requests.post(f"{url}/auth/register", json=admin).json()
 
     user0 = initialise_user_dictionary['user0_dict']
     user0_details = requests.post(f"{url}/auth/register", json=user0).json()
@@ -119,19 +119,12 @@ def initialise_user_data(url, initialise_user_dictionary):
     user3 = initialise_user_dictionary['user3_dict']
     user3_details = requests.post(f"{url}/auth/register", json=user3).json()
 
-    user2_details = requests.post(f"{url}/auth/register", json={
-        'email': 'user2@email.com',
-        'password': 'user2_pass1!',
-        'name_first': 'user2_first',
-        'name_last': 'user2_last'
-    }).json()
-
     return {
         'admin': admin_details,
         'user0': user0_details,
         'user1': user1_details,
         'user2': user2_details,
-        'user3': user3_deatils
+        'user3': user3_details
     }
 
 @pytest.fixture
@@ -139,7 +132,6 @@ def initialise_channel_data(url, reset, initialise_user_data):
     '''
     creates 3 channels with descriptive data for testing
     '''
-
     public_details = requests.post(f"{url}/channels/create", json={
         'token': initialise_user_data['admin']['token'],
         'name': 'public',

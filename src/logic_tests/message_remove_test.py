@@ -59,8 +59,6 @@ def test_token_invalid(initialise_user_data, initialise_channel_data):
 def test_invalid_message_id(initialise_user_data, initialise_channel_data):
     
     owner_credentials = initialise_user_data['owner']
-    channel1_id = initialise_channel_data['private']
-
     incorrect_message_id = -1
     with pytest.raises(InputError):
         message_remove(owner_credentials['token'], incorrect_message_id)
