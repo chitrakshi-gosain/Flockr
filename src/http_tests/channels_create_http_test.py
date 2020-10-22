@@ -67,11 +67,11 @@ def test_channels_create_valid_basic(url, initialise_user_data):
 
     assert basic_channel_details['name'] == 'A Basic Channel'
     assert basic_channel_details['owner_members'][0]['u_id'] == users['user0']['u_id']
-    assert basic_channel_details['owner_members'][0]['name_first'] == 'user0user6_firstst'
-    assert basic_channel_details['owner_members'][0]['name_last'] == 'user0user6_firstt'
+    assert basic_channel_details['owner_members'][0]['name_first'] == 'user0_first'
+    assert basic_channel_details['owner_members'][0]['name_last'] == 'user0_last'
     assert basic_channel_details['all_members'][0]['u_id'] == users['user0']['u_id']
-    assert basic_channel_details['all_members'][0]['name_first'] == 'user0user6_firstst'
-    assert basic_channel_details['all_members'][0]['name_last'] == 'user0user6_firstt'
+    assert basic_channel_details['all_members'][0]['name_first'] == 'user0_first'
+    assert basic_channel_details['all_members'][0]['name_last'] == 'user0_last'
 
 def test_channels_create_valid_empty(url, initialise_user_data):
     '''
@@ -111,7 +111,7 @@ def test_channels_create_valid_private(url, initialise_user_data):
 
     # Creating private channel
     channel_id = requests.post(f'{url}/channels/create', json={
-        'token': users['john']['token'],
+        'token': users['user6']['token'],
         'name': 'Private Disc',
         'is_public': False,
     }).json()
@@ -121,7 +121,7 @@ def test_channels_create_valid_private(url, initialise_user_data):
 
     # Check that channel details have all been set correctly
     private_channel_details = requests.get(f'{url}/channel/details', params={
-        'token': users['john']['token'],
+        'token': users['user6']['token'],
         'channel_id': channel_id['channel_id'],
     }).json()
 
