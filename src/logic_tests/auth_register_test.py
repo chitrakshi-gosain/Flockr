@@ -162,16 +162,16 @@ def test_return_type(reset):
 
 def test_non_ascii_name_first(reset):
     '''
-    Tests that auth_register raises an InputError when a name_first is
-    Non-ASCII
+    Tests that auth_register does not raise an InputError when a
+    name_first is Non-ASCII
     '''
 
     auth_register('user0@email.com', 'user0_pass1!', 'Anaïs', 'user0_last')
 
 def test_non_ascii_name_last(reset):
     '''
-    Tests that auth_register raises an InputError when a name_last is
-    Non-ASCII
+    Tests that auth_register does not raise an InputError when a
+    name_last is Non-ASCII
     '''
 
     auth_register('user0@email.com', 'user0_pass1!', 'user0_first', 'सिंह')

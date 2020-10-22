@@ -22,7 +22,7 @@ import pytest
 @pytest.fixture
 def url():
     url_re = re.compile(r' \* Running on ([^ ]*)')
-    server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
+    server = Popen(["python3", "server.py"], stderr=PIPE, stdout=PIPE)
     line = server.stderr.readline()
     local_url = url_re.match(line.decode())
     if local_url:
@@ -45,7 +45,7 @@ def reset(url):
     Resets the internal data of the application to it's initial state
     '''
 
-    requests.post(f"{url}/clear")
+    requests.delete(f"{url}/clear")
 
 @pytest.fixture
 def initialise_user_data(url, reset):
