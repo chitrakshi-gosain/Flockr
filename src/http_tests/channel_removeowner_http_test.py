@@ -8,7 +8,6 @@ Iteration 2
 import json
 import requests
 import pytest
-import helper
 from error import InputError, AccessError
 
 '''
