@@ -36,16 +36,11 @@ Error type: AccessError
     -> ..
 '''
 
-# def test_url(url):
-#     '''
-#     A simple sanity test to check that the server is set up properly
-#     '''
-#     assert url.startswith("http")
-
-# def test_something(url):
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
+def test_url(url):
+    '''
+    A simple sanity test to check that the server is set up properly
+    '''
+    assert url.startswith("http")
 
 def test_http_message_edit_noerrors(initialise_channel_data, initialise_user_data, url):
     '''
@@ -60,26 +55,48 @@ def test_http_message_edit_noerrors(initialise_channel_data, initialise_user_dat
 
     first_message = "This is the original message."
 
-    message_info = requests.post(f"{url}/message/send", json={
+    message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
         'channel_id': channel_id,
         'message': first_message
-    }).json()
-    message_id = message_info["message_id"]
-    message_dict = helper.get_message_info(message_id)
+    })
+    assert message_send_response.status_code == 200
+    message_id = message_send_response.json()["message_id"]
+    
+    # search using empty query string, thus return list of every message
+    search_response = requests.get(f"{url}/search", params={
+        'token': token,
+        'query_str': ""
+    })
+    assert search_response.status_code == 200
+    messages = search_response.json()['messages']
 
-    assert message_dict['message'] == first_message
+    # assert message_dict contains the original message
+    for message_dict in messages:
+        if message_dict['message_id'] == message_id:
+            assert message_dict['message'] == first_message
 
     second_message = "This is the edited message."
 
-    requests.post(f"{url}/message/edit", json={
+    message_edit_response = requests.put(f"{url}/message/edit", json={
         'token': token,
         'message_id': message_id,
         'message': second_message
     })
+    assert message_edit_response.status_code == 200
 
-    message_dict = helper.get_message_info(message_id)
-    assert message_dict['message'] == second_message
+    # search using empty query string, thus return list of every message
+    search_response = requests.get(f"{url}/search", params={
+        'token': token,
+        'query_str': ""
+    })
+    assert search_response.status_code == 200
+    messages = search_response.json()['messages']
+
+    # assert message_dict contains the edited message
+    for message_dict in messages:
+        if message_dict['message_id'] == message_id:
+            assert message_dict['message'] == second_message
 
 def test_http_message_edit_secondmessage(initialise_channel_data, initialise_user_data, url):
     '''
@@ -95,33 +112,56 @@ def test_http_message_edit_secondmessage(initialise_channel_data, initialise_use
     first_message0 = "This is the first original message."
     first_message1 = "This is the second original message."
 
-    message_info0 = requests.post(f"{url}/message/send", json={
+    message_send_response0 = requests.post(f"{url}/message/send", json={
         'token': token,
         'channel_id': channel_id,
         'message': first_message0
     })
-    message_id0 = message_info0["message_id"]
-    message_dict0 = helper.get_message_info(message_id0)
-    assert message_dict0['message'] == first_message0
+    assert message_send_response0.status_code == 200
+    message_id0 = message_send_response0.json()["message_id"]
 
-    message_info1 = requests.post(f"{url}/message/send", json={
+    message_send_response1 = requests.post(f"{url}/message/send", json={
         'token': token,
         'channel_id': channel_id,
         'message': first_message1
     })
-    message_id1 = message_info1["message_id"]
-    message_dict1 = helper.get_message_info(message_id1)
-    assert message_dict1['message'] == first_message1
+    assert message_send_response1.status_code == 200
+    message_id1 = message_send_response1.json()["message_id"]
+
+    # search using empty query string, thus return list of every message
+    search_response = requests.get(f"{url}/search", params={
+        'token': token,
+        'query_str': ""
+    })
+    assert search_response.status_code == 200
+    messages = search_response.json()['messages']
+
+    for message_dict in messages:
+        if message_dict['message_id'] == message_id0:
+            assert message_dict['message'] == first_message0
+        if message_dict['message_id'] == message_id1:
+            assert message_dict['message'] == first_message1
 
     second_message1 = "This is the second edited message."
 
-    requests.post(f"{url}/message/edit", json={
+    message_edit_response1 = requests.put(f"{url}/message/edit", json={
         'token': token,
         'message_id': message_id1,
         'message': second_message1
     })
-    message_dict1 = helper.get_message_info(message_id1)
-    assert message_dict1['message'] == second_message1
+    assert message_edit_response1.status_code == 200
+
+    # search using empty query string, thus return list of every message
+    search_response = requests.get(f"{url}/search", params={
+        'token': token,
+        'query_str': ""
+    })
+    assert search_response.status_code == 200
+    messages = search_response.json()['messages']
+
+    for message_dict in messages:
+        if message_dict['message_id'] == message_id1:
+            assert message_dict['message'] == second_message1
 
 def test_http_message_edit_emptystring(initialise_channel_data, initialise_user_data, url):
     '''
@@ -137,27 +177,44 @@ def test_http_message_edit_emptystring(initialise_channel_data, initialise_user_
 
     first_message = "This is the original message."
 
-    message_info = requests.post(f"{url}/message/send", json={
+    message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
         'channel_id': channel_id,
         'message': first_message
-    }).json()
-    message_id = message_info["message_id"]
-    message_dict = helper.get_message_info(message_id)
-    assert message_dict['message'] == first_message
+    })
+    assert message_send_response.status_code == 200
+    message_id = message_send_response.json()["message_id"]
+
+    # search using empty query string, thus return list of every message
+    search_response = requests.get(f"{url}/search", params={
+        'token': token,
+        'query_str': ""
+    })
+    assert search_response.status_code == 200
+    messages = search_response.json()['messages']
+
+    # assert message_dict contains the original message
+    for message_dict in messages:
+        if message_dict['message_id'] == message_id:
+            assert message_dict['message'] == first_message
 
     second_message = ""
 
-    requests.post(f"{url}/message/edit", json={
+    message_edit_response = requests.put(f"{url}/message/edit", json={
         'token': token,
         'message_id': message_id,
         'message': second_message
     })
+    assert message_edit_response.status_code == 200
 
-    # get_message_from_id returns False if message does not exist
-    # therefore check that message has been deleted
-    message_dict = helper.get_message_info(message_id)
-    assert not message_dict
+    # search using empty query string, thus return list of every message
+    search_response = requests.get(f"{url}/search", params={
+        'token': token,
+        'query_str': ""
+    })
+    assert search_response.status_code == 200
+    messages = search_response.json()['messages']
+    assert message_id not in [message['message_id'] for message in messages]
 
 def test_http_message_edit_notsender(initialise_channel_data, initialise_user_data, url):
     '''
@@ -171,44 +228,56 @@ def test_http_message_edit_notsender(initialise_channel_data, initialise_user_da
 
     # user 'user0' is not admin
     user0 = initialise_user_data['user0']
-    u_id0, token0 = user0['u_id'], user0['token']
+    token0 = user0['token']
 
     # 'admin_publ' is a channel created by the user 'admin', thus 'admin' is a member and owner
     channel_info = initialise_channel_data['admin_publ']
     channel_id = channel_info['channel_id']
 
     # user0 joins channel, therefore is a member but not an owner
-    requests.post(f"{url}/channel/join", json={
+    channel_join_response = requests.post(f"{url}/channel/join", json={
         'token': token0,
         'channel_id': channel_id
     })
+    assert channel_join_response.status_code == 200
 
     first_message = "This is the original message."
 
-    message_info = requests.post(f"{url}/message/send", json={
+    message_send_response = requests.post(f"{url}/message/send", json={
         'token': token_admin,
         'channel_id': channel_id,
         'message': first_message
-    }).json()
+    })
+    assert message_send_response.status_code == 200
+    message_id = message_send_response.json()["message_id"]
 
-    message_id = message_info["message_id"]
-    message_dict = helper.get_message_info(message_id)
-    assert message_dict['message'] == first_message
+    # search using empty query string, thus return list of every message
+    search_response = requests.get(f"{url}/search", params={
+        'token': token_admin,
+        'query_str': ""
+    })
+    assert search_response.status_code == 200
+    messages = search_response.json()['messages']
+
+    # assert message_dict contains the original message
+    for message_dict in messages:
+        if message_dict['message_id'] == message_id:
+            assert message_dict['message'] == first_message
 
     second_message = "This is the edited message."
 
-    with pytest.raises(AccessError):
-        requests.post(f"{url}/message/edit", json={
-            'token': token0,
-            'message_id': message_id,
-            'message': second_message
-        })
+    # user0 did not send the message with message_id, so token0 should fail
+    # assert that channel_addowner returns status code 400 (indicating user error)
+    message_edit_response = requests.put(f"{url}/message/edit", json={
+        'token': token0,
+        'message_id': message_id,
+        'message': second_message
+    })
+    assert message_edit_response.status_code == 400
 
-def test_http_message_edit_notauth(initialise_channel_data, initialise_user_data, url):
+def test_http_message_edit_invalidtoken(initialise_channel_data, initialise_user_data, url):
     '''
-    test that message_edit raises AccessError
-    if token is not authorised
-    i.e. user is not admin of the flockr or owner of the channel message is in
+    test that message_edit raises AccessError if the provided token is not valid
     '''
 
     user = initialise_user_data['admin']
@@ -219,23 +288,36 @@ def test_http_message_edit_notauth(initialise_channel_data, initialise_user_data
 
     first_message = "This is the original message."
 
-    message_info = requests.post(f"{url}/message/send", json={
+    message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
         'channel_id': channel_id,
         'message': first_message
-    }).json()
-    message_id = message_info["message_id"]
-    message_dict = helper.get_message_info(message_id)
-    assert message_dict['message'] == first_message
+    })
+    assert message_send_response.status_code == 200
+    message_id = message_send_response.json()["message_id"]
+
+    # search using empty query string, thus return list of every message
+    search_response = requests.get(f"{url}/search", params={
+        'token': token,
+        'query_str': ""
+    })
+    assert search_response.status_code == 200
+    messages = search_response.json()['messages']
+
+    # assert message_dict contains the original message
+    for message_dict in messages:
+        if message_dict['message_id'] == message_id:
+            assert message_dict['message'] == first_message
 
     second_message = "This is the edited message."
 
     # assume " " is not a valid token
     token = " "
 
-    with pytest.raises(AccessError):
-        requests.post(f"{url}/message/edit", json={
-            'token': token,
-            'message_id': message_id,
-            'message': second_message
-        })
+    # assert that channel_addowner returns status code 400 (indicating user error)
+    message_edit_response = requests.put(f"{url}/message/edit", json={
+        'token': token,
+        'message_id': message_id,
+        'message': second_message
+    })
+    assert message_edit_response.status_code == 400
