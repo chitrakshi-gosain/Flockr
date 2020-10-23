@@ -61,6 +61,10 @@ def test_return_type(initialise_user_data, initialise_channel_data):
     # we need to check the return type of message list after we implement send_message from message.py
 
     assert isinstance(message_history['messages'], list)
+    # assert isinstance(message_history['messages'][0]['message_id'], int)
+    # assert isinstance(message_history['messages'][0]['u_id'], int)
+    # assert isinstance(message_history['messages'][0]['mesaage'], str)
+    # assert isinstance(message_history['messages'][0]['time_created'], time)
     assert isinstance(message_history['start'], int)
     assert isinstance(message_history['end'], int)
 
