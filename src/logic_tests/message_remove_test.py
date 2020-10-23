@@ -71,28 +71,28 @@ def test_empty(initialise_user_data, initialise_channel_data):
 
     
 
-def test_multiple_dicts(initialise_user_data, initialise_channel_data):
+# def test_multiple_dicts(initialise_user_data, initialise_channel_data):
     
-    owner_credentials = initialise_user_data['owner']
-    channel1_id = initialise_channel_data['private']                              # create a public channel
+#     owner_credentials = initialise_user_data['owner']
+#     channel1_id = initialise_channel_data['private']                              # create a public channel
     
-    admin_token = owner_credentials['token']
-    user1_credentials = initialise_user_data['user1']      
+#     admin_token = owner_credentials['token']
+#     user1_credentials = initialise_user_data['user1']      
     
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)                                 # create a public channel
-    channel_join(user1_credentials['token'], channel1_id['channel_id'])
+#     channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)                                 # create a public channel
+#     channel_join(user1_credentials['token'], channel1_id['channel_id'])
     
-    message_send(user1_credentials['token'], channel1_id['channel_id'], "Mum, there's something I need to tell you")
-    message_send(owner_credentials['token'], channel1_id['channel_id'], "What is it?")
-    message_id = message_send(user1_credentials['token'], channel1_id['channel_id'], "I failed my assignment")
-    messages = get_messages(admin_token)
-    assert messages['messages'][2]['message'] == "I failed my assignment"
+#     message_send(user1_credentials['token'], channel1_id['channel_id'], "Mum, there's something I need to tell you")
+#     message_send(owner_credentials['token'], channel1_id['channel_id'], "What is it?")
+#     message_id = message_send(user1_credentials['token'], channel1_id['channel_id'], "I failed my assignment")
+#     messages = get_messages(admin_token)
+#     assert messages['messages'][2]['message'] == "I failed my assignment"
 
-    message_remove(user1_credentials['token'], message_id['message_id'])
-    message_send(owner_credentials['token'], channel1_id['channel_id'], "Sorry hunny I missed that. What did you delete?")
-    message_send(user1_credentials['token'], channel1_id['channel_id'], "Oh it's nothing, I'll be home soon! Byee")
-    message_send(user1_credentials['token'], channel1_id['channel_id'], "Bye son")
+#     message_remove(user1_credentials['token'], message_id['message_id'])
+#     message_send(owner_credentials['token'], channel1_id['channel_id'], "Sorry hunny I missed that. What did you delete?")
+#     message_send(user1_credentials['token'], channel1_id['channel_id'], "Oh it's nothing, I'll be home soon! Byee")
+#     message_send(user1_credentials['token'], channel1_id['channel_id'], "Bye son")
 
-    # Check to see if the message has been deleted in the channel
-    messages = get_messages(admin_token)
-    assert messages['messages'][2]['message'] == "Sorry hunny I missed that. What did you delete?"
+#     # Check to see if the message has been deleted in the channel
+#     messages = get_messages(admin_token)
+#     assert messages['messages'][2]['message'] == "Sorry hunny I missed that. What did you delete?"
