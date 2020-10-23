@@ -47,26 +47,15 @@ Error type: AccessError
 #     ADD DOCSTRING HERE
 #     '''
 
-def test_http_message_edit_noerrors(initialise_user_data, url):
+def test_http_message_edit_noerrors(initialise_channel_data, initialise_user_data, url):
     '''
     basic test with no edge case or errors raised
     '''
 
-    user = {
-        'email': 'user@email.com',
-        'password': 'user_pass1!',
-        'name_first': 'user_first',
-        'name_last': 'user_last'
-    }
+    user = initialise_user_data['admin']
+    token = user['token']
 
-    user_details = requests.post(f"{url}/auth/register", json=user).json()
-    token = user_details['token']
-
-    channel_info = requests.post(f"{url}/channels/create", json={
-        'token': token,
-        'name': "A Channel Name",
-        'is_public': True
-    }).json()
+    channel_info = initialise_channel_data['admin_publ']
     channel_id = channel_info['channel_id']
 
     first_message = "This is the original message."
@@ -78,6 +67,7 @@ def test_http_message_edit_noerrors(initialise_user_data, url):
     }).json()
     message_id = message_info["message_id"]
     message_dict = helper.get_message_info(message_id)
+
     assert message_dict['message'] == first_message
 
     second_message = "This is the edited message."
@@ -91,26 +81,15 @@ def test_http_message_edit_noerrors(initialise_user_data, url):
     message_dict = helper.get_message_info(message_id)
     assert message_dict['message'] == second_message
 
-def test_http_message_edit_secondmessage(initialise_user_data, url):
+def test_http_message_edit_secondmessage(initialise_channel_data, initialise_user_data, url):
     '''
     edits the second sent message, not the first
     '''
 
-    user = {
-        'email': 'user@email.com',
-        'password': 'user_pass1!',
-        'name_first': 'user_first',
-        'name_last': 'user_last'
-    }
+    user = initialise_user_data['admin']
+    token = user['token']
 
-    user_details = requests.post(f"{url}/auth/register", json=user).json()
-    token = user_details['token']
-
-    channel_info = requests.post(f"{url}/channels/create", json={
-        'token': token,
-        'name': "A Channel Name",
-        'is_public': True
-    }).json()
+    channel_info = initialise_channel_data['admin_publ']
     channel_id = channel_info['channel_id']
 
     first_message0 = "This is the first original message."
@@ -144,27 +123,16 @@ def test_http_message_edit_secondmessage(initialise_user_data, url):
     message_dict1 = helper.get_message_info(message_id1)
     assert message_dict1['message'] == second_message1
 
-def test_http_message_edit_emptystring(initialise_user_data, url):
+def test_http_message_edit_emptystring(initialise_channel_data, initialise_user_data, url):
     '''
     test that message_edit deletes the message
     if provided with an empty string
     '''
 
-    user = {
-        'email': 'user@email.com',
-        'password': 'user_pass1!',
-        'name_first': 'user_first',
-        'name_last': 'user_last'
-    }
+    user = initialise_user_data['admin']
+    token = user['token']
 
-    user_details = requests.post(f"{url}/auth/register", json=user).json()
-    token = user_details['token']
-
-    channel_info = requests.post(f"{url}/channels/create", json={
-        'token': token,
-        'name': "A Channel Name",
-        'is_public': True
-    }).json()
+    channel_info = initialise_channel_data['admin_publ']
     channel_id = channel_info['channel_id']
 
     first_message = "This is the original message."
@@ -191,47 +159,34 @@ def test_http_message_edit_emptystring(initialise_user_data, url):
     message_dict = helper.get_message_info(message_id)
     assert not message_dict
 
-def test_http_message_edit_notsender(initialise_user_data, url):
+def test_http_message_edit_notsender(initialise_channel_data, initialise_user_data, url):
     '''
     test that message_edit raises AccessError
     if user (based on token) is not the sender of message with message ID message_id
     '''
 
-    user0 = {
-        'email': 'user0@email.com',
-        'password': 'user0_pass1!',
-        'name_first': 'user0_first',
-        'name_last': 'user0_last'
-    }
-    user0_details = requests.post(f"{url}/auth/register", json=user0).json()
-    token0 = user0_details['token']
+    # user 'admin' is the first to register, thus also admin of the flockr
+    admin = initialise_user_data['admin']
+    token_admin = admin['token']
 
-    user1 = {
-        'email': 'user1@email.com',
-        'password': 'user1_pass1!',
-        'name_first': 'user1_first',
-        'name_last': 'user1_last'
-    }
-    user1_details = requests.post(f"{url}/auth/register", json=user1).json()
-    token1 = user1_details['token']
+    # user 'user0' is not admin
+    user0 = initialise_user_data['user0']
+    u_id0, token0 = user0['u_id'], user0['token']
 
-    # user0 creates channel, user1 joins it
-    channel_info = requests.post(f"{url}/channels/create", json={
-        'token': token0,
-        'name': "A Channel Name",
-        'is_public': True
-    }).json()
-    channel_id = channel_info["channel_id"]
+    # 'admin_publ' is a channel created by the user 'admin', thus 'admin' is a member and owner
+    channel_info = initialise_channel_data['admin_publ']
+    channel_id = channel_info['channel_id']
 
+    # user0 joins channel, therefore is a member but not an owner
     requests.post(f"{url}/channel/join", json={
-        'token': token1,
+        'token': token0,
         'channel_id': channel_id
     })
 
     first_message = "This is the original message."
 
     message_info = requests.post(f"{url}/message/send", json={
-        'token': token0,
+        'token': token_admin,
         'channel_id': channel_id,
         'message': first_message
     }).json()
@@ -244,33 +199,22 @@ def test_http_message_edit_notsender(initialise_user_data, url):
 
     with pytest.raises(AccessError):
         requests.post(f"{url}/message/edit", json={
-            'token': token1,
+            'token': token0,
             'message_id': message_id,
             'message': second_message
         })
 
-def test_http_message_edit_notauth(initialise_user_data, url):
+def test_http_message_edit_notauth(initialise_channel_data, initialise_user_data, url):
     '''
     test that message_edit raises AccessError
     if token is not authorised
     i.e. user is not admin of the flockr or owner of the channel message is in
     '''
 
-    user = {
-        'email': 'user@email.com',
-        'password': 'user_pass1!',
-        'name_first': 'user_first',
-        'name_last': 'user_last'
-    }
+    user = initialise_user_data['admin']
+    token = user['token']
 
-    user_details = requests.post(f"{url}/auth/register", json=user).json()
-    token = user_details['token']
-
-    channel_info = requests.post(f"{url}/channels/create", json={
-        'token': token,
-        'name': "A Channel Name",
-        'is_public': True
-    }).json()
+    channel_info = initialise_channel_data['admin_publ']
     channel_id = channel_info['channel_id']
 
     first_message = "This is the original message."
