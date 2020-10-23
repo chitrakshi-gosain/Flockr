@@ -41,7 +41,7 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
-def test_http_channel_addowner_noerrors(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
+def test_http_channel_addowner_noerrors(initialise_channel_data, initialise_user_data, url):
     '''
     basic test with no edge case or errors raised
     '''
@@ -95,7 +95,7 @@ def test_http_channel_addowner_noerrors(initialise_channel_data, initialise_user
     owner_ids = [user['u_id'] for user in channel_owners]
     assert u_id0 in owner_ids
 
-def test_http_channel_addowner_invalidchannel(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
+def test_http_channel_addowner_invalidchannel(initialise_channel_data, initialise_user_data, url):
     '''
     test that channel_addowner raises InputError if channel_id is not a valid channel_id
     '''
@@ -141,7 +141,7 @@ def test_http_channel_addowner_invalidchannel(initialise_channel_data, initialis
     })
     assert channel_addowner_response.status_code == 400
 
-def test_http_channel_addowner_alreadyowner(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
+def test_http_channel_addowner_alreadyowner(initialise_channel_data, initialise_user_data, url):
     '''
     test that channel_addowner raises InputError
     if user with provided u_id is already an owner of the channel
@@ -205,7 +205,7 @@ def test_http_channel_addowner_alreadyowner(initialise_channel_data, initialise_
     })
     assert channel_addowner_response.status_code == 400
 
-def test_http_channel_addowner_authnotowner(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
+def test_http_channel_addowner_authnotowner(initialise_channel_data, initialise_user_data, url):
     '''
     test that channel_addowner raises AccessError
     if the authorised user is not an owner of the channel
@@ -235,7 +235,7 @@ def test_http_channel_addowner_authnotowner(initialise_channel_data, initialise_
     })
     assert channel_addowner_response.status_code == 400
 
-def test_http_channel_addowner_invalidtoken(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
+def test_http_channel_addowner_invalidtoken(initialise_channel_data, initialise_user_data, url):
     '''
     test that channel_addowner raises AccessError if the provided token is not valid
     '''
