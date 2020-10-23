@@ -17,10 +17,10 @@ from auth import auth_register
 
 '''
 FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> clear() return {}
 -> auth_register(email, password, name_first, name_last) return
    {u_id, token}
--> auth_login(email,password) return {u_id, token}
--> auth_logout(token) return {is_success}
+-> user_profile(token, u_id) return {user}
 '''
 
 '''
@@ -119,7 +119,7 @@ def test_too_long_last_name(reset):
 
     with pytest.raises(InputError):
         auth_register('user0@email.com', 'user0_pass1!', 'user0_first', \
-                     'user0_last' * 11)
+                     'user0_last' * 6)
 
 def test_password_too_short_(reset):
     '''
@@ -162,16 +162,16 @@ def test_return_type(reset):
 
 def test_non_ascii_name_first(reset):
     '''
-    Tests that auth_register raises an InputError when a name_first is
-    Non-ASCII
+    Tests that auth_register does not raise an InputError when a
+    name_first is Non-ASCII
     '''
 
     auth_register('user0@email.com', 'user0_pass1!', 'Anaïs', 'user0_last')
 
 def test_non_ascii_name_last(reset):
     '''
-    Tests that auth_register raises an InputError when a name_last is
-    Non-ASCII
+    Tests that auth_register does not raise an InputError when a
+    name_last is Non-ASCII
     '''
 
     auth_register('user0@email.com', 'user0_pass1!', 'user0_first', 'सिंह')
@@ -251,7 +251,7 @@ def test_too_long_handle_first_name(reset):
     '''
 
     test_user_0 = auth_register('user0@email.com', 'user0_pass1!', \
-                               'user0_FIRST' * 2, 'user0_LAST' * 2)
+                               'user0_FIRST' * 2, 'user0_LAST')
     user_profile_0 = user_profile(test_user_0['token'], test_user_0['u_id'])
     assert user_profile_0['user']['handle_str'] == 'user0_firstuser0_fir'
 
