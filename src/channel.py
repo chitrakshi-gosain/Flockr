@@ -158,10 +158,6 @@ def channel_details(token, channel_id):
                      validity, user authorisation
     '''
 
-    # Testing for insufficient parameters
-    if None in {token, channel_id}:
-        raise InputError('Insufficient parameters given')
-
     # Testing for token validity
     user_info = helper.get_user_info('token', token)
     if not user_info:
@@ -205,12 +201,6 @@ def channel_messages(token, channel_id, start):
     order of checks: insufficient parameters, token validity, channel
                      validity, user authorisation
     '''
-
-    # Testing for insufficient parameters
- # Testing for insufficient parameters
-    if None in {token, channel_id}:
-        raise InputError('Insufficient parameters given')
-
     # Testing for token validity
     user_info = helper.get_user_info('token', token)
     if not user_info:
