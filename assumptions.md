@@ -1,5 +1,7 @@
 # Assumptions
 
+- It is assumed that the user enters all the required fields when accessing the application
+
 ## auth.py
 - 1. As of iteration 1, token provided by *auth_login* and *auth_register*
      are not unique to the login session.

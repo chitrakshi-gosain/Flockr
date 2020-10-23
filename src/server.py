@@ -150,9 +150,11 @@ def channel_removeowner_route():
     ADD DOCSTRING HERE
     '''
     payload = request.get_json()
-    channel_removeowner(payload['token'], payload['channel_id'], payload['u_id'])
-    return dumps({
-    })
+    token = payload['token']
+    channel_id = int(payload['channel_id'])
+    u_id = int(payload['u_id'])
+
+    return dumps(channel_removeowner(token, channel_id, u_id))
 
 # @APP.route("/channels/list", methods=['GET'])
 # def channels_list_route():
