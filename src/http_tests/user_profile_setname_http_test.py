@@ -22,24 +22,16 @@ def test_url(url):
     assert url.startswith("http")
 
 
-def test_http_user_profile_setname_no_errors(initialise_user_data, url):
+def test_http_user_profile_setname_no_errors(initialise_channel_data, initialise_user_data, url):
     '''
     basic test with no edge case or errors raised
     '''
 
-    name_first_old = 'name_first_old'
-    name_last_old = 'name_last_old'
-
-    user = {
-        'email': 'user@email.com',
-        'password': 'user_pass1!',
-        'name_first': name_first_old,
-        'name_last': name_last_old
-    }
-
-    user_details = requests.post(f"{url}/auth/register", json=user).json()
+    user_details = initialise_user_data['user0']
     token = user_details['token']
     u_id = user_details['u_id']
+    name_first_old = user_details['name_first']
+    name_last_old = user_details['name_last']
 
     user_profile_info = requests.get(f"{url}/user/profile", json={
         'token': token,
@@ -69,25 +61,17 @@ def test_http_user_profile_setname_no_errors(initialise_user_data, url):
     assert user_dict['name_last'] == name_last_new
 
 
-def test_http_user_profile_setname_inputerror(initialise_user_data, url):
+def test_http_user_profile_setname_inputerror(initialise_channel_data, initialise_user_data, url):
     '''
     test that user_profile_setname raises InputError
     if provided name_first or name_last is not between 1 and 50 characters in length
     '''
 
-    name_first_old = 'name_first_old'
-    name_last_old = 'name_last_old'
-
-    user = {
-        'email': 'user@email.com',
-        'password': 'user_pass1!',
-        'name_first': name_first_old,
-        'name_last': name_last_old
-    }
-
-    user_details = requests.post(f"{url}/auth/register", json=user).json()
+    user_details = initialise_user_data['user0']
     token = user_details['token']
     u_id = user_details['u_id']
+    name_first_old = user_details['name_first']
+    name_last_old = user_details['name_last']
 
     user_profile_info = requests.get(f"{url}/user/profile", params={
         'token': token,
@@ -151,19 +135,11 @@ def test_http_user_profile_setname_accesserror(initialise_user_data, url):
     if provided token is invalid
     '''
 
-    name_first_old = 'name_first_old'
-    name_last_old = 'name_last_old'
-
-    user = {
-        'email': 'user@email.com',
-        'password': 'user_pass1!',
-        'name_first': name_first_old,
-        'name_last': name_last_old
-    }
-
-    user_details = requests.post(f"{url}/auth/register", json=user).json()
+    user_details = initialise_user_data['user0']
     token = user_details['token']
     u_id = user_details['u_id']
+    name_first_old = user_details['name_first']
+    name_last_old = user_details['name_last']
 
     user_profile_info = requests.get(f"{url}/user/profile", params={
         'token': token,
