@@ -74,7 +74,7 @@ def test_active_token_now_invalid(initialise_user_data):
     AccessError
     '''
 
-    test_user_0_login = auth_login('user0@email.com', 'user0_pass1!')
+    test_user_0_login = initialise_user_data['user0']
     assert auth_logout(test_user_0_login['token'])
     with pytest.raises(AccessError):
         auth_logout(test_user_0_login['token'])
