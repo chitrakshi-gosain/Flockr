@@ -314,13 +314,14 @@ def test_generate_encoded_token(reset, initialise_data):
     assert {token0 : u_id0} in data.data['valid_tokens']
     assert {token1 : u_id1} in data.data['valid_tokens']
 
-def test_decode_encoded_token(reset, initialise_data):
-    '''
-    ADD DOCSTRING HERE
-    '''
+# COMMENTING IT OUT BECAUSE DECODED TOKEN WILL BE CHANGED ALOT IN COMING DAY AND NEXT
+# def test_decode_encoded_token(reset, initialise_data):
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
 
-    # Chitrakshi
-    pass
+#     # Chitrakshi
+#     pass
 
 def test_invalidating_token(reset, initialise_data):
     '''

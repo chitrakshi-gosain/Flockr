@@ -15,7 +15,7 @@ from error import AccessError
 # CONSTANTS
 MIN_LENGTH_PASSWORD = 6
 MAX_LENGTH_PASSWORD = 32
-SECRET = 'wed15grapeteam2'
+SECRET = 'wed15grapeteam2' * 3
 
 def check_if_valid_email(email):
     '''
