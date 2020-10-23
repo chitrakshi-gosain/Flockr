@@ -8,7 +8,11 @@ Iteration 2
 
 import unittest
 import pytest
-from helper import *
+from helper import encrypt_password_with_hash, generate_encoded_token, \
+    decode_encoded_token, get_channel_info, get_message_info, get_user_info, \
+        is_channel_owner, is_user_authorised, is_user_in_channel, \
+            check_if_valid_email, check_if_valid_password, \
+                check_string_length_and_whitespace
 import data
 import other
 
@@ -316,14 +320,6 @@ def test_decode_encoded_token(reset, initialise_data):
     '''
 
     # Chitrakshi
-    pass
-
-def test_update_data(reset, initialise_data):
-    '''
-    ADD DOCSTRING HERE
-    '''
-
-    # Cyrus
     pass
 
 def test_invalidating_token(reset, initialise_data):

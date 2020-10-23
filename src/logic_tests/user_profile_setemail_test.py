@@ -26,7 +26,6 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 '''
 EXCEPTIONS
 Error type: InputError
-    -> insufficient parameters
     -> email entered is not a valid email
     -> email address is already being used by another user
 Error type: AccessError
@@ -62,15 +61,6 @@ def initialise_user_data(reset):
         'user1': user1_details
     }
 
-def test_insufficient_parameters(initialise_user_data):
-    '''
-    Tests that user_profile_setemail raises an InputError when less than
-    expected parameters are passed
-    '''
-
-    with pytest.raises(InputError):
-        user_profile_setemail(None, None)
-
 def test_return_type(initialise_user_data):
     '''
     Tests that user_profile_setemail returns the expected datatype i.e.
@@ -79,7 +69,7 @@ def test_return_type(initialise_user_data):
 
     test_user_0 = initialise_user_data['user0']
     test_user_0_updatedemail = user_profile_setemail(test_user_0['token'], \
-                                       'mynewemail0@email.com')
+                                       'user0newemailid@email.com')
     assert isinstance(test_user_0_updatedemail, dict)
     assert not test_user_0_updatedemail
 
@@ -90,7 +80,7 @@ def test_invalid_token(initialise_user_data):
     '''
 
     with pytest.raises(AccessError):
-        user_profile_setemail('some_token', 'logintestvalidemailid@email.com')
+        user_profile_setemail('some_token', 'user0newemailid@email.com')
 
 def test_invalid_email(initialise_user_data):
     '''
@@ -101,7 +91,7 @@ def test_invalid_email(initialise_user_data):
     test_user_0 = initialise_user_data['user0']
     with pytest.raises(InputError):
         user_profile_setemail(test_user_0['token'], \
-                             'logintestinvalidemailid_email.com')
+                             '.user0newemailid_email.com')
 
 def test_existing_email(initialise_user_data):
     '''
