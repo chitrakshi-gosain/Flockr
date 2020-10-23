@@ -96,13 +96,6 @@ def initialise_user_dictionary(reset):
         'name_last': 'user3_LAST'
     }
 
-    user3 = {
-        'email': 'user3@email.com',
-        'password': 'user3_pass1!',
-        'name_first': 'user3_FIRST',
-        'name_last': 'user3_LAST'
-    }
-    
     return {
         'admin_dict': admin,
         'owner_dict': owner,
@@ -122,7 +115,7 @@ def initialise_user_data(url, initialise_user_dictionary):
     admin = initialise_user_dictionary['admin_dict']
     admin_details = requests.post(f"{url}/auth/register", json=admin).json()
 
-    owner = initialise_user_dictionary['owner_dict']
+    owner= initialise_user_dictionary['owner_dict']
     owner_details = requests.post(f"{url}/auth/register", json=owner).json()
 
     user0 = initialise_user_dictionary['user0_dict']
