@@ -81,7 +81,7 @@ def initialise_user_dictionary(reset):
         'name_first': 'user1_FIRST',
         'name_last': 'user1_LAST'
     }
-    
+
     user2 = {
         'email': 'user2@email.com',
         'password': 'user2_pass1!',
@@ -95,7 +95,7 @@ def initialise_user_dictionary(reset):
         'name_first': 'user3_FIRST',
         'name_last': 'user3_LAST'
     }
-    
+
     return {
         'admin_dict': admin,
         'owner_dict': owner,
@@ -111,7 +111,7 @@ def initialise_user_data(url, initialise_user_dictionary):
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
     '''
-    
+
     admin = initialise_user_dictionary['admin_dict']
     admin_details = requests.post(f"{url}/auth/register", json=admin).json()
 
