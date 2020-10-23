@@ -22,143 +22,111 @@ def test_url(url):
     assert url.startswith("http")
 
 
-def test_http_user_profile_setname_no_errors(initialise_channel_data, initialise_user_data, url):
+def test_http_user_profile_setname_no_errors(url, initialise_user_dictionary, initialise_user_data):
     '''
     basic test with no edge case or errors raised
     '''
 
     user_details = initialise_user_data['user0']
-    token = user_details['token']
-    u_id = user_details['u_id']
-    name_first_old = user_details['name_first']
-    name_last_old = user_details['name_last']
+    user_dict = initialise_user_dictionary['user0_dict']
 
-    user_profile_info = requests.get(f"{url}/user/profile", json={
-        'token': token,
-        'u_id': u_id
-    }).json()
-    user_dict = user_profile_info["user"]
+    user_profile_response = requests.get(f"{url}/user/profile", params={
+        'token': user_details['token'],
+        'u_id': user_details['u_id']
+    })
+    assert user_profile_response.status_code == 200
+    user_profile_info = user_profile_response.json()
 
-    assert user_dict['name_first'] == name_first_old
-    assert user_dict['name_last'] == name_last_old
+    assert user_profile_info['user']['name_first'] == user_dict['name_first']
+    assert user_profile_info['user']['name_last'] == user_dict['name_last']
 
-    name_first_new = 'name_first_new'
-    name_last_new = 'name_last_new'
+    user_setname = requests.put(f"{url}/user/profile/setname", json={
+        'token': user_details['token'],
+        'name_first': 'name_first_new',
+        'name_last': 'name_last_new'
+    })
+    assert user_setname.status_code == 200
 
-    requests.post(f"{url}/user/profile/setname", json={
-        'token': token,
-        'name_first': name_first_new,
-        'name_last': name_last_new
-    }).json()
+    user_profile_response1 = requests.get(f"{url}/user/profile", params={
+        'token': user_details['token'],
+        'u_id': user_details['u_id']
+    })
+    assert user_profile_response1.status_code == 200
+    user_profile_info1 = user_profile_response1.json()
 
-    user_profile_info = requests.get(f"{url}/user/profile", json={
-        'token': token,
-        'u_id': u_id
-    }).json()
-    user_dict = user_profile_info["user"]
-
-    assert user_dict['name_first'] == name_first_new
-    assert user_dict['name_last'] == name_last_new
+    assert user_profile_info1['user']['name_first'] == 'name_first_new'
+    assert user_profile_info1['user']['name_last'] == 'name_last_new'
 
 
-def test_http_user_profile_setname_inputerror(initialise_channel_data, initialise_user_data, url):
+def test_http_user_profile_setname_inputerror(url, initialise_user_dictionary, initialise_user_data):
     '''
     test that user_profile_setname raises InputError
     if provided name_first or name_last is not between 1 and 50 characters in length
     '''
 
     user_details = initialise_user_data['user0']
-    token = user_details['token']
-    u_id = user_details['u_id']
-    name_first_old = user_details['name_first']
-    name_last_old = user_details['name_last']
+    user_dict = initialise_user_dictionary['user0_dict']
 
-    user_profile_info = requests.get(f"{url}/user/profile", params={
-        'token': token,
-        'u_id': u_id
-    }).json()
-    user_dict = user_profile_info["user"]
+    user_profile_response = requests.get(f"{url}/user/profile", params={
+        'token': user_details['token'],
+        'u_id': user_details['u_id']
+    })
+    assert user_profile_response.status_code == 200
+    user_profile_info = user_profile_response.json()
 
-    assert user_dict['name_first'] == name_first_old
-    assert user_dict['name_last'] == name_last_old
+    assert user_profile_info["user"]['name_first'] == user_dict['name_first']
+    assert user_profile_info["user"]['name_last'] == user_dict['name_last']
 
-    name_first_new = 'name_first_new'
-    name_last_new = 'name_last_new'
+    setname_response0 = requests.put(f"{url}/user/profile/setname", json={
+            'token': user_details['token'],
+            'name_first': '',
+            'name_last': 'name_last_new'
+    })
+    assert setname_response0.status_code == 400
 
-    # Tests that auth_register raises an InputError when name_first is
-    # less than 1 characters long
-    name_first_new = ''
-    with pytest.raises(InputError):
-        requests.post(f"{url}/user/profile/setname", json={
-            'token': token,
-            'name_first': name_first_new,
-            'name_last': name_last_new
-        }).json()
+    setname_response1 = requests.put(f"{url}/user/profile/setname", json={
+            'token': user_details['token'],
+            'name_first': 'name_first_new',
+            'name_last': ''
+    })
+    assert setname_response1.status_code == 400
 
-    # Tests that auth_register raises an InputError when name_last is
-    # less than 1 characters long
-    name_first_new = 'name_first_new'
-    name_last_new = ''
-    with pytest.raises(InputError):
-        requests.post(f"{url}/user/profile/setname", json={
-            'token': token,
-            'name_first': name_first_new,
-            'name_last': name_last_new
-        }).json()
+    setname_response2 = requests.put(f"{url}/user/profile/setname", json={
+            'token': user_details['token'],
+            'name_first': 'name_first_new',
+            'name_last': '123456789012345678901234567890123456789012345678901'
+    })
+    assert setname_response2.status_code == 400
 
-    # Tests that auth_register raises an InputError when name_first is
-    # more than 50 characters long
-    name_last_new = 'name_last_new'
-    name_first_new = '123456789012345678901234567890123456789012345678901'
-    with pytest.raises(InputError):
-        requests.post(f"{url}/user/profile/setname", json={
-            'token': token,
-            'name_first': name_first_new,
-            'name_last': name_last_new
-        }).json()
+    setname_response3 = requests.put(f"{url}/user/profile/setname", json={
+            'token': user_details['token'],
+            'name_first': '123456789012345678901234567890123456789012345678901',
+            'name_last': 'name_last_new'
+    })
+    assert setname_response3.status_code == 400
 
-    # Tests that auth_register raises an InputError when name_last is
-    # more than 50 characters long
-    name_first_new = 'name_first_new'
-    name_last_new = '123456789012345678901234567890123456789012345678901'
-    with pytest.raises(InputError):
-        requests.post(f"{url}/user/profile/setname", json={
-            'token': token,
-            'name_first': name_first_new,
-            'name_last': name_last_new
-        }).json()
-
-
-def test_http_user_profile_setname_accesserror(initialise_user_data, url):
+def test_http_user_profile_setname_accesserror(url, initialise_user_dictionary, initialise_user_data):
     '''
     test that user_profile_setname raises AccessError
     if provided token is invalid
     '''
 
     user_details = initialise_user_data['user0']
-    token = user_details['token']
-    u_id = user_details['u_id']
-    name_first_old = user_details['name_first']
-    name_last_old = user_details['name_last']
+    user_dict = initialise_user_dictionary['user0_dict']
 
-    user_profile_info = requests.get(f"{url}/user/profile", params={
-        'token': token,
-        'u_id': u_id
-    }).json()
-    user_dict = user_profile_info["user"]
+    user_profile_response = requests.get(f"{url}/user/profile", params={
+        'token': user_details['token'],
+        'u_id': user_details['u_id']
+    })
+    assert user_profile_response.status_code == 200
+    user_profile_info = user_profile_response.json()
 
-    assert user_dict['name_first'] == name_first_old
-    assert user_dict['name_last'] == name_last_old
+    assert user_profile_info['user']['name_first'] == user_dict['name_first']
+    assert user_profile_info['user']['name_last'] == user_dict['name_last']
 
-    name_first_new = 'name_first_new'
-    name_last_new = 'name_last_new'
-
-    # assume ' ' is not a valid token
-    token = " "
-
-    with pytest.raises(AccessError):
-        requests.post(f"{url}/user/profile/setname", json={
-            'token': token,
-            'name_first': name_first_new,
-            'name_last': name_last_new
-        }).json()
+    setname_response = requests.put(f"{url}/user/profile/setname", json={
+            'token': " ",
+            'name_first': 'name_first_new',
+            'name_last': 'name_last_new'
+    })
+    assert setname_response.status_code == 400
