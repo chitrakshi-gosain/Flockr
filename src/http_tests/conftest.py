@@ -61,6 +61,13 @@ def initialise_user_dictionary(reset):
         'name_last': 'admin_last'
     }
 
+    owner = {
+        'email': 'owner@email.com',
+        'password': 'owner_pass1!',
+        'name_first': 'owner_first',
+        'name_last': 'owner_last'
+    }
+
     user0 = {
         'email': 'user0@email.com',
         'password': 'user0_pass1!',
@@ -74,7 +81,7 @@ def initialise_user_dictionary(reset):
         'name_first': 'user1_FIRST',
         'name_last': 'user1_LAST'
     }
-    
+
     user2 = {
         'email': 'user2@email.com',
         'password': 'user2_pass1!',
@@ -88,9 +95,10 @@ def initialise_user_dictionary(reset):
         'name_first': 'user3_FIRST',
         'name_last': 'user3_LAST'
     }
-    
+
     return {
         'admin_dict': admin,
+        'owner_dict': owner,
         'user0_dict': user0,
         'user1_dict': user1,
         'user2_dict': user2,
@@ -103,9 +111,12 @@ def initialise_user_data(url, initialise_user_dictionary):
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
     '''
-    
+
     admin = initialise_user_dictionary['admin_dict']
     admin_details = requests.post(f"{url}/auth/register", json=admin).json()
+
+    owner= initialise_user_dictionary['owner_dict']
+    owner_details = requests.post(f"{url}/auth/register", json=owner).json()
 
     user0 = initialise_user_dictionary['user0_dict']
     user0_details = requests.post(f"{url}/auth/register", json=user0).json()
@@ -121,6 +132,7 @@ def initialise_user_data(url, initialise_user_dictionary):
 
     return {
         'admin': admin_details,
+        'owner': owner_details,
         'user0': user0_details,
         'user1': user1_details,
         'user2': user2_details,
@@ -128,19 +140,32 @@ def initialise_user_data(url, initialise_user_dictionary):
     }
 
 @pytest.fixture
-def initialise_channel_data(url, reset, initialise_user_data):
+def initialise_channel_data(url, initialise_user_data):
     '''
     creates 3 channels with descriptive data for testing
     '''
-    public_details = requests.post(f"{url}/channels/create", json={
+
+    admin_public_details = requests.post(f"{url}/channels/create", json={
         'token': initialise_user_data['admin']['token'],
-        'name': 'public',
+        'name': 'admin_public',
         'is_public': True
     }).json()
 
-    private_details = requests.post(f"{url}/channels/create", json={
+    admin_private_details = requests.post(f"{url}/channels/create", json={
         'token': initialise_user_data['admin']['token'],
-        'name': 'private1',
+        'name': 'admin_private1',
+        'is_public': False
+    }).json()
+
+    owner_public_details = requests.post(f"{url}/channels/create", json={
+        'token': initialise_user_data['owner']['token'],
+        'name': 'owner_public',
+        'is_public': True
+    }).json()
+
+    owner_private_details = requests.post(f"{url}/channels/create", json={
+        'token': initialise_user_data['owner']['token'],
+        'name': 'owner_private1',
         'is_public': False
     }).json()
 
@@ -151,7 +176,9 @@ def initialise_channel_data(url, reset, initialise_user_data):
     }).json()
 
     return {
-        'admin_publ': public_details,
-        'admin_priv': private_details,
+        'admin_publ': admin_public_details,
+        'admin_priv': admin_private_details,
+        'owner_publ': owner_public_details,
+        'owner_priv': owner_private_details,
         'user1_priv': user_private_details
     }
