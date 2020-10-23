@@ -16,8 +16,8 @@ from channel import channel_invite, channel_details, channel_messages, \
      channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_list, channels_listall, channels_create
 from message import message_send, message_remove, message_edit
-# from  user import user_profile, user_profile_setname, user_profile_setemail, \
-#     user_profile_sethandle
+from  user import user_profile, user_profile_setname, user_profile_setemail, \
+    user_profile_sethandle
 from other import users_all, admin_userpermission_change, search, clear
 
 # need to plan how to write things here
@@ -224,7 +224,7 @@ def user_profile_setname_route():
 
     payload = request.get_json()
     user_profile_setname(payload['token'], payload['name_first'], payload['name_last'])
-    dumps({
+    return dumps({
     })
 
 # @APP.route("/user/profile/setemail", methods=['PUT'])
