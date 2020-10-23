@@ -37,10 +37,6 @@ def initialise_channel_data(initialise_user_data):
         'private': private_channel
     }
 
-def test_insufficient_parameters(initialise_user_data):
-    with pytest.raises(InputError):
-        channel_details(None, None)
-
 def test_user_not_authorised(initialise_user_data, initialise_channel_data):
 
     channel1_id = initialise_channel_data['private']

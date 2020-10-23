@@ -33,10 +33,6 @@ def initialise_channel_data(initialise_user_data):
 def get_messages(admin_token):
     messages = search(admin_token, '')
     return messages
-     
-def test_insufficient_parameters(reset):
-    with pytest.raises(InputError):
-        message_remove(None, None)
 
 def test_user_not_authorised(initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']

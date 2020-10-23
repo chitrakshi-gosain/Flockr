@@ -35,10 +35,6 @@ def get_messages(admin_token):
     messages = search(admin_token, '')
     return messages
 
-def test_insufficient_parameters(reset):
-    with pytest.raises(InputError):
-        message_send(None, None, None)
-
 def test_user_not_authorised(initialise_user_data, initialise_channel_data):
 
     channel1_id = initialise_channel_data['private']

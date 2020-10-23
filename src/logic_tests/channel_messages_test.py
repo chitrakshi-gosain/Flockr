@@ -30,10 +30,6 @@ def initialise_channel_data(initialise_user_data):
         'private': private_channel
     }
 
-def test_insufficient_parameters(reset):
-    with pytest.raises(InputError):
-        channel_messages(None, None, None)
-
 def test_user1_not_authorised(initialise_user_data, initialise_channel_data):
     channel1_id = initialise_channel_data['private']
     user1_credentials = initialise_user_data['user1']      
