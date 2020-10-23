@@ -19,7 +19,6 @@ import pytest
 ****************************BASIC TEMPLATE******************************
 '''
 
-
 @pytest.fixture(scope="session")
 def url():
     url_re = re.compile(r' \* Running on ([^ ]*)')
@@ -48,7 +47,6 @@ def reset(url):
     '''
 
     requests.delete(f"{url}/clear")
-
 
 @pytest.fixture
 def initialise_user_dictionary(reset):
@@ -84,7 +82,6 @@ def initialise_user_dictionary(reset):
         'name_first': 'user1_FIRST',
         'name_last': 'user1_LAST'
     }
-
     user2 = {
         'email': 'user2@email.com',
         'password': 'user2_pass1!',
@@ -99,6 +96,13 @@ def initialise_user_dictionary(reset):
         'name_last': 'user3_LAST'
     }
 
+    user3 = {
+        'email': 'user3@email.com',
+        'password': 'user3_pass1!',
+        'name_first': 'user3_FIRST',
+        'name_last': 'user3_LAST'
+    }
+    
     return {
         'admin_dict': admin,
         'owner_dict': owner,
@@ -107,7 +111,6 @@ def initialise_user_dictionary(reset):
         'user2_dict': user2,
         'user3_dict': user3
     }
-
 
 @pytest.fixture
 def initialise_user_data(url, initialise_user_dictionary):
