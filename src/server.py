@@ -211,12 +211,15 @@ def message_edit_route():
     return dumps({
     })
 
-# @APP.route("/user/profile", methods=['GET'])
-# def user_profile_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/user/profile", methods=['GET'])
+def user_profile_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    u_id = int(payload['u_id'])
+    token = payload['token']
+    return dumps(user_profile(u_id, token))
 
 @APP.route("/user/profile/setname", methods=['PUT'])
 def user_profile_setname_route():
