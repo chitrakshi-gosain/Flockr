@@ -42,7 +42,7 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
-def test_http_channel_addowner_noerrors(initialise_channel_data, initialise_user_data, url):
+def test_http_channel_addowner_noerrors(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
     '''
     basic test with no edge case or errors raised
     '''
@@ -60,22 +60,43 @@ def test_http_channel_addowner_noerrors(initialise_channel_data, initialise_user
     channel_id = channel_info['channel_id']
 
     # user0 joins channel, therefore is a member but not an owner
-    requests.post(f"{url}/channel/join", json={
+    channel_join_response = requests.post(f"{url}/channel/join", json={
         'token': token0,
         'channel_id': channel_id
     })
-    assert not helper.is_channel_owner(u_id0, channel_id)
+    assert channel_join_response.status_code == 200
+
+    # get list of channel owners, assert u_id0 is not in it (therefore user0 is not an owner)
+    channel_details_response = requests.get(f"{url}/channel/details", params={
+        'token': token_admin,
+        'channel_id': channel_id
+    })
+    assert channel_details_response.status_code == 200
+
+    channel_owners = channel_details_response.json()['owner_members']
+    owner_ids = [user['u_id'] for user in channel_owners]
+    assert u_id0 not in owner_ids
 
     # admin adds user0 as owner
-    requests.post(f"{url}/channel/addowner", json={
+    channel_addowner_response = requests.post(f"{url}/channel/addowner", json={
         'token': token_admin,
         'channel_id': channel_id,
         'u_id': u_id0
     })
+    assert channel_addowner_response.status_code == 200
 
-    assert helper.is_channel_owner(u_id0, channel_id)
+    # get list of channel owners, assert u_id0 is in it (therefore user0 is an owner)
+    channel_details_response = requests.get(f"{url}/channel/details", params={
+        'token': token_admin,
+        'channel_id': channel_id
+    })
+    assert channel_details_response.status_code == 200
 
-def test_http_channel_addowner_invalidchannel(initialise_channel_data, initialise_user_data, url):
+    channel_owners = channel_details_response.json()['owner_members']
+    owner_ids = [user['u_id'] for user in channel_owners]
+    assert u_id0 in owner_ids
+
+def test_http_channel_addowner_invalidchannel(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
     '''
     test that channel_addowner raises InputError if channel_id is not a valid channel_id
     '''
@@ -93,24 +114,35 @@ def test_http_channel_addowner_invalidchannel(initialise_channel_data, initialis
     channel_id = channel_info['channel_id']
 
     # user0 joins channel, therefore is a member but not an owner
-    requests.post(f"{url}/channel/join", json={
+    channel_join_response = requests.post(f"{url}/channel/join", json={
         'token': token0,
         'channel_id': channel_id
     })
-    assert not helper.is_channel_owner(u_id0, channel_id)
+    assert channel_join_response.status_code == 200
+
+    # get list of channel owners, assert u_id0 is not in it (therefore user0 is not an owner)
+    channel_details_response = requests.get(f"{url}/channel/details", params={
+        'token': token_admin,
+        'channel_id': channel_id
+    })
+    assert channel_details_response.status_code == 200
+
+    channel_owners = channel_details_response.json()['owner_members']
+    owner_ids = [user['u_id'] for user in channel_owners]
+    assert u_id0 not in owner_ids
 
     # assume -1 is not a valid channel_id
     channel_id = -1
 
-    # assert that channel_addowner raises InputError
-    with pytest.raises(InputError):
-        requests.post(f"{url}/channel/addowner", json={
-            'token': token_admin,
-            'channel_id': channel_id,
-            'u_id': u_id0
-        })
+    # assert that channel_addowner returns status code 400 (indicating user error)
+    channel_addowner_response = requests.post(f"{url}/channel/addowner", json={
+        'token': token_admin,
+        'channel_id': channel_id,
+        'u_id': u_id0
+    })
+    assert channel_addowner_response.status_code == 400
 
-def test_http_channel_addowner_alreadyowner(initialise_channel_data, initialise_user_data, url):
+def test_http_channel_addowner_alreadyowner(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
     '''
     test that channel_addowner raises InputError
     if user with provided u_id is already an owner of the channel
@@ -129,31 +161,52 @@ def test_http_channel_addowner_alreadyowner(initialise_channel_data, initialise_
     channel_id = channel_info['channel_id']
 
     # user0 joins channel, therefore is a member but not an owner
-    requests.post(f"{url}/channel/join", json={
+    channel_join_response = requests.post(f"{url}/channel/join", json={
         'token': token0,
         'channel_id': channel_id
     })
-    assert not helper.is_channel_owner(u_id0, channel_id)
+    assert channel_join_response.status_code == 200
+
+    # get list of channel owners, assert u_id0 is not in it (therefore user0 is not an owner)
+    channel_details_response = requests.get(f"{url}/channel/details", params={
+        'token': token_admin,
+        'channel_id': channel_id
+    })
+    assert channel_details_response.status_code == 200
+
+    channel_owners = channel_details_response.json()['owner_members']
+    owner_ids = [user['u_id'] for user in channel_owners]
+    assert u_id0 not in owner_ids
 
     # admin adds user0 as owner
-    requests.post(f"{url}/channel/addowner", json={
+    channel_addowner_response = requests.post(f"{url}/channel/addowner", json={
         'token': token_admin,
         'channel_id': channel_id,
         'u_id': u_id0
     })
+    assert channel_addowner_response.status_code == 200
 
-    assert helper.is_channel_owner(u_id0, channel_id)
+    # get list of channel owners, assert u_id0 is in it (therefore user0 is an owner)
+    channel_details_response = requests.get(f"{url}/channel/details", params={
+        'token': token_admin,
+        'channel_id': channel_id
+    })
+    assert channel_details_response.status_code == 200
 
-    # attempt to add owner twice
-    # assert that channel_addowner raises InputError
-    with pytest.raises(InputError):
-        requests.post(f"{url}/channel/addowner", json={
-            'token': token_admin,
-            'channel_id': channel_id,
-            'u_id': u_id0
-        })
+    channel_owners = channel_details_response.json()['owner_members']
+    owner_ids = [user['u_id'] for user in channel_owners]
+    assert u_id0 in owner_ids
 
-def test_http_channel_addowner_authnotowner(initialise_channel_data, initialise_user_data, url):
+    # attempt to add user0 as owner twice
+    # assert that channel_addowner returns status code 400 (indicating user error)
+    channel_addowner_response = requests.post(f"{url}/channel/addowner", json={
+        'token': token_admin,
+        'channel_id': channel_id,
+        'u_id': u_id0
+    })
+    assert channel_addowner_response.status_code == 400
+
+def test_http_channel_addowner_authnotowner(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
     '''
     test that channel_addowner raises AccessError
     if the authorised user is not an owner of the channel
@@ -168,20 +221,22 @@ def test_http_channel_addowner_authnotowner(initialise_channel_data, initialise_
     u_id0, token0 = user0['u_id'], user0['token']
 
     # user0 joins channel, therefore is a member but not an owner
-    requests.post(f"{url}/channel/join", json={
+    channel_join_response = requests.post(f"{url}/channel/join", json={
         'token': token0,
         'channel_id': channel_id
     })
+    assert channel_join_response.status_code == 200
 
-    # assert that channel_addowner raises AccessError
-    with pytest.raises(AccessError):
-        requests.post(f"{url}/channel/addowner", json={
-            'token': token0,
-            'channel_id': channel_id,
-            'u_id': u_id0
-        })
+    # user0 is not an owner, therefore token0 should fail
+    # assert that channel_addowner returns status code 400 (indicating user error)
+    channel_addowner_response = requests.post(f"{url}/channel/addowner", json={
+        'token': token0,
+        'channel_id': channel_id,
+        'u_id': u_id0
+    })
+    assert channel_addowner_response.status_code == 400
 
-def test_http_channel_addowner_invalidtoken(initialise_channel_data, initialise_user_data, url):
+def test_http_channel_addowner_invalidtoken(initialise_channel_data, initialise_user_dictionary, initialise_user_data, url):
     '''
     test that channel_addowner raises AccessError if the provided token is not valid
     '''
@@ -197,10 +252,10 @@ def test_http_channel_addowner_invalidtoken(initialise_channel_data, initialise_
     # assume " " is always an invalid token
     token_admin = " "
 
-    # assert that channel_addowner raises AccessError
-    with pytest.raises(AccessError):
-        requests.post(f"{url}/channel/addowner", json={
-            'token': token_admin,
-            'channel_id': channel_id,
-            'u_id': u_id_admin
-        })
+    # assert that channel_addowner returns status code 400 (indicating user error)
+    channel_addowner_response = requests.post(f"{url}/channel/addowner", json={
+        'token': token_admin,
+        'channel_id': channel_id,
+        'u_id': u_id_admin
+    })
+    assert channel_addowner_response.status_code == 400
