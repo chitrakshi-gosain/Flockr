@@ -115,6 +115,7 @@ def channel_messages_route():
 #     '''
 #     ADD DOCSTRING HERE
 #     '''
+
 #     pass
 
 
@@ -123,8 +124,8 @@ def channel_messages_route():
 #     '''
 #     ADD DOCSTRING HERE
 #     '''
-#     pass
 
+#     pass
 
 # @APP.route("/channel/addowner", methods=['POST'])
 # def channel_addowner_route():
@@ -161,19 +162,26 @@ def channel_messages_route():
 #     '''
 #     pass
 
-# @APP.route("/message/send", methods=['POST'])
-# def message_send_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/message/send", methods=['POST'])
+def message_send_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    channel_id = int(payload['channel_id'])
+    message = payload['message']
+    return dumps(message_send(token, channel_id, message))
 
-# @APP.route("/message/remove", methods=['DELETE'])
-# def message_remove_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/message/remove", methods=['DELETE'])
+def message_remove_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    message_id = int(payload['message_id'])
+    return dumps(message_remove(token, message_id))
 
 # @APP.route("/message/edit", methods=['PUT'])
 # def message_edit_route():
