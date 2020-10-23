@@ -75,6 +75,7 @@ def test_http_message_edit_noerrors(initialise_channel_data, initialise_user_dat
     for message_dict in messages:
         if message_dict['message_id'] == message_id:
             assert message_dict['message'] == first_message
+            break
 
     second_message = "This is the edited message."
 
@@ -97,6 +98,7 @@ def test_http_message_edit_noerrors(initialise_channel_data, initialise_user_dat
     for message_dict in messages:
         if message_dict['message_id'] == message_id:
             assert message_dict['message'] == second_message
+            break
 
 def test_http_message_edit_secondmessage(initialise_channel_data, initialise_user_data, url):
     '''
@@ -139,8 +141,12 @@ def test_http_message_edit_secondmessage(initialise_channel_data, initialise_use
     for message_dict in messages:
         if message_dict['message_id'] == message_id0:
             assert message_dict['message'] == first_message0
+            break
+
+    for message_dict in messages:
         if message_dict['message_id'] == message_id1:
             assert message_dict['message'] == first_message1
+            break
 
     second_message1 = "This is the second edited message."
 
@@ -162,6 +168,7 @@ def test_http_message_edit_secondmessage(initialise_channel_data, initialise_use
     for message_dict in messages:
         if message_dict['message_id'] == message_id1:
             assert message_dict['message'] == second_message1
+            break
 
 def test_http_message_edit_emptystring(initialise_channel_data, initialise_user_data, url):
     '''
@@ -197,6 +204,7 @@ def test_http_message_edit_emptystring(initialise_channel_data, initialise_user_
     for message_dict in messages:
         if message_dict['message_id'] == message_id:
             assert message_dict['message'] == first_message
+            break
 
     second_message = ""
 
@@ -263,6 +271,7 @@ def test_http_message_edit_notsender(initialise_channel_data, initialise_user_da
     for message_dict in messages:
         if message_dict['message_id'] == message_id:
             assert message_dict['message'] == first_message
+            break
 
     second_message = "This is the edited message."
 
@@ -308,6 +317,7 @@ def test_http_message_edit_invalidtoken(initialise_channel_data, initialise_user
     for message_dict in messages:
         if message_dict['message_id'] == message_id:
             assert message_dict['message'] == first_message
+            break
 
     second_message = "This is the edited message."
 
