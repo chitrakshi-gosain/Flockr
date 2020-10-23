@@ -10,7 +10,7 @@ import requests
 import pytest
 
 '''
-***************************BASIC TEMPLATE*****************************
+**************************BASIC TEMPLATE****************************
 '''
 
 '''
@@ -39,15 +39,6 @@ def test_url(url):
     A simple sanity test to check that the server is set up properly
     '''
     assert url.startswith("http")
-
-
-def test_insufficient_parameters(url, initialise_user_data):
-    user0 = initialise_user_data['user0']
-    response = requests.get(f"{url}/channel/details", params={
-        'token': user0['token'],
-        'channel_id': None
-    })
-    assert response.status_code == 500
 
 
 def test_user_not_authorised(url, initialise_user_data, initialise_channel_data):
@@ -180,4 +171,3 @@ def test_channel_details_empty_channel(url, initialise_user_data, initialise_cha
         }
 
     assert channel_contents == details_payload
-

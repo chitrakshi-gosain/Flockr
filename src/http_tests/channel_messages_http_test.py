@@ -10,7 +10,7 @@ import requests
 import pytest
 
 '''
-****************************BASIC TEMPLATE******************************
+***************************BASIC TEMPLATE*****************************
 '''
 
 '''
@@ -40,15 +40,6 @@ def test_url(url):
     '''
 
     assert url.startswith("http")
-
-
-def test_insufficient_parameters(url, reset):
-    response = requests.get(f"{url}/channel/messages", params={
-        'token': None,
-        'channel_id': None,
-        'start': None
-    })
-    assert response.status_code == 500
 
 def test_user_not_authorised(url, initialise_user_data, initialise_channel_data):
     user1_credentials = initialise_user_data['user1']
@@ -111,9 +102,8 @@ def test_empty_messages(url, initialise_user_data, initialise_channel_data):
         'channel_id': channel1_id['channel_id'],
         'start': 0
     })
-    message_payload = response.json()
-    print(message_payload)
     assert response.status_code == 200
+    message_payload = response.json()
 
     expected_message_history = {
         'messages': [],
