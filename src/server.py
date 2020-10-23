@@ -171,16 +171,13 @@ def auth_register_route():
 #     '''
 #     pass
 
-@APP.route("/user/profile", methods=['GET'])
-def user_profile_route():
-    '''
-    ADD DOCSTRING HERE
-    '''
+# @APP.route("/user/profile", methods=['GET'])
+# def user_profile_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
 
-    token = request.args.get('token')
-    u_id = int(request.args.get('u_id'))
-
-    return dumps(user_profile(token, u_id))
+#     pass
 
 # @APP.route("/user/profile/setname", methods=['PUT'])
 # def user_profile_setname_route():
