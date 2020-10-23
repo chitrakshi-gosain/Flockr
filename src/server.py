@@ -10,14 +10,14 @@ from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
-# import sys
+import sys
 from auth import auth_login, auth_register, auth_logout
-# from channel import channel_invite, channel_details, channel_messages, \
-#     channel_leave, channel_join, channel_addowner, channel_removeowner
-# from channels import channels_list, channels_listall, channels_create
-# from message import message_send, message_remove, message_edit
-# from  user import user_profile, user_profile_setname, user_profile_setemail, \
-#     user_profile_sethandle  
+from channel import channel_invite, channel_details, channel_messages, \
+    channel_leave, channel_join, channel_addowner, channel_removeowner
+from channels import channels_list, channels_listall, channels_create
+from message import message_send, message_remove, message_edit
+from  user import user_profile, user_profile_setname, user_profile_setemail, \
+    user_profile_sethandle  
 from other import users_all, admin_userpermission_change, search, clear
 
 # need to plan how to write things here
@@ -49,11 +49,10 @@ def auth_login_route():
     '''
     
     payload = request.get_json()
-    user_credentials = auth_login(payload['email'], payload['password'])
-    return dumps({
-        'u_id': user_credentials['u_id'],
-        'token': user_credentials['token']
-    })
+    email = payload['email']
+    password = payload['password']
+
+    return dumps(auth_login(email, password))
 
 
 @APP.route("/auth/logout", methods=['POST'])
@@ -63,23 +62,23 @@ def auth_logout_route():
     '''
 
     payload = request.get_json()
-    user_credentials = auth_logout(payload['token'])
-    return dumps({
-        'is_success': user_credentials['is_success'],
-    })
+    token = payload['token']
+
+    return dumps(auth_logout(token))
 
 @APP.route("/auth/register", methods=['POST'])
 def auth_register_route():
     '''
     ADD DOCSTRING HERE
     '''
+
     payload = request.get_json()
-    user_credentials = auth_register(payload['email'], payload['password'], \
-        payload['name_first'], payload['name_last'])
-    return dumps({
-        'u_id': user_credentials['u_id'],
-        'token': user_credentials['token']
-    })
+    email = payload['email']
+    password = payload['password']
+    name_first = payload['name_first']
+    name_last = payload['name_last']
+
+    return dumps(auth_register(email, password, name_first, name_last))
 
 # @APP.route("/channel/invite", methods=['POST'])
 # def channel_invite_route():
@@ -88,19 +87,28 @@ def auth_register_route():
 #     '''
 #     pass
 
-# @APP.route("/channel/details", methods=['GET'])
-# def channel_details_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/channel/details", methods=['GET'])
+def channel_details_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
 
-# @APP.route("/channel/messages", methods=['GET'])
-# def channel_messages_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+    token = request.args.get('token')
+    channel_id = int(request.args.get('channel_id'))
+
+    return dumps(channel_details(token, channel_id))
+
+@APP.route("/channel/messages", methods=['GET'])
+def channel_messages_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    token = request.args.get('token')
+    channel_id = int(request.args.get('channel_id'))
+    start = int(request.args.get('start'))
+
+    return dumps(channel_messages(token, channel_id, start))
 
 # @APP.route("/channel/leave", methods=['POST'])
 # def channel_leave_route():
@@ -109,12 +117,14 @@ def auth_register_route():
 #     '''
 #     pass
 
+
 # @APP.route("/channel/join", methods=['POST'])
 # def channel_join_route():
 #     '''
 #     ADD DOCSTRING HERE
 #     '''
 #     pass
+
 
 # @APP.route("/channel/addowner", methods=['POST'])
 # def channel_addowner_route():
