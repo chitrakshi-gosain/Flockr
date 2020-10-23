@@ -1,15 +1,29 @@
-import sys
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributors - Chitrakshi Gosain, Joseph Knox, Cyrus Wilkie,
+               Jordan Hunyh, Ahmet Karatas
+
+Iteration 2
+'''
+
 from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
+# import sys
+from auth import auth_login, auth_register, auth_logout
+from channel import channel_invite, channel_details, channel_messages, \
+     channel_leave, channel_join, channel_addowner, channel_removeowner
+from channels import channels_list, channels_listall, channels_create
+from message import message_send, message_remove, message_edit
+# from  user import user_profile, user_profile_setname, user_profile_setemail, \
+#     user_profile_sethandle
+from other import users_all, admin_userpermission_change, search, clear
 
-import channel
-import channels
-import auth
-import message
-import other
-import user
+# need to plan how to write things here
+'''
+**************************BASIC TEMPLATE****************************
+'''
 
 def defaultHandler(err):
     response = err.get_response()
@@ -28,206 +42,245 @@ CORS(APP)
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
 APP.register_error_handler(Exception, defaultHandler)
 
-# Example
+@APP.route("/auth/login", methods=['POST'])
+def auth_login_route():
+    '''
+    DONT COMMIT THIS YET
+    '''
+
+    payload = request.get_json()
+    user_credentials = auth_login(payload['email'], payload['password'])
+    return dumps({
+        'u_id': user_credentials['u_id'],
+        'token': user_credentials['token']
+    })
+
+
+@APP.route("/auth/logout", methods=['POST'])
+def auth_logout_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    payload = request.get_json()
+    user_credentials = auth_logout(payload['token'])
+    return dumps({
+        'is_success': user_credentials['is_success'],
+    })
+
+@APP.route("/auth/register", methods=['POST'])
+def auth_register_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    user_credentials = auth_register(payload['email'], payload['password'], \
+        payload['name_first'], payload['name_last'])
+    return dumps({
+        'u_id': user_credentials['u_id'],
+        'token': user_credentials['token']
+    })
+
+@APP.route("/channel/invite", methods=['POST'])
+def channel_invite_route():
+     '''
+     ADD DOCSTRING HERE (UNOFFICIAL)
+     '''
+     payload = request.get_json()
+     token = payload['token']
+     channel_id = int(payload['channel_id'])
+     u_id = int(payload['u_id'])
+
+     return dumps(channel_invite(token, channel_id, u_id))
+
+@APP.route("/channel/details", methods=['GET'])
+def channel_details_route():
+     '''
+     ADD DOCSTRING HERE (UNOFFICIAL)
+     '''
+     token = request.args.get('token')
+     channel_id = int(request.args.get('channel_id'))
+
+     return dumps(channel_details(token, channel_id))
+
+# @APP.route("/channel/messages", methods=['GET'])
+# def channel_messages_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+@APP.route("/channel/leave", methods=['POST'])
+def channel_leave_route():
+     '''
+     ADD DOCSTRING HERE (UNOFFICIAL)
+     '''
+     payload = request.get_json()
+     token = payload['token']
+     channel_id = int(payload['channel_id'])
+
+     return dumps(channel_leave(token, channel_id))
+
+@APP.route("/channel/join", methods=['POST'])
+def channel_join_route():
+     '''
+     ADD DOCSTRING HERE (UNOFFICIAL)
+     '''
+     payload = request.get_json()
+     token = payload['token']
+     channel_id = int(payload['channel_id'])
+
+     return dumps(channel_join(token, channel_id))
+
+@APP.route("/channel/addowner", methods=['POST'])
+def channel_addowner_route():
+     '''
+     ADD DOCSTRING HERE (UNOFFICIAL)
+     '''
+     payload = request.get_json()
+     token = payload['token']
+     channel_id = int(payload['channel_id'])
+     u_id = int(payload['u_id'])
+
+     return dumps(channel_addowner(token, channel_id, u_id))
+
+# @APP.route("/channel/removeowner", methods=['POST'])
+# def channel_removeowner_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+# @APP.route("/channels/list", methods=['GET'])
+# def channels_list_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+# @APP.route("/channels/listall", methods=['GET'])
+# def channels_listall_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+@APP.route("/channels/create", methods=['POST'])
+def channels_create_route():
+     '''
+     ADD DOCSTRING HERE (UNOFFICIAL)
+     '''
+     payload = request.get_json()
+     token = payload['token']
+     name = payload['name']
+     is_public = bool(payload['is_public'])
+
+     return dumps(channels_create(token, name, is_public))
+
+@APP.route("/message/send", methods=['POST'])
+def message_send_route():
+     '''
+     ADD DOCSTRING HERE (UNOFFICIAL)
+     '''
+     payload = request.get_json()
+     token = payload['token']
+     channel_id = int(payload['channel_id'])
+     message_str = payload['message']
+
+     return dumps(message_send(token, channel_id, message_str))
+
+# @APP.route("/message/remove", methods=['DELETE'])
+# def message_remove_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+# @APP.route("/message/edit", methods=['PUT'])
+# def message_edit_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+# @APP.route("/user/profile", methods=['GET'])
+# def user_profile_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+# @APP.route("/user/profile/setname", methods=['PUT'])
+# def user_profile_setname_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+# @APP.route("/user/profile/setemail", methods=['PUT'])
+# def user_profile_setemail_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+# @APP.route("/user/profile/sethandle", methods=['PUT'])
+# def user_profile_sethandle_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+# @APP.route("/users/all", methods=['GET'])
+# def users_all_route():
+#     '''
+#     ADD DOCSTRING HERE
+#     '''
+#     pass
+
+@APP.route("/admin/userpermission/change", methods=['POST'])
+def change_userpermission_route():
+     '''
+     ADD DOCSTRING HERE (UNOFFICIAL)
+     '''
+     payload = request.get_json()
+     token = payload['token']
+     u_id = int(payload['u_id'])
+     permission_id = int(payload['permission_id'])
+
+     return dumps(admin_userpermission_change(token, u_id, permission_id))
+
+@APP.route("/search", methods=['GET'])
+def search_route():
+     '''
+     ADD DOCSTRING HERE (UNOFFICIAL)
+     '''
+     token = request.args.get('token')
+     query_str = request.args.get('query_str')
+
+     return dumps(search(token, query_str))
+
+@APP.route("/clear", methods=['DELETE'])
+def clear_route():
+    '''
+    THIS IS NOT OFFICIAL, THIS IS JUST TO GET AUTH TESTS WORKING
+    THIS FUNCTION IS OFFICIALLY IMPLEMENTED BY Jordan Hunyh
+    '''
+
+    clear()
+    return dumps({})
+
+# Example, it is associated with echo_http_test.py, do not remove it
 @APP.route("/echo", methods=['GET'])
 def echo():
     data = request.args.get('data')
     if data == 'echo':
-   	    raise InputError(description='Cannot echo "echo"')
+        raise InputError(description='Cannot echo "echo"')
     return dumps({
         'data': data
     })
 
-@APP.route("/auth/login", methods=['POST'])
-def http_login():
-    email = request.get_json()['email']
-    password = request.get_json()['password']
-
-    return dumps(auth.auth_login(email, password))
-
-@APP.route("/auth/logout", methods=['POST'])
-def http_logout():
-    token = request.get_json()['token']
-    #token = request.args.get('token')
-
-    return dumps(auth.auth_logout(token))
-
-@APP.route("/auth/register", methods=['POST'])
-def http_register():
-    email = request.get_json()['email']
-    password = request.get_json()['password']
-    name_first = request.get_json()['name_first']
-    name_last = request.get_json()['name_last']
-
-    return dumps(auth.auth_register(email, password, name_first, name_last))
-
-@APP.route("/channel/invite", methods=['POST'])
-def http_invite():
-    token = request.get_json()['token']
-    channel_id = int(request.get_json()['channel_id'])
-    u_id = int(request.get_json()['u_id'])
-
-    return dumps(channel.channel_invite(token, channel_id, u_id))
-
-@APP.route("/channel/details", methods=['GET'])
-def http_details():
-    #token = request.get_json()['token']
-    #channel_id = int(request.get_json()['channel_id'])
-
-    token = request.args.get('token')
-    channel_id = int(request.args.get('channel_id'))
-
-    return dumps(channel.channel_details(token, channel_id))
-
-@APP.route("/channel/messages", methods=['GET'])
-def http_messages():
-    #token = request.get_json()['token']
-    #channel_id = int(request.get_json()['channel_id'])
-    #start = int(request.get_json()['start'])
-
-    token = request.args.get('token')
-    channel_id = int(request.args.get('channel_id'))
-    start = int(request.args.get('start'))
-
-    return dumps(channel.channel_messages(token, channel_id, start))
-
-@APP.route("/channel/leave", methods=['POST'])
-def http_leave():
-    token = request.get_json()['token']
-    channel_id = int(request.get_json()['channel_id'])
-
-    return dumps(channel.channel_leave(token, channel_id))
-
-@APP.route("/channel/join", methods=['POST'])
-def http_join():
-    token = request.get_json()['token']
-    channel_id = int(request.get_json()['channel_id'])
-
-    return dumps(channel.channel_join(token, channel_id))
-
-@APP.route("/channel/addowner", methods=['POST'])
-def http_addowner():
-    token = request.get_json()['token']
-    channel_id = int(request.get_json()['channel_id'])
-    u_id = int(request.get_json()['u_id'])
-
-    return dumps(channel.channel_addowner(token, channel_id, u_id))
-
-@APP.route("/channel/removeowner", methods=['POST'])
-def http_removeowner():
-    token = request.get_json()['token']
-    channel_id = int(request.get_json()['channel_id'])
-    u_id = int(request.get_json()['u_id'])
-
-    return dumps(channel.channel_removeowner(token, channel_id, u_id))
-
-@APP.route("/channels/list", methods=['GET'])
-def http_channels_list():
-    #token = request.get_json()['token']
-    token = request.args.get('token')
-
-    return dumps(channels.channels_list(token))
-
-@APP.route("/channels/listall", methods=['GET'])
-def http_channels_listall():
-    #token = request.get_json()['token']
-    token = request.args.get('token')
-
-    return dumps(channels.channels_listall(token))
-
-@APP.route("/channels/create", methods=['POST'])
-def http_create():
-    token = request.get_json()['token']
-    name = request.get_json()['name']
-    is_public = bool(request.get_json()['is_public'])
-
-    return dumps(channels.channels_create(token, name, is_public))
-
-@APP.route("/message/send", methods=['POST'])
-def http_send():
-    token = request.get_json()['token']
-    channel_id = int(request.get_json()['channel_id'])
-    message_str = request.get_json()['message']
-
-    return dumps(message.message_send(token, channel_id, message_str))
-
-@APP.route("/message/remove", methods=['DELETE'])
-def http_remove():
-    token = request.get_json()['token']
-    message_id = int(request.get_json()['message_id'])
-
-    return dumps(message.message_remove(token, message_id))
-
-@APP.route("/message/edit", methods=['PUT'])
-def http_message_edit():
-    token = request.get_json()['token']
-    message_id = int(request.get_json()['message_id'])
-    message_str = request.get_json()['message']
-
-    return dumps(message.message_edit(token, message_id, message_str))
-
-@APP.route("/user/profile", methods=['GET'])
-def http_profile():
-    #token = request.get_json()['token']
-    #u_id = int(request.get_json()['u_id'])
-
-    token = request.args.get('token')
-    u_id = int(request.args.get('u_id'))
-
-    return dumps(user.user_profile(token, u_id))
-
-@APP.route("/user/profile/setname", methods=['PUT'])
-def http_setname():
-    token = request.get_json()['token']
-    name_first = request.get_json()['name_first']
-    name_last = request.get_json()['name_last']
-
-    return dumps(user.user_profile_setname(token, name_first, name_last))
-
-@APP.route("/user/profile/setemail", methods=['PUT'])
-def http_setemail():
-    token = request.get_json()['token']
-    email = request.get_json()['email']
-
-    return dumps(user.user_profile_setemail(token, email))
-
-@APP.route("/user/profile/sethandle", methods=['PUT'])
-def http_sethandle():
-    token = request.get_json()['token']
-    handle_str = request.get_json()['handle_str']
-
-    return dumps(user.user_profile_sethandle(token, handle_str))
-
-@APP.route("/users/all", methods=['GET'])
-def http_users_all():
-    #token = request.get_json()['token']
-    token = request.args.get('token')
-
-    return dumps(other.users_all(token))
-
-@APP.route("/admin/userpermission/change", methods=['POST'])
-def http_userpermission_change():
-    token = request.get_json()['token']
-    u_id = int(request.get_json()['u_id'])
-    permission_id = int(request.get_json()['permission_id'])
-
-    return dumps(other.admin_userpermission_change(token, u_id, permission_id))
-
-@APP.route("/search", methods=['GET'])
-def http_search():
-    #token = request.get_json()['token']
-    #query_str = request.get_json()['query_str']
-
-    token = request.args.get('token')
-    query_str = request.args.get('query_str')
-
-    return dumps(other.search(token, query_str))
-
-@APP.route("/clear", methods=['DELETE'])
-def http_clear():
-
-    return dumps(other.clear())
-
+# DO NOT EDIT ANYTHING BELOW THIS LINE
 
 if __name__ == "__main__":
     APP.run(port=0) # Do not edit this port

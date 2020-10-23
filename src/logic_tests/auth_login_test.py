@@ -48,7 +48,7 @@ def reset():
     clear()
 
 @pytest.fixture
-def initialise_user_data():
+def initialise_user_data(reset):
     '''
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
@@ -64,7 +64,7 @@ def initialise_user_data():
         'user1': user1_details
     }
 
-def test_successful_login_with_everything_valid(reset, initialise_user_data):
+def test_successful_login_with_everything_valid(initialise_user_data):
     '''
     Tests that auth_login logs the user in successfully
     '''
@@ -73,7 +73,7 @@ def test_successful_login_with_everything_valid(reset, initialise_user_data):
     auth_logout(test_user_0['token'])
     auth_login('user0@email.com', 'user0_pass1!')
 
-def test_invalid_email(reset, initialise_user_data):
+def test_invalid_email(initialise_user_data):
     '''
     Tests that auth_login raises an InputError when an invalid email-id
     is passed as one of the parameters
@@ -84,7 +84,7 @@ def test_invalid_email(reset, initialise_user_data):
     with pytest.raises(InputError):
         auth_login('user0_email.com', 'user0_pass1!')
 
-def test_unregistered_user(reset, initialise_user_data):
+def test_unregistered_user(initialise_user_data):
     '''
     Tests that auth_login raises an InputError when an unregistered user
     tries to log-in
@@ -93,7 +93,7 @@ def test_unregistered_user(reset, initialise_user_data):
     with pytest.raises(InputError):
         auth_login('user00@email.com', 'user0_pass1!')
 
-def test_wrong_password(reset, initialise_user_data):
+def test_wrong_password(initialise_user_data):
     '''
     Tests that auth_login raises an InputError when a wrong password is
     passed as one of the parameters
@@ -104,7 +104,7 @@ def test_wrong_password(reset, initialise_user_data):
     with pytest.raises(InputError):
         auth_login('user0@email.com', 'user0_Pass1!')
 
-def test_insufficient_parameters(reset, initialise_user_data):
+def test_insufficient_parameters(initialise_user_data):
     '''
     Tests that auth_login raises an InputError when less than expected
     parameters are passed
@@ -115,7 +115,7 @@ def test_insufficient_parameters(reset, initialise_user_data):
     with pytest.raises(InputError):
         auth_login('user0@email.com', None)
 
-def test_return_type(reset, initialise_user_data):
+def test_return_type(initialise_user_data):
     '''
     Tests that auth_login returns the expected datatype i.e.
     {u_id : int, token : str}
@@ -129,7 +129,7 @@ def test_return_type(reset, initialise_user_data):
     assert isinstance(test_user_0_login['u_id'], int)
     assert isinstance(test_user_0_login['token'], str)
 
-def test_login_u_id(reset, initialise_user_data):
+def test_login_u_id(initialise_user_data):
     '''
     Tests that auth_register and auth_login return same values of token
     and u_id, as there may be a slightest possibility that token or u_id
@@ -140,7 +140,7 @@ def test_login_u_id(reset, initialise_user_data):
     test_user_0_login = auth_login('user0@email.com', 'user0_pass1!')
     assert test_user_0_login['u_id'] == test_user_0['u_id']
 
-def test_login_unique_token_and_u_id(reset, initialise_user_data):
+def test_login_unique_token_and_u_id(initialise_user_data):
     '''
     Tests that auth_login returns a unique u_id and token for each user
     '''
@@ -155,7 +155,7 @@ def test_login_unique_token_and_u_id(reset, initialise_user_data):
 
 # later modify this to check each login from multiple logins has
 # different token
-def test_multiple_logins(reset, initialise_user_data):
+def test_multiple_logins(initialise_user_data):
     '''
     Tests that auth_login allows multiple logins
     '''
@@ -164,7 +164,7 @@ def test_multiple_logins(reset, initialise_user_data):
     auth_login('user0@email.com', 'user0_pass1!')
     auth_login('user0@email.com', 'user0_pass1!')
 
-def test_looking_for_negative_u_id(reset, initialise_user_data):
+def test_looking_for_negative_u_id(initialise_user_data):
     '''
     Tests that auth_login does not return a negative u_id for a user
     '''
@@ -172,7 +172,7 @@ def test_looking_for_negative_u_id(reset, initialise_user_data):
     test_user_0_login = auth_login('user0@email.com', 'user0_pass1!')
     assert test_user_0_login['u_id'] >= 0
 
-def test_non_ascii_password(reset, initialise_user_data):
+def test_non_ascii_password(initialise_user_data):
     '''
     Tests that auth_login does not accept a Non-ASCII password as one
     the parameters passed to it

@@ -5,7 +5,7 @@ Contributor - Ahmet Karatas, Joseph Knox
 Iteration 1
 '''
 
-from datetime import datetime
+from datetime import datetime, timezone
 import helper
 import data
 from error import InputError, AccessError
@@ -30,23 +30,12 @@ def message_send(token, channel_id, message):
     if not channel_info:
         raise InputError('Channel ID is not a valid channel')
 
-    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info\
-        ['u_id'], channel_id):
-        raise AccessError('Authorised user is not a member of channel with \
-            channel_id')
+    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info['u_id'], channel_id):
+        raise AccessError('Authorised user is not a member of channel with channel_id')
 
-    messages_list_created = False
-    for group in data.data:
-        if group == 'messages':
-            messages_list_created = True
+    message_id = len(data.data['messages'])
 
-    if messages_list_created:
-        message_id = data.data['messages'][-1]['message_id'] + 1
-
-    else:
-        data.data['messages'] = []
-        message_id = 0
-    
+    '''
     date = datetime.now()
     Y = int(datetime.strftime(date, "%Y"))
     m = int(datetime.strftime(date, "%m"))
@@ -55,7 +44,11 @@ def message_send(token, channel_id, message):
     M = int(datetime.strftime(date, "%M"))
     S = int(datetime.strftime(date, "%S"))
     time_created = str(datetime(Y, m, d, H, M, S))
-    
+    '''
+
+    date = datetime.now()
+    time_created = date.replace(tzinfo=timezone.utc).timestamp()
+
     message_dict = {
         'message_id': message_id,
         'u_id': user_info['u_id'],
@@ -64,10 +57,7 @@ def message_send(token, channel_id, message):
     }
 
     data.data['messages'].append(message_dict)
-
-    for channel in data.data['channels']:
-        if channel['channel_id'] == channel_id:
-            channel['messages'].append(message_dict)
+    channel_info['messages'].append(message_dict)
 
     return {
         'message_id': message_id,

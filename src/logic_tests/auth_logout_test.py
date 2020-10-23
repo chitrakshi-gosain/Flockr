@@ -46,7 +46,7 @@ def reset():
     clear()
 
 @pytest.fixture
-def initialise_user_data():
+def initialise_user_data(reset):
     '''
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
@@ -59,7 +59,7 @@ def initialise_user_data():
         'user0': user0_details
     }
 
-def test_successful_logout(reset, initialise_user_data):
+def test_successful_logout(initialise_user_data):
     '''
     Tests that auth_logout returns True on successful logout
     '''
@@ -67,19 +67,19 @@ def test_successful_logout(reset, initialise_user_data):
     test_user_0 = initialise_user_data['user0']
     assert auth_logout(test_user_0['token'])
 
-def test_active_token_now_invalid(reset, initialise_user_data):
+def test_active_token_now_invalid(initialise_user_data):
     '''
     Tests that auth_logout returns True on successful logout the first
     time, but second time when the same token is passed it raises an
     AccessError
     '''
 
-    test_user_0_login = auth_login('user0@email.com', 'user0_pass1!')
+    test_user_0_login = initialise_user_data['user0']
     assert auth_logout(test_user_0_login['token'])
     with pytest.raises(AccessError):
         auth_logout(test_user_0_login['token'])
 
-def test_invalid_token(reset, initialise_user_data):
+def test_invalid_token(initialise_user_data):
     '''
     Tests that auth_logout raises an AccessError when an invalid token
     is passed as one of the parameters
@@ -88,7 +88,7 @@ def test_invalid_token(reset, initialise_user_data):
     with pytest.raises(AccessError):
         auth_logout('invalid_token')
 
-def test_whitespace_as_token(reset, initialise_user_data):
+def test_whitespace_as_token(initialise_user_data):
     '''
     Tests that auth_logout raises an AccessError when a whitespace is
     passed as token
@@ -97,7 +97,7 @@ def test_whitespace_as_token(reset, initialise_user_data):
     with pytest.raises(AccessError):
         auth_logout(' ')
 
-def test_insufficient_parameters(reset, initialise_user_data):
+def test_insufficient_parameters(initialise_user_data):
     '''
     Tests that auth_logout raises an InputError when less than expected
     parameters are passed
@@ -106,7 +106,7 @@ def test_insufficient_parameters(reset, initialise_user_data):
     with pytest.raises(InputError):
         auth_logout(None)
 
-def test_return_type(reset, initialise_user_data):
+def test_return_type(initialise_user_data):
     '''
     Tests that auth_logout returns the expected datatype i.e.
     { is_success : boolean }
