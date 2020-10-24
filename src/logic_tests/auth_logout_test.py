@@ -24,8 +24,6 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 
 '''
 EXCEPTIONS
-Error type: InputError
-    -> insufficient parameters
 Error type: AccessError
     -> token passed in is not a valid token
 '''
@@ -96,15 +94,6 @@ def test_whitespace_as_token(initialise_user_data):
 
     with pytest.raises(AccessError):
         auth_logout(' ')
-
-def test_insufficient_parameters(initialise_user_data):
-    '''
-    Tests that auth_logout raises an InputError when less than expected
-    parameters are passed
-    '''
-
-    with pytest.raises(InputError):
-        auth_logout(None)
 
 def test_return_type(initialise_user_data):
     '''

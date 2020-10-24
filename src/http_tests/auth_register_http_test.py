@@ -29,7 +29,6 @@ FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 '''
 EXCEPTIONS
 Error type: InputError
-    -> insufficient parameters
     -> email entered is not a valid email
     -> email address is already being used by another user
     -> password entered is less than 6 characters long or more than 32
@@ -144,17 +143,6 @@ def test_password_too_long_(url, initialise_user_dictionary):
 
     user0 = initialise_user_dictionary['user0_dict']
     user0['password'] = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*7'    
-    register_response = requests.post(f"{url}/auth/register", json=user0)
-    assert register_response.status_code == 400
-
-def test_insufficient_parameters(url, initialise_user_dictionary):
-    '''
-    Tests that App.route("/auth/register", methods=['POST']) raises an
-    InputError when less than expected parameters are passed
-    '''
-
-    user0 = initialise_user_dictionary['user0_dict']
-    user0['password'] = None
     register_response = requests.post(f"{url}/auth/register", json=user0)
     assert register_response.status_code == 400
 

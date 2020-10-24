@@ -13,7 +13,7 @@ from error import InputError
 import sys
 from auth import auth_login, auth_register, auth_logout
 from channel import channel_invite, channel_details, channel_messages, \
-     channel_leave, channel_join, channel_addowner, channel_removeowner
+    channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_list, channels_listall, channels_create
 from message import message_send, message_remove, message_edit
 from  user import user_profile, user_profile_setname, user_profile_setemail, \
@@ -49,11 +49,10 @@ def auth_login_route():
     '''
 
     payload = request.get_json()
-    user_credentials = auth_login(payload['email'], payload['password'])
-    return dumps({
-        'u_id': user_credentials['u_id'],
-        'token': user_credentials['token']
-    })
+    email = payload['email']
+    password = payload['password']
+
+    return dumps(auth_login(email, password))
 
 
 @APP.route("/auth/logout", methods=['POST'])
@@ -63,23 +62,23 @@ def auth_logout_route():
     '''
 
     payload = request.get_json()
-    user_credentials = auth_logout(payload['token'])
-    return dumps({
-        'is_success': user_credentials['is_success'],
-    })
+    token = payload['token']
+
+    return dumps(auth_logout(token))
 
 @APP.route("/auth/register", methods=['POST'])
 def auth_register_route():
     '''
     ADD DOCSTRING HERE
     '''
+
     payload = request.get_json()
-    user_credentials = auth_register(payload['email'], payload['password'], \
-        payload['name_first'], payload['name_last'])
-    return dumps({
-        'u_id': user_credentials['u_id'],
-        'token': user_credentials['token']
-    })
+    email = payload['email']
+    password = payload['password']
+    name_first = payload['name_first']
+    name_last = payload['name_last']
+
+    return dumps(auth_register(email, password, name_first, name_last))
 
 @APP.route("/channel/invite", methods=['POST'])
 def channel_invite_route():
@@ -103,12 +102,17 @@ def channel_details_route():
 
     return dumps(channel_details(token, channel_id))
 
-# @APP.route("/channel/messages", methods=['GET'])
-# def channel_messages_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/channel/messages", methods=['GET'])
+def channel_messages_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    token = request.args.get('token')
+    channel_id = int(request.args.get('channel_id'))
+    start = int(request.args.get('start'))
+
+    return dumps(channel_messages(token, channel_id, start))
 
 @APP.route("/channel/leave", methods=['POST'])
 def channel_leave_route():
@@ -156,19 +160,48 @@ def channel_removeowner_route():
 
     return dumps(channel_removeowner(token, channel_id, u_id))
 
-# @APP.route("/channels/list", methods=['GET'])
-# def channels_list_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/channels/list", methods=['GET'])
+def channels_list_route():
+    '''
+    DESCRIPTION:
+    Provide a list of all channels (and
+    their associated details) that the
+    authorised user is part of
 
-# @APP.route("/channels/listall", methods=['GET'])
-# def channels_listall_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+    
+    token = request.args.get('token')
+
+    return dumps(channels_list(token))
+
+@APP.route("/channels/listall", methods=['GET'])
+def channels_listall_route():
+    '''
+    DESCRIPTION:
+    Provide a list of all channels (and
+    their associated details)
+
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+    
+    token = request.args.get('token')
+
+    return dumps(channels_listall(token))
 
 @APP.route("/channels/create", methods=['POST'])
 def channels_create_route():
@@ -194,12 +227,15 @@ def message_send_route():
 
     return dumps(message_send(token, channel_id, message_str))
 
-# @APP.route("/message/remove", methods=['DELETE'])
-# def message_remove_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/message/remove", methods=['DELETE'])
+def message_remove_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    message_id = int(payload['message_id'])
+    return dumps(message_remove(token, message_id))
 
 @APP.route("/message/edit", methods=['PUT'])
 def message_edit_route():
@@ -231,26 +267,50 @@ def user_profile_setname_route():
     return dumps({
     })
 
-# @APP.route("/user/profile/setemail", methods=['PUT'])
-# def user_profile_setemail_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/user/profile/setemail", methods=['PUT'])
+def user_profile_setemail_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
 
-# @APP.route("/user/profile/sethandle", methods=['PUT'])
-# def user_profile_sethandle_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+    payload = request.get_json()
+    token = payload['token']
+    email = payload['email']
 
-# @APP.route("/users/all", methods=['GET'])
-# def users_all_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+    return dumps(user_profile_setemail(token, email))
+
+@APP.route("/user/profile/sethandle", methods=['PUT'])
+def user_profile_sethandle_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    payload = request.get_json()
+    token = payload['token']
+    handle_str= payload['handle_str']
+
+    return dumps(user_profile_sethandle(token, handle_str))
+
+@APP.route("/users/all", methods=['GET'])
+def users_all_route():
+    '''
+    DESCRIPTION:
+    Returns a list of all users and
+    their associated details
+
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {users}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+    
+    token = request.args.get('token')
+
+    return dumps(users_all(token))
 
 @APP.route("/admin/userpermission/change", methods=['POST'])
 def change_userpermission_route():

@@ -38,18 +38,14 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
 EXCEPTIONS
     * auth_login
         Error type: InputError
-            -> insufficient parameters
             -> email entered is not a valid email
             -> email entered does not belong to a user
             -> password is not correct
     * auth_logout
-        Error type: InputError
-            -> insufficient parameters
         Error type: AccessError
             -> token passed in is not a valid token
     * auth_register
         Error type: InputError
-            -> insufficient parameters
             -> email entered is not a valid email
             -> email address is already being used by another user
             -> password entered is less than 6 characters long or more
@@ -96,9 +92,6 @@ def auth_login(email, password):
     '''
 
     # Checking for InputError(s):
-    if None in {email, password}:
-        raise InputError(description='Insufficient parameters, please enter: \
-        email, password')
 
     if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')
@@ -139,11 +132,6 @@ def auth_logout(token):
                         otherwise False
     '''
 
-    # Checking for InputError:
-    if not token:
-        raise InputError(description='Insufficient parameters. Please enter: \
-                        token')
-
     # Checking for AccessError:
     if not get_user_info('token', token):
         raise AccessError(description='Token passed in is not a valid token')
@@ -180,9 +168,6 @@ def auth_register(email, password, name_first, name_last):
     '''
 
     # Checking for InputError(s):
-    if None in {email, password, name_first, name_last}:
-        raise InputError(description='Insufficient parameters. Please enter: \
-        email, password, name_first, name_last')
 
     if not check_if_valid_email(email):
         raise InputError(description='Email entered is not a valid email')

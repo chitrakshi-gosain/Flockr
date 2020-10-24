@@ -158,36 +158,25 @@ def channel_details(token, channel_id):
                      validity, user authorisation
     '''
 
-    # Testing for insufficient parameters
     if None in {token, channel_id}:
         raise InputError('Insufficient parameters given')
 
-    # Testing for token validity
     user_info = helper.get_user_info('token', token)
     if not user_info:
         raise AccessError('Invalid Token')
 
-    # Retrieving the u_id from the given token
-
-    # Finding if channel is valid and assigning the current channel to a
-    # dictionary
     channel_info = helper.get_channel_info(channel_id)
-
     if not channel_info:
         raise InputError('Channel ID is not a valid channel')
 
-    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info\
-        ['u_id'], channel_id):
-        raise AccessError('Authorised user is not a member of channel with \
-            channel_id')
+    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info['u_id'], channel_id):
+        raise AccessError('Authorised user is not a member of channel with channel_id')
 
-    # Retrieving the information from the assigned dictionary and
-    # returning the new dictionary
-    channel_contents = {}
-    channel_contents.update({'name': channel_info['name']})
-    channel_contents.update({'owner_members': channel_info['owner_members']})
-    channel_contents.update({'all_members': channel_info['all_members']})
-    return channel_contents
+    return {
+        'name': channel_info['name'],
+        'owner_members': channel_info['owner_members'],
+        'all_members': channel_info['all_members']
+    }
 
 
 def channel_messages(token, channel_id, start):
@@ -261,9 +250,9 @@ def channel_leave(token, channel_id):
         'name_last': user_info['name_last']
         }
 
-    if helper.is_channel_owner(user_info['u_id'], channel_id):
+    if user_removed in channel_info['owner_members']:
         channel_info['owner_members'].remove(user_removed)
-    if helper.is_user_in_channel(user_info['u_id'], channel_id):
+    if user_removed in channel_info['all_members']:
         channel_info['all_members'].remove(user_removed)
     else:
         raise AccessError('User cannot leave channels they are not part of')
