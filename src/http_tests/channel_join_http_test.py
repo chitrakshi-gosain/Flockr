@@ -37,6 +37,7 @@ Exceptions:
         -> Channel ID is not a valid channel
     AccessError (400) when:
         -> channel_id refers to a channel that is private (when the authorised user is not a global owner)
+        -> token is invalid
 
 Description: Given a channel_id of a channel that the
              authorised user can join, adds them to that channel
@@ -54,7 +55,9 @@ def is_user_in_channel(url, user_id, token, channel_id):
 
 
 def test_join_basic(url, initialise_user_data, initialise_channel_data):
-
+    '''
+    basic test with no edge cases or errors raised
+    '''
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
@@ -74,7 +77,10 @@ def test_join_basic(url, initialise_user_data, initialise_channel_data):
     assert response.status_code == 200
 
 def test_join_invalid_channel(url, initialise_user_data, initialise_channel_data):
-
+    '''
+    check that channel_join raises InputError
+    if channel_id does not refer to a valid channel
+    '''
     join_input = {
         "token": initialise_user_data['user1']['token'],
         "channel_id": -1
@@ -84,7 +90,11 @@ def test_join_invalid_channel(url, initialise_user_data, initialise_channel_data
     assert response.status_code == 400
 
 def test_join_private_user(url, initialise_user_data, initialise_channel_data):
-
+    '''
+    check that channel_join raises AccessError
+    if channel_id refers to a channel that is private
+    (when the authorised user is not a global owner)
+    '''
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
     channel_id = initialise_channel_data['admin_priv']['channel_id']
@@ -103,7 +113,9 @@ def test_join_private_user(url, initialise_user_data, initialise_channel_data):
     assert response.status_code == 400
 
 def test_join_private_admin(url, initialise_user_data, initialise_channel_data):
-
+    '''
+    check that global owners can join private channels
+    '''
     token = initialise_user_data['admin']['token']
     u_id = initialise_user_data['admin']['u_id']
     channel_id = initialise_channel_data['user1_priv']['channel_id']
@@ -122,7 +134,10 @@ def test_join_private_admin(url, initialise_user_data, initialise_channel_data):
     assert response.status_code == 200
 
 def test_join_invalid_token(url, initialise_user_data, initialise_channel_data):
-
+    '''
+    check that channel_join raises AccessError
+    if token is invalid
+    '''
     join_input = {
         "token": " ",
         "channel_id": initialise_channel_data['admin_publ']['channel_id']
@@ -132,7 +147,9 @@ def test_join_invalid_token(url, initialise_user_data, initialise_channel_data):
     assert response.status_code == 400
 
 def test_join_already_member(url, initialise_user_data, initialise_channel_data):
-
+    '''
+    check that users can join a channel they are already in
+    '''
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
