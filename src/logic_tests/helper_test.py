@@ -15,6 +15,7 @@ from helper import encrypt_password_with_hash, generate_encoded_token, \
                 check_string_length_and_whitespace
 import data
 import other
+from auth import auth_register
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -327,6 +328,7 @@ def test_invalidating_token(reset, initialise_data):
     '''
     ADD DOCSTRING HERE
     '''
+    user_credentials = auth_register('user0@email.com', 'user0_pass1!', 'user0_first', 'user0_last')
+    assert test_invalidating_token(user_credentials['token'])
 
-    # Ahmet
-    pass
+    assert not test_invalidating_token('    ')
