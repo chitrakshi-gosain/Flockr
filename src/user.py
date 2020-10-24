@@ -7,7 +7,7 @@ Iteration 2
 
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
-check_string_length_and_whitespace, update_data, decode_encoded_token
+check_string_length_and_whitespace, decode_encoded_token
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -37,13 +37,11 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
 EXCEPTIONS
     * user_profile
         Error type: InputError
-            -> insufficient parameters
             -> user with u_id is not a valid_user
         Error type: AccessError
             -> token passed in is not a valid token
     * user_profile_setname
         Error type: InputError
-            -> insufficient parameters
             -> name_first is not between 1 and 50 characters inclusively
                in length
             -> name_last is not between 1 and 50 characters inclusively
@@ -52,14 +50,12 @@ EXCEPTIONS
             -> token passed in is not a valid token
     * user_profile_setemail
         Error type: InputError
-            -> insufficient parameters
             -> email entered is not a valid email
             -> email address is already being used by another user
         Error type: AccessError
             -> token passed in is not a valid token
     * user_profile_sethandle
         Error type: InputError
-            -> insufficient parameters
             -> handle_str must be between 3 and 20 characters
             -> handle is already being used by another user
         Error type: AccessError
@@ -151,8 +147,8 @@ def user_profile_setname(token, name_first, name_last):
         raise InputError(description='name_last is not between 1 and 50 \
         characters inclusively in length or is a whitespace')
 
-    update_data('name_first', user_info['u_id'], name_first)
-    update_data('name_last', user_info['u_id'], name_last)
+    user_info['name_first'] = name_first
+    user_info['name_last'] = name_last
 
     return {
     }
@@ -170,9 +166,6 @@ def user_profile_setemail(token, email):
     '''
 
     # Checking for InputError(s) or AccessError:
-    if None in {token, email}:
-        raise InputError(description='Insufficient parameters. Please enter: \
-        token, email')
 
     user_info = get_user_info('token', token)
     if not user_info:
@@ -192,7 +185,7 @@ def user_profile_setemail(token, email):
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
 
-    update_data('email', user_info['u_id'], email)
+    user_info['email'] = email
 
     return {
     }
@@ -209,9 +202,6 @@ def user_profile_sethandle(token, handle_str):
     '''
 
     # Checking for InputError(s) or AccessError:
-    if None in {token, handle_str}:
-        raise InputError(description='Insufficient parameters. Please enter: \
-        token, handle_str')
 
     user_info = get_user_info('token', token)
     if not user_info:
@@ -233,7 +223,7 @@ def user_profile_sethandle(token, handle_str):
     # Since there is no InputError or AccessError, hence proceeding
     # forward:
 
-    update_data('handle_str', user_info['u_id'], handle_str)
+    user_info['handle_str'] = handle_str
 
     return {
     }

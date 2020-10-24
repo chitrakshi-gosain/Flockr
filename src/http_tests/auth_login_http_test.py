@@ -34,7 +34,6 @@ FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 '''
 EXCEPTIONS
 Error type: InputError
-    -> insufficient parameters
     -> email entered is not a valid email
     -> email entered does not belong to a user
     -> password is not correct
@@ -113,25 +112,6 @@ def test_wrong_password(url, initialise_user_data):
     login_response = requests.post(f"{url}/auth/login", json={
         'email': 'user0@email.com',
         'password': 'user0_Pass1!'
-    })
-    assert login_response.status_code == 400
-
-def test_insufficient_parameters(url, initialise_user_data):
-    '''
-    Tests that App.route("/auth/login", methods=['POST']) raises an
-    InputError when less than expected parameters are passed
-    '''
-
-    test_user_0 = initialise_user_data['user0']
-
-    logout_response = requests.post(f"{url}/auth/logout", json={
-        'token': test_user_0['token']
-    })
-    assert logout_response.status_code == 200
-
-    login_response = requests.post(f"{url}/auth/login", json={
-        'email': 'user0@email.com',
-        'password': None
     })
     assert login_response.status_code == 400
 

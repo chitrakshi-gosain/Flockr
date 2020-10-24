@@ -25,7 +25,6 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 '''
 EXCEPTIONS
 Error type: InputError
-    -> insufficient parameters
     -> email entered is not a valid email
     -> email entered does not belong to a user
     -> password is not correct
@@ -103,17 +102,6 @@ def test_wrong_password(initialise_user_data):
     auth_logout(test_user_0['token'])
     with pytest.raises(InputError):
         auth_login('user0@email.com', 'user0_Pass1!')
-
-def test_insufficient_parameters(initialise_user_data):
-    '''
-    Tests that auth_login raises an InputError when less than expected
-    parameters are passed
-    '''
-
-    test_user_0 = initialise_user_data['user0']
-    auth_logout(test_user_0['token'])
-    with pytest.raises(InputError):
-        auth_login('user0@email.com', None)
 
 def test_return_type(initialise_user_data):
     '''

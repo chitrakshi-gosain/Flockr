@@ -23,9 +23,6 @@ def message_send(token, channel_id, message):
     if not user_info:
         raise AccessError('Invalid Token')
 
-    # Retrieving the u_id from the given token
-    # Finding if channel is valid and assigning the current channel to a
-    # dictionary
     channel_info = helper.get_channel_info(channel_id)
     if not channel_info:
         raise InputError('Channel ID is not a valid channel')
@@ -34,17 +31,6 @@ def message_send(token, channel_id, message):
         raise AccessError('Authorised user is not a member of channel with channel_id')
 
     message_id = len(data.data['messages'])
-
-    '''
-    date = datetime.now()
-    Y = int(datetime.strftime(date, "%Y"))
-    m = int(datetime.strftime(date, "%m"))
-    d = int(datetime.strftime(date, "%d"))
-    H = int(datetime.strftime(date, "%H"))
-    M = int(datetime.strftime(date, "%M"))
-    S = int(datetime.strftime(date, "%S"))
-    time_created = str(datetime(Y, m, d, H, M, S))
-    '''
 
     date = datetime.now()
     time_created = date.replace(tzinfo=timezone.utc).timestamp()
@@ -68,42 +54,28 @@ def message_remove(token, message_id):
     ADD DOCSTRING HERE
     '''
 
-    # Testing for insufficient parameters
     if None in {token, message_id}:
         raise InputError("Insufficient parameters given")
 
-    # Testing to see if the message exists
-    message_exists = False
-    for channel in data.data['channels']:
-        for message in channel['messages']:
-            if message['message_id'] == message_id:
-                message_exists = True
-                channel_info = channel
-                message_info = message
-                break
-
-
-    if not message_exists:
-        raise InputError('message_id does not correlate to an existing \
-            message_id')
-
-    # Testing for token validity
     user_info = helper.get_user_info('token', token)
     if not user_info:
         raise AccessError('Invalid Token')
 
-    # if the user did not send the message
+    message_info = helper.get_message_info(message_id)
+    if not message_info:
+        raise InputError('message_id does not correlate to an existing message_id')
 
-    if message_info['u_id'] != user_info['u_id']:
-        # if the user is not an owner of the channel
-        for owner in channel_info['owner_members']:
-            if owner['u_id'] != user_info['u_id']:
-                raise AccessError('User has neither sent the message, now is \
-                    an owner of the channel')
+    for channel in data.data['channels']:
+        if message_info in channel['messages']:
+            channel_info = channel
+            break
 
-    for (i, message) in enumerate(channel_info['messages']):
-        if message['message_id'] == message_id:
-            del channel_info['messages'][i]
+    #if not admin or not owner or not sender, denied
+    if not helper.is_user_authorised(token, channel_info['channel_id']) and \
+    not message_info['u_id'] == user_info['u_id']:
+        raise AccessError('User is does not have rights to remove message')
+
+    channel_info['messages'].remove(message_info)
 
     return {
     }

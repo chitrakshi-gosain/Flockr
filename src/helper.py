@@ -15,7 +15,7 @@ from error import AccessError
 # CONSTANTS
 MIN_LENGTH_PASSWORD = 6
 MAX_LENGTH_PASSWORD = 32
-SECRET = 'wed15grapeteam2'
+SECRET = 'wed15grapeteam2' * 3
 
 def check_if_valid_email(email):
     '''
@@ -163,18 +163,6 @@ def get_message_info(message_id):
                 return message
 
     return False
-
-def update_data(keyword, user_id, identifier):
-    '''
-    Given a VALID variable ('name_first'|'name_last'|'email'|'handle_str'),
-    u_id of the user who wants to update his/her data and potential
-    UNIQUE identifier (name_first|name_last|email|handle_str), updates
-    their data under data['users'] in data.py
-    '''
-
-    for user in data.data['users']:
-        if user['u_id'] == user_id:
-            user[keyword] = identifier
 
 def encrypt_password_with_hash(password):
     '''

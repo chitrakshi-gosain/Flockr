@@ -26,7 +26,6 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 '''
 EXCEPTIONS
 Error type: InputError
-    -> insufficient parameters
     -> handle_str must be between 3 and 20 characters
     -> handle is already being used by another user
 Error type: AccessError
@@ -57,15 +56,6 @@ def initialise_user_data(reset):
         'user0': user0_details,
         'user1': user1_details
     }
-
-def test_insufficient_parameters(initialise_user_data):
-    '''
-    Tests that user_profile_sethandle raises an InputError when less
-    than expected parameters are passed
-    '''
-
-    with pytest.raises(InputError):
-        user_profile_sethandle(None, None)
 
 def test_return_type(initialise_user_data):
     '''
