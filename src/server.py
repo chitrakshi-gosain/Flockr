@@ -156,19 +156,48 @@ def channel_removeowner_route():
 
     return dumps(channel_removeowner(token, channel_id, u_id))
 
-# @APP.route("/channels/list", methods=['GET'])
-# def channels_list_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/channels/list", methods=['GET'])
+def channels_list_route():
+    '''
+    DESCRIPTION:
+    Provide a list of all channels (and
+    their associated details) that the
+    authorised user is part of
 
-# @APP.route("/channels/listall", methods=['GET'])
-# def channels_listall_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+    
+    token = request.args.get('token')
+
+    return dumps(channels_list(token))
+
+@APP.route("/channels/listall", methods=['GET'])
+def channels_listall_route():
+    '''
+    DESCRIPTION:
+    Provide a list of all channels (and
+    their associated details)
+
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {channels}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+    
+    token = request.args.get('token')
+
+    return dumps(channels_listall(token))
 
 @APP.route("/channels/create", methods=['POST'])
 def channels_create_route():
@@ -245,12 +274,26 @@ def user_profile_setname_route():
 #     '''
 #     pass
 
-# @APP.route("/users/all", methods=['GET'])
-# def users_all_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/users/all", methods=['GET'])
+def users_all_route():
+    '''
+    DESCRIPTION:
+    Returns a list of all users and
+    their associated details
+
+    PARAMETERS:
+        -> token
+
+    RETURN VALUES:
+        -> {users}
+
+    EXCEPTIONS:
+        -> AccessError: Invalid token
+    '''
+    
+    token = request.args.get('token')
+
+    return dumps(users_all(token))
 
 @APP.route("/admin/userpermission/change", methods=['POST'])
 def change_userpermission_route():
