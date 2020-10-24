@@ -48,44 +48,48 @@ Assumptions:
 3. '' will return all visible messages
 '''
 
-def initialise_data():
-    #create users
+@pytest.fixture
+def initialise_user_data():
+    clear()
+
     #The first user to sign up is global owner
     admin_details = auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
     user0_details = auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
     user1_details = auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
-    #create channels
-    channel_publ_details = channels_create(admin_details['token'], "publ0", True)
-    channel_priv_details = channels_create(admin_details['token'], "priv0", False)
 
-    channel_priv_user_details = channels_create(user0_details['token'], 'priv1', False)
-
-    return ({ # users
+    return {
         'admin' : admin_details,
         'user0' : user0_details,
         'user1' : user1_details,
-    },
-    { # channels
-        'publ' : channel_publ_details,
-        'priv' : channel_priv_details,
-        'user_priv' : channel_priv_user_details,
-    })
+    }
+
+@pytest.fixture
+def initialise_channel_data(initialise_user_data):
+    admin_publ_details = channels_create(initialise_user_data['admin']['token'], "admin_public", True)
+    admin_priv_details = channels_create(initialise_user_data['admin']['token'], "admin_private", False)
+    user0_priv_details = channels_create(initialise_user_data['user0']['token'], "user0_private", False)
+
+    return {
+        'publ' : admin_publ_details,
+        'priv' : admin_priv_details,
+        'user_priv' : user0_priv_details
+    }
 
 def pop_datetimes(messages):
     for entry in messages:
         entry.pop('time_created')
     return messages
 
-def test_other_search_not_in_channels():
-    clear()
-    users, channels = initialise_data()
+def test_other_search_not_in_channels(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
 
     message_send(users['admin']['token'], channels['publ']['channel_id'], 'I am in no channels')
     assert search(users['user0']['token'], 'I am in no channels') == { 'messages': [] }
 
-def test_other_search_join_channel():
-    clear()
-    users, channels = initialise_data()
+def test_other_search_join_channel(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
 
     message1 = message_send(users['admin']['token'], channels['publ']['channel_id'], 'I am in no channels')
     message1_info = {
@@ -110,15 +114,14 @@ def test_other_search_join_channel():
     assert message1_info in popped
     assert message2_info not in popped
 
-def test_other_search_no_messages():
-    clear()
-    users = initialise_data()[0]
+def test_other_search_no_messages(initialise_user_data):
+    users = initialise_user_data
 
     assert search(users['user0']['token'], 'There are no messages') == { 'messages': [] }
 
-def test_other_search_empty_query():
-    clear()
-    users, channels = initialise_data()
+def test_other_search_empty_query(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
 
     channel_join(users['user0']['token'], channels['publ']['channel_id'])
 
@@ -141,9 +144,9 @@ def test_other_search_empty_query():
     assert message1_info in popped
     assert message2_info in popped
 
-def test_other_search_admin():
-    clear()
-    users, channels = initialise_data()
+def test_other_search_admin(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
 
     message1 = message_send(users['user0']['token'], channels['user_priv']['channel_id'], 'private')
     message1_info = {
@@ -156,9 +159,9 @@ def test_other_search_admin():
     popped = pop_datetimes(searched_messages['messages'])
     assert message1_info in popped
 
-def test_other_search_multiple_channels():
-    clear()
-    users, channels = initialise_data()
+def test_other_search_multiple_channels(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
 
     message1 = message_send(users['admin']['token'], channels['publ']['channel_id'], 'channel1')
     message1_info = {

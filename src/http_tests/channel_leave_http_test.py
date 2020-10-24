@@ -46,7 +46,7 @@ def is_owner_in_channel(url, user_id, token, channel_id):
     return len(list(filter(lambda user: user_id == user['u_id'], owner_members)))
 
 
-def test_leave_basic(url, reset, initialise_user_data, initialise_channel_data):
+def test_leave_basic(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
@@ -67,7 +67,7 @@ def test_leave_basic(url, reset, initialise_user_data, initialise_channel_data):
     assert is_user_in_channel(url, u_id, admin_token, channel_id) == 0
     assert response.status_code == 200
 
-def test_leave_invalid_channel(url, reset, initialise_user_data, initialise_channel_data):
+def test_leave_invalid_channel(url, initialise_user_data, initialise_channel_data):
 
     leave_input = {
         "token": initialise_user_data['admin']['token'],
@@ -77,7 +77,7 @@ def test_leave_invalid_channel(url, reset, initialise_user_data, initialise_chan
 
     assert response.status_code == 400
 
-def test_leave_not_in_channel(url, reset, initialise_user_data, initialise_channel_data):
+def test_leave_not_in_channel(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
@@ -96,7 +96,7 @@ def test_leave_not_in_channel(url, reset, initialise_user_data, initialise_chann
 
     assert response.status_code == 400
 
-def test_leave_invalid_token(url, reset, initialise_user_data, initialise_channel_data):
+def test_leave_invalid_token(url, initialise_user_data, initialise_channel_data):
 
     leave_input = {
         "token": ' ',
@@ -106,7 +106,7 @@ def test_leave_invalid_token(url, reset, initialise_user_data, initialise_channe
 
     assert response.status_code == 400
 
-def test_leave_owner(url, reset, initialise_user_data, initialise_channel_data):
+def test_leave_owner(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
