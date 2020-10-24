@@ -12,9 +12,9 @@ from helper import encrypt_password_with_hash, generate_encoded_token, \
     decode_encoded_token, get_channel_info, get_message_info, get_user_info, \
         is_channel_owner, is_user_authorised, is_user_in_channel, \
             check_if_valid_email, check_if_valid_password, \
-                check_string_length_and_whitespace
+                check_string_length_and_whitespace, invalidating_token
 import data
-import other
+from other import clear
 from auth import auth_register
 
 '''
@@ -30,7 +30,7 @@ def reset():
     Resets the internal data of the application to it's initial state
     '''
 
-    other.clear()
+    clear()
 
 @pytest.fixture
 def initialise_data():
@@ -328,7 +328,10 @@ def test_invalidating_token(reset):
     '''
     ADD DOCSTRING HERE
     '''
-    user_credentials = auth_register('user00@email.com', 'user0_pass1!', 'user0_first', 'user0_last')
-    assert test_invalidating_token(user_credentials['token'])
 
-    assert not test_invalidating_token('    ')
+    user_credentials = auth_register('user0@email.com', 'user0_pass1!', 'user0_first', 'user0_last')
+    decoded_token = decode_encoded_token(user_credentials['token'])
+    logout_status = invalidating_token(decoded_token)
+    assert logout_status
+
+    assert not invalidating_token('    ')
