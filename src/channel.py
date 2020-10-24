@@ -250,9 +250,9 @@ def channel_leave(token, channel_id):
         'name_last': user_info['name_last']
         }
 
-    if helper.is_channel_owner(user_info['u_id'], channel_id):
+    if user_removed in channel_info['owner_members']:
         channel_info['owner_members'].remove(user_removed)
-    if helper.is_user_in_channel(user_info['u_id'], channel_id):
+    if user_removed in channel_info['all_members']:
         channel_info['all_members'].remove(user_removed)
     else:
         raise AccessError('User cannot leave channels they are not part of')
