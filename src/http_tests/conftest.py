@@ -19,7 +19,7 @@ import pytest
 ****************************BASIC TEMPLATE******************************
 '''
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def url():
     url_re = re.compile(r' \* Running on ([^ ]*)')
     server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
@@ -159,6 +159,7 @@ def initialise_user_dictionary(reset):
         'user1_dict': user1,
         'user2_dict': user2,
         'user3_dict': user3,
+        'user4_dict': user4,
         'user5_dict': user5,
         'user6_dict': user6,
         'user7_dict': user7,
