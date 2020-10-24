@@ -324,11 +324,11 @@ def test_generate_encoded_token(reset, initialise_data):
 #     # Chitrakshi
 #     pass
 
-def test_invalidating_token(reset, initialise_data):
+def test_invalidating_token(reset):
     '''
     ADD DOCSTRING HERE
     '''
-    user_credentials = auth_register('user0@email.com', 'user0_pass1!', 'user0_first', 'user0_last')
+    user_credentials = auth_register('user00@email.com', 'user0_pass1!', 'user0_first', 'user0_last')
     assert test_invalidating_token(user_credentials['token'])
 
     assert not test_invalidating_token('    ')
