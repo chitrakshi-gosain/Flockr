@@ -5,7 +5,6 @@
 
 import pytest
 import auth
-import helper
 from channel import channel_join
 from channels import channels_create, channels_listall
 from message import message_send, message_edit
