@@ -72,9 +72,7 @@ def test_token_invalid(url, initialise_user_data, initialise_channel_data):
     assert response.status_code == 400
 
 def test_return_type(url, initialise_user_data, initialise_channel_data):
-    owner_credentials = initialise_user_data['owner']
     user1_credentials = initialise_user_data['user1']      
-
     channel1_id = initialise_channel_data['owner_publ']
     join_response = requests.post(f"{url}/channel/join", json={
         'token': user1_credentials['token'],

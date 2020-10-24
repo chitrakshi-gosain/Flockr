@@ -60,9 +60,7 @@ def test_token_invalid(initialise_user_data, initialise_channel_data):
         channel_details('incorrect_user1_token', channel1_id['channel_id'])
 
 def test_return_type(initialise_user_data, initialise_channel_data):
-    owner_credentials = initialise_user_data['owner']
     user1_credentials = initialise_user_data['user1']      
-
     channel1_id = initialise_channel_data['public']
     # Invite two initialise_user_data to the channel                   
     channel_join(user1_credentials['token'], channel1_id['channel_id'])
