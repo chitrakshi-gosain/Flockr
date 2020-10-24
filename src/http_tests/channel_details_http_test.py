@@ -76,7 +76,6 @@ def test_return_type(url, initialise_user_data, initialise_channel_data):
     user1_credentials = initialise_user_data['user1']      
 
     channel1_id = initialise_channel_data['owner_publ']
-    # Invite two initialise_user_data to the channel                   
     join_response = requests.post(f"{url}/channel/join", json={
         'token': user1_credentials['token'],
         'channel_id': channel1_id['channel_id']
@@ -112,7 +111,6 @@ def test_channel_details_case(url, initialise_user_data, initialise_channel_data
     user1_credentials = initialise_user_data['user1']      
 
     channel1_id = initialise_channel_data['owner_publ']
-    # Invite two initialise_user_data to the channel                   
     join_response = requests.post(f"{url}/channel/join", json={
         'token': user1_credentials['token'],
         'channel_id': channel1_id['channel_id']
@@ -134,8 +132,8 @@ def test_channel_details_case(url, initialise_user_data, initialise_channel_data
 
     user1 = {
         'u_id': user1_credentials['u_id'],
-        'name_first': 'user1_FIRST',
-        'name_last': 'user1_LAST'
+        'name_first': 'user1_first',
+        'name_last': 'user1_last'
         }
 
     channel_contents = {

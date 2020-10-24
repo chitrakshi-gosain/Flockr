@@ -15,14 +15,10 @@ def message_send(token, channel_id, message):
     checks that the user if authorised in the channel and sends the message
     '''
 
-    # Testing for token validity
     user_info = helper.get_user_info('token', token)
     if not user_info:
         raise AccessError('Invalid Token')
 
-    # Retrieving the u_id from the given token
-    # Finding if channel is valid and assigning the current channel to a
-    # dictionary
     channel_info = helper.get_channel_info(channel_id)
     if not channel_info:
         raise InputError('Channel ID is not a valid channel')
@@ -31,17 +27,6 @@ def message_send(token, channel_id, message):
         raise AccessError('Authorised user is not a member of channel with channel_id')
 
     message_id = len(data.data['messages'])
-
-    '''
-    date = datetime.now()
-    Y = int(datetime.strftime(date, "%Y"))
-    m = int(datetime.strftime(date, "%m"))
-    d = int(datetime.strftime(date, "%d"))
-    H = int(datetime.strftime(date, "%H"))
-    M = int(datetime.strftime(date, "%M"))
-    S = int(datetime.strftime(date, "%S"))
-    time_created = str(datetime(Y, m, d, H, M, S))
-    '''
 
     date = datetime.now()
     time_created = date.replace(tzinfo=timezone.utc).timestamp()
@@ -64,7 +49,6 @@ def message_remove(token, message_id):
     '''
     ADD DOCSTRING HERE
     '''
-    # Testing to see if the message exists
     message_exists = False
     for channel in data.data['channels']:
         for message in channel['messages']:
@@ -79,15 +63,11 @@ def message_remove(token, message_id):
         raise InputError('message_id does not correlate to an existing \
             message_id')
 
-    # Testing for token validity
     user_info = helper.get_user_info('token', token)
     if not user_info:
         raise AccessError('Invalid Token')
 
-    # if the user did not send the message
-
     if message_info['u_id'] != user_info['u_id']:
-        # if the user is not an owner of the channel
         for owner in channel_info['owner_members']:
             if owner['u_id'] != user_info['u_id']:
                 raise AccessError('User has neither sent the message, now is \
@@ -126,7 +106,6 @@ def message_edit(token, message_id, message):
             if message_dict['message_id'] == message_id:
                 channel_id = channel["channel_id"]
 
-    # check if message with message_id was sent by the authorised user
     message_info = helper.get_message_info(message_id)
     if user_info["u_id"] != message_info["u_id"] and not \
         helper.is_user_authorised(token, channel_id):
