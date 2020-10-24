@@ -65,17 +65,17 @@ def test_user_profile_valid_own(url, initialise_user_data):
     assert profile_data == exp_dict
 
     profile_data = requests.get(f'{url}/user/profile', params={
-        'token': user_data['user6']['token'],
-        'u_id': user_data['user6']['u_id'],
+        'token': user_data['user1']['token'],
+        'u_id': user_data['user1']['u_id'],
     }).json()
 
     exp_dict = {
         'user': {
-            'u_id': user_data['user6']['u_id'],
-            'email': 'user6@email.com',
-            'name_first': 'user6_first',
-            'name_last': 'user6_last',
-            'handle_str': 'user6_firstuser6_las',
+            'u_id': user_data['user1']['u_id'],
+            'email': 'user1@email.com',
+            'name_first': 'user1_first',
+            'name_last': 'user1_last',
+            'handle_str': 'user1_firstuser1_las',
         },
     }
 
@@ -88,34 +88,34 @@ def test_user_profile_valid_else(url, initialise_user_data):
     user_data = initialise_user_data
 
     profile_data = requests.get(f'{url}/user/profile', params={
-        'token': user_data['user6']['token'],
-        'u_id': user_data['user7']['u_id'],
+        'token': user_data['user0']['token'],
+        'u_id': user_data['user1']['u_id'],
     }).json()
 
     exp_dict = {
         'user': {
-            'u_id': user_data['user7']['u_id'],
-            'email': 'user7@email.com',
-            'name_first': 'user7_first',
-            'name_last': 'user7_last',
-            'handle_str': 'user7_firstuser7_las',
+            'u_id': user_data['user1']['u_id'],
+            'email': 'user1@email.com',
+            'name_first': 'user1_first',
+            'name_last': 'user1_last',
+            'handle_str': 'user1_firstuser1_las',
         },
     }
 
     assert profile_data == exp_dict
 
     profile_data = requests.get(f'{url}/user/profile', params={
-        'token': user_data['user7']['token'],
-        'u_id': user_data['user9']['u_id'],
+        'token': user_data['user1']['token'],
+        'u_id': user_data['user2']['u_id'],
     }).json()
 
     exp_dict = {
         'user': {
-            'u_id': user_data['user9']['u_id'],
-            'email': 'user9@email.com',
-            'name_first': 'user9_first',
-            'name_last': 'user9_last',
-            'handle_str': 'user9_firstuser9_las',
+            'u_id': user_data['user2']['u_id'],
+            'email': 'user2@email.com',
+            'name_first': 'user2_first',
+            'name_last': 'user2_last',
+            'handle_str': 'user2_firstuser2_las',
         },
     }
 
@@ -129,21 +129,21 @@ def test_user_profile_valid_logout(url, initialise_user_data):
     user_data = initialise_user_data
 
     requests.post(f'{url}/auth/logout', json={
-        'token': user_data['user6']['token'],
+        'token': user_data['user0']['token'],
     })
 
     profile_data = requests.get(f'{url}/user/profile', params={
-        'token': user_data['user7']['token'],
-        'u_id': user_data['user6']['u_id'],
+        'token': user_data['user1']['token'],
+        'u_id': user_data['user0']['u_id'],
     }).json()
 
     exp_dict = {
         'user': {
-            'u_id': user_data['user6']['u_id'],
-            'email': 'user6@email.com',
-            'name_first': 'user6_first',
-            'name_last': 'user6_last',
-            'handle_str': 'user6_firstuser6_las',
+            'u_id': user_data['user0']['u_id'],
+            'email': 'user0@email.com',
+            'name_first': 'user0_first',
+            'name_last': 'user0_last',
+            'handle_str': 'user0_firstuser0_las',
         },
     }
 
@@ -158,7 +158,7 @@ def test_user_profile_invalid_uid(url, initialise_user_data):
     invalid_uid = -1
 
     assert requests.get(f'{url}/user/profile', params={
-        'token': user_data['user7']['token'],
+        'token': user_data['user1']['token'],
         'u_id': invalid_uid,
     }).status_code == 400
 
@@ -168,12 +168,12 @@ def test_user_profile_invalid_token(url, initialise_user_data):
     '''
     user_data = initialise_user_data
 
-    invalid_token = user_data['user6']['token']
+    invalid_token = user_data['user0']['token']
     requests.post(f'{url}/auth/logout', json={
         'token': invalid_token,
     })
 
     assert requests.get(f'{url}/user/profile', params={
         'token': invalid_token,
-        'u_id': user_data['user7']['u_id'],
+        'u_id': user_data['user1']['u_id'],
     }).status_code == 400

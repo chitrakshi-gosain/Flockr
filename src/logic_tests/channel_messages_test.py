@@ -1,10 +1,12 @@
 from auth import auth_register
 from channel import channel_messages
 from channels import channels_create
+from message import message_send
 import pytest
 from other import clear
 from error import InputError
 from error import AccessError
+from datetime import time
 
 @pytest.fixture
 def reset():
@@ -52,14 +54,14 @@ def test_token_invalid(initialise_user_data, initialise_channel_data):
 
 def test_return_type(initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']
-    channel1_id = initialise_channel_data['private']
-    message_history = channel_messages(owner_credentials['token'], channel1_id['channel_id'], 0)
-    # we need to check the return type of message list after we implement send_message from message.py
-
+    channel_id = initialise_channel_data['private']
+    message_send(owner_credentials['token'], channel_id['channel_id'], "This is owner's channel")
+    message_history = channel_messages(owner_credentials['token'], channel_id['channel_id'], 0)
+    
     assert isinstance(message_history['messages'], list)
-    # assert isinstance(message_history['messages'][0]['message_id'], int)
-    # assert isinstance(message_history['messages'][0]['u_id'], int)
-    # assert isinstance(message_history['messages'][0]['mesaage'], str)
+    assert isinstance(message_history['messages'][0]['message_id'], int)
+    assert isinstance(message_history['messages'][0]['u_id'], int)
+    assert isinstance(message_history['messages'][0]['message'], str)
     # assert isinstance(message_history['messages'][0]['time_created'], time)
     assert isinstance(message_history['start'], int)
     assert isinstance(message_history['end'], int)
@@ -70,4 +72,10 @@ def test_empty_messages(initialise_user_data, initialise_channel_data):
 
     messages_history = {'messages': [], 'start': 0, 'end': -1}
     assert (messages_history == channel_messages(owner_credentials['token'], channel1_id['channel_id'], 0))
+
+def test_start_more_than_total_messages(initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']
+    channel_id = initialise_channel_data['private']
+    with pytest.raises(InputError):
+        channel_messages(owner_credentials['token'], channel_id['channel_id'], 2)
 
