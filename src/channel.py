@@ -341,11 +341,7 @@ def channel_addowner(token, channel_id, u_id):
     user_dict = {'u_id': u_id, 'name_first': name_first, 'name_last': name_last}
 
     # append the given user to the list of owners
-    for channel in data.data["channels"]:
-        if channel["channel_id"] == channel_id:
-            data.data["channels"][channel_id]["owner_members"].append(user_dict.copy())
-            break
-
+    channel_info['owner_members'].append(user_dict)
     return {
     }
 
@@ -384,12 +380,10 @@ def channel_removeowner(token, channel_id, u_id):
         raise InputError('u_id is not an owner')
 
     # remove the given user from the list of owners
-    for channel in data.data["channels"]:
-        if channel["channel_id"] == channel_id:
-            for i in range(len(channel["owner_members"])):
-                if channel["owner_members"][i]["u_id"] == u_id:
-                    del data.data["channels"][channel_id]["owner_members"][i]
-                    break
+    u_info = helper.get_user_info("u_id", u_id)
+    user_dict = {'u_id': u_id, 'name_first': u_info['name_first'], 'name_last': u_info['name_last']}
+
+    channel_info['owner_members'].remove(user_dict)
 
     return {
     }
