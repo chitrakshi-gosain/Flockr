@@ -32,17 +32,33 @@ Error type: AccessError
     -> token passed in is not a valid token
 '''
 
-def test_user_profile_setname_no_errors():
+# TESTS
+
+@pytest.fixture
+def reset():
+    clear()
+
+@pytest.fixture
+def initialise_user_data(reset):
+    # user is admin
+    name_first = "user_first"
+    name_last = "user_last"
+    user_details = auth.auth_register("user0@email.com", "user0_pass", name_first, name_last)
+
+    return {
+        'user': user_details,
+        'name_first': name_first,
+        'name_last': name_last
+    }
+
+def test_user_profile_setname_no_errors(initialise_user_data):
     '''
     basic test with no edge case or errors raised
     '''
-    clear()
 
-    name_first_old = 'name_first_old'
-    name_last_old = 'name_last_old'
-
-    user_details = auth.auth_register("user@email.com", "user_pass",
-                                      "name_first_old", "name_last_old")
+    user_details = initialise_user_data['user']
+    name_first_old = initialise_user_data['name_first']
+    name_last_old = initialise_user_data['name_last']
     token = user_details['token']
     u_id = user_details['u_id']
 
@@ -63,18 +79,16 @@ def test_user_profile_setname_no_errors():
     assert user_dict['name_first'] == name_first_new
     assert user_dict['name_last'] == name_last_new
 
-def test_user_profile_setname_firstname_tooshort():
+
+def test_user_profile_setname_firstname_tooshort(initialise_user_data):
     '''
     test that user_profile_setname raises InputError
     if provided name_first is <1 characters in length
     '''
-    clear()
 
-    name_first_old = 'name_first_old'
-    name_last_old = 'name_last_old'
-
-    user_details = auth.auth_register("user@email.com", "user_pass",
-                                      "name_first_old", "name_last_old")
+    user_details = initialise_user_data['user']
+    name_first_old = initialise_user_data['name_first']
+    name_last_old = initialise_user_data['name_last']
     token = user_details['token']
     u_id = user_details['u_id']
 
@@ -91,18 +105,16 @@ def test_user_profile_setname_firstname_tooshort():
     with pytest.raises(InputError):
         user_profile_setname(token, name_first_new, name_last_new)
 
-def test_user_profile_setname_firstname_toolong():
+
+def test_user_profile_setname_firstname_toolong(initialise_user_data):
     '''
     test that user_profile_setname raises InputError
     if provided name_first is >50 characters in length
     '''
-    clear()
 
-    name_first_old = 'name_first_old'
-    name_last_old = 'name_last_old'
-
-    user_details = auth.auth_register("user@email.com", "user_pass",
-                                      "name_first_old", "name_last_old")
+    user_details = initialise_user_data['user']
+    name_first_old = initialise_user_data['name_first']
+    name_last_old = initialise_user_data['name_last']
     token = user_details['token']
     u_id = user_details['u_id']
 
@@ -119,18 +131,15 @@ def test_user_profile_setname_firstname_toolong():
     with pytest.raises(InputError):
         user_profile_setname(token, name_first_new, name_last_new)
 
-def test_user_profile_setname_lastname_tooshort():
+def test_user_profile_setname_lastname_tooshort(initialise_user_data):
     '''
     test that user_profile_setname raises InputError
     if provided name_last is <1 characters in length
     '''
-    clear()
 
-    name_first_old = 'name_first_old'
-    name_last_old = 'name_last_old'
-
-    user_details = auth.auth_register("user@email.com", "user_pass",
-                                      "name_first_old", "name_last_old")
+    user_details = initialise_user_data['user']
+    name_first_old = initialise_user_data['name_first']
+    name_last_old = initialise_user_data['name_last']
     token = user_details['token']
     u_id = user_details['u_id']
 
@@ -147,18 +156,15 @@ def test_user_profile_setname_lastname_tooshort():
     with pytest.raises(InputError):
         user_profile_setname(token, name_first_new, name_last_new)
 
-def test_user_profile_setname_lastname_toolong():
+def test_user_profile_setname_lastname_toolong(initialise_user_data):
     '''
     test that user_profile_setname raises InputError
     if provided name_last is >50 characters in length
     '''
-    clear()
 
-    name_first_old = 'name_first_old'
-    name_last_old = 'name_last_old'
-
-    user_details = auth.auth_register("user@email.com", "user_pass",
-                                      "name_first_old", "name_last_old")
+    user_details = initialise_user_data['user']
+    name_first_old = initialise_user_data['name_first']
+    name_last_old = initialise_user_data['name_last']
     token = user_details['token']
     u_id = user_details['u_id']
 
@@ -175,19 +181,15 @@ def test_user_profile_setname_lastname_toolong():
     with pytest.raises(InputError):
         user_profile_setname(token, name_first_new, name_last_new)
 
-def test_user_profile_setname_accesserror():
+def test_user_profile_setname_accesserror(initialise_user_data):
     '''
     test that user_profile_setname raises AccessError
     if provided token is invalid
     '''
 
-    clear()
-
-    name_first_old = 'name_first_old'
-    name_last_old = 'name_last_old'
-
-    user_details = auth.auth_register("user@email.com", "user_pass",
-                                      "name_first_old", "name_last_old")
+    user_details = initialise_user_data['user']
+    name_first_old = initialise_user_data['name_first']
+    name_last_old = initialise_user_data['name_last']
     token = user_details['token']
     u_id = user_details['u_id']
 
@@ -197,9 +199,11 @@ def test_user_profile_setname_accesserror():
     assert user_dict['name_first'] == name_first_old
     assert user_dict['name_last'] == name_last_old
 
-    # new name_last >50 characters in length
     name_first_new = 'name_first_new'
     name_last_new = 'name_last_new'
 
+    # assume ' ' is an invalid token
+    token = " "
+
     with pytest.raises(AccessError):
-        user_profile_setname(' ', name_first_new, name_last_new)
+        user_profile_setname(token, name_first_new, name_last_new)
