@@ -206,63 +206,33 @@ def channel_messages(token, channel_id, start):
                      validity, user authorisation
     '''
 
-    # Testing for insufficient parameters
- # Testing for insufficient parameters
     if None in {token, channel_id}:
         raise InputError('Insufficient parameters given')
 
-    # Testing for token validity
     user_info = helper.get_user_info('token', token)
     if not user_info:
         raise AccessError('Invalid Token')
 
-    # Retrieving the u_id from the given token
-
-    # Finding if channel is valid and assigning the current channel to a
-    # dictionary
     channel_info = helper.get_channel_info(channel_id)
-
     if not channel_info:
-        raise InputError('Channel ID is not a valid channel')
+        raise InputError("invalid channel_id")
 
-    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info\
-        ['u_id'], channel_id):
-        raise AccessError('Authorised user is not a member of channel with \
-            channel_id')
+    if not helper.is_user_in_channel(user_info['u_id'], channel_id):
+        raise AccessError("user is not in channel")
 
-    # Finding the number of messages in the channel
-    num_message = 0
-    for message in channel_info['messages']:
-        num_message += 1
+    number_of_messages = len(channel_info['messages'])
+    if start > number_of_messages:
+        raise InputError("no more messages")
 
-    # Checking if the start input given does not exceed the number of
-    # messages in the channel
-    if start > num_message:
-        raise InputError('Start is greater than the total number of messages \
-            in the channel')
+    messages = channel_info['messages'][::-1]
 
-    messages_history = {'messages': [], 'start': start, 'end': start + 50}
-    # start_index is the index of the dictionary where the messages
-    # start loading from.
-    # If start = 0, start_index will be the index of the last added dictionary.
+    end = start + 50
+    output = messages[start:end - 1]
+    if number_of_messages - start < 50:
+        end = -1
+        output = messages[start:]
 
-    start_index = (num_message - 1) - start
-    messages_list = []
-
-    # The goal is to load the message dicts from start_index to start_index - 50
-    for (loop_index, message) in enumerate(channel_info['messages']\
-        [start_index:start_index - 50:-1]):
-        messages_list.append(message)
-        if start_index - loop_index == 0:
-            messages_history.update({'end': -1})
-            break
-
-    if len(channel_info['messages']) == 0:
-        messages_history.update({'end': -1})
-
-    else:
-        messages_history.update({'messages': messages_list})
-    return messages_history
+    return { 'messages': output, 'start': start, 'end': end }
 
 def channel_leave(token, channel_id):
     '''
@@ -382,11 +352,7 @@ def channel_addowner(token, channel_id, u_id):
     user_dict = {'u_id': u_id, 'name_first': name_first, 'name_last': name_last}
 
     # append the given user to the list of owners
-    for channel in data.data["channels"]:
-        if channel["channel_id"] == channel_id:
-            data.data["channels"][channel_id]["owner_members"].append(user_dict.copy())
-            break
-
+    channel_info['owner_members'].append(user_dict)
     return {
     }
 
@@ -425,12 +391,10 @@ def channel_removeowner(token, channel_id, u_id):
         raise InputError('u_id is not an owner')
 
     # remove the given user from the list of owners
-    for channel in data.data["channels"]:
-        if channel["channel_id"] == channel_id:
-            for i in range(len(channel["owner_members"])):
-                if channel["owner_members"][i]["u_id"] == u_id:
-                    del data.data["channels"][channel_id]["owner_members"][i]
-                    break
+    u_info = helper.get_user_info("u_id", u_id)
+    user_dict = {'u_id': u_id, 'name_first': u_info['name_first'], 'name_last': u_info['name_last']}
+
+    channel_info['owner_members'].remove(user_dict)
 
     return {
     }
