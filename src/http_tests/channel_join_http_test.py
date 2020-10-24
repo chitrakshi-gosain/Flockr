@@ -53,7 +53,7 @@ def is_user_in_channel(url, user_id, token, channel_id):
     return len(list(filter(lambda user: user_id == user['u_id'], channel_members)))
 
 
-def test_join_basic(url, reset, initialise_user_data, initialise_channel_data):
+def test_join_basic(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
@@ -73,7 +73,7 @@ def test_join_basic(url, reset, initialise_user_data, initialise_channel_data):
 
     assert response.status_code == 200
 
-def test_join_invalid_channel(url, reset, initialise_user_data, initialise_channel_data):
+def test_join_invalid_channel(url, initialise_user_data, initialise_channel_data):
 
     join_input = {
         "token": initialise_user_data['user1']['token'],
@@ -83,7 +83,7 @@ def test_join_invalid_channel(url, reset, initialise_user_data, initialise_chann
 
     assert response.status_code == 400
 
-def test_join_private_user(url, reset, initialise_user_data, initialise_channel_data):
+def test_join_private_user(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
@@ -102,7 +102,7 @@ def test_join_private_user(url, reset, initialise_user_data, initialise_channel_
     assert is_user_in_channel(url, u_id, admin_token, channel_id) == 0
     assert response.status_code == 400
 
-def test_join_private_admin(url, reset, initialise_user_data, initialise_channel_data):
+def test_join_private_admin(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['admin']['token']
     u_id = initialise_user_data['admin']['u_id']
@@ -121,7 +121,7 @@ def test_join_private_admin(url, reset, initialise_user_data, initialise_channel
     assert is_user_in_channel(url, u_id, admin_token, channel_id) == 1
     assert response.status_code == 200
 
-def test_join_invalid_token(url, reset, initialise_user_data, initialise_channel_data):
+def test_join_invalid_token(url, initialise_user_data, initialise_channel_data):
 
     join_input = {
         "token": " ",
@@ -131,7 +131,7 @@ def test_join_invalid_token(url, reset, initialise_user_data, initialise_channel
 
     assert response.status_code == 400
 
-def test_join_already_member(url, reset, initialise_user_data, initialise_channel_data):
+def test_join_already_member(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']

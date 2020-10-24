@@ -40,7 +40,7 @@ Error type: AccessError
 #     '''
 #     assert url.startswith("http")
 
-def test_admin_userpermission_change_make_admin(url, reset, initialise_user_data, initialise_channel_data):
+def test_admin_userpermission_change_make_admin(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['admin']['token']
     u_id = initialise_user_data['user1']['u_id']
@@ -65,7 +65,7 @@ def test_admin_userpermission_change_make_admin(url, reset, initialise_user_data
     response = requests.post(url + "/channel/join", json=join_input)
     assert response.status_code == 200
 
-def test_admin_userpermission_change_remove_admin(url, reset, initialise_user_data, initialise_channel_data):
+def test_admin_userpermission_change_remove_admin(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['admin']['token']
     u_id = initialise_user_data['user1']['u_id']
@@ -102,7 +102,7 @@ def test_admin_userpermission_change_remove_admin(url, reset, initialise_user_da
     response = requests.post(url + "/channel/join", json=join_input)
     assert response.status_code == 400
 
-def test_admin_userpermission_change_remove_self(url, reset, initialise_user_data, initialise_channel_data):
+def test_admin_userpermission_change_remove_self(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['admin']['token']
     u_id = initialise_user_data['user1']['u_id']
@@ -133,7 +133,7 @@ def test_admin_userpermission_change_remove_self(url, reset, initialise_user_dat
     response = requests.post(url + "/channel/join", json=join_input)
     assert response.status_code == 400
 
-def test_admin_userpermission_change_remove_last(url, reset, initialise_user_data, initialise_channel_data):
+def test_admin_userpermission_change_remove_last(url, initialise_user_data, initialise_channel_data):
 
     #Try remove themselves as admin - but unable as they are the only admin
     token = initialise_user_data['admin']['token']
@@ -155,7 +155,7 @@ def test_admin_userpermission_change_remove_last(url, reset, initialise_user_dat
     response = requests.post(url + "/channel/join", json=join_input)
     assert response.status_code == 200
 
-def test_admin_userpermission_change_non_admin(url, reset, initialise_user_data, initialise_channel_data):
+def test_admin_userpermission_change_non_admin(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
@@ -169,7 +169,7 @@ def test_admin_userpermission_change_non_admin(url, reset, initialise_user_data,
     response = requests.post(url + "/admin/userpermission/change", json=change_input)
     assert response.status_code == 400
 
-def test_admin_userpermission_change_invalid_permission_id(url, reset, initialise_user_data, initialise_channel_data):
+def test_admin_userpermission_change_invalid_permission_id(url, initialise_user_data, initialise_channel_data):
 
     change_input = {
         "token": initialise_user_data['admin']['token'],
@@ -179,7 +179,7 @@ def test_admin_userpermission_change_invalid_permission_id(url, reset, initialis
     response = requests.post(url + "/admin/userpermission/change", json=change_input)
     assert response.status_code == 400
 
-def test_admin_userpermission_change_invalid_uid(url, reset, initialise_user_data, initialise_channel_data):
+def test_admin_userpermission_change_invalid_uid(url, initialise_user_data, initialise_channel_data):
 
     change_input = {
         "token": initialise_user_data['admin']['token'],
@@ -189,7 +189,7 @@ def test_admin_userpermission_change_invalid_uid(url, reset, initialise_user_dat
     response = requests.post(url + "/admin/userpermission/change", json=change_input)
     assert response.status_code == 400
 
-def test_admin_userpermission_change_invalid_token(url, reset, initialise_user_data, initialise_channel_data):
+def test_admin_userpermission_change_invalid_token(url, initialise_user_data, initialise_channel_data):
 
     change_input = {
         "token": ' ',
