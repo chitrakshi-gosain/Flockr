@@ -16,22 +16,30 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route(.....) return json.dumps({...})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+    json.dumps({channel_id})
+-> APP.route("/channel/messages", methods=['GET']) return
+    json.dumps({messages, start, end})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
--> reset
 -> url
--> ...
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
 EXCEPTIONS
 Error type: InputError
-    -> ..
+    -> Channel ID is not a valid channel
+    -> start is greater than the total number of messages in the channel
 Error type: AccessError
-    -> ..
+    -> Authorised user is not a member of channel with channel_id
+    -> token is invalid
 '''
 
 def test_url(url):
@@ -42,6 +50,10 @@ def test_url(url):
     assert url.startswith("http")
 
 def test_user_not_authorised(url, initialise_user_data, initialise_channel_data):
+    '''
+    check that channel_messages raises AccessError
+    if user is not a member of channel with channel_id
+    '''
     user1_credentials = initialise_user_data['user1']
     channel1_id = initialise_channel_data['owner_priv']
     response = requests.get(f"{url}/channel/messages", params={
@@ -52,6 +64,10 @@ def test_user_not_authorised(url, initialise_user_data, initialise_channel_data)
     assert response.status_code == 400
 
 def test_channel_id_not_valid(url, initialise_user_data):
+    '''
+    check that channel_messages raises InputError
+    if Channel ID is not a valid channel
+    '''
     user1_credentials = initialise_user_data['user1']      
     invalid_channel_id = -1 
 
@@ -63,6 +79,10 @@ def test_channel_id_not_valid(url, initialise_user_data):
     assert response.status_code == 400
 
 def test_token_invalid(url, initialise_channel_data):
+    '''
+    check that channel_messages raises AccessError
+    if token is invalid
+    '''
     channel1_id = initialise_channel_data['owner_priv']
 
     response = requests.get(f"{url}/channel/messages", params={
@@ -73,6 +93,9 @@ def test_token_invalid(url, initialise_channel_data):
     assert response.status_code == 400
 
 def test_return_type(url, initialise_user_data, initialise_channel_data):
+    '''
+    checks that channel_messages returns objects of the correct data types
+    '''
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_priv']
     response = requests.get(f"{url}/channel/messages", params={
@@ -94,6 +117,9 @@ def test_return_type(url, initialise_user_data, initialise_channel_data):
     assert isinstance(message_payload['end'], int)
 
 def test_empty_messages(url, initialise_user_data, initialise_channel_data):
+    '''
+    checks that start == 0 and end == -1 if no messages have been sent
+    '''
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_publ']
     response = requests.get(f"{url}/channel/messages", params={
