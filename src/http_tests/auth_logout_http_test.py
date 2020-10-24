@@ -31,8 +31,6 @@ FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 
 '''
 EXCEPTIONS
-Error type: InputError
-    -> insufficient parameters
 Error type: AccessError
     -> token passed in is not a valid token
 '''
@@ -94,17 +92,6 @@ def test_whitespace_as_token(url, initialise_user_data):
 
     logout_response = requests.post(f"{url}/auth/logout", json={
         'token': ' '
-    })
-    assert logout_response.status_code == 400
-
-def test_insufficient_parameters(url, initialise_user_data):
-    '''
-    Tests that App.route("/auth/logout", methods=['POST']) raises an
-    InputError when less than expected parameters are passed
-    '''
-
-    logout_response = requests.post(f"{url}/auth/logout", json={
-        'token': None
     })
     assert logout_response.status_code == 400
 
