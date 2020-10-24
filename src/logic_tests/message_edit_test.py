@@ -11,149 +11,163 @@ from message import message_send, message_edit
 from error import AccessError
 from other import clear, search
 
-def test_message_edit_noerrors():
+@pytest.fixture
+def reset():
+    clear()
+
+@pytest.fixture
+def initialise_user_data(reset):
+    # user0 is admin
+    user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
+    user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
+
+    return {
+        'user0': user0_details,
+        'user1': user1_details
+    }
+
+@pytest.fixture
+def initialise_channel_data(initialise_user_data):
+    # user0 creates channel, thus is owner and member
+    # user1 joins channel, thus is member but not owner
+    user0_details = initialise_user_data['user0']
+    user1_details = initialise_user_data['user1']
+    channel_id = channels_create(user0_details['token'], "ch_name0", True)['channel_id']
+    channel_join(user1_details['token'], channel_id)
+
+    return {
+        'channel_id': channel_id
+    }
+
+def get_messages(admin_token):
+    messages = search(admin_token, '')
+    return messages
+
+def message_details(token, message_id):
+    # 'search' with empty query string returns list of all messages
+    message_list = search(token, '')['messages']
+    for message in message_list:
+        if message['message_id'] == message_id:
+            return message
+    return False
+
+# TESTS
+
+def test_message_edit_noerrors(initialise_user_data, initialise_channel_data):
     '''
     basic test with no edge case or errors raised
     '''
-    clear()
 
-    user_details = auth.auth_register("user@email.com", "user_pass", "user_first", "user_last")
+    # 'user' with u_id and token is the first to register, thus also admin of the flockr
+    user_details = initialise_user_data['user0']
     token = user_details['token']
 
-    channel_dict = channels_create(token, "A Channel Name", True)
-    channel_id = channel_dict["channel_id"]
+    channel_id = initialise_channel_data["channel_id"]
 
     first_message = "This is the original message."
 
     message_info = message_send(token, channel_id, first_message)
     message_id = message_info["message_id"]
 
-    # 'search' with empty query string returns list of all messages
-    message_list = search(token, '')['messages']
-    for message in message_list:
-        if message['message_id'] == message_id:
-            assert message['message'] == first_message
-            break
+    # get dictionary containing message_id, u_id, message, time_created
+    message = message_details(token, message_id)
+    assert message['message'] == first_message
 
     second_message = "This is the edited message."
 
     message_edit(token, message_id, second_message)
 
-    message_list = search(token, '')['messages']
-    for message in message_list:
-        if message['message_id'] == message_id:
-            assert message['message'] == second_message
-            break
+    # assert message has changed
+    message = message_details(token, message_id)
+    assert message['message'] == second_message
 
-def test_message_edit_secondmessage():
+def test_message_edit_secondmessage(initialise_user_data, initialise_channel_data):
     '''
     edits the second sent message, not the first
     '''
-    clear()
 
-    user_details = auth.auth_register("user@email.com", "user_pass", "user_first", "user_last")
+    # 'user' with u_id and token is the first to register, thus also admin of the flockr
+    user_details = initialise_user_data['user0']
     token = user_details['token']
 
-    channel_dict = channels_create(token, "A Channel Name", True)
-    channel_id = channel_dict["channel_id"]
+    channel_id = initialise_channel_data["channel_id"]
 
     first_message0 = "This is the first original message."
     first_message1 = "This is the second original message."
 
     message_info0 = message_send(token, channel_id, first_message0)
     message_id0 = message_info0["message_id"]
-    # 'search' with empty query string returns list of all messages
-    message_list = search(token, '')['messages']
-    for message in message_list:
-        if message['message_id'] == message_id0:
-            assert message['message'] == first_message0
-            break
+
+    message0 = message_details(token, message_id0)
+    assert message0['message'] == first_message0
 
     message_info1 = message_send(token, channel_id, first_message1)
     message_id1 = message_info1["message_id"]
 
-    message_list = search(token, '')['messages']
-    for message in message_list:
-        if message['message_id'] == message_id1:
-            assert message['message'] == first_message1
-            break
+    message1 = message_details(token, message_id1)
+    assert message1['message'] == first_message1
     
     second_message1 = "This is the second edited message."
 
     message_edit(token, message_id1, second_message1)
 
-    message_list = search(token, '')['messages']
-    for message in message_list:
-        if message['message_id'] == message_id1:
-            assert message['message'] == second_message1
-            break
+    message1 = message_details(token, message_id1)
+    assert message1['message'] == second_message1
 
-def test_message_edit_emptystring():
+def test_message_edit_emptystring(initialise_user_data, initialise_channel_data):
     '''
     test that message_edit deletes the message
     if provided with an empty string
     '''
-    clear()
 
-    user_details = auth.auth_register("user@email.com", "user_pass", "user_first", "user_last")
+    # 'user' with u_id and token is the first to register, thus also admin of the flockr
+    user_details = initialise_user_data['user0']
     token = user_details['token']
 
-    channel_dict = channels_create(token, "A Channel Name", True)
-    channel_id = channel_dict["channel_id"]
+    channel_id = initialise_channel_data["channel_id"]
 
     first_message = "This is the original message."
 
     message_info = message_send(token, channel_id, first_message)
     message_id = message_info["message_id"]
 
-    # 'search' with empty query string returns list of all messages
-    message_list = search(token, '')['messages']
-    for message in message_list:
-        if message['message_id'] == message_id:
-            assert message['message'] == first_message
-            break
+    # get dictionary containing message_id, u_id, message, time_created
+    message = message_details(token, message_id)
+    assert message['message'] == first_message
 
     second_message = ""
 
     message_edit(token, message_id, second_message)
 
-    # assert that message does not exist
-    message_list = search(token, '')['messages']
-    assert message_id not in [message['message_id'] for message in message_list]
+    # message_details returns False if message does not exist
+    # therefore assert message == False
+    message = message_details(token, message_id)
+    assert not message
 
-def test_message_edit_notsender():
+def test_message_edit_notsender(initialise_user_data, initialise_channel_data):
     '''
     test that message_edit raises AccessError
     if user (based on token) is not the sender of message with message ID message_id
     '''
-    clear()
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
-    user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
+    user0_details = initialise_user_data['user0']
     token0 = user0_details['token']
 
     # user1 with u_id1 and token1 is not admin
-    user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
+    user1_details = initialise_user_data['user1']
     token1 = user1_details['token']
 
-    # token0 creates channel, therefore user0 is member and owner of that channel
-    channel_info = channels_create(token0, "ch_name0", True)
-    channel_id = channel_info['channel_id']
-
-    # token1 joins channel, therefore is a member but not an owner
-    channel_join(token1, channel_id)
+    # channel with channel_id has members user0, user1 and owner user0
+    channel_id = initialise_channel_data['channel_id']
 
     first_message = "This is the original message."
 
     message_info = message_send(token0, channel_id, first_message)
     message_id = message_info["message_id"]
 
-    # 'search' with empty query string returns list of all messages
-    message_list = search(token0, '')['messages']
-    for message in message_list:
-        if message['message_id'] == message_id:
-            assert message['message'] == first_message
-            break
+    message = message_details(token0, message_id)
+    assert message['message'] == first_message
 
     second_message = "This is the edited message."
 
@@ -161,30 +175,26 @@ def test_message_edit_notsender():
     with pytest.raises(AccessError):
         message_edit(token1, message_id, second_message)
 
-def test_message_edit_notauth():
+def test_message_edit_notauth(initialise_user_data, initialise_channel_data):
     '''
     test that message_edit raises AccessError
     if token is invalid
     '''
-    clear()
 
-    user_details = auth.auth_register("user@email.com", "user_pass", "user_first", "user_last")
+    # 'user' with u_id and token is the first to register, thus also admin of the flockr
+    user_details = initialise_user_data['user0']
     token = user_details['token']
 
-    channel_dict = channels_create(token, "A Channel Name", True)
-    channel_id = channel_dict["channel_id"]
+    channel_id = initialise_channel_data["channel_id"]
 
     first_message = "This is the original message."
 
     message_info = message_send(token, channel_id, first_message)
     message_id = message_info["message_id"]
 
-    # 'search' with empty query string returns list of all messages
-    message_list = search(token, '')['messages']
-    for message in message_list:
-        if message['message_id'] == message_id:
-            assert message['message'] == first_message
-            break
+    # get dictionary containing message_id, u_id, message, time_created
+    message = message_details(token, message_id)
+    assert message['message'] == first_message
 
     second_message = "This is the edited message."
 
