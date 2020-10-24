@@ -19,7 +19,7 @@ import pytest
 ****************************BASIC TEMPLATE******************************
 '''
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def url():
     url_re = re.compile(r' \* Running on ([^ ]*)')
     server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
