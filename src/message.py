@@ -23,9 +23,6 @@ def message_send(token, channel_id, message):
     if not user_info:
         raise AccessError('Invalid Token')
 
-    # Retrieving the u_id from the given token
-    # Finding if channel is valid and assigning the current channel to a
-    # dictionary
     channel_info = helper.get_channel_info(channel_id)
     if not channel_info:
         raise InputError('Channel ID is not a valid channel')
@@ -74,7 +71,8 @@ def message_remove(token, message_id):
             break
 
     #if not admin or not owner or not sender, denied
-    if not helper.is_user_authorised(token, channel_info['channel_id']) and not message_info['u_id'] == user_info['u_id']:
+    if not helper.is_user_authorised(token, channel_info['channel_id']) and \
+    not message_info['u_id'] == user_info['u_id']:
         raise AccessError('User is does not have rights to remove message')
 
     channel_info['messages'].remove(message_info)

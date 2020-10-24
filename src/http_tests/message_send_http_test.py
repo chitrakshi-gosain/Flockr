@@ -136,7 +136,7 @@ def test_sample(url, reset, initialise_user_data, initialise_channel_data):
     response = requests.post(url + "/message/send", json=send_input)
     assert response.status_code == 200
 
-    # messages = get_messages(url, initialise_user_data['admin']['token'])
-    # for message in messages['messages']:
-    #      if message['message_id'] == message_id['message_id']:
-    #          assert message['message'] == "Good thank you, how are you!"
+    messages = get_messages(url, initialise_user_data['admin']['token'])
+    for message in messages['messages']:
+         if message['message_id'] == message_id['message_id']:
+             assert message['message'] == "Good thank you, how are you!"
