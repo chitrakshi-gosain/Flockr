@@ -37,10 +37,6 @@ def initialise_channel_data(initialise_user_data):
         'private': private_channel
     }
 
-def test_insufficient_parameters(initialise_user_data):
-    with pytest.raises(InputError):
-        channel_details(None, None)
-
 def test_user_not_authorised(initialise_user_data, initialise_channel_data):
 
     channel1_id = initialise_channel_data['private']
@@ -64,32 +60,28 @@ def test_token_invalid(initialise_user_data, initialise_channel_data):
         channel_details('incorrect_user1_token', channel1_id['channel_id'])
 
 def test_return_type(initialise_user_data, initialise_channel_data):
-    owner_credentials = initialise_user_data['owner']
     user1_credentials = initialise_user_data['user1']      
-
     channel1_id = initialise_channel_data['public']
     # Invite two initialise_user_data to the channel                   
     channel_join(user1_credentials['token'], channel1_id['channel_id'])
 
-    owner = {'u_id': owner_credentials['u_id'], 'name_first': 'owner_firstname', 'name_last': 'owner_lastname'}
+    channel_information = channel_details(user1_credentials['token'], channel1_id['channel_id'])
 
-    user1 = {'u_id': user1_credentials['u_id'], 'name_first': 'user1_firstname', 'name_last': 'user1_lastname'}
-    channel_contents = {'name': 'channel1_name', 'owner_members': [owner], 'all_members': [owner, user1]}
+    assert isinstance(channel_information, dict)
 
-    assert isinstance(channel_contents['name'], str)
+    assert isinstance(channel_information['name'], str)
 
-    assert isinstance(channel_contents['owner_members'], list)
-    assert isinstance(channel_contents['owner_members'][0], dict)
-    assert isinstance(channel_contents['owner_members'][0]['u_id'], int)
-    assert isinstance(channel_contents['owner_members'][0]['name_first'], str)
-    assert isinstance(channel_contents['owner_members'][0]['name_last'], str)
+    assert isinstance(channel_information['owner_members'], list)
+    assert isinstance(channel_information['owner_members'][0], dict)
+    assert isinstance(channel_information['owner_members'][0]['u_id'], int)
+    assert isinstance(channel_information['owner_members'][0]['name_first'], str)
+    assert isinstance(channel_information['owner_members'][0]['name_last'], str)
 
-    assert isinstance(channel_contents['all_members'], list)
-    assert isinstance(channel_contents['all_members'][0], dict)
-    assert isinstance(channel_contents['all_members'][0]['u_id'], int)
-    assert isinstance(channel_contents['all_members'][0]['name_first'], str)
-    assert isinstance(channel_contents['all_members'][0]['name_last'], str)
-
+    assert isinstance(channel_information['all_members'], list)
+    assert isinstance(channel_information['all_members'][0], dict)
+    assert isinstance(channel_information['all_members'][0]['u_id'], int)
+    assert isinstance(channel_information['all_members'][0]['name_first'], str)
+    assert isinstance(channel_information['all_members'][0]['name_last'], str)
 
 def test_channel_details_case(initialise_user_data, initialise_channel_data):
 

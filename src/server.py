@@ -13,7 +13,7 @@ from error import InputError
 import sys
 from auth import auth_login, auth_register, auth_logout
 from channel import channel_invite, channel_details, channel_messages, \
-     channel_leave, channel_join, channel_addowner, channel_removeowner
+    channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_list, channels_listall, channels_create
 from message import message_send, message_remove, message_edit
 from  user import user_profile, user_profile_setname, user_profile_setemail, \
@@ -102,12 +102,17 @@ def channel_details_route():
 
     return dumps(channel_details(token, channel_id))
 
-# @APP.route("/channel/messages", methods=['GET'])
-# def channel_messages_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/channel/messages", methods=['GET'])
+def channel_messages_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    token = request.args.get('token')
+    channel_id = int(request.args.get('channel_id'))
+    start = int(request.args.get('start'))
+
+    return dumps(channel_messages(token, channel_id, start))
 
 @APP.route("/channel/leave", methods=['POST'])
 def channel_leave_route():
@@ -222,12 +227,15 @@ def message_send_route():
 
     return dumps(message_send(token, channel_id, message_str))
 
-# @APP.route("/message/remove", methods=['DELETE'])
-# def message_remove_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/message/remove", methods=['DELETE'])
+def message_remove_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    message_id = int(payload['message_id'])
+    return dumps(message_remove(token, message_id))
 
 @APP.route("/message/edit", methods=['PUT'])
 def message_edit_route():

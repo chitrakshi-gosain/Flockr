@@ -19,8 +19,7 @@ import pytest
 ****************************BASIC TEMPLATE******************************
 '''
 
-
-@pytest.fixture()
+@pytest.fixture
 def url():
     url_re = re.compile(r' \* Running on ([^ ]*)')
     server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
@@ -46,7 +45,6 @@ def reset(url):
     '''
     Resets the internal data of the application to it's initial state
     '''
-
     requests.delete(f"{url}/clear")
 
 @pytest.fixture
