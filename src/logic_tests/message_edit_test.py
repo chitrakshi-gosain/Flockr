@@ -7,10 +7,10 @@ import pytest
 import auth
 import helper
 from channel import channel_join
-from channels import channels_create
+from channels import channels_create, channels_listall
 from message import message_send, message_edit
 from error import AccessError
-from other import clear
+from other import clear, search
 
 def test_message_edit_noerrors():
     '''
@@ -28,15 +28,23 @@ def test_message_edit_noerrors():
 
     message_info = message_send(token, channel_id, first_message)
     message_id = message_info["message_id"]
-    message_dict = helper.get_message_info(message_id)
-    assert message_dict['message'] == first_message
+
+    # 'search' with empty query string returns list of all messages
+    message_list = search(token, '')['messages']
+    for message in message_list:
+        if message['message_id'] == message_id:
+            assert message['message'] == first_message
+            break
 
     second_message = "This is the edited message."
 
     message_edit(token, message_id, second_message)
 
-    message_dict = helper.get_message_info(message_id)
-    assert message_dict['message'] == second_message
+    message_list = search(token, '')['messages']
+    for message in message_list:
+        if message['message_id'] == message_id:
+            assert message['message'] == second_message
+            break
 
 def test_message_edit_secondmessage():
     '''
@@ -55,20 +63,31 @@ def test_message_edit_secondmessage():
 
     message_info0 = message_send(token, channel_id, first_message0)
     message_id0 = message_info0["message_id"]
-    message_dict0 = helper.get_message_info(message_id0)
-    assert message_dict0['message'] == first_message0
+    # 'search' with empty query string returns list of all messages
+    message_list = search(token, '')['messages']
+    for message in message_list:
+        if message['message_id'] == message_id0:
+            assert message['message'] == first_message0
+            break
 
     message_info1 = message_send(token, channel_id, first_message1)
     message_id1 = message_info1["message_id"]
-    message_dict1 = helper.get_message_info(message_id1)
-    assert message_dict1['message'] == first_message1
 
+    message_list = search(token, '')['messages']
+    for message in message_list:
+        if message['message_id'] == message_id1:
+            assert message['message'] == first_message1
+            break
+    
     second_message1 = "This is the second edited message."
 
     message_edit(token, message_id1, second_message1)
 
-    message_dict1 = helper.get_message_info(message_id1)
-    assert message_dict1['message'] == second_message1
+    message_list = search(token, '')['messages']
+    for message in message_list:
+        if message['message_id'] == message_id1:
+            assert message['message'] == second_message1
+            break
 
 def test_message_edit_emptystring():
     '''
@@ -87,17 +106,21 @@ def test_message_edit_emptystring():
 
     message_info = message_send(token, channel_id, first_message)
     message_id = message_info["message_id"]
-    message_dict = helper.get_message_info(message_id)
-    assert message_dict['message'] == first_message
+
+    # 'search' with empty query string returns list of all messages
+    message_list = search(token, '')['messages']
+    for message in message_list:
+        if message['message_id'] == message_id:
+            assert message['message'] == first_message
+            break
 
     second_message = ""
 
     message_edit(token, message_id, second_message)
 
-    # get_message_from_id returns False if message does not exist
-    # therefore check that message has been deleted
-    message_dict = helper.get_message_info(message_id)
-    assert not message_dict
+    # assert that message does not exist
+    message_list = search(token, '')['messages']
+    assert message_id not in [message['message_id'] for message in message_list]
 
 def test_message_edit_notsender():
     '''
@@ -106,35 +129,43 @@ def test_message_edit_notsender():
     '''
     clear()
 
+    # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
     user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
     token0 = user0_details['token']
 
+    # user1 with u_id1 and token1 is not admin
     user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
-    token1 = user1_details['token']
+    u_id1, token1 = user1_details['u_id'], user1_details['token']
 
-    # user0 creates channel, user1 joins it
-    channel_dict = channels_create(token0, "A Channel Name", True)
-    channel_id = channel_dict["channel_id"]
+    # token0 creates channel, therefore user0 is member and owner of that channel
+    channel_info = channels_create(token0, "ch_name0", True)
+    channel_id = channel_info['channel_id']
 
+    # token1 joins channel, therefore is a member but not an owner
     channel_join(token1, channel_id)
 
     first_message = "This is the original message."
 
     message_info = message_send(token0, channel_id, first_message)
     message_id = message_info["message_id"]
-    message_dict = helper.get_message_info(message_id)
-    assert message_dict['message'] == first_message
+
+    # 'search' with empty query string returns list of all messages
+    message_list = search(token0, '')['messages']
+    for message in message_list:
+        if message['message_id'] == message_id:
+            assert message['message'] == first_message
+            break
 
     second_message = "This is the edited message."
 
+    # user1 did not send the original message, so token1 should fail
     with pytest.raises(AccessError):
         message_edit(token1, message_id, second_message)
 
 def test_message_edit_notauth():
     '''
     test that message_edit raises AccessError
-    if token is not authorised
-    i.e. user is not admin of the flockr or owner of the channel message is in
+    if token is invalid
     '''
     clear()
 
@@ -148,8 +179,13 @@ def test_message_edit_notauth():
 
     message_info = message_send(token, channel_id, first_message)
     message_id = message_info["message_id"]
-    message_dict = helper.get_message_info(message_id)
-    assert message_dict['message'] == first_message
+
+    # 'search' with empty query string returns list of all messages
+    message_list = search(token, '')['messages']
+    for message in message_list:
+        if message['message_id'] == message_id:
+            assert message['message'] == first_message
+            break
 
     second_message = "This is the edited message."
 
