@@ -34,37 +34,44 @@ Error type: AccessError
     -> the authorised user is not already a member of the channel
 '''
 
-def initialise_data():
-    #create users
+@pytest.fixture
+def initialise_user_data():
+    clear()
+
     #The first user to sign up is global owner
     admin_details = auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
     user0_details = auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
     user1_details = auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
-    #create channels
-    channel_publ_details = channels_create(admin_details['token'], "publ0", True)
-    channel_priv_details = channels_create(admin_details['token'], "priv0", False)
 
-    channel_priv_user_details = channels_create(user0_details['token'], 'priv1', False)
-
-    return ({ # users
+    return {
         'admin' : admin_details,
         'user0' : user0_details,
         'user1' : user1_details,
-    },
-    { # channels
-        'publ' : channel_publ_details,
-        'priv' : channel_priv_details,
-        'user_priv' : channel_priv_user_details
-    })
+    }
+
+@pytest.fixture
+def initialise_channel_data(initialise_user_data):
+    admin_publ_details = channels_create(initialise_user_data['admin']['token'], "admin_public", True)
+    admin_priv_details = channels_create(initialise_user_data['admin']['token'], "admin_private", False)
+    user0_priv_details = channels_create(initialise_user_data['user0']['token'], "user0_private", False)
+
+    return {
+        'publ' : admin_publ_details,
+        'priv' : admin_priv_details,
+        'user_priv' : user0_priv_details
+    }
 
 
 def is_user_in_channel(user_id, token, channel_id):
     channel_members = channel_details(token, channel_id)['all_members']
     return len(list(filter(lambda user: user_id == user['u_id'], channel_members)))
 
-def test_channel_invite_valid_basic():
-    clear()
-    users, channels = initialise_data()
+def test_channel_invite_valid_basic(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
+
+    print(users)
+
     #add user0 to public channel so they can invite
     channel_join(users['user0']['token'], channels['publ']['channel_id'])
     #make sure user1 is not in channel
@@ -77,18 +84,17 @@ def test_channel_invite_valid_basic():
     assert is_user_in_channel(users['user1']['u_id'], users['user0']['token'], channels['publ']['channel_id'])
 
 
-def test_channel_invite_invalid_channel():
-    clear()
-    users = initialise_data()[0]
+def test_channel_invite_invalid_channel(initialise_user_data):
+    users = initialise_user_data
 
     invalid_channel_id = -1
     with pytest.raises(InputError): #expect InputError as channel is invalid
         assert channel_invite(users['admin']['token'], invalid_channel_id, users['user0']['u_id'])
 
 
-def test_channel_invite_invalid_user():
-    clear()
-    users, channels = initialise_data()
+def test_channel_invite_invalid_user(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
 
     channel_join(users['admin']['token'], channels['publ']['channel_id'])
 
@@ -97,27 +103,27 @@ def test_channel_invite_invalid_user():
         assert channel_invite(users['admin']['token'], channels['publ']['channel_id'], invalid_user_id)
 
 
-def test_channel_invite_invoker_not_in_channel():
-    clear()
-    users, channels = initialise_data()
+def test_channel_invite_invoker_not_in_channel(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
     #make sure invoker (user0) is not in channel
     channel_join(users['admin']['token'], channels['publ']['channel_id']) #need valid token in channel (admin)
     assert not is_user_in_channel(users['user0']['u_id'], users['admin']['token'], channels['publ']['channel_id'])
     with pytest.raises(AccessError): #expect AccessError as invoker was not in channel
         assert channel_invite(users['user0']['token'], channels['publ']['channel_id'], users['user1']['u_id'])
 
-def test_channel_invite_invalid_token():
-    clear()
-    users, channels = initialise_data()
+def test_channel_invite_invalid_token(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
 
     invalid_token = ' '
     with pytest.raises(AccessError): #expect AccessError as token is invalid
         assert channel_invite(invalid_token, channels['publ']['channel_id'], users['user1']['u_id'])
 
 
-def test_channel_invite_already_in_channel():
-    clear()
-    users, channels = initialise_data()
+def test_channel_invite_already_in_channel(initialise_user_data, initialise_channel_data):
+    users = initialise_user_data
+    channels = initialise_channel_data
     #add user0 to public channel so they can invite
     channel_join(users['user0']['token'], channels['publ']['channel_id'])
     #make sure user1 is not in channel
