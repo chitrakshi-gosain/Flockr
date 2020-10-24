@@ -19,7 +19,7 @@ import pytest
 ****************************BASIC TEMPLATE******************************
 '''
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def url():
     url_re = re.compile(r' \* Running on ([^ ]*)')
     server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
@@ -38,6 +38,7 @@ def url():
     else:
         server.kill()
         raise Exception("Couldn't get URL from local server")
+
 
 @pytest.fixture
 def reset(url):
@@ -81,7 +82,6 @@ def initialise_user_dictionary(reset):
         'name_first': 'user1_FIRST',
         'name_last': 'user1_LAST'
     }
-
     user2 = {
         'email': 'user2@email.com',
         'password': 'user2_pass1!',
@@ -138,6 +138,7 @@ def initialise_user_data(url, initialise_user_dictionary):
         'user2': user2_details,
         'user3': user3_details
     }
+
 
 @pytest.fixture
 def initialise_channel_data(url, initialise_user_data):
