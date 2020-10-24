@@ -7,7 +7,6 @@ Iteration 1
 
 import pytest
 import auth
-from helper import is_channel_owner
 from channel import channel_addowner, channel_removeowner, channel_join, channel_details
 from channels import channels_create, channels_listall
 from error import InputError, AccessError
