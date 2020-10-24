@@ -208,7 +208,6 @@ def channel_messages(token, channel_id, start):
 
     if not helper.is_user_in_channel(user_info['u_id'], channel_id):
         raise AccessError("user is not in channel")
-<<<<<<< HEAD
 
     number_of_messages = len(channel_info['messages'])
     if start > number_of_messages:
@@ -222,21 +221,6 @@ def channel_messages(token, channel_id, start):
         end = -1
         output = messages[start:]
 
-=======
-
-    number_of_messages = len(channel_info['messages'])
-    if start > number_of_messages:
-        raise InputError("no more messages")
-
-    messages = channel_info['messages'][::-1]
-
-    end = start + 50
-    output = messages[start:end - 1]
-    if number_of_messages - start < 50:
-        end = -1
-        output = messages[start:]
-
->>>>>>> cleaned up addowner and removeowner
     return { 'messages': output, 'start': start, 'end': end }
 
 def channel_leave(token, channel_id):
