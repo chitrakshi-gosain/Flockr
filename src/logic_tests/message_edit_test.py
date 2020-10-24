@@ -134,7 +134,7 @@ def test_message_edit_notsender():
 
     # user1 with u_id1 and token1 is not admin
     user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
-    u_id1, token1 = user1_details['u_id'], user1_details['token']
+    token1 = user1_details['token']
 
     # token0 creates channel, therefore user0 is member and owner of that channel
     channel_info = channels_create(token0, "ch_name0", True)
