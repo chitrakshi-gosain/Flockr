@@ -82,26 +82,21 @@ def auth_register_route():
 
 @APP.route("/channel/invite", methods=['POST'])
 def channel_invite_route():
-     '''
-     ADD DOCSTRING HERE (UNOFFICIAL)
-     '''
-     payload = request.get_json()
-     token = payload['token']
-     channel_id = int(payload['channel_id'])
-     u_id = int(payload['u_id'])
+    '''
+    ADD DOCSTRING HERE (UNOFFICIAL)
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    channel_id = int(payload['channel_id'])
+    u_id = int(payload['u_id'])
 
-     return dumps(channel_invite(token, channel_id, u_id))
+    return dumps(channel_invite(token, channel_id, u_id))
 
 @APP.route("/channel/details", methods=['GET'])
 def channel_details_route():
-     '''
-     ADD DOCSTRING HERE (UNOFFICIAL)
-     '''
-     token = request.args.get('token')
-     channel_id = int(request.args.get('channel_id'))
-
-     return dumps(channel_details(token, channel_id))
-
+    '''
+    ADD DOCSTRING HERE (UNOFFICIAL)
+    '''
     token = request.args.get('token')
     channel_id = int(request.args.get('channel_id'))
 
@@ -121,37 +116,37 @@ def channel_messages_route():
 
 @APP.route("/channel/leave", methods=['POST'])
 def channel_leave_route():
-     '''
-     ADD DOCSTRING HERE (UNOFFICIAL)
-     '''
-     payload = request.get_json()
-     token = payload['token']
-     channel_id = int(payload['channel_id'])
+    '''
+    ADD DOCSTRING HERE (UNOFFICIAL)
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    channel_id = int(payload['channel_id'])
 
-     return dumps(channel_leave(token, channel_id))
+    return dumps(channel_leave(token, channel_id))
 
 @APP.route("/channel/join", methods=['POST'])
 def channel_join_route():
-     '''
-     ADD DOCSTRING HERE (UNOFFICIAL)
-     '''
-     payload = request.get_json()
-     token = payload['token']
-     channel_id = int(payload['channel_id'])
+    '''
+    ADD DOCSTRING HERE (UNOFFICIAL)
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    channel_id = int(payload['channel_id'])
 
-     return dumps(channel_join(token, channel_id))
+    return dumps(channel_join(token, channel_id))
 
 @APP.route("/channel/addowner", methods=['POST'])
 def channel_addowner_route():
-     '''
-     ADD DOCSTRING HERE (UNOFFICIAL)
-     '''
-     payload = request.get_json()
-     token = payload['token']
-     channel_id = int(payload['channel_id'])
-     u_id = int(payload['u_id'])
+    '''
+    ADD DOCSTRING HERE (UNOFFICIAL)
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    channel_id = int(payload['channel_id'])
+    u_id = int(payload['u_id'])
 
-     return dumps(channel_addowner(token, channel_id, u_id))
+    return dumps(channel_addowner(token, channel_id, u_id))
 
 # @APP.route("/channel/removeowner", methods=['POST'])
 # def channel_removeowner_route():
@@ -176,27 +171,27 @@ def channel_addowner_route():
 
 @APP.route("/channels/create", methods=['POST'])
 def channels_create_route():
-     '''
-     ADD DOCSTRING HERE (UNOFFICIAL)
-     '''
-     payload = request.get_json()
-     token = payload['token']
-     name = payload['name']
-     is_public = bool(payload['is_public'])
+    '''
+    ADD DOCSTRING HERE (UNOFFICIAL)
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    name = payload['name']
+    is_public = bool(payload['is_public'])
 
-     return dumps(channels_create(token, name, is_public))
+    return dumps(channels_create(token, name, is_public))
 
 @APP.route("/message/send", methods=['POST'])
 def message_send_route():
-     '''
-     ADD DOCSTRING HERE (UNOFFICIAL)
-     '''
-     payload = request.get_json()
-     token = payload['token']
-     channel_id = int(payload['channel_id'])
-     message_str = payload['message']
+    '''
+    ADD DOCSTRING HERE (UNOFFICIAL)
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    channel_id = int(payload['channel_id'])
+    message_str = payload['message']
 
-     return dumps(message_send(token, channel_id, message_str))
+    return dumps(message_send(token, channel_id, message_str))
 
 @APP.route("/message/remove", methods=['DELETE'])
 def message_remove_route():
@@ -252,25 +247,25 @@ def message_remove_route():
 
 @APP.route("/admin/userpermission/change", methods=['POST'])
 def change_userpermission_route():
-     '''
-     ADD DOCSTRING HERE (UNOFFICIAL)
-     '''
-     payload = request.get_json()
-     token = payload['token']
-     u_id = int(payload['u_id'])
-     permission_id = int(payload['permission_id'])
+    '''
+    ADD DOCSTRING HERE (UNOFFICIAL)
+    '''
+    payload = request.get_json()
+    token = payload['token']
+    u_id = int(payload['u_id'])
+    permission_id = int(payload['permission_id'])
 
-     return dumps(admin_userpermission_change(token, u_id, permission_id))
+    return dumps(admin_userpermission_change(token, u_id, permission_id))
 
 @APP.route("/search", methods=['GET'])
 def search_route():
-     '''
-     ADD DOCSTRING HERE (UNOFFICIAL)
-     '''
-     token = request.args.get('token')
-     query_str = request.args.get('query_str')
+    '''
+    ADD DOCSTRING HERE (UNOFFICIAL)
+    '''
+    token = request.args.get('token')
+    query_str = request.args.get('query_str')
 
-     return dumps(search(token, query_str))
+    return dumps(search(token, query_str))
 
 @APP.route("/clear", methods=['DELETE'])
 def clear_route():
