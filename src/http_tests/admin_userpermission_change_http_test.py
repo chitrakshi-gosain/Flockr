@@ -16,32 +16,45 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route(.....) return json.dumps({...})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+    json.dumps({channel_id})
+-> APP.route("/channel/join", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/channel/leave", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/admin/userpermission/change", methods=['POST']) return
+    json.dumps({})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
--> reset
 -> url
--> ...
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
 EXCEPTIONS
 Error type: InputError
-    -> ..
+    -> u_id does not refer to a valid user
+    -> permission_id does not refer to a value permission
 Error type: AccessError
-    -> ..
+    -> authorised user is not an owner
 '''
 
-# def test_url(url):
-#     '''
-#     A simple sanity test to check that the server is set up properly
-#     '''
-#     assert url.startswith("http")
+def test_url(url):
+    '''
+    A simple sanity test to check that the server is set up properly
+    '''
+    assert url.startswith("http")
 
 def test_admin_userpermission_change_make_admin(url, reset, initialise_user_data, initialise_channel_data):
-
+    '''
+    make user admin
+    '''
     token = initialise_user_data['admin']['token']
     u_id = initialise_user_data['user1']['u_id']
     #Try get user1 to join private channel
@@ -66,7 +79,9 @@ def test_admin_userpermission_change_make_admin(url, reset, initialise_user_data
     assert response.status_code == 200
 
 def test_admin_userpermission_change_remove_admin(url, reset, initialise_user_data, initialise_channel_data):
-
+    '''
+    make user no longer admin
+    '''
     token = initialise_user_data['admin']['token']
     u_id = initialise_user_data['user1']['u_id']
 
@@ -103,7 +118,9 @@ def test_admin_userpermission_change_remove_admin(url, reset, initialise_user_da
     assert response.status_code == 400
 
 def test_admin_userpermission_change_remove_self(url, reset, initialise_user_data, initialise_channel_data):
-
+    '''
+    take away your own admin privileges
+    '''
     token = initialise_user_data['admin']['token']
     u_id = initialise_user_data['user1']['u_id']
 
@@ -134,7 +151,10 @@ def test_admin_userpermission_change_remove_self(url, reset, initialise_user_dat
     assert response.status_code == 400
 
 def test_admin_userpermission_change_remove_last(url, reset, initialise_user_data, initialise_channel_data):
-
+    '''
+    try to take away your own admin privileges
+    when you are the only admin
+    '''
     #Try remove themselves as admin - but unable as they are the only admin
     token = initialise_user_data['admin']['token']
     u_id = initialise_user_data['admin']['u_id']
@@ -156,7 +176,10 @@ def test_admin_userpermission_change_remove_last(url, reset, initialise_user_dat
     assert response.status_code == 200
 
 def test_admin_userpermission_change_non_admin(url, reset, initialise_user_data, initialise_channel_data):
-
+    '''
+    attempt to make yourself an admin
+    when you are not an admin
+    '''
     token = initialise_user_data['user1']['token']
     u_id = initialise_user_data['user1']['u_id']
 
@@ -170,7 +193,10 @@ def test_admin_userpermission_change_non_admin(url, reset, initialise_user_data,
     assert response.status_code == 400
 
 def test_admin_userpermission_change_invalid_permission_id(url, reset, initialise_user_data, initialise_channel_data):
-
+    '''
+    check that admin_userpermission_change raises InputError
+    when permission_id is invalid
+    '''
     change_input = {
         "token": initialise_user_data['admin']['token'],
         "u_id": initialise_user_data['user1']['u_id'],
@@ -180,7 +206,10 @@ def test_admin_userpermission_change_invalid_permission_id(url, reset, initialis
     assert response.status_code == 400
 
 def test_admin_userpermission_change_invalid_uid(url, reset, initialise_user_data, initialise_channel_data):
-
+    '''
+    check that admin_userpermission_change raises InputError
+    when u_id is invalid
+    '''
     change_input = {
         "token": initialise_user_data['admin']['token'],
         "u_id": -1,
@@ -190,7 +219,10 @@ def test_admin_userpermission_change_invalid_uid(url, reset, initialise_user_dat
     assert response.status_code == 400
 
 def test_admin_userpermission_change_invalid_token(url, reset, initialise_user_data, initialise_channel_data):
-
+    '''
+    check that admin_userpermission_change raises AccessError
+    when token is invalid
+    '''
     change_input = {
         "token": ' ',
         "u_id": initialise_user_data['user1']['u_id'],
