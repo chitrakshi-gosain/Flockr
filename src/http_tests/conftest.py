@@ -19,7 +19,7 @@ import pytest
 ****************************BASIC TEMPLATE******************************
 '''
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def url():
     url_re = re.compile(r' \* Running on ([^ ]*)')
     server = Popen(["python3", "src/server.py"], stderr=PIPE, stdout=PIPE)
@@ -150,7 +150,7 @@ def initialise_user_dictionary(reset):
         'name_first': 'user11_first',
         'name_last': 'user11_last'
     }
-    
+
     return {
         'admin_dict': admin,
         'owner_dict': owner,
@@ -174,7 +174,7 @@ def initialise_user_data(url, initialise_user_dictionary):
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
     '''
-    
+
     admin = initialise_user_dictionary['admin_dict']
     admin_details = requests.post(f"{url}/auth/register", json=admin).json()
 
