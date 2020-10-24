@@ -10,28 +10,39 @@ import requests
 import pytest
 
 '''
-**************************BASIC TEMPLATE****************************
+***************************BASIC TEMPLATE*****************************
 '''
 
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route(.....) return json.dumps({...})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+    json.dumps({channel_id})
+-> APP.route("/channel/join", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/channel/leave", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/channel/details", methods=['GET']) return
+    json.dumps({name, owner_members, all_members})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
--> reset
 -> url
--> ...
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
 EXCEPTIONS
 Error type: InputError
-    -> ..
+    -> Channel ID is not a valid channel
 Error type: AccessError
-    -> ..
+    -> Authorised user is not a member of channel with channel_id
+    -> token is invalid
 '''
 
 def test_url(url):
@@ -42,6 +53,10 @@ def test_url(url):
 
 
 def test_user_not_authorised(url, initialise_user_data, initialise_channel_data):
+    '''
+    check that channel_details raises AccessError
+    if authorised user is not a member of channel with channel_id
+    '''
     user0 = initialise_user_data['user0']
     channel1_id = initialise_channel_data['user1_priv']
     response = requests.get(f"{url}/channel/details", params={
@@ -50,7 +65,11 @@ def test_user_not_authorised(url, initialise_user_data, initialise_channel_data)
     })
     assert response.status_code == 400
 
-def test_channel_id_not_valid(url, initialise_user_data,):
+def test_channel_id_not_valid(url, initialise_user_data):
+    '''
+    check that channel_details raises InputError
+    if channel ID is not a valid channel
+    '''
     owner_credentials = initialise_user_data['owner']
     print(owner_credentials)
     invalid_channel_id = -1 
@@ -63,6 +82,10 @@ def test_channel_id_not_valid(url, initialise_user_data,):
 
 
 def test_token_invalid(url, initialise_user_data, initialise_channel_data):
+    '''
+    check that channel_details raises AccessError
+    if token is invalid
+    '''
     channel1_id = initialise_channel_data['owner_priv']
 
     response = requests.get(f"{url}/channel/details", params={
@@ -72,6 +95,9 @@ def test_token_invalid(url, initialise_user_data, initialise_channel_data):
     assert response.status_code == 400
 
 def test_return_type(url, initialise_user_data, initialise_channel_data):
+    '''
+    checks that channel_details returns objects of the correct data types
+    '''
     user1_credentials = initialise_user_data['user1']      
     channel1_id = initialise_channel_data['owner_publ']
     join_response = requests.post(f"{url}/channel/join", json={
@@ -104,7 +130,10 @@ def test_return_type(url, initialise_user_data, initialise_channel_data):
     assert isinstance(details_payload['all_members'][0]['name_last'], str)
 
 def test_channel_details_case(url, initialise_user_data, initialise_channel_data):
-
+    '''
+    basic test
+    checks that channel_details returns the correct information
+    '''
     owner_credentials = initialise_user_data['owner']
     user1_credentials = initialise_user_data['user1']      
 
@@ -143,6 +172,10 @@ def test_channel_details_case(url, initialise_user_data, initialise_channel_data
     assert channel_contents == details_payload
 
 def test_channel_details_empty_channel(url, initialise_user_data, initialise_channel_data):
+    '''
+    checks that channel_details returns the correct information
+    if channel has no owners or members
+    '''
     admin_credentials = initialise_user_data['admin']
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_publ']
