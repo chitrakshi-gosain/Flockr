@@ -207,7 +207,7 @@ def message_edit_route():
     ADD DOCSTRING HERE
     '''
     payload = request.get_json()
-    message_edit(payload['token'], payload['message_edit'], payload['message'])
+    message_edit(payload['token'], int(payload['message_id']), payload['message'])
     return dumps({
     })
 
@@ -216,10 +216,9 @@ def user_profile_route():
     '''
     ADD DOCSTRING HERE
     '''
-    payload = request.get_json()
-    u_id = int(payload['u_id'])
-    token = payload['token']
-    return dumps(user_profile(u_id, token))
+    u_id = int(request.args.get('u_id'))
+    token = request.args.get('token')
+    return dumps(user_profile(token, u_id))
 
 @APP.route("/user/profile/setname", methods=['PUT'])
 def user_profile_setname_route():
