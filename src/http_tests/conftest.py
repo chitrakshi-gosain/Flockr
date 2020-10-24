@@ -180,5 +180,5 @@ def initialise_channel_data(url, initialise_user_data):
         'admin_priv': admin_private_details,
         'owner_publ': owner_public_details,
         'owner_priv': owner_private_details,
-        'user1_priv': user_private_details,
+        'user1_priv': user_private_details
     }

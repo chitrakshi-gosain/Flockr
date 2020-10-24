@@ -40,46 +40,27 @@ def initialise_user_data(reset):
         'user3': user3_details
     }
 
-# @pytest.fixture
-# def initialise_channel_data(url, initialise_user_data):
-#     '''
-#     creates 3 channels with descriptive data for testing
-#     '''
+@pytest.fixture
+def initialise_channel_data(url, initialise_user_data):
+    '''
+    creates 3 channels with descriptive data for testing
+    '''
 
-#     admin_public_details = requests.post(f"{url}/channels/create", json={
-#         'token': initialise_user_data['admin']['token'],
-#         'name': 'admin_public',
-#         'is_public': True
-#     }).json()
+    admin_token = initialise_user_data['admin']['token']
+    admin_public_details = channels_create(admin_token, 'admin_public', True)
+    admin_private_details = channels_create(admin_token, 'admin_private1', False)
 
-    # admin_private_details = requests.post(f"{url}/channels/create", json={
-    #     'token': initialise_user_data['admin']['token'],
-    #     'name': 'admin_private1',
-    #     'is_public': False
-    # }).json()
+    owner_token = initialise_user_data['owner']['token']
+    owner_public_details = channels_create(owner_token, 'owner_public', True)
+    owner_private_details = channels_create(owner_token, 'owner_private1', False)
 
-    # owner_public_details = requests.post(f"{url}/channels/create", json={
-    #     'token': initialise_user_data['owner']['token'],
-    #     'name': 'owner_public',
-    #     'is_public': True
-    # }).json()
+    user_token = initialise_user_data['user1']['token']
+    user_private_details = channels_create(user_token, 'private', False)
 
-    # owner_private_details = requests.post(f"{url}/channels/create", json={
-    #     'token': initialise_user_data['owner']['token'],
-    #     'name': 'owner_private1',
-    #     'is_public': False
-    # }).json()
-
-    # user_private_details = requests.post(f"{url}/channels/create", json={
-    #     'token': initialise_user_data['user1']['token'],
-    #     'name': 'private2',
-    #     'is_public': False
-    # }).json()
-
-    # return {
-    #     'admin_publ': admin_public_details,
-    #     'admin_priv': admin_private_details,
-    #     'owner_publ': owner_public_details,
-    #     'owner_priv': owner_private_details,
-    #     'user1_priv': user_private_details,
-    # }
+    return {
+        'admin_publ': admin_public_details,
+        'admin_priv': admin_private_details,
+        'owner_publ': owner_public_details,
+        'owner_priv': owner_private_details,
+        'user1_priv': user_private_details
+    }
