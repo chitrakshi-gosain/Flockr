@@ -14,10 +14,6 @@ def message_send(token, channel_id, message):
     '''
     checks that the user if authorised in the channel and sends the message
     '''
-
-    if None in {token, channel_id, message}:
-        raise InputError('Insufficient parameters given')
-
     # Testing for token validity
     user_info = helper.get_user_info('token', token)
     if not user_info:
@@ -53,10 +49,6 @@ def message_remove(token, message_id):
     '''
     ADD DOCSTRING HERE
     '''
-
-    if None in {token, message_id}:
-        raise InputError("Insufficient parameters given")
-
     user_info = helper.get_user_info('token', token)
     if not user_info:
         raise AccessError('Invalid Token')

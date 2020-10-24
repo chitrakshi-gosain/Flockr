@@ -195,9 +195,6 @@ def channel_messages(token, channel_id, start):
                      validity, user authorisation
     '''
 
-    if None in {token, channel_id}:
-        raise InputError('Insufficient parameters given')
-
     user_info = helper.get_user_info('token', token)
     if not user_info:
         raise AccessError('Invalid Token')
