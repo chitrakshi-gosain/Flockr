@@ -26,7 +26,6 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 '''
 EXCEPTIONS
 Error type: InputError
-    -> insufficient parameters
     -> email entered is not a valid email
     -> email address is already being used by another user
     -> password entered is less than 6 characters long or more than 32
@@ -139,15 +138,6 @@ def test_password_too_long_(reset):
     with pytest.raises(InputError):
         auth_register('user0@email.com', '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                      !@#$%^&*7', 'user0_first', 'user0_last')
-
-def test_insufficient_parameters(reset):
-    '''
-    Tests that auth_login raises an InputError when less than expected
-    parameters are passed
-    '''
-
-    with pytest.raises(InputError):
-        auth_register('user0@email.com', None, 'user0_first', 'user0_last')
 
 def test_return_type(reset):
     '''

@@ -49,11 +49,10 @@ def auth_login_route():
     '''
 
     payload = request.get_json()
-    user_credentials = auth_login(payload['email'], payload['password'])
-    return dumps({
-        'u_id': user_credentials['u_id'],
-        'token': user_credentials['token']
-    })
+    email = payload['email']
+    password = payload['password']
+
+    return dumps(auth_login(email, password))
 
 
 @APP.route("/auth/logout", methods=['POST'])
@@ -63,23 +62,23 @@ def auth_logout_route():
     '''
 
     payload = request.get_json()
-    user_credentials = auth_logout(payload['token'])
-    return dumps({
-        'is_success': user_credentials['is_success'],
-    })
+    token = payload['token']
+
+    return dumps(auth_logout(token))
 
 @APP.route("/auth/register", methods=['POST'])
 def auth_register_route():
     '''
     ADD DOCSTRING HERE
     '''
+
     payload = request.get_json()
-    user_credentials = auth_register(payload['email'], payload['password'], \
-        payload['name_first'], payload['name_last'])
-    return dumps({
-        'u_id': user_credentials['u_id'],
-        'token': user_credentials['token']
-    })
+    email = payload['email']
+    password = payload['password']
+    name_first = payload['name_first']
+    name_last = payload['name_last']
+
+    return dumps(auth_register(email, password, name_first, name_last))
 
 @APP.route("/channel/invite", methods=['POST'])
 def channel_invite_route():
@@ -260,19 +259,29 @@ def user_profile_setname_route():
     return dumps({
     })
 
-# @APP.route("/user/profile/setemail", methods=['PUT'])
-# def user_profile_setemail_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+@APP.route("/user/profile/setemail", methods=['PUT'])
+def user_profile_setemail_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
 
-# @APP.route("/user/profile/sethandle", methods=['PUT'])
-# def user_profile_sethandle_route():
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
-#     pass
+    payload = request.get_json()
+    token = payload['token']
+    email = payload['email']
+
+    return dumps(user_profile_setemail(token, email))
+
+@APP.route("/user/profile/sethandle", methods=['PUT'])
+def user_profile_sethandle_route():
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    payload = request.get_json()
+    token = payload['token']
+    handle_str= payload['handle_str']
+
+    return dumps(user_profile_sethandle(token, handle_str))
 
 @APP.route("/users/all", methods=['GET'])
 def users_all_route():
