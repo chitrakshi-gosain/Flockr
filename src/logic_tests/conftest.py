@@ -71,7 +71,8 @@ def initialise_channel_data(initialise_user_data):
     owner_public_details = channels_create(owner_token, 'owner_public', True)
     owner_private_details = channels_create(owner_token, 'owner_private1', False)
 
-    user_token = initialise_user_data['user1']['token']
+    user_token = initialise_user_data['user0']['token']
+    user_public_details = channels_create(user_token, 'private', True)
     user_private_details = channels_create(user_token, 'private', False)
 
     return {
@@ -79,7 +80,8 @@ def initialise_channel_data(initialise_user_data):
         'admin_priv': admin_private_details,
         'owner_publ': owner_public_details,
         'owner_priv': owner_private_details,
-        'user1_priv': user_private_details
+        'user0_publ': user_public_details,
+        'user0_priv': user_private_details
     }
 
 @pytest.fixture

@@ -1,7 +1,9 @@
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Ahmet Karatas
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributer - Ahmet Karatas
 
-# Iteration 1
+Iteration 1
+'''
 
 from auth import auth_register
 from channel import channel_details, channel_join, channel_invite, channel_leave
