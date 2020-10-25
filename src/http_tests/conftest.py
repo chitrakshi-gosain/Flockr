@@ -1,7 +1,7 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributors - Chitrakshi Gosain, Jordan Hunyh, Ahmet Karatas,
-              Cyrus Wilkie, Joseph Knox
+               Cyrus Wilkie, Joseph Knox
 
 Iteration 2
 '''
@@ -20,6 +20,15 @@ import pytest
 
 '''
 This file contains all the fixtures used in *http_test.py
+'''
+
+'''
+APP.routes_USED_FOR_THIS_FIXTURE_FILE("/rule", methods=['METHOD']) return
+json.dumps({RETURN VALUE})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+   json.dumps({channel_id})
 '''
 
 @pytest.fixture

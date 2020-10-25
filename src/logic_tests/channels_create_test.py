@@ -1,41 +1,41 @@
-from auth import auth_register, auth_logout
+'''
+Created collaboratively by Wed15Team2 2020 T3
+Contributor - Cyrus Wilkie
+
+Iteration 1
+'''
+
+import pytest
+from auth import  auth_logout
 from channel import channel_details, channel_join
 from channels import channels_create, channels_listall
-from other import clear
 from error import AccessError, InputError
-import pytest
-
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Cyrus Wilkie
-
-# Iteration 1
 
 '''
 *********************************BASIC TEMPLATE*********************************
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
 -> channels_create(token, name. is_public) return {channel_id}
 -> channel_details(token, channel_id) return {channel}
 -> channels_listall(token) return {channels}
 '''
 
 '''
-----channels_create Documentation----
-Parameters:
-(token, name, is_public)
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
+'''
 
-Return Type:
-{channel_id}
-
-Exceptions:
-InputError when any of:
-- Name is more than 20 characters long
-
-Description:
-Creates a new channel with that name 
-that is either a public or private channel
+'''
+EXCEPTIONS
+Error type: AccessError
+    -> token passed in is not a valid token
+Error type: InputError
+    -> channel name is more than 20 characters long
 '''
 
 def test_channels_create_valid_basic(initialise_user_data):
@@ -61,9 +61,6 @@ def test_channels_create_valid_basic(initialise_user_data):
     assert basic_channel_details['all_members'][0]['name_first'] == 'owner_first'
     assert basic_channel_details['all_members'][0]['name_last'] == 'owner_last'
 
-    clear()
-
-
 def test_channels_create_valid_empty(initialise_user_data):
     '''
     Creating channel with empty string name
@@ -86,9 +83,6 @@ def test_channels_create_valid_empty(initialise_user_data):
     assert empty_channel_details['all_members'][0]['u_id'] == users['user1']['u_id']
     assert empty_channel_details['all_members'][0]['name_first'] == 'user1_first'
     assert empty_channel_details['all_members'][0]['name_last'] == 'user1_last'
-
-    clear()
-
 
 def test_channels_create_valid_private(initialise_user_data):
     '''
@@ -117,9 +111,6 @@ def test_channels_create_valid_private(initialise_user_data):
     with pytest.raises(AccessError):
         channel_join(users['user1']['token'], channel_id['channel_id'])
 
-    clear()
-
-
 def test_channels_create_invalid_namesize(initialise_user_data):
     '''
     Creating channel with too large of a name
@@ -133,9 +124,6 @@ def test_channels_create_invalid_namesize(initialise_user_data):
     # Creating private channel with namesize > 20 characters
     with pytest.raises(InputError):
         channels_create(users['user2']['token'], 'supercalifragilisticexpialidocious', False)
-
-    clear()
-
 
 def test_channels_create_valid_samename(initialise_user_data):
     '''
@@ -169,5 +157,3 @@ def test_channels_create_invalid_token(initialise_user_data):
     # Checking that AccessError is thrown
     with pytest.raises(AccessError):
         channels_create(invalid_token, 'Name', True)
-
-    clear()

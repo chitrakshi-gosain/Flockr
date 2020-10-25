@@ -6,9 +6,8 @@ Iteration 1
 '''
 
 import pytest
-from other import clear
 from error import InputError
-from auth import auth_login, auth_logout, auth_register
+from auth import auth_login, auth_logout
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -20,6 +19,12 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
    {u_id, token}
 -> auth_login(email,password) return {u_id, token}
 -> auth_logout(token) return {is_success}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
 '''
 
 '''

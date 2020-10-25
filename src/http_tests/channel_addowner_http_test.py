@@ -50,9 +50,10 @@ def test_url(url):
     '''
     A simple sanity test to check that the server is set up properly
     '''
+
     assert url.startswith("http")
 
-def test_http_channel_addowner_noerrors(initialise_channel_data, initialise_user_data, url):
+def test_http_channel_addowner_no_errors(initialise_channel_data, initialise_user_data, url):
     '''
     basic test with no edge case or errors raised
     '''

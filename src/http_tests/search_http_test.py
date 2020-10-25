@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - YOUR NAME HERE
+Contributor - Jordan Hunyh
 
 Iteration 2
 '''
@@ -16,6 +16,10 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+    json.dumps({channel_id})
 -> APP.route("/search") return json.dumps({messages})
 -> APP.route("/message/send") return json.dumps({})
 -> APP.route("/channel/join") return json.dumps({})
@@ -35,11 +39,11 @@ Error type: AccessError
     -> Invalid token
 '''
 
-# def test_url(url):
-#     '''
-#     A simple sanity test to check that the server is set up properly
-#     '''
-#     assert url.startswith("http")
+def test_url(url):
+    '''
+    A simple sanity test to check that the server is set up properly
+    '''
+    assert url.startswith("http")
 
 def pop_datetimes(messages):
     for entry in messages:

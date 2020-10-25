@@ -6,12 +6,10 @@ Iteration 2
 '''
 
 import pytest
-import auth
 from channel import channel_join
-from channels import channels_create, channels_listall
 from message import message_send, message_edit
 from error import AccessError
-from other import clear, search
+from other import search
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -25,6 +23,13 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> message_send(token, channel_id, message) return {}
 -> message_edit(token, message_id, message) return {message_id}
 -> search(token, query_str) return {messages}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''

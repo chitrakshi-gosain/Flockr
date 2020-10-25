@@ -51,7 +51,7 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
-def test_http_message_edit_noerrors(initialise_channel_data, initialise_user_data, url):
+def test_http_message_edit_no_errors(initialise_channel_data, initialise_user_data, url):
     '''
     basic test with no edge case or errors raised
     '''

@@ -1,8 +1,8 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor -
+Contributor - Jordan Hunyh
 
-Iteration 1
+Iteration 2
 '''
 
 import json
@@ -14,24 +14,27 @@ import pytest
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> is_user_in_channel(url, user_id, token, channel_id) return amount of times u_id was found in channel
--> test_channel_join_basic()
--> test_channel_join_invalid_channel()
--> test_channel_join_private_user()
--> test_channel_join_private_admin()
--> test_channel_join_invalid_token()
--> test_channel_join_already_member()
+APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
+json.dumps({RETURN VALUE})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+    json.dumps({channel_id})
+-> APP.route("/channel/join", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/channel/details", methods=['GET']) return
+    json.dumps({name, owner_members, all_members})
 '''
 
 '''
-----channel_join Documentation----
-Parameters:
-(token, channel_id)
+FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
+-> url
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
+'''
 
-Return Type:
-{}
-
+'''
 Exceptions:
     InputError (400) when:
         -> Channel ID is not a valid channel
@@ -43,10 +46,12 @@ Description: Given a channel_id of a channel that the
              authorised user can join, adds them to that channel
 '''
 
+def test_url(url):
+    '''
+    A simple sanity test to check that the server is set up properly
+    '''
+    assert url.startswith("http")
 
-
-# Jordan Huynh (z5169771)
-# Wed15 Grape 2
 def is_user_in_channel(url, user_id, token, channel_id):
     datain = {"token": token, "channel_id": channel_id}
     channel_members = requests.get(url+ "channel/details", params=datain).json()['all_members']

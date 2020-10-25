@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - YOUR NAME HERE
+Contributor - Ahmet Karatas
 
 Iteration 2
 '''
@@ -50,7 +50,6 @@ def test_url(url):
     A simple sanity test to check that the server is set up properly
     '''
     assert url.startswith("http")
-
 
 def test_user_not_authorised(url, initialise_user_data, initialise_channel_data):
     '''

@@ -6,11 +6,9 @@ Iteration 1
 '''
 
 import pytest
-import auth
 from channel import channel_addowner, channel_join, channel_details
-from channels import channels_create, channels_listall
+from channels import channels_listall
 from error import InputError, AccessError
-from other import clear
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -23,6 +21,13 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> channel_addowner(token, channel_id, u_id) return {}
 -> channel_join(token, channel_id) return {}
 -> channels_create(token, name, is_public) return {channel_id}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''

@@ -16,8 +16,11 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
 -> APP.route("/user/profile", methods=['GET']) return json.dumps({user})
--> APP.route("/auth/logout", methods=['POST']) return json.dumps({is_success})
+-> APP.route("/auth/logout", methods=['POST']) return
+   json.dumps({is_success})
 '''
 
 '''
