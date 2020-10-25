@@ -19,35 +19,6 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> users_all(token) return {users}
 '''
 
-'''
-@pytest.fixture
-def user_data():
-    # Ensures any currently existing data is removed
-    clear()
-
-    # Register users:
-    # Realistic test data
-    john_details = auth_register('johnsmith@gmail.com', 'qweRt1uiop!', 'John',\
-                                'Smith')
-    jane_details = auth_register('janesmith@hotmail.com', 'm3yDate0fb!rth', \
-                                'Jane', 'Smith')
-    noah_details = auth_register('noah_navarro@yahoo.com', 'aP00RP&ssWord1', \
-                                'Noah', 'Navarro')
-    ingrid_details = auth_register('ingrid.cline@gmail.com', '572o7563O*', \
-                                  'Ingrid', 'Cline')
-    donald_details = auth_register('donaldrichards@gmail.com', 'kjDf2g@h@@df',\
-                                  'Donald', 'Richards')
-
-    # Returns user data that is implementation dependent (id, token)
-    return {
-        'john': john_details, admin
-        'jane': jane_details, user0
-        'noah': noah_details, user1
-        'ingrid': ingrid_details, user2
-        'donald': donald_details user3
-    }
-'''
-
 def test_users_all_basic(initialise_user_data):
     '''
     Basic valid test case of users_all
