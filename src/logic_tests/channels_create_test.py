@@ -16,13 +16,9 @@ import pytest
 
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> intialise_user_data() return {users}
--> test_channels_create_valid_basic()
--> test_channels_create_valid_empty()
--> test_channels_create_valid_private()
--> test_channels_create_invalid_namesize()
--> test_channels_create_valid_samename()
--> test_channels_create_invalid_token()
+-> channels_create(token, name. is_public) return {channel_id}
+-> channel_details(token, channel_id) return {channel}
+-> channels_listall(token) return {channels}
 '''
 
 '''

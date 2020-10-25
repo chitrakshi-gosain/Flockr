@@ -17,14 +17,8 @@ from error import AccessError
 
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> intialise_user_data() return {users}
--> test_channels_listall_valid_single()
--> test_channels_listall_valid_same()
--> test_channels_listall_valid_different()
--> test_channels_listall_valid_private()
--> test_channels_listall_valid_mix()
--> test_channels_listall_valid_empty()
--> test_channels_listall_invalid_token()
+-> channels_create(token, name. is_public) return {channel_id}
+-> channels_listall(token) return {channels}
 '''
 
 '''
