@@ -11,36 +11,29 @@ from error import InputError
 from error import AccessError
 import pytest
 
-@pytest.fixture
-def reset():
-    clear()
+'''
+****************************BASIC TEMPLATE******************************
+'''
 
-@pytest.fixture
-def initialise_user_data(reset):
-    admin_details = auth_register('admin@gmail.com', 'admin_pw', 'admin_firstname', 'admin_lastname')
-    owner_details = auth_register('owner@gmail.com', 'owner_pw', 'owner_firstname', 'owner_lastname')   
-    user1_details = auth_register('user1@gmail.com', 'user1_pw', 'user1_firstname', 'user1_lastname')      
+'''
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> channel_details(token, channel_id) return {name, owner_memers, all_members}
+-> channel_join(token, channel_id) return {}
+-> channel_invite(token, channel_id, u_id) return {}
+'''
 
-    return {
-        'admin': admin_details,
-        'owner': owner_details,
-        'user1': user1_details
-    }
-
-@pytest.fixture
-def initialise_channel_data(initialise_user_data):
-    owner_credentials = initialise_user_data['owner']
-    public_channel = channels_create(owner_credentials['token'], 'channel1_name', True)
-    private_channel = channels_create(owner_credentials['token'], 'channel1_name', False)
-    return {
-        'public': public_channel,
-        'private': private_channel
-    }
+'''
+EXCEPTIONS
+Error type: InputError
+    -> Channel ID is not a valid channel
+Error type: AccessError
+    -> Authorised user is not a member of channel with channel_id
+'''
 
 def test_user_not_authorised(initialise_user_data, initialise_channel_data):
 
-    channel1_id = initialise_channel_data['private']
-    user1_credentials = initialise_user_data['user1']      
+    channel1_id = initialise_channel_data['owner_priv']
+    user1_credentials = initialise_user_data['user1']
     with pytest.raises(AccessError):
         channel_details(user1_credentials['token'], channel1_id['channel_id'])
 
@@ -48,21 +41,21 @@ def test_user_not_authorised(initialise_user_data, initialise_channel_data):
 def test_channel_id_not_valid(initialise_user_data):
     owner_credentials = initialise_user_data['owner']
 
-    invalid_channel_id = -1 
+    invalid_channel_id = -1
     with pytest.raises(InputError):
         channel_details(owner_credentials['token'], invalid_channel_id)
 
 
 def test_token_invalid(initialise_user_data, initialise_channel_data):
-    channel1_id = initialise_channel_data['private']
+    channel1_id = initialise_channel_data['owner_priv']
 
     with pytest.raises(AccessError):
         channel_details('incorrect_user1_token', channel1_id['channel_id'])
 
 def test_return_type(initialise_user_data, initialise_channel_data):
-    user1_credentials = initialise_user_data['user1']      
-    channel1_id = initialise_channel_data['public']
-    # Invite two initialise_user_data to the channel                   
+    user1_credentials = initialise_user_data['user1']
+    channel1_id = initialise_channel_data['owner_publ']
+    # Invite two initialise_user_data to the channel
     channel_join(user1_credentials['token'], channel1_id['channel_id'])
 
     channel_information = channel_details(user1_credentials['token'], channel1_id['channel_id'])
@@ -86,24 +79,22 @@ def test_return_type(initialise_user_data, initialise_channel_data):
 def test_channel_details_case(initialise_user_data, initialise_channel_data):
 
     owner_credentials = initialise_user_data['owner']
-    user1_credentials = initialise_user_data['user1']      
+    user1_credentials = initialise_user_data['user1']
 
-    channel1_id = initialise_channel_data['public']
-    # Invite two initialise_user_data to the channel                   
+    channel1_id = initialise_channel_data['owner_publ']
+    # Invite two initialise_user_data to the channel
     channel_join(user1_credentials['token'], channel1_id['channel_id'])
-    owner = {'u_id': owner_credentials['u_id'], 'name_first': 'owner_firstname', 'name_last': 'owner_lastname'}
-    user1 = {'u_id': user1_credentials['u_id'], 'name_first': 'user1_firstname', 'name_last': 'user1_lastname'}
-    channel_contents = {'name': 'channel1_name', 'owner_members': [owner], 'all_members': [owner, user1]}
+    owner = {'u_id': owner_credentials['u_id'], 'name_first': 'owner_first', 'name_last': 'owner_last'}
+    user1 = {'u_id': user1_credentials['u_id'], 'name_first': 'user1_first', 'name_last': 'user1_last'}
+    channel_contents = {'name': 'owner_public', 'owner_members': [owner], 'all_members': [owner, user1]}
 
     assert channel_contents == channel_details(user1_credentials['token'], channel1_id['channel_id'])
 
 def test_channel_details_empty_channel(initialise_user_data, initialise_channel_data):
     admin_credentials = initialise_user_data['admin']
     owner_credentials = initialise_user_data['owner']
-    channel1_id = initialise_channel_data['public']
+    channel1_id = initialise_channel_data['owner_publ']
     channel_leave(owner_credentials['token'], channel1_id['channel_id'])
 
-    channel_contents = {'name': 'channel1_name', 'owner_members': [], 'all_members': []}
+    channel_contents = {'name': 'owner_public', 'owner_members': [], 'all_members': []}
     assert channel_contents == channel_details(admin_credentials['token'], channel1_id['channel_id'])
-                        
-
