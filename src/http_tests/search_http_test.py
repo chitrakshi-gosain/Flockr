@@ -16,22 +16,23 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route(.....) return json.dumps({...})
+-> APP.route("/search") return json.dumps({messages})
+-> APP.route("/message/send") return json.dumps({})
+-> APP.route("/channel/join") return json.dumps({})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 -> reset
 -> url
--> ...
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
 EXCEPTIONS
-Error type: InputError
-    -> ..
 Error type: AccessError
-    -> ..
+    -> Invalid token
 '''
 
 # def test_url(url):
