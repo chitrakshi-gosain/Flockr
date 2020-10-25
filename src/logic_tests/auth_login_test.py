@@ -116,17 +116,6 @@ def test_login_unique_token_and_u_id(initialise_user_data):
     tokens = [test_user_0_login['token'], test_user_1_login['token']]
     assert len(set(tokens)) == len(tokens)
 
-# later modify this to check each login from multiple logins has
-# different token
-def test_multiple_logins(initialise_user_data):
-    '''
-    Tests that auth_login allows multiple logins
-    '''
-
-    auth_login('user0@email.com', 'user0_pass1!')
-    auth_login('user0@email.com', 'user0_pass1!')
-    auth_login('user0@email.com', 'user0_pass1!')
-
 def test_looking_for_negative_u_id(initialise_user_data):
     '''
     Tests that auth_login does not return a negative u_id for a user

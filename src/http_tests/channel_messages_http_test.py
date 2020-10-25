@@ -98,20 +98,29 @@ def test_return_type(url, initialise_user_data, initialise_channel_data):
     '''
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_priv']
-    response = requests.get(f"{url}/channel/messages", params={
+
+    send_input = {
+        "token": owner_credentials['token'],
+        "channel_id": channel1_id['channel_id'],
+        "message": "Sample message"
+    }
+    send_response = requests.post(url + "/message/send", json=send_input)
+    assert send_response.status_code == 200
+
+    message_response = requests.get(f"{url}/channel/messages", params={
         'token': owner_credentials['token'],
         'channel_id': channel1_id['channel_id'],
         'start': 0
     })
-    message_payload = response.json()
+    assert message_response.status_code == 200
+    message_payload = message_response.json()
     print(message_payload)
-    assert response.status_code == 200
 
     assert isinstance(message_payload['messages'], list)
-    # assert isinstance(message_payload['messages'][0]['message_id'], int)
-    # assert isinstance(message_payload['messages'][0]['u_id'], int)
-    # assert isinstance(message_payload['messages'][0]['mesaage'], str)
-    # assert isinstance(message_payload['messages'][0]['time_created'], time)
+    assert isinstance(message_payload['messages'][0]['message_id'], int)
+    assert isinstance(message_payload['messages'][0]['u_id'], int)
+    assert isinstance(message_payload['messages'][0]['message'], str)
+    assert isinstance(message_payload['messages'][0]['time_created'], float)
 
     assert isinstance(message_payload['start'], int)
     assert isinstance(message_payload['end'], int)

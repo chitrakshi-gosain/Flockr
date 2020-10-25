@@ -11,7 +11,6 @@ import pytest
 from other import clear
 from error import InputError
 from error import AccessError
-from datetime import time
 
 '''
 ****************************BASIC TEMPLATE******************************

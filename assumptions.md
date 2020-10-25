@@ -1,6 +1,7 @@
 # Assumptions
 
-- It is assumed that the user enters all the required fields when accessing the application
+- It is assumed that the user enters all the required fields when
+  accessing the application
 
 ## auth.py
 - 1. As of iteration 1, token provided by *auth_login* and *auth_register*
@@ -9,8 +10,6 @@
 - 3. Password will only consist of printable ASCII characters
 
 ### auth_login
-- 1. Multiple login sessions are allowed, however, presently they do not
-     have unique tokens.
 
 ### auth_logout
 - 1. " " is an invalid token
