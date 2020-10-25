@@ -17,14 +17,8 @@ from error import AccessError
 
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> intialise_user_data() return {users}
--> test_channels_listall_valid_single()
--> test_channels_listall_valid_same()
--> test_channels_listall_valid_different()
--> test_channels_listall_valid_private()
--> test_channels_listall_valid_mix()
--> test_channels_listall_valid_empty()
--> test_channels_listall_invalid_token()
+-> channels_create(token, name. is_public) return {channel_id}
+-> channels_listall(token) return {channels}
 '''
 
 '''
@@ -84,10 +78,11 @@ def users():
     }
 
 
-def test_channels_listall_valid_single(users):
+def test_channels_listall_valid_single(initialise_user_data):
     '''
     Listing a single created channel
     '''
+    users = initialise_user_data
 
     # Creating a basic public channel
     channel_id = channels_create(users['owner']['token'], 'A Basic Channel', True)
@@ -105,10 +100,11 @@ def test_channels_listall_valid_single(users):
     clear()
 
 
-def test_channels_listall_valid_same(users):
+def test_channels_listall_valid_same(initialise_user_data):
     '''
     Listing multiple created channels from the same user
     '''
+    users = initialise_user_data
 
     # Creating channels and storing ids
     channel_id = []
@@ -139,19 +135,20 @@ def test_channels_listall_valid_same(users):
     clear()
 
 
-def test_channels_listall_valid_different(users):
+def test_channels_listall_valid_different(initialise_user_data):
     '''
     Listing multiple created channels from different users
     '''
+    users = initialise_user_data
 
     # Creating channels and storing ids
     channel_id = []
 
     channel_id.append(channels_create(users['user1']['token'], 'First Channel', True))
     channel_id.append(channels_create(users['user2']['token'], 'Channel 2', True))
-    channel_id.append(channels_create(users['donald']['token'], 'Discussion', True))
-    channel_id.append(channels_create(users['john']['token'], 'Chatter', True))
-    channel_id.append(channels_create(users['ingrid']['token'], '3rd Channel', True))
+    channel_id.append(channels_create(users['user3']['token'], 'Discussion', True))
+    channel_id.append(channels_create(users['user0']['token'], 'Chatter', True))
+    channel_id.append(channels_create(users['user0']['token'], '3rd Channel', True))
 
     # Checking channels_list return is correct
     channel_list = channels_listall(users['user1']['token'])
@@ -173,19 +170,20 @@ def test_channels_listall_valid_different(users):
     clear()
 
 
-def test_channels_listall_valid_private(users):
+def test_channels_listall_valid_private(initialise_user_data):
     '''
     Listing multiple created private channels from different users
     '''
+    users = initialise_user_data
 
     # Creating channels and storing ids
     channel_id = []
 
     channel_id.append(channels_create(users['user1']['token'], 'First Channel', False))
     channel_id.append(channels_create(users['user2']['token'], 'Channel 2', False))
-    channel_id.append(channels_create(users['donald']['token'], 'Discussion', False))
-    channel_id.append(channels_create(users['john']['token'], 'Chatter', False))
-    channel_id.append(channels_create(users['ingrid']['token'], '3rd Channel', False))
+    channel_id.append(channels_create(users['user3']['token'], 'Discussion', False))
+    channel_id.append(channels_create(users['user3']['token'], 'Chatter', False))
+    channel_id.append(channels_create(users['user3']['token'], '3rd Channel', False))
 
     # Checking channels_list return is correct
     channel_list = channels_listall(users['user1']['token'])
@@ -207,22 +205,23 @@ def test_channels_listall_valid_private(users):
     clear()
 
 
-def test_channels_listall_valid_mix(users):
+def test_channels_listall_valid_mix(initialise_user_data):
     '''
     Listing a mix of multiple public and private channels from different users with some sharing names
     '''
+    users = initialise_user_data
 
     # Creating channels and storing ids
     channel_id = []
 
     channel_id.append(channels_create(users['user1']['token'], 'First Channel', True))
     channel_id.append(channels_create(users['user2']['token'], 'Channel 2', True))
-    channel_id.append(channels_create(users['donald']['token'], 'Discussion', True))
-    channel_id.append(channels_create(users['john']['token'], 'Chatter', True))
-    channel_id.append(channels_create(users['ingrid']['token'], '3rd Channel', True))
+    channel_id.append(channels_create(users['user3']['token'], 'Discussion', True))
+    channel_id.append(channels_create(users['user2']['token'], 'Chatter', True))
+    channel_id.append(channels_create(users['user3']['token'], '3rd Channel', True))
     channel_id.append(channels_create(users['user1']['token'], 'First Channel', False))
     channel_id.append(channels_create(users['user3']['token'], 'Channel 2', False))
-    channel_id.append(channels_create(users['jane']['token'], 'Private', False))
+    channel_id.append(channels_create(users['user0']['token'], 'Private', False))
 
     # Checking channels_list return is correct
     channel_list = channels_listall(users['user1']['token'])
@@ -250,10 +249,11 @@ def test_channels_listall_valid_mix(users):
     clear()
 
 
-def test_channels_listall_valid_empty(users):
+def test_channels_listall_valid_empty(initialise_user_data):
     '''
     Listing channels when none have been created
     '''
+    users = initialise_user_data
 
     # Checking channels_list return is correct
     assert channels_listall(users['user1']['token']) == {'channels': []}
@@ -261,10 +261,11 @@ def test_channels_listall_valid_empty(users):
     clear()
 
 
-def test_channels_listall_invalid_token(users):
+def test_channels_listall_invalid_token(initialise_user_data):
     '''
     Attempting to call channels_listall without a valid token
     '''
+    users = initialise_user_data
 
     # Only way to guarrantee a token is invalid is to invalidate an existing token
     invalid_token = users['owner']['token']

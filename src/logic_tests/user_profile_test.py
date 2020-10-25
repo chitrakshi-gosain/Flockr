@@ -23,50 +23,12 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> auth_logout(token) return {is_success}
 '''
 
-@pytest.fixture
-def user_data():
-    '''
-    Sets up various user sample data for testing purposes
-    '''
-
-    # Ensures any currently existing data is removed
-    clear()
-
-    # Register users:
-    # Descriptive test data
-    owner_details = auth_register('owner@email.com', 'Owner_pass1!', 'owner_first', 'owner_last')
-    user1_details = auth_register('user1@email.com', 'User1_pass!', 'user1_first', 'user1_last')
-    user2_details = auth_register('user2@email.com', 'User2_pass!', 'user2_first', 'user2_last')
-    user3_details = auth_register('user3@email.com', 'User3_pass!', 'user3_first', 'user3_last')
-    user4_details = auth_register('user4@email.com', 'User4_pass!', 'user4_first', 'user4_last')
-    user5_details = auth_register('user5@email.com', 'User5_pass!', 'user5_first', 'user5_last')
-
-    # Realistic test data
-    john_details = auth_register('johnsmith@gmail.com', 'qweRt1uiop!', 'John', 'Smith')
-    jane_details = auth_register('janesmith@hotmail.com', 'm3yDate0fb!rth', 'Jane', 'Smith')
-    noah_details = auth_register('noah_navarro@yahoo.com', 'aP00RP&ssWord1', 'Noah', 'Navarro')
-    ingrid_details = auth_register('ingrid.cline@gmail.com', '572o7563O*', 'Ingrid', 'Cline')
-    donald_details = auth_register('donaldrichards@gmail.com', 'kjDf2g@h@@df', 'Donald', 'Richards')
-
-    # Returns user data that is implementation dependent (id, token)
-    return {
-        'owner': owner_details,
-        'user1': user1_details,
-        'user2': user2_details,
-        'user3': user3_details,
-        'user4': user4_details,
-        'user5': user5_details,
-        'john': john_details,
-        'jane': jane_details,
-        'noah': noah_details,
-        'ingrid': ingrid_details,
-        'donald': donald_details
-    }
-
-def test_user_profile_valid_own(user_data):
+def test_user_profile_valid_own(initialise_user_data):
     '''
     Testing users checking their own profiles
     '''
+    user_data = initialise_user_data
+
     profile_data = user_profile(user_data['owner']['token'], user_data['owner']['u_id'])
 
     exp_dict = {
@@ -81,92 +43,97 @@ def test_user_profile_valid_own(user_data):
 
     assert profile_data == exp_dict
 
-    profile_data = user_profile(user_data['john']['token'], user_data['john']['u_id'])
+    profile_data = user_profile(user_data['user0']['token'], user_data['user0']['u_id'])
 
     exp_dict = {
         'user': {
-            'u_id': user_data['john']['u_id'],
-            'email': 'johnsmith@gmail.com',
-            'name_first': 'John',
-            'name_last': 'Smith',
-            'handle_str': 'johnsmith',
+            'u_id': user_data['user0']['u_id'],
+            'email': 'user0@email.com',
+            'name_first': 'user0_first',
+            'name_last': 'user0_last',
+            'handle_str': 'user0_firstuser0_las',
         },
     }
 
     assert profile_data == exp_dict
 
-def test_user_profile_valid_else(user_data):
+def test_user_profile_valid_else(initialise_user_data):
     '''
     Testing users checking other user's profiles
     '''
+    user_data = initialise_user_data
 
-    profile_data = user_profile(user_data['john']['token'], user_data['jane']['u_id'])
+    profile_data = user_profile(user_data['user0']['token'], user_data['user1']['u_id'])
 
     exp_dict = {
         'user': {
-            'u_id': user_data['jane']['u_id'],
-            'email': 'janesmith@hotmail.com',
-            'name_first': 'Jane',
-            'name_last': 'Smith',
-            'handle_str': 'janesmith',
+            'u_id': user_data['user1']['u_id'],
+            'email': 'user1@email.com',
+            'name_first': 'user1_first',
+            'name_last': 'user1_last',
+            'handle_str': 'user1_firstuser1_las',
         },
     }
 
     assert profile_data == exp_dict
 
-    profile_data = user_profile(user_data['jane']['token'], user_data['ingrid']['u_id'])
+    profile_data = user_profile(user_data['user1']['token'], user_data['admin']['u_id'])
 
     exp_dict = {
         'user': {
-            'u_id': user_data['ingrid']['u_id'],
-            'email': 'ingrid.cline@gmail.com',
-            'name_first': 'Ingrid',
-            'name_last': 'Cline',
-            'handle_str': 'ingridcline',
+            'u_id': user_data['admin']['u_id'],
+            'email': 'admin@email.com',
+            'name_first': 'admin_first',
+            'name_last': 'admin_last',
+            'handle_str': 'admin_firstadmin_las',
         },
     }
 
     assert profile_data == exp_dict
 
-def test_user_profile_valid_logout(user_data):
+def test_user_profile_valid_logout(initialise_user_data):
     '''
     Testing the retrieval of profile data from a user that is logged out
     by a user that is logged in
     '''
 
-    auth_logout(user_data['john']['token'])
+    user_data = initialise_user_data
 
-    profile_data = user_profile(user_data['jane']['token'], user_data['john']['u_id'])
+    auth_logout(user_data['user0']['token'])
+
+    profile_data = user_profile(user_data['user1']['token'], user_data['user0']['u_id'])
 
     exp_dict = {
         'user': {
-            'u_id': user_data['john']['u_id'],
-            'email': 'johnsmith@gmail.com',
-            'name_first': 'John',
-            'name_last': 'Smith',
-            'handle_str': 'johnsmith',
+            'u_id': user_data['user0']['u_id'],
+            'email': 'user0@email.com',
+            'name_first': 'user0_first',
+            'name_last': 'user0_last',
+            'handle_str': 'user0_firstuser0_las',
         },
     }
 
     assert profile_data == exp_dict
 
-def test_user_profile_invalid_uid(user_data):
+def test_user_profile_invalid_uid(initialise_user_data):
     '''
     Testing user_profile with an invalid u_id parameter
     '''
-    
+
     invalid_uid = -1
 
     with pytest.raises(InputError):
-        user_profile(user_data['jane']['token'], invalid_uid)
+        user_profile(initialise_user_data['user0']['token'], invalid_uid)
 
-def test_user_profile_invalid_token(user_data):
+def test_user_profile_invalid_token(initialise_user_data):
     '''
     Testing user_profile with an invalid token parameter
     '''
 
-    invalid_token = user_data['john']['token']
-    auth_logout(user_data['john']['token'])
+    user_data = initialise_user_data
+
+    invalid_token = user_data['user0']['token']
+    auth_logout(user_data['user0']['token'])
 
     with pytest.raises(AccessError):
-        user_profile(invalid_token, user_data['jane']['u_id'])
+        user_profile(invalid_token, user_data['user1']['u_id'])

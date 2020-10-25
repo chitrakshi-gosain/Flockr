@@ -6,149 +6,25 @@ Contributors - Jordan Hunyh, Chitrakshi Gosain, Cyrus Wilkie,
 Iteration 2
 '''
 
-import unittest
 import pytest
 from helper import encrypt_password_with_hash, generate_encoded_token, \
     decode_encoded_token, get_channel_info, get_message_info, get_user_info, \
         is_channel_owner, is_user_authorised, is_user_in_channel, \
             check_if_valid_email, check_if_valid_password, \
-                check_string_length_and_whitespace
+                check_string_length_and_whitespace, invalidating_token
 import data
-import other
+from error import InputError, AccessError
 
 '''
 ****************************BASIC TEMPLATE******************************
 '''
+
 '''
-ADD TEMPLATE DOC HERE
+This file contains test for all the helper functions used throughout the 
+implementation of interface
 '''
 
-@pytest.fixture
-def reset():
-    '''
-    Resets the internal data of the application to it's initial state
-    '''
-
-    other.clear()
-
-@pytest.fixture
-def initialise_data():
-    '''
-    Sets up various descriptive user sample data for testing
-    purposes and returns user data which is implementation dependent
-    '''
-    
-    data.data = {
-        'users': [
-            { # user -> u_id : 0
-                'u_id' : 0,
-                'is_admin' : True,
-                'email' : 'blah0@domain',
-                'name_first' : 'fname0',
-                'name_last' : 'lname0',
-                'handle_str' : 'fname0lname0',
-                'token' : '0',
-                'password' : 'password0'
-            },
-            { # user -> u_id : 1
-                'u_id' : 1,
-                'is_admin' : False,
-                'email' : 'blah1@domain',
-                'name_first' : 'fname1',
-                'name_last' : 'lname1',
-                'handle_str' : 'fname1lname1',
-                'token' : '1',
-                'password' : 'password1'
-            }
-        ],
-
-        'channels' : [
-            { # channels -> channel_id : 0
-                'channel_id' : 0,
-                'name' : 'ch_name0',
-                'is_public' : True,
-                'owner_members' : [ # owner_members of channel_id : 0
-                    {
-                        'u_id' : 0,
-                        'name_first' : 'fname0',
-                        'name_last' : 'fname1',
-                    }
-                ],
-                'all_members' : [ # all_members of channel_id : 0
-                    {
-                        'u_id' : 0,
-                        'name_first' : 'fname0',
-                        'name_last' : 'fname0',
-                    },
-                    {
-                        'u_id' : 1,
-                        'name_first' : 'fname1',
-                        'name_last' : 'fname1',
-                    }
-                ],
-                'messages' : [ # messages of channel_id : 0
-                    { # mesages -> message_id : 0
-                        'message_id' : 0,
-                        'u_id' : 0,
-                        'message' : 'messagecontents0',
-                        'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
-                    },
-                    { # mesages -> message_id : 1
-                        'message_id' : 1,
-                        'u_id' : 0,
-                        'message' : 'messagecontents1',
-                        'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
-                    }
-                ]
-            },
-            { # channels -> channel_id : 1
-                'channel_id' : 1,
-                'name' : 'ch_name1',
-                'is_public' : False,
-                'owner_members' : [ # owner_members of channel_id : 1
-                    {
-                        'u_id' : 1,
-                        'name_first' : 'fname1',
-                        'name_last' : 'fname1',
-                    }
-                ],
-                'all_members' : [# all_members of channel_id : 1
-                    {
-                        'u_id' : 0,
-                        'name_first' : 'fname0',
-                        'name_last' : 'fname0',
-                    },
-                    {
-                        'u_id' : 1,
-                        'name_first' : 'fname1',
-                        'name_last' : 'fname1',
-                    }
-                ],
-                'messages' : [ # messages of channel_id : 1
-                    { # mesages -> message_id : 0
-                        'message_id' : 0,
-                        'u_id' : 0,
-                        'message' : 'messagecontents0',
-                        'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
-                    }
-                ]
-            }
-        ],
-
-        'messages': [
-            { # mesages -> message_id : 0
-                'message_id' : 0,
-                'u_id' : 0,
-                'message' : 'messagecontents0',
-                'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
-            }
-        ],
-
-        'valid_tokens': [ # format  => token : u_id
-        ]
-    }
-
-def test_check_if_valid_email():
+def test_check_if_valid_email(reset):
     '''
     Given the email of the user to be registered checks if it is a
     valid email using a regex
@@ -166,7 +42,7 @@ def test_check_if_valid_email():
     assert check_if_valid_email('hi@hello.com')
 
 
-def test_check_if_valid_password():
+def test_check_if_valid_password(reset):
     '''
     Tests the password of the user to be registered checks it's length
     is in valid range and if it has printable ASCII characters only
@@ -314,19 +190,36 @@ def test_generate_encoded_token(reset, initialise_data):
     assert {token0 : u_id0} in data.data['valid_tokens']
     assert {token1 : u_id1} in data.data['valid_tokens']
 
-# COMMENTING IT OUT BECAUSE DECODED TOKEN WILL BE CHANGED ALOT IN COMING DAY AND NEXT
-# def test_decode_encoded_token(reset, initialise_data):
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
+    with pytest.raises(AccessError):
+        invalidating_token(decode_encoded_token('some_token'))
 
-#     # Chitrakshi
-#     pass
 
-def test_invalidating_token(reset, initialise_data):
+def test_decode_encoded_token(reset, initialise_data):
     '''
     ADD DOCSTRING HERE
     '''
 
-    # Ahmet
-    pass
+    encoded_token = generate_encoded_token('234')
+    decoded_token = decode_encoded_token(encoded_token)
+    assert encoded_token != '234'
+    assert encoded_token != decoded_token
+    assert decoded_token == '234'
+
+    with pytest.raises(AccessError):
+        invalidating_token(decode_encoded_token('some_token'))
+
+def test_invalidating_token(reset, initialise_user_data):
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    user0_token = initialise_user_data['user0']['token']
+    decoded_token = decode_encoded_token(user0_token)
+    logout_status = invalidating_token(decoded_token)
+    assert logout_status
+
+    assert not invalidating_token('    ')
+    assert not invalidating_token(generate_encoded_token('1234'))
+
+    with pytest.raises(InputError):
+     assert not invalidating_token(generate_encoded_token('some_token'))

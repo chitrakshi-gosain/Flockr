@@ -43,14 +43,6 @@ KEEP IN MIND:
 -> handle_str checks need to be done, will have to user user.py for it
 '''
 
-@pytest.fixture
-def reset():
-    '''
-    Resets the internal data of the application to it's initial state
-    '''
-
-    clear()
-
 def test_trying_to_register_with_everything_valid(reset):
     '''
     Tests that auth_register registers a new user successfully

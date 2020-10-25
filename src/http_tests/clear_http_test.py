@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - YOUR NAME HERE
+Contributor - Jordan Huynh
 
 Iteration 2
 '''
@@ -16,22 +16,18 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route(.....) return json.dumps({...})
+-> APP.route("/auth/logout") return json.dumps({})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
--> reset
 -> url
--> ...
 '''
 
 '''
 EXCEPTIONS
-Error type: InputError
-    -> ..
 Error type: AccessError
-    -> ..
+    -> Invalid token
 '''
 
 # def test_url(url):

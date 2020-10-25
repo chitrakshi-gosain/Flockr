@@ -8,7 +8,6 @@ Iteration 2
 import json
 import requests
 import pytest
-from error import InputError, AccessError
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -17,22 +16,36 @@ from error import InputError, AccessError
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route(.....) return json.dumps({...})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+    json.dumps({channel_id})
+-> APP.route("/channel/join", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/channel/addowner", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/channel/removeowner", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/channel/details", methods=['GET']) return
+    json.dumps({name, owner_members, all_members})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
--> reset
 -> url
--> ...
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
 EXCEPTIONS
 Error type: InputError
-    -> ..
+    -> channel_id is not valid
+    -> u_id is not owner of the channel
 Error type: AccessError
-    -> ..
+    -> authorised user is not owner of the channel
+    -> token is not valid
 '''
 
 def test_url(url):
@@ -295,8 +308,7 @@ def test_http_channel_removeowner_authnotowner(initialise_channel_data, initiali
 def test_http_channel_removeowner_accesserror(initialise_channel_data, initialise_user_data, url):
     '''
     test that channel_removeowner raises AccessError
-    if the authorised user is not an owner of the channel or the flockr
-    i.e. test that channel_removeowner raises AccessError if token is invalid
+    if the token is invalid
     '''
 
     # user 'admin' is the first to register, thus also admin of the flockr

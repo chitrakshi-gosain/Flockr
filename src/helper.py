@@ -9,8 +9,18 @@ Iteration 1
 import re
 import hashlib
 import jwt
+from datetime import datetime
 import data
-from error import AccessError
+from error import AccessError, InputError
+
+'''
+****************************BASIC TEMPLATE******************************
+'''
+
+'''
+This file contains all the helper functions used throughout the 
+implementation of interface
+'''
 
 # CONSTANTS
 MIN_LENGTH_PASSWORD = 6
@@ -56,7 +66,6 @@ def check_string_length_and_whitespace(min_length, max_length, name_to_check):
 
     return True
 
-
 def invalidating_token(token):
     '''
     Given the token of authenticated user invalidates it which later
@@ -67,8 +76,8 @@ def invalidating_token(token):
         if user['token'] == token:
             user['token'] = 'invalidated_the_token'
             return True
-    return False
 
+    return False
 
 def get_channel_info(channel_id):
 
@@ -79,7 +88,7 @@ def get_channel_info(channel_id):
     Example:
     channel_info = helper.get_channel_info(channel_id)
     if not channel_info:
-        raise InputError('channel does not exist')
+        raise InputError(description='channel does not exist')
     if channel_info['is_public']:
         pass
     '''
@@ -89,7 +98,6 @@ def get_channel_info(channel_id):
             return channel
 
     return False
-
 
 def is_user_authorised(token, channel_id):
     '''
@@ -154,7 +162,7 @@ def get_message_info(message_id):
     Example:
     message_info = helper.get_channel_info(channel_id)
     if not message_info:
-        raise InputError('message does not exist')
+        raise InputError(description='message does not exist')
     '''
 
     for channel in data.data['channels']:
@@ -179,16 +187,27 @@ def generate_encoded_token(user_id):
     the authentication of the user for the particular session
     '''
 
-    encoded_token = jwt.encode({'token': str(user_id)}, SECRET, algorithm=\
-        'HS256').decode()
+    try:
+        unique_token = {
+            'u_id': str(user_id),
+            'iat': datetime.utcnow()
+        }
 
-    data.data['valid_tokens'].append({encoded_token: user_id})
+        encoded_token = jwt.encode(unique_token, SECRET, algorithm=\
+            'HS256').decode('utf-8')
 
-    return encoded_token
+        data.data['valid_tokens'].append({
+            encoded_token: int(unique_token['u_id'])
+        })
+
+        return encoded_token
+    except:
+        raise InputError(description='Token is expected to be the user-id of user')
 
 def decode_encoded_token(token):
     try:
         payload = jwt.decode(token.encode('utf-8'), SECRET, algorithms='HS256')
-        return payload['token']
+
+        return payload['u_id']
     except:
-        raise AccessError(description='Token passed in is not a valid token')
+        raise AccessError(description='Token passed in is not a valid token')  

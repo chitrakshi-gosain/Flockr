@@ -32,18 +32,18 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
 def channels_list(token):
     '''
     DESCRIPTION:
-    Provide a list of all channels (and
-    their associated details) that the
-    authorised user is part of
+    Provide a list of all channels (and their associated details) that
+    the authorised user is part of
 
     PARAMETERS:
-        -> token
+        -> token : token of the usr
 
     RETURN VALUES:
-        -> {channels}
+        -> channels : list of channels
 
     EXCEPTIONS:
-        -> AccessError: Invalid token
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     # Checking token validity and finding user that accessed listall
@@ -51,7 +51,7 @@ def channels_list(token):
 
     # If matching token is not found then AccessError is raised
     if not current_user:
-        raise AccessError("Invalid Token")
+        raise AccessError(description="Token passed in is not a valid token")
 
     # Constructing list of all channels
     channel_list = []
@@ -73,17 +73,16 @@ def channels_list(token):
 def channels_listall(token):
     '''
     DESCRIPTION:
-    Provide a list of all channels (and
-    their associated details)
+    Provide a list of all channels (and their associated details)
 
     PARAMETERS:
         -> token
 
     RETURN VALUES:
-        -> {channels}
+        -> channels : list of channels
 
-    EXCEPTIONS:
-        -> AccessError: Invalid token
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     # Checking token validity and finding user that accessed listall
@@ -91,7 +90,7 @@ def channels_listall(token):
 
     # If matching token is not found then AccessError is raised
     if not current_user:
-        raise AccessError("Invalid Token")
+        raise AccessError(description="Token passed in is not a valid token")
 
     # Constructing list of all channels
     channel_list = []
@@ -111,8 +110,8 @@ def channels_listall(token):
 def channels_create(token, name, is_public):
     '''
     DESCRIPTION:
-    Creates a new channel with that name
-    that is either a public or private channel
+    Creates a new channel with that name that is either a public or
+    private channel
 
     PARAMETERS:
         -> token
@@ -120,11 +119,13 @@ def channels_create(token, name, is_public):
         -> is_public: Whether the channel is public
 
     RETURN VALUES:
-        -> {channels}
+        -> channel_id : id of the channel created
 
     EXCEPTIONS:
-        -> InputError when any of:
-            - Name is more than 20 characters long
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> channel name is more than 20 characters long
     '''
 
     # Checking token validity and finding user that created channel
@@ -132,11 +133,11 @@ def channels_create(token, name, is_public):
 
     # If matching token is not found then AccessError is raised
     if not current_user:
-        raise AccessError("Invalid Token")
+        raise AccessError(description="Token passed in is not a valid token")
 
     # Checking channel name size
     if len(name) > 20:
-        raise InputError("Channel Name Too Long")
+        raise InputError(description="Channel Name Too Long")
 
     # channel_id is set by incrementing from the
     # most recently set channel_id

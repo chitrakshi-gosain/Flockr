@@ -17,151 +17,139 @@ from error import AccessError
 '''
 FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> users_all(token) return {users}
--> auth_register(email, password, name_first, name_last) return
-   {u_id, token}
--> auth_logout(token) return {is_success}
+
+EXCEPTIONS:
+AccessError
+-> Invalid token
 '''
 
-@pytest.fixture
-def user_data():
-    '''
-    Sets up various user sample data for testing purposes
-    '''
-
-    # Ensures any currently existing data is removed
-    clear()
-
-    # Register users:
-    # Realistic test data
-    john_details = auth_register('johnsmith@gmail.com', 'qweRt1uiop!', 'John',\
-                                'Smith')
-    jane_details = auth_register('janesmith@hotmail.com', 'm3yDate0fb!rth', \
-                                'Jane', 'Smith')
-    noah_details = auth_register('noah_navarro@yahoo.com', 'aP00RP&ssWord1', \
-                                'Noah', 'Navarro')
-    ingrid_details = auth_register('ingrid.cline@gmail.com', '572o7563O*', \
-                                  'Ingrid', 'Cline')
-    donald_details = auth_register('donaldrichards@gmail.com', 'kjDf2g@h@@df',\
-                                  'Donald', 'Richards')
-
-    # Returns user data that is implementation dependent (id, token)
-    return {
-        'john': john_details,
-        'jane': jane_details,
-        'noah': noah_details,
-        'ingrid': ingrid_details,
-        'donald': donald_details
-    }
-
-def test_users_all_basic(user_data):
+def test_users_all_basic(initialise_user_data):
     '''
     Basic valid test case of users_all
     '''
 
-    all_users = users_all(user_data['john']['token'])
+    user_data = initialise_user_data
+
+    all_users = users_all(user_data['admin']['token'])
 
     exp_dict = {
         'users': [
             {
-                'u_id': user_data['john']['u_id'],
-                'email': 'johnsmith@gmail.com',
-                'name_first': 'John',
-                'name_last': 'Smith',
-                'handle_str': 'johnsmith',
+                'u_id': user_data['admin']['u_id'],
+                'email': 'admin@email.com',
+                'name_first': 'admin_first',
+                'name_last': 'admin_last',
+                'handle_str': 'admin_firstadmin_las',
             },
             {
-                'u_id': user_data['jane']['u_id'],
-                'email': 'janesmith@hotmail.com',
-                'name_first': 'Jane',
-                'name_last': 'Smith',
-                'handle_str': 'janesmith',
+                'u_id': user_data['owner']['u_id'],
+                'email': 'owner@email.com',
+                'name_first': 'owner_first',
+                'name_last': 'owner_last',
+                'handle_str': 'owner_firstowner_las',
             },
             {
-                'u_id': user_data['noah']['u_id'],
-                'email': 'noah_navarro@yahoo.com',
-                'name_first': 'Noah',
-                'name_last': 'Navarro',
-                'handle_str': 'noahnavarro',
+                'u_id': user_data['user0']['u_id'],
+                'email': 'user0@email.com',
+                'name_first': 'user0_first',
+                'name_last': 'user0_last',
+                'handle_str': 'user0_firstuser0_las',
             },
             {
-                'u_id': user_data['ingrid']['u_id'],
-                'email': 'ingrid.cline@gmail.com',
-                'name_first': 'Ingrid',
-                'name_last': 'Cline',
-                'handle_str': 'ingridcline',
+                'u_id': user_data['user1']['u_id'],
+                'email': 'user1@email.com',
+                'name_first': 'user1_first',
+                'name_last': 'user1_last',
+                'handle_str': 'user1_firstuser1_las',
             },
             {
-                'u_id': user_data['donald']['u_id'],
-                'email': 'donaldrichards@gmail.com',
-                'name_first': 'Donald',
-                'name_last': 'Richards',
-                'handle_str': 'donaldrichards',
+                'u_id': user_data['user2']['u_id'],
+                'email': 'user2@email.com',
+                'name_first': 'user2_first',
+                'name_last': 'user2_last',
+                'handle_str': 'user2_firstuser2_las',
+            },
+            {
+                'u_id': user_data['user3']['u_id'],
+                'email': 'user3@email.com',
+                'name_first': 'user3_first',
+                'name_last': 'user3_last',
+                'handle_str': 'user3_firstuser3_las',
             },
         ],
     }
 
     assert all_users == exp_dict
 
-def test_users_all_logout(user_data):
+def test_users_all_logout(initialise_user_data):
     '''
     Tests that all user profiles are returned even if
     some users are logged out
     '''
 
-    auth_logout(user_data['jane']['token'])
-    auth_logout(user_data['donald']['token'])
+    user_data = initialise_user_data
 
-    all_users = users_all(user_data['john']['token'])
+    auth_logout(user_data['owner']['token'])
+    auth_logout(user_data['user3']['token'])
+
+    all_users = users_all(user_data['admin']['token'])
 
     exp_dict = {
         'users': [
             {
-                'u_id': user_data['john']['u_id'],
-                'email': 'johnsmith@gmail.com',
-                'name_first': 'John',
-                'name_last': 'Smith',
-                'handle_str': 'johnsmith',
+                'u_id': user_data['admin']['u_id'],
+                'email': 'admin@email.com',
+                'name_first': 'admin_first',
+                'name_last': 'admin_last',
+                'handle_str': 'admin_firstadmin_las',
             },
             {
-                'u_id': user_data['jane']['u_id'],
-                'email': 'janesmith@hotmail.com',
-                'name_first': 'Jane',
-                'name_last': 'Smith',
-                'handle_str': 'janesmith',
+                'u_id': user_data['owner']['u_id'],
+                'email': 'owner@email.com',
+                'name_first': 'owner_first',
+                'name_last': 'owner_last',
+                'handle_str': 'owner_firstowner_las',
             },
             {
-                'u_id': user_data['noah']['u_id'],
-                'email': 'noah_navarro@yahoo.com',
-                'name_first': 'Noah',
-                'name_last': 'Navarro',
-                'handle_str': 'noahnavarro',
+                'u_id': user_data['user0']['u_id'],
+                'email': 'user0@email.com',
+                'name_first': 'user0_first',
+                'name_last': 'user0_last',
+                'handle_str': 'user0_firstuser0_las',
             },
             {
-                'u_id': user_data['ingrid']['u_id'],
-                'email': 'ingrid.cline@gmail.com',
-                'name_first': 'Ingrid',
-                'name_last': 'Cline',
-                'handle_str': 'ingridcline',
+                'u_id': user_data['user1']['u_id'],
+                'email': 'user1@email.com',
+                'name_first': 'user1_first',
+                'name_last': 'user1_last',
+                'handle_str': 'user1_firstuser1_las',
             },
             {
-                'u_id': user_data['donald']['u_id'],
-                'email': 'donaldrichards@gmail.com',
-                'name_first': 'Donald',
-                'name_last': 'Richards',
-                'handle_str': 'donaldrichards',
+                'u_id': user_data['user2']['u_id'],
+                'email': 'user2@email.com',
+                'name_first': 'user2_first',
+                'name_last': 'user2_last',
+                'handle_str': 'user2_firstuser2_las',
+            },
+            {
+                'u_id': user_data['user3']['u_id'],
+                'email': 'user3@email.com',
+                'name_first': 'user3_first',
+                'name_last': 'user3_last',
+                'handle_str': 'user3_firstuser3_las',
             },
         ],
     }
 
     assert all_users == exp_dict
 
-def test_users_all_invalid_token(user_data):
+def test_users_all_invalid_token(initialise_user_data):
     '''
     Testing users_all with an invalid token parameter
     '''
 
-    invalid_token = user_data['john']['token']
-    auth_logout(user_data['john']['token'])
+    invalid_token = initialise_user_data['admin']['token']
+    auth_logout(initialise_user_data['admin']['token'])
 
     with pytest.raises(AccessError):
         users_all(invalid_token)

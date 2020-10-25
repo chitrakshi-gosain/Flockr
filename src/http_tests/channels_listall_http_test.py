@@ -139,17 +139,17 @@ def test_channels_listall_valid_different(url, initialise_user_data):
         'is_public': True,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user10']['token'],
+        'token': users['user3']['token'],
         'name': 'Discussion',
         'is_public': True,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user6']['token'],
+        'token': users['user0']['token'],
         'name': 'Chatter',
         'is_public': True,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user9']['token'],
+        'token': users['user0']['token'],
         'name': '3rd Channel',
         'is_public': True,
     }).json())
@@ -193,17 +193,17 @@ def test_channels_listall_valid_private(url, initialise_user_data):
         'is_public': False,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user10']['token'],
+        'token': users['user3']['token'],
         'name': 'Discussion',
         'is_public': False,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user6']['token'],
+        'token': users['user3']['token'],
         'name': 'Chatter',
         'is_public': False,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user9']['token'],
+        'token': users['user3']['token'],
         'name': '3rd Channel',
         'is_public': False,
     }).json())
@@ -247,17 +247,17 @@ def test_channels_listall_valid_mix(url, initialise_user_data):
         'is_public': True,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user10']['token'],
+        'token': users['user3']['token'],
         'name': 'Discussion',
         'is_public': True,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user6']['token'],
+        'token': users['user3']['token'],
         'name': 'Chatter',
         'is_public': True,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user9']['token'],
+        'token': users['user3']['token'],
         'name': '3rd Channel',
         'is_public': True,
     }).json())
@@ -272,7 +272,7 @@ def test_channels_listall_valid_mix(url, initialise_user_data):
         'is_public': False,
     }).json())
     channel_id.append(requests.post(f'{url}/channels/create', json={
-        'token': users['user7']['token'],
+        'token': users['user0']['token'],
         'name': 'Private',
         'is_public': False,
     }).json())

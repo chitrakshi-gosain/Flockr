@@ -16,22 +16,23 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route(.....) return json.dumps({...})
+-> APP.route("/search") return json.dumps({messages})
+-> APP.route("/message/send") return json.dumps({})
+-> APP.route("/channel/join") return json.dumps({})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 -> reset
 -> url
--> ...
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
 EXCEPTIONS
-Error type: InputError
-    -> ..
 Error type: AccessError
-    -> ..
+    -> Invalid token
 '''
 
 # def test_url(url):
@@ -45,7 +46,7 @@ def pop_datetimes(messages):
         entry.pop('time_created')
     return messages
 
-def test_search_not_in_channels(url, reset, initialise_user_data, initialise_channel_data):
+def test_search_not_in_channels(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
@@ -65,7 +66,7 @@ def test_search_not_in_channels(url, reset, initialise_user_data, initialise_cha
     assert response.status_code == 200
     assert response.json() == {"messages": []}
 
-def test_search_join_channel(url, reset, initialise_user_data, initialise_channel_data):
+def test_search_join_channel(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
@@ -121,7 +122,7 @@ def test_search_join_channel(url, reset, initialise_user_data, initialise_channe
     assert message1_info in popped
     assert message2_info not in popped
 
-def test_search_no_messages(url, reset, initialise_user_data, initialise_channel_data):
+def test_search_no_messages(url, initialise_user_data, initialise_channel_data):
 
     search_input = {
         "token": initialise_user_data['user1']['token'],
@@ -131,7 +132,7 @@ def test_search_no_messages(url, reset, initialise_user_data, initialise_channel
     assert response.status_code == 200
     assert response.json() == { 'messages': [] }
 
-def test_search_empty_query(url, reset, initialise_user_data, initialise_channel_data):
+def test_search_empty_query(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
@@ -181,7 +182,7 @@ def test_search_empty_query(url, reset, initialise_user_data, initialise_channel
     assert message1_info in popped
     assert message2_info in popped
 
-def test_search_admin(url, reset, initialise_user_data, initialise_channel_data):
+def test_search_admin(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['user1_priv']['channel_id']
@@ -211,7 +212,7 @@ def test_search_admin(url, reset, initialise_user_data, initialise_channel_data)
     popped = pop_datetimes(searched_messages['messages'])
     assert message_info in popped
 
-def test_search_multiple_channels(url, reset, initialise_user_data, initialise_channel_data):
+def test_search_multiple_channels(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['admin']['token']
 
@@ -254,7 +255,7 @@ def test_search_multiple_channels(url, reset, initialise_user_data, initialise_c
     assert message1_info in popped
     assert message2_info in popped
 
-def test_search_invalid_token(url, reset, initialise_user_data, initialise_channel_data):
+def test_search_invalid_token(url, initialise_user_data, initialise_channel_data):
 
     search_input = {
         "token": ' ',

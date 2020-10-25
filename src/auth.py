@@ -35,28 +35,6 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
 '''
 
 '''
-EXCEPTIONS
-    * auth_login
-        Error type: InputError
-            -> email entered is not a valid email
-            -> email entered does not belong to a user
-            -> password is not correct
-    * auth_logout
-        Error type: AccessError
-            -> token passed in is not a valid token
-    * auth_register
-        Error type: InputError
-            -> email entered is not a valid email
-            -> email address is already being used by another user
-            -> password entered is less than 6 characters long or more
-               than 32 characters long
-            -> name_first is not between 1 and 50 characters inclusively
-               in length
-            -> name_last is not between 1 and 50 characters inclusively
-               in length
-'''
-
-'''
 KEEP IN MIND:
 -> make one function to check if user is registered and use it for both
    re-registration check and registered before login check
@@ -89,6 +67,12 @@ def auth_login(email, password):
     RETURN VALUES:
         -> u_id : user-id of the user
         -> token : token to authenticate the user
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> email entered is not a valid email
+        -> email entered does not belong to a user
+        -> password is not correct
     '''
 
     # Checking for InputError(s):
@@ -130,6 +114,10 @@ def auth_logout(token):
     RETURN VALUES:
         -> is_success : True if user is successfully logged out,
                         otherwise False
+    
+    EXCEPTIONS:
+    Error type: AccessError
+         -> token passed in is not a valid token
     '''
 
     # Checking for AccessError:
@@ -165,6 +153,17 @@ def auth_register(email, password, name_first, name_last):
     RETURN VALUES:
         -> u_id : user-id of the user
         -> token : token to authenticate the user
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> email entered is not a valid email
+        -> email address is already being used by another user
+        -> password entered is less than 6 characters long or more
+            than 32 characters long
+        -> name_first is not between 1 and 50 characters inclusively
+            in length
+        -> name_last is not between 1 and 50 characters inclusively
+            in length
     '''
 
     # Checking for InputError(s):
@@ -252,30 +251,3 @@ if __name__ == '__main__':
     assert user1_admin_status != user2_admin_status
     print(user1_admin_status, user2_admin_status)
 '''
-
-# NOT NEEDED ATM:
-
-# def check_if_valid_password(password):
-#     allowed_special_symbols = ['!', '@', '#', '$', '%', '^', '&', '*']
-
-#     if not 6 <= len(password) <= 32:
-#         return False
-
-#     if not any(character.isdigit() for character in password):
-#         return False
-
-#     if not any(character.isupper() for character in password):
-#         return False
-
-#     if not any(character.islower() for character in password):
-#         return False
-
-#     if not any(character in allowed_special_symbols for character in \
-#               password):
-#         return False
-
-#     return True
-
-
-# code used to debug logout :     print(token)
-#                                 print(check_token(token)

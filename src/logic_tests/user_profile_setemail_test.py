@@ -36,31 +36,6 @@ Error type: AccessError
 KEEP IN MIND:
 '''
 
-@pytest.fixture
-def reset():
-    '''
-    Resets the internal data of the application to it's initial state
-    '''
-
-    clear()
-
-@pytest.fixture
-def initialise_user_data(reset):
-    '''
-    Sets up various user descriptive sample data for testing
-    purposes and returns user data which is implementation dependent
-    '''
-
-    user0_details = auth_register('user0@email.com', 'user0_pass1!', \
-                                 'user0_first', 'user0_last')
-    user1_details = auth_register('user1@email.com', 'user1_pass1!', \
-                                 'user1_first', 'user1_last')
-
-    return {
-        'user0': user0_details,
-        'user1': user1_details
-    }
-
 def test_return_type(initialise_user_data):
     '''
     Tests that user_profile_setemail returns the expected datatype i.e.

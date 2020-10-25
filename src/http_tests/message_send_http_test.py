@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor -
+Contributor - Ahmet Karatas
 
 Iteration 1
 '''
@@ -14,33 +14,28 @@ import pytest
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> is_user_in_channel(url, user_id, token, channel_id) return amount of times u_id was found in channel
--> test_channel_join_basic()
--> test_channel_join_invalid_channel()
--> test_channel_join_private_user()
--> test_channel_join_private_admin()
--> test_channel_join_invalid_token()
--> test_channel_join_already_member()
+APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
+json.dumps({RETURN VALUE})
+-> APP.route("/message/send", methods=['POST']) return json.dumps({token, channel_id, message})
+-> APP.route("/channel/join", methods=['POST']) return json.dumps({})
 '''
 
 '''
-----channel_join Documentation----
-Parameters:
-(token, channel_id)
-
-Return Type:
-{}
-
-Exceptions:
-    InputError (400) when:
-        -> Channel ID is not a valid channel
-    AccessError (400) when:
-        -> channel_id refers to a channel that is private (when the authorised user is not a global owner)
-
-Description: Given a channel_id of a channel that the
-             authorised user can join, adds them to that channel
+FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
+-> reset
+-> url
+-> intialise_user_data
+-> initialist_channel_data
 '''
+
+'''
+EXCEPTIONS
+Error Type: InputError
+    -> Channel ID is not a valid channel
+Error Type: AccessError
+    -> channel_id refers to a channel that is private (when the authorised user is not a global owner)
+'''
+
 
 # Jordan Huynh (z5169771)
 # Wed15 Grape 2

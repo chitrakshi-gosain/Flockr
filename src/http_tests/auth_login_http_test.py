@@ -198,32 +198,6 @@ def test_login_unique_token_and_u_id(url, initialise_user_data):
     tokens = [login0_payload['token'], login1_payload['token']]
     assert len(set(tokens)) == len(tokens)
 
-# later modify this to check each login from multiple logins has
-# different token
-def test_multiple_logins(url, initialise_user_data):
-    '''
-    Tests that App.route("/auth/login", methods=['POST'] allows
-    multiple logins
-    '''
-
-    login_response = requests.post(f"{url}/auth/login", json={
-        'email': 'user0@email.com',
-        'password': 'user0_Pass1!'
-    })
-    assert login_response.status_code == 400
-
-    login_response = requests.post(f"{url}/auth/login", json={
-        'email': 'user0@email.com',
-        'password': 'user0_Pass1!'
-    })
-    assert login_response.status_code == 400
-    
-    login_response = requests.post(f"{url}/auth/login", json={
-        'email': 'user0@email.com',
-        'password': 'user0_Pass1!'
-    })
-    assert login_response.status_code == 400
-
 def test_looking_for_negative_u_id(url, initialise_user_data):
     '''
     Tests that App.route("/auth/login", methods=['POST']) does not

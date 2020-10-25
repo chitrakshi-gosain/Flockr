@@ -6,10 +6,11 @@ Iteration 1
 '''
 
 import data
-import user
+from user import user_profile
 from error import InputError
 from error import AccessError
-import helper
+from helper import get_channel_info, get_user_info, is_user_in_channel, \
+    is_user_authorised, is_channel_owner
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -43,60 +44,6 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
     -> name_last: string
 '''
 
-'''
-EXCEPTIONS
-    * channel_invite
-        Error type: InputError
-            -> channel_id does not refer to a valid channel
-            -> u_id does not refer to a valid user
-        Error type: AccessError
-            -> the authorised user is not already a member of the
-               channel
-    * channel_details
-        Error type: InputError
-            -> Channel is not valid
-            -> Insufficient parameters given
-        Error type: AccessError
-            -> token passed in is not a valid token
-            -> User is not an authorised member of the channel
-    * channel_messages
-        Error type: InputError
-            -> Insufficient parameters given
-            -> Channel is not valid
-            -> If start is greater than the number of messages in the
-               channel
-        Error type: AccessError
-            -> token passed in is not a valid token
-            -> User is not an authorised member of the channel
-    * channel_leave
-        Error type: InputError
-            -> Channel ID is not a valid channel
-        Error type: AccessError
-            -> Authorised user is not a member of channel with
-               channel_id
-    * channel_join
-        Error type: InputError
-            -> Channel ID is not a valid channel
-        Error type: AccessError
-            -> channel_id refers to a channel that is private (when the
-               authorised user is not a global owner)
-    * channel_addowner
-        Error type: InputError
-            -> Channel ID is not a valid channel
-            -> When user with user id u_id is already an owner of the
-               channel
-        Error type: AccessError
-            -> when the authorised user is not an owner of the flockr,
-               or an owner of this channel
-    * channel_removeowner
-        Error type: InputError
-            -> Channel ID is not a valid channel
-            -> When user with user id u_id is not an owner of the channel
-        Error type: AccessError
-            -> when the authorised user is not an owner of the flockr,
-               or an owner of this channel
-'''
-
 def channel_invite(token, channel_id, u_id):
     '''
     DESCRIPTION:
@@ -109,26 +56,33 @@ def channel_invite(token, channel_id, u_id):
         -> channel_id : id of the channel
         -> u_id : id of the user who is to be invited
 
-    RETURN VALUES:
+    EXCEPTIONS:
+    Error type: InputError
+        -> channel_id does not refer to a valid channel
+        -> u_id does not refer to a valid user
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> the authorised user is not already a member of the
+            channel
     '''
 
     #order of checks: invalid token, invalid user, invalid channel_id,
     # invoker not in channel
-    invoker_info = helper.get_user_info('token', token)
+    invoker_info = get_user_info('token', token)
     if not invoker_info:
-        raise AccessError('token is invalid')
+        raise AccessError(description='Token passed in is not a valid token')
 
-    user_info = helper.get_user_info('u_id', u_id)
+    user_info = get_user_info('u_id', u_id)
     if not user_info:
         raise InputError('u_id does not refer to a valid user')
 
-    channel_info = helper.get_channel_info(channel_id)
+    channel_info = get_channel_info(channel_id)
     if not channel_info:
-        raise InputError('channel_id does not refer to a valid channel')
+        raise InputError(description='channel_id does not refer to a valid channel')
 
-    if not helper.is_user_in_channel(invoker_info['u_id'], channel_id) and not\
+    if not is_user_in_channel(invoker_info['u_id'], channel_id) and not\
         invoker_info['is_admin']:
-        raise AccessError('invoker is not part of the channel')
+        raise AccessError(description='invoker is not part of the channel')
 
     user_added = {
         'u_id': user_info['u_id'],
@@ -136,7 +90,7 @@ def channel_invite(token, channel_id, u_id):
         'name_last': user_info['name_last']
         }
 
-    if not helper.is_user_in_channel(u_id, channel_id):
+    if not is_user_in_channel(u_id, channel_id):
         channel_info['all_members'].append(user_added)
 
     return {
@@ -154,23 +108,30 @@ def channel_details(token, channel_id):
         -> channel_id : id of the channel
 
     RETURN VALUES:
-    order of checks: insufficient parameters, token validity, channel
-                     validity, user authorisation
+        -> name : name of the channel
+        -> owner_members :  all owner members of the channels
+        -> all_members: all members of the channels, includes owners too
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel is not valid
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> User is not an authorised member of the channel
     '''
 
-    if None in {token, channel_id}:
-        raise InputError('Insufficient parameters given')
-
-    user_info = helper.get_user_info('token', token)
+    user_info = get_user_info('token', token)
     if not user_info:
-        raise AccessError('Invalid Token')
+        raise AccessError(description='Token passed in is not a valid token')
 
-    channel_info = helper.get_channel_info(channel_id)
+    channel_info = get_channel_info(channel_id)
     if not channel_info:
-        raise InputError('Channel ID is not a valid channel')
+        raise InputError(description='Channel ID is not a valid channel')
 
-    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info['u_id'], channel_id):
-        raise AccessError('Authorised user is not a member of channel with channel_id')
+    if not user_info['is_admin'] and not \
+        is_user_in_channel(user_info['u_id'], channel_id):
+        raise AccessError(description='Authorised user is not a member of \
+            channel with channel_id')
 
     return {
         'name': channel_info['name'],
@@ -182,36 +143,43 @@ def channel_details(token, channel_id):
 def channel_messages(token, channel_id, start):
     '''
     DESCRIPTION:
-    Given a channel_id that a user is authorised in, returns the messages from
-    the start message to the start + 50'th message.
+    Given a channel_id that a user is authorised in, returns the
+    messages from the start message to the start + 50'th message.
 
     PARAMETERS:
         -> token : token of user who is to join channel
         -> channel_id : id of the channel
-        -> start: The position to start loading the messages
+        -> start: the position to start loading the messages
 
     RETURN VALUES:
-    order of checks: insufficient parameters, token validity, channel
-                     validity, user authorisation
+        -> messages : messages in the channel
+        -> start : start index of messages returned from channel
+        -> end : end index of messages returned from channel
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel is not valid
+        -> If start is greater than the number of messages in the
+            channel
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> User is not an authorised member of the channel
     '''
 
-    if None in {token, channel_id}:
-        raise InputError('Insufficient parameters given')
-
-    user_info = helper.get_user_info('token', token)
+    user_info = get_user_info('token', token)
     if not user_info:
-        raise AccessError('Invalid Token')
+        raise AccessError(description='Token passed in is not a valid token ')
 
-    channel_info = helper.get_channel_info(channel_id)
+    channel_info = get_channel_info(channel_id)
     if not channel_info:
-        raise InputError("invalid channel_id")
+        raise InputError(description='invalid channel_id')
 
-    if not helper.is_user_in_channel(user_info['u_id'], channel_id):
-        raise AccessError("user is not in channel")
+    if not is_user_in_channel(user_info['u_id'], channel_id):
+        raise AccessError(description="user is not in channel")
 
     number_of_messages = len(channel_info['messages'])
     if start > number_of_messages:
-        raise InputError("no more messages")
+        raise InputError(description="no more messages")
 
     messages = channel_info['messages'][::-1]
 
@@ -232,17 +200,22 @@ def channel_leave(token, channel_id):
         -> token : token of user who is to leave
         -> channel_id : id of the channel
 
-    RETURN VALUES:
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel ID is not a valid channel
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> Authorised user is not a member of channel with channel_id
     '''
 
     #order of check: invalid token, invalid channel, not in channel
-    user_info = helper.get_user_info('token', token)
+    user_info = get_user_info('token', token)
     if not user_info:
-        raise AccessError('token is invalid')
+        raise AccessError(description='Token passed in is not a valid token')
 
-    channel_info = helper.get_channel_info(channel_id)
+    channel_info = get_channel_info(channel_id)
     if not channel_info:
-        raise InputError('channel_id does not refer to a valid channel')
+        raise InputError(description='channel_id does not refer to a valid channel')
 
     user_removed = {
         'u_id': user_info['u_id'],
@@ -250,12 +223,12 @@ def channel_leave(token, channel_id):
         'name_last': user_info['name_last']
         }
 
-    if helper.is_channel_owner(user_info['u_id'], channel_id):
+    if user_removed in channel_info['owner_members']:
         channel_info['owner_members'].remove(user_removed)
-    if helper.is_user_in_channel(user_info['u_id'], channel_id):
+    if user_removed in channel_info['all_members']:
         channel_info['all_members'].remove(user_removed)
     else:
-        raise AccessError('User cannot leave channels they are not part of')
+        raise AccessError(description='User cannot leave channels they are not part of')
 
     return {
     }
@@ -270,21 +243,27 @@ def channel_join(token, channel_id):
         -> token : token of user who is to join channel
         -> channel_id : id of the channel
 
-    RETURN VALUES:
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel ID is not a valid channel
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> channel_id refers to a channel that is private (when the
+            authorised user is not a global owner)
     '''
 
     # order of checks: invalid token, invalid channel, private channel
-    user_info = helper.get_user_info('token', token)
+    user_info = get_user_info('token', token)
     if not user_info:
-        raise AccessError('invalid token')
+        raise AccessError(description='Token passed in is not a valid token')
 
-    channel_info = helper.get_channel_info(channel_id)
+    channel_info = get_channel_info(channel_id)
     if not channel_info:
-        raise InputError('channel_id does not refer to a valid channel')
+        raise InputError(description='channel_id does not refer to a valid channel')
 
 
     if not channel_info['is_public'] and not user_info['is_admin']:
-        raise AccessError("only admins can join private channels")
+        raise AccessError(description="only admins can join private channels")
 
     user_added = {
         'u_id': user_info['u_id'],
@@ -292,7 +271,7 @@ def channel_join(token, channel_id):
         'name_last': user_info['name_last']
         }
 
-    if not helper.is_user_in_channel(user_info['u_id'], channel_id):
+    if not is_user_in_channel(user_info['u_id'], channel_id):
         channel_info['all_members'].append(user_added)
 
     return {
@@ -309,31 +288,41 @@ def channel_addowner(token, channel_id, u_id):
         -> token : token for authenticating the user
         -> channel_id : id of channel to be added to
         -> u_id : id of user to be added
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel ID is not a valid channel
+        -> When user with user id u_id is already an owner of the
+            channel
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> when the authorised user is not an owner of the flockr,
+           or an owner of this channel
     '''
 
     # check if token is not valid
-    user_info = helper.get_user_info("token", token)
+    user_info = get_user_info("token", token)
     if not user_info:
-        raise AccessError('invalid token')
+        raise AccessError(description='Token passed in is not a valid token')
 
     # check if channel_id is not a valid channel id
-    channel_info = helper.get_channel_info(channel_id)
+    channel_info = get_channel_info(channel_id)
     if not channel_info:
-        raise InputError('channel_id not valid')
+        raise InputError(description='channel_id not valid')
 
      # check if authorised user (based on token) is admin of the flockr,
      # or owner of the channel
-    if not helper.is_user_authorised(token, channel_id):
-        raise AccessError('authorised user is not flockr admin, or an owner of\
+    if not is_user_authorised(token, channel_id):
+        raise AccessError(description='authorised user is not flockr admin, or an owner of\
              the channel')
 
     # check if u_id is in the list of the u_ids of existing owners
     # i.e. if the provided u_id is already an owner
-    if helper.is_channel_owner(u_id, channel_id):
-        raise InputError('u_id is already an owner')
+    if is_channel_owner(u_id, channel_id):
+        raise InputError(description='u_id is already an owner')
 
     # extracts first and last names from channel dict
-    user_info = user.user_profile(token, u_id)
+    user_info = user_profile(token, u_id)
     user_info = user_info['user']
 
     name_first = user_info['name_first']
@@ -341,11 +330,7 @@ def channel_addowner(token, channel_id, u_id):
     user_dict = {'u_id': u_id, 'name_first': name_first, 'name_last': name_last}
 
     # append the given user to the list of owners
-    for channel in data.data["channels"]:
-        if channel["channel_id"] == channel_id:
-            data.data["channels"][channel_id]["owner_members"].append(user_dict.copy())
-            break
-
+    channel_info['owner_members'].append(user_dict)
     return {
     }
 
@@ -360,36 +345,42 @@ def channel_removeowner(token, channel_id, u_id):
         -> token : token for authenticating the user
         -> channel_id : id of channel to be removed from
         -> u_id : id of user to be removed
+    
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel ID is not a valid channel
+        -> When user with user id u_id is not an owner of the channel
+    Error type: AccessError
+        -> when the authorised user is not an owner of the flockr,
+            or an owner of this channel
     '''
 
     # check if token is not valid
-    user_info = helper.get_user_info("token", token)
+    user_info = get_user_info("token", token)
     if not user_info:
-        raise AccessError('invalid token')
+        raise AccessError(description='Token passed in is not a valid token')
 
     # check if channel_id is not a valid channel id
-    channel_info = helper.get_channel_info(channel_id)
+    channel_info = get_channel_info(channel_id)
     if not channel_info:
-        raise InputError('channel_id not valid')
+        raise InputError(description='channel_id not valid')
 
     # check if authorised user (based on token) is admin of the flockr,
     # or owner of the channel
-    if not helper.is_user_authorised(token, channel_id):
-        raise AccessError('authorised user is not flockr admin, or an owner of\
+    if not is_user_authorised(token, channel_id):
+        raise AccessError(description='authorised user is not flockr admin, or an owner of\
             the channel')
 
     # check if u_id is not in the list of the u_ids of existing owners
     # i.e. if the provided u_id is not an owner
-    if not helper.is_channel_owner(u_id, channel_id):
-        raise InputError('u_id is not an owner')
+    if not is_channel_owner(u_id, channel_id):
+        raise InputError(description='u_id is not an owner')
 
     # remove the given user from the list of owners
-    for channel in data.data["channels"]:
-        if channel["channel_id"] == channel_id:
-            for i in range(len(channel["owner_members"])):
-                if channel["owner_members"][i]["u_id"] == u_id:
-                    del data.data["channels"][channel_id]["owner_members"][i]
-                    break
+    u_info = get_user_info("u_id", u_id)
+    user_dict = {'u_id': u_id, 'name_first': u_info['name_first'], 'name_last': u_info['name_last']}
+
+    channel_info['owner_members'].remove(user_dict)
 
     return {
     }

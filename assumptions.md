@@ -1,6 +1,7 @@
 # Assumptions
 
-- It is assumed that the user enters all the required fields when accessing the application
+- It is assumed that the user enters all the required fields when
+  accessing the application
 
 ## auth.py
 - 1. As of iteration 1, token provided by *auth_login* and *auth_register*
@@ -9,8 +10,6 @@
 - 3. Password will only consist of printable ASCII characters
 
 ### auth_login
-- 1. Multiple login sessions are allowed, however, presently they do not
-     have unique tokens.
 
 ### auth_logout
 - 1. " " is an invalid token
@@ -86,3 +85,11 @@
 - 2. Handles that are purely whitespace are not valid
 - 3. If a user tries to update his handle to what his previous handle was, it
      is considered a valid handle updatation request
+
+### user_profile_setname
+- 1. ' ' is not a valid token
+
+## other.py
+
+### users_all
+- 1. Users displayed in order of registration

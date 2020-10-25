@@ -226,153 +226,158 @@ def test_whitespace_last_name(url, initialise_user_dictionary):
     register_response = requests.post(f"{url}/auth/register", json=user0)
     assert register_response.status_code == 400
 
-# COMMENTING FEW TESTS FROM HERE BECAUSE USER_PROFILE_app_route hasn't been implemented yet
-# def test_lowercase_handle(url, initialise_user_dictionary):
-#     '''
-#     Tests that App.route("/auth/register", methods=['POST'])
-#     implements handle_str as per specifications, i.e. concatenates
-#     lowercase name_first and name_last
-#     '''
+def test_lowercase_handle(url):
+    '''
+    Tests that App.route("/auth/register", methods=['POST'])
+    implements handle_str as per specifications, i.e. concatenates
+    lowercase name_first and name_last
+    '''
 
-#user0 = initialise_user_dictionary['user0_dict']
+    test_user = {
+        'email': 'testuser0@email.com',
+        'password': 'testuser0_pass1!',
+        'name_first': 'user0_FIRST',
+        'name_last': 'user0_LAST'
+    }
 
-#     register_response = requests.post(f"{url}/auth/register", json=user0)
-#     assert register_response.status_code == 200
-#     register_payload = register_response.json()
+    register_response = requests.post(f"{url}/auth/register", json=test_user)
+    assert register_response.status_code == 200
+    register_payload = register_response.json()
 
-#     # user0_credentials = {
-#     #     'token': register_payload['token'],
-#     #     'u_id': register_payload['u_id']
-#     # }
+    user_profile_response = requests.get(f"{url}/user/profile", params=register_payload)
+    assert user_profile_response.status_code == 200
+    user_profile_payload = user_profile_response.json()
+    assert user_profile_payload['user']['handle_str'] == 'user0_firstuser0_las'
 
-#     user_profile_response = requests.get(f"{url}/user/profile", params=register_payload).json()
-#     assert user_profile_response.status_code == 200
-#     user_profile_payload = user_profile_response.json()
-#     assert user_profile_payload['user']['handle_str'] == 'user0_firstuser0_las'
+def test_unique_handle(url, initialise_user_dictionary):
+    '''
+    Tests that App.route("/auth/register", methods=['POST'])
+    implements handle_str as per specifications, i.e. concatenates
+    lowercase name_first and name_last and cuts it if greater than 20
+    characters. Each user has valid and different handle
+    '''
 
-# def test_unique_handle(url, initialise_user_dictionary):
-#     '''
-#     Tests that App.route("/auth/register", methods=['POST'])
-# implements handle_str as per specifications, i.e. concatenates
-# lowercase name_first and name_last and cuts it if greater than 20
-# characters. Each user has valid and different handle
-#     '''
+    user0 = initialise_user_dictionary['user0_dict']
 
-#     user0 = {
-#         'email': 'user0@email.com',
-#         'password': 'user0_pass1!',
-#         'name_first': 'user0_FIRST',
-#         'name_last': 'user0_LAST'
-#     }
+    auth0_register_response = requests.post(f"{url}/auth/register", json=user0)
+    assert auth0_register_response.status_code == 200
+    auth0_payload = auth0_register_response.json()
 
-#     auth0_register_response = requests.post(f"{url}/auth/register", json=user0)
-#     assert auth0_register_response.status_code == 200
-#     auth0_payload = auth0_register_response.json()
+    user0_register_response = requests.get(f"{url}/user/profile", params=auth0_payload)
+    assert user0_register_response.status_code == 200
+    user0_payload = user0_register_response.json()
 
-#     user0_register_response = requests.get(f"{url}/user/profile", params=auth0_payload)
-#     assert user0_register_response.status_code == 200
-#     user0_payload = user0_register_response.json()
+    user1 = initialise_user_dictionary['user1_dict']
 
-    # user0 = initialise_user_dictionary['user0_dict']
+    auth1_register_response = requests.post(f"{url}/auth/register", json=user1)
+    assert auth1_register_response.status_code == 200
+    auth1_payload = auth1_register_response.json()
 
-#     auth1_register_response = requests.post(f"{url}/auth/register", json=user1)
-#     assert auth1_register_response.status_code == 200
-#     auth1_payload = auth1_register_response.json()
+    user1_register_response = requests.get(f"{url}/user/profile", params=auth1_payload)
+    assert user1_register_response.status_code == 200
+    user1_payload = user1_register_response.json()
 
-#     user1_register_response = requests.get(f"{url}/user/profile", params=auth1_payload)
-#     assert user1_register_response.status_code == 200
-#     user1_payload = user1_register_response.json()
+    assert user0_payload['user']['handle_str'] != user1_payload['user']\
+        ['handle_str']
 
-#     assert user0_payload['user']['handle_str'] != user1_payload['user']\
-#         ['handle_str']
+def test_too_long_handle_first_name(url):
+    '''
+    Tests that App.route("/auth/register", methods=['POST'])
+   implements handle_str as per specifications, i.e. concatenates
+    lowercase name_first and name_last and cuts it if greater than 20
+    characters
+    '''
 
-# def test_too_long_handle_first_name(url, initialise_user_dictionary):
-#     '''
-#     Tests that App.route("/auth/register", methods=['POST'])
-#    implements handle_str as per specifications, i.e. concatenates
-# lowercase name_first and name_last and cuts it if greater than 20
-# characters
-#     '''
+    test_user = {
+        'email': 'testuser0@email.com',
+        'password': 'testuser0_pass1!',
+        'name_first': 'testuser0_first' * 2 ,
+        'name_last': 'testuser0_last'
+    }
 
-    # user0 = initialise_user_dictionary['user0_dict']
+    register_response = requests.post(f"{url}/auth/register", json=test_user)
+    assert register_response.status_code == 200
+    register_payload = register_response.json()
 
-#     register_response = requests.post(f"{url}/auth/register", json=user0)
-#     assert register_response.status_code == 200
-#     register_payload = register_response.json()
+    user_profile_response = requests.get(f"{url}/user/profile", params=register_payload)
+    assert user_profile_response.status_code == 200
+    user_profile_payload = user_profile_response.json()
+    assert user_profile_payload['user']['handle_str'] == 'testuser0_firsttestu'
 
-#     user_profile_response = requests.get(f"{url}/user/profile", params=register_payload)
-#     assert user_profile_response.status_code == 200
-#     user_profile_payload = user_profile_response.json()
-#     assert user_profile_payload['user']['handle_str'] == 'user0_firstuser0_fir'
+def test_too_long_handle_last_name(url):
+    '''
+    Tests that App.route("/auth/register", methods=['POST'])
+    implements handle_str as per specifications, i.e. concatenates
+    lowercase name_first and name_last and cuts it if greater than 20
+    characters
+    '''
 
-# def test_too_long_handle_last_name(url, initialise_user_dictionary):
-#     '''
-#     Tests that App.route("/auth/register", methods=['POST'])
-# implements handle_str as per specifications, i.e. concatenates
-# lowercase name_first and name_last and cuts it if greater than 20
-# characters
-#     '''
+    test_user = {
+        'email': 'testuser0@email.com',
+        'password': 'testuser0_pass1!',
+        'name_first': 't',
+        'name_last': 'testuser0_last' * 2
+    }
 
-    # user0 = initialise_user_dictionary['user0_dict']
+    register_response = requests.post(f"{url}/auth/register", json=test_user)
+    assert register_response.status_code == 200
+    register_payload = register_response.json()
 
-#     register_response = requests.post(f"{url}/auth/register", json=user0)
-#     assert register_response.status_code == 200
-#     register_payload = register_response.json()
+    user_profile_response = requests.get(f"{url}/user/profile", params=register_payload)
+    assert user_profile_response.status_code == 200
+    user_profile_payload = user_profile_response.json()
+    assert user_profile_payload['user']['handle_str'] == 'ttestuser0_lasttestu'
 
-#     user_profile_response = requests.get(f"{url}/user/profile", params=register_payload)
-#     assert user_profile_response.status_code == 200
-#     user_profile_payload = user_profile_response.json()
-#     assert user_profile_payload['user']['handle_str'] == 'uuser0_lastuser0_las'
+def test_handle_for_users_with_similar_first_last_names(url, initialise_user_dictionary):
+    '''
+    Tests that App.route("/auth/register", methods=['POST'])
+    implements handle_str as per specifications, i.e. concatenates
+    lowercase name_first and name_last and cuts it if greater than 20
+    characters. For a new user with similar name_first and name_last as
+    one/more existing users there is some modification to new user's
+    handle
+    '''
 
-# def test_handle_for_users_with_similar_first_last_names(url, initialise_user_dictionary):
-#     '''
-#     Tests that App.route("/auth/register", methods=['POST'])
-# implements handle_str as per specifications, i.e. concatenates
-# lowercase name_first and name_last and cuts it if greater than 20
-# characters. For a new user with similar name_first and name_last as
-# one/more existing users there is some modification to new user's
-# handle
-#     '''
+    user0 = initialise_user_dictionary['user0_dict']
+    auth0_register_response = requests.post(f"{url}/auth/register", json=user0)
+    assert auth0_register_response.status_code == 200
+    auth0_payload = auth0_register_response.json()
 
-    # user0 = initialise_user_dictionary['user0_dict']
-#     auth0_register_response = requests.post(f"{url}/auth/register", json=user0)
-#     assert auth0_register_response.status_code == 200
-#     auth0_payload = auth0_register_response.json()
+    user0_register_response = requests.get(f"{url}/user/profile", params=auth0_payload)
+    assert user0_register_response.status_code == 200
+    user0_payload = user0_register_response.json()
 
-#     user0_register_response = requests.get(f"{url}/user/profile", params=auth0_payload)
-#     assert user0_register_response.status_code == 200
-#     user0_payload = user0_register_response.json()
+    user1 = initialise_user_dictionary['user1_dict']
 
-    # user1 = initialise_user_dictionary['user1_dict']
-#     auth1_register_response = requests.post(f"{url}/auth/register", json=user0)
-#     assert auth1_register_response.status_code == 200
-#     auth1_payload = auth1_register_response.json()
+    auth1_register_response = requests.post(f"{url}/auth/register", json=user1)
+    assert auth1_register_response.status_code == 200
+    auth1_payload = auth1_register_response.json()
 
-#     user1_register_response = requests.get(f"{url}/user/profile", params=auth1_payload)
-#     assert user1_register_response.status_code == 200
-#     user1_payload = user1_register_response.json()
+    user1_register_response = requests.get(f"{url}/user/profile", params=auth1_payload)
+    assert user1_register_response.status_code == 200
+    user1_payload = user1_register_response.json()
 
-    # user2 = initialise_user_dictionary['user2_dict']
-#     auth2_register_response = requests.post(f"{url}/auth/register", json=user0)
-#     assert auth2_register_response.status_code == 200
-#     auth2_payload = auth2_register_response.json()
+    user2 = initialise_user_dictionary['user2_dict']
+    auth2_register_response = requests.post(f"{url}/auth/register", json=user2)
+    assert auth2_register_response.status_code == 200
+    auth2_payload = auth2_register_response.json()
 
-#     user2_register_response = requests.get(f"{url}/user/profile", params=auth2_payload)
-#     assert user2_register_response.status_code == 200
-#     user2_payload = user2_register_response.json()
+    user2_register_response = requests.get(f"{url}/user/profile", params=auth2_payload)
+    assert user2_register_response.status_code == 200
+    user2_payload = user2_register_response.json()
 
-    # user3 = initialise_user_dictionary['user3_dict']
-#     auth3_register_response = requests.post(f"{url}/auth/register", json=user3)
-#     assert auth3_register_response.status_code == 200
-#     auth3_payload = auth3_register_response.json()
-#     user3_register_response = requests.get(f"{url}/user/profile", params=auth3_payload)
-#     assert user3_register_response.status_code == 200
-#     user3_payload = user3_register_response.json()
+    user3 = initialise_user_dictionary['user3_dict']
+    auth3_register_response = requests.post(f"{url}/auth/register", json=user3)
+    assert auth3_register_response.status_code == 200
+    auth3_payload = auth3_register_response.json()
+    user3_register_response = requests.get(f"{url}/user/profile", params=auth3_payload)
+    assert user3_register_response.status_code == 200
+    user3_payload = user3_register_response.json()
 
-#     assert user0_payload['user']['handle_str'] != user2_payload['user']\
-#         ['handle_str']
-#     assert user1_payload['user']['handle_str'] != user3_payload['user']\
-#         ['handle_str']
+    assert user0_payload['user']['handle_str'] != user2_payload['user']\
+        ['handle_str']
+    assert user1_payload['user']['handle_str'] != user3_payload['user']\
+        ['handle_str']
 
 def test_first_name_1_char(url, initialise_user_dictionary):
     '''
@@ -440,26 +445,25 @@ def test_password_32_chars(url, initialise_user_dictionary):
     register_response = requests.post(f"{url}/auth/register", json=user0)
     assert register_response.status_code == 200
 
-# COMMENTING THIS BECAUSE USER_PROFILE_app_route hasn't been implemented yet
-# def test_details_registered_by_auth_register(url, initialise_user_dictionary):
-#     '''
-#     Tests that App.route("/auth/register", methods=['POST']) has
-# stored all the general details of a user correctly
-#     '''
+def test_details_registered_by_auth_register(url, initialise_user_dictionary):
+    '''
+    Tests that App.route("/auth/register", methods=['POST']) has
+    stored all the general details of a user correctly
+    '''
 
-    # user0 = initialise_user_dictionary['user0_dict']
-#     register_response = requests.post(f"{url}/auth/register", json=user0)
-#     assert register_response.status_code == 200
-#     register_payload = register_response.json()
-#     user_profile_response = requests.get(f"{url}/user/profile", params=register_payload)
-#     assert user_profile_response.status_code == 200
-#     user_profile_payload = user_profile_response.json()
-#     assert user_profile_payload == {
-#         'user': {
-#             'u_id': register_payload['u_id'],
-#             'email': 'user0@email.com',
-#             'name_first': 'user0_first',
-#             'name_last': 'user0_last',
-#             'handle_str': 'user0_firstuser0_las'
-#         }
-#     }
+    user0 = initialise_user_dictionary['user0_dict']
+    register_response = requests.post(f"{url}/auth/register", json=user0)
+    assert register_response.status_code == 200
+    register_payload = register_response.json()
+    user_profile_response = requests.get(f"{url}/user/profile", params=register_payload)
+    assert user_profile_response.status_code == 200
+    user_profile_payload = user_profile_response.json()
+    assert user_profile_payload == {
+        'user': {
+            'u_id': register_payload['u_id'],
+            'email': 'user0@email.com',
+            'name_first': 'user0_first',
+            'name_last': 'user0_last',
+            'handle_str': 'user0_firstuser0_las'
+        }
+    }

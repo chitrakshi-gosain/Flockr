@@ -35,28 +35,6 @@ KEEP IN MIND:
    AccessError
 '''
 
-@pytest.fixture
-def reset():
-    '''
-    Resets the internal data of the application to it's initial state
-    '''
-
-    clear()
-
-@pytest.fixture
-def initialise_user_data(reset):
-    '''
-    Sets up various descriptive user sample data for testing
-    purposes and returns user data which is implementation dependent
-    '''
-
-    user0_details = auth_register('user0@email.com', 'user0_pass1!', \
-                                 'user0_first', 'user0_last')
-
-    return {
-        'user0': user0_details
-    }
-
 def test_successful_logout(initialise_user_data):
     '''
     Tests that auth_logout returns True on successful logout
