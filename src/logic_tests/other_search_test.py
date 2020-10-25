@@ -48,33 +48,6 @@ Assumptions:
 3. '' will return all visible messages
 '''
 
-@pytest.fixture
-def initialise_user_data():
-    clear()
-
-    #The first user to sign up is global owner
-    admin_details = auth_register("admin@email.com", "admin_pass", "admin_first", "admin_last")
-    user0_details = auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    user1_details = auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
-
-    return {
-        'admin' : admin_details,
-        'user0' : user0_details,
-        'user1' : user1_details,
-    }
-
-@pytest.fixture
-def initialise_channel_data(initialise_user_data):
-    admin_publ_details = channels_create(initialise_user_data['admin']['token'], "admin_public", True)
-    admin_priv_details = channels_create(initialise_user_data['admin']['token'], "admin_private", False)
-    user0_priv_details = channels_create(initialise_user_data['user0']['token'], "user0_private", False)
-
-    return {
-        'publ' : admin_publ_details,
-        'priv' : admin_priv_details,
-        'user_priv' : user0_priv_details
-    }
-
 def pop_datetimes(messages):
     for entry in messages:
         entry.pop('time_created')
@@ -82,16 +55,16 @@ def pop_datetimes(messages):
 
 def test_other_search_not_in_channels(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
-    channels = initialise_channel_data
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
 
-    message_send(users['admin']['token'], channels['publ']['channel_id'], 'I am in no channels')
+    message_send(users['admin']['token'], channel_id, 'I am in no channels')
     assert search(users['user0']['token'], 'I am in no channels') == { 'messages': [] }
 
 def test_other_search_join_channel(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
-    channels = initialise_channel_data
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
 
-    message1 = message_send(users['admin']['token'], channels['publ']['channel_id'], 'I am in no channels')
+    message1 = message_send(users['admin']['token'], channel_id, 'I am in no channels')
     message1_info = {
         'message_id' : message1['message_id'],
         'u_id' : users['admin']['u_id'],
@@ -100,9 +73,9 @@ def test_other_search_join_channel(initialise_user_data, initialise_channel_data
 
     assert search(users['user0']['token'], 'channel') == { 'messages': [] }
 
-    channel_join(users['user0']['token'], channels['publ']['channel_id'])
+    channel_join(users['user0']['token'], channel_id)
 
-    message2 = message_send(users['admin']['token'], channels['publ']['channel_id'], 'Now Im in a channel')
+    message2 = message_send(users['admin']['token'], channel_id, 'Now Im in a channel')
     message2_info = {
         'message_id' : message2['message_id'],
         'u_id' : users['admin']['u_id'],
@@ -121,18 +94,18 @@ def test_other_search_no_messages(initialise_user_data):
 
 def test_other_search_empty_query(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
-    channels = initialise_channel_data
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
 
-    channel_join(users['user0']['token'], channels['publ']['channel_id'])
+    channel_join(users['user0']['token'], channel_id)
 
-    message1 = message_send(users['admin']['token'], channels['publ']['channel_id'], 'this is message1')
+    message1 = message_send(users['admin']['token'], channel_id, 'this is message1')
     message1_info = {
         'message_id' : message1['message_id'],
         'u_id' : users['admin']['u_id'],
         'message' : 'this is message1',
     }
 
-    message2 = message_send(users['admin']['token'], channels['publ']['channel_id'], 'this is message2')
+    message2 = message_send(users['admin']['token'], channel_id, 'this is message2')
     message2_info = {
         'message_id' : message2['message_id'],
         'u_id' : users['admin']['u_id'],
@@ -146,12 +119,12 @@ def test_other_search_empty_query(initialise_user_data, initialise_channel_data)
 
 def test_other_search_admin(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
-    channels = initialise_channel_data
+    channel_id = initialise_channel_data['user1_priv']['channel_id']
 
-    message1 = message_send(users['user0']['token'], channels['user_priv']['channel_id'], 'private')
+    message1 = message_send(users['user1']['token'], channel_id, 'private')
     message1_info = {
         'message_id' : message1['message_id'],
-        'u_id' : users['user0']['u_id'],
+        'u_id' : users['user1']['u_id'],
         'message' : 'private',
     }
 
@@ -161,16 +134,17 @@ def test_other_search_admin(initialise_user_data, initialise_channel_data):
 
 def test_other_search_multiple_channels(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
-    channels = initialise_channel_data
+    channel_id1 = initialise_channel_data['admin_publ']['channel_id']
+    channel_id2 = initialise_channel_data['admin_priv']['channel_id']
 
-    message1 = message_send(users['admin']['token'], channels['publ']['channel_id'], 'channel1')
+    message1 = message_send(users['admin']['token'], channel_id1, 'channel1')
     message1_info = {
         'message_id' : message1['message_id'],
         'u_id' : users['admin']['u_id'],
         'message' : 'channel1',
     }
 
-    message2 = message_send(users['admin']['token'], channels['priv']['channel_id'], 'channel2')
+    message2 = message_send(users['admin']['token'], channel_id2, 'channel2')
     message2_info = {
         'message_id' : message2['message_id'],
         'u_id' : users['admin']['u_id'],
