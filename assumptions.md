@@ -85,3 +85,8 @@
 - 2. Handles that are purely whitespace are not valid
 - 3. If a user tries to update his handle to what his previous handle was, it
      is considered a valid handle updatation request
+
+## other.py
+
+### users_all
+- 1. Users displayed in order of registration
