@@ -41,40 +41,6 @@ KEEP IN MIND:
 -> channels_create adds user (based on token) as member and owner of the channel
 '''
 
-# channel_removeowner should remove the user with the provided u_id
-# from the list of owners of a channel with the provided channel_id
-# assumes that u_id is already a member of the channel
-
-@pytest.fixture
-def reset():
-    clear()
-
-@pytest.fixture
-def initialise_user_data(reset):
-    # user0 is admin
-    user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
-
-    return {
-        'user0': user0_details,
-        'user1': user1_details
-    }
-
-@pytest.fixture
-def initialise_channel_data(initialise_user_data):
-    # user0 creates channel, thus is owner and member
-    # user1 joins channel, thus is member but not owner
-    user0_details = initialise_user_data['user0']
-    user1_details = initialise_user_data['user1']
-    channel_id = channels_create(user0_details['token'], "ch_name0", True)['channel_id']
-    channel_join(user1_details['token'], channel_id)
-
-    return {
-        'channel_id': channel_id
-    }
-
-# TESTS
-
 # basic test with no edge case or errors raised
 def test_channel_removeowner_noerrors(initialise_user_data, initialise_channel_data):
 
@@ -87,7 +53,8 @@ def test_channel_removeowner_noerrors(initialise_user_data, initialise_channel_d
     u_id1 = user1_details['u_id']
 
     # channel with channel_id has members user0, user1 and owner user0
-    channel_id = initialise_channel_data['channel_id']
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_join(user1_details['token'], channel_id)
 
     # assert user with u_id1 is not an owner
     channel_dict = channel_details(token0, channel_id)
@@ -119,7 +86,8 @@ def test_channel_removeowner_invalidchannel(initialise_user_data, initialise_cha
     u_id1 = user1_details['u_id']
 
     # channel with channel_id has members user0, user1 and owner user0
-    channel_id = initialise_channel_data['channel_id']
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_join(user1_details['token'], channel_id)
 
     # user0 adds user1 as owner
     channel_addowner(token0, channel_id, u_id1)
@@ -144,7 +112,8 @@ def test_channel_removeowner_notowner(initialise_user_data, initialise_channel_d
     u_id1 = user1_details['u_id']
 
     # channel with channel_id has members user0, user1 and owner user0
-    channel_id = initialise_channel_data['channel_id']
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_join(user1_details['token'], channel_id)
 
     # assert user with u_id1 is not an owner
     channel_dict = channel_details(token0, channel_id)
@@ -182,7 +151,8 @@ def test_channel_removeowner_authnotowner(initialise_user_data, initialise_chann
     token1 = user1_details['token']
 
     # channel with channel_id has members user0, user1 and owner user0
-    channel_id = initialise_channel_data['channel_id']
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_join(user1_details['token'], channel_id)
 
     # assert that channel_addowner raises AccessError
     with pytest.raises(AccessError):
@@ -197,8 +167,8 @@ def test_channel_removeowner_accesserror(initialise_user_data, initialise_channe
     u_id, token = user_details['u_id'], user_details['token']
 
     # channel with channel_id has members user0, user1 and owner user0
-    channel_id = initialise_channel_data['channel_id']
-
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    
     # assume " " is always an invalid token
     token = " "
 

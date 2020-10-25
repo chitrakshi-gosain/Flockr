@@ -100,7 +100,7 @@ def test_other_admin_userpermission_change_remove_self(initialise_user_data, ini
 
 def test_other_admin_userpermission_change_remove_last(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
-    channel_id = initialise_channel_data['user1_priv']['channel_id']
+    channel_id = initialise_channel_data['user0_priv']['channel_id']
 
     #Try remove themselves as admin - but unable as they are the only admin
     admin_userpermission_change(users['admin']['token'], users['admin']['u_id'], 2)
