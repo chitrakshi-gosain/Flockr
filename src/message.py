@@ -102,6 +102,7 @@ def message_remove(token, message_id):
         -> the authorised user is an owner of this channel or the flockr
     Error type: InputError
         -> message (based on ID) no longer exists
+        
     '''
 
     user_info = get_user_info('token', token)
