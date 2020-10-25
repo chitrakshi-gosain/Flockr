@@ -43,7 +43,6 @@ def test_user1_not_authorised(initialise_user_data, initialise_channel_data):
         channel_messages(user1_credentials['token'], channel1_id['channel_id'], 0)
 
 def test_channel_id_not_valid(initialise_user_data):
-
     user1_credentials = initialise_user_data['user1']      
     invalid_channel_id = -1 
 
