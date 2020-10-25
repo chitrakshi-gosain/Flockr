@@ -1,7 +1,9 @@
-# Created collaboratively by Wed15Team2 2020 T3
-# Contributer - Joseph Knox
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - Joseph Knox
 
-# Iteration 2
+Iteration 2
+'''
 
 import pytest
 import auth
@@ -10,6 +12,32 @@ from channels import channels_create, channels_listall
 from message import message_send, message_edit
 from error import AccessError
 from other import clear, search
+
+'''
+****************************BASIC TEMPLATE******************************
+'''
+
+'''
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
+-> channels_create(token, name, is_public) return {channel_id}
+-> channel_join(token, channel_id) return {}
+-> message_send(token, channel_id, message) return {}
+-> message_edit(token, message_id, message) return {message_id}
+-> search(token, query_str) return {messages}
+'''
+
+'''
+EXCEPTIONS
+Error type: AccessError
+    -> user (based on token) is not sender of message with message_id
+    -> token is not valid
+'''
+
+'''
+KEEP IN MIND:
+-> channels_create adds user (based on token) as member and owner of the channel
+'''
 
 def get_messages(admin_token):
     messages = search(admin_token, '')
