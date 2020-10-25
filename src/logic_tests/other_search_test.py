@@ -119,12 +119,12 @@ def test_other_search_empty_query(initialise_user_data, initialise_channel_data)
 
 def test_other_search_admin(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
-    channel_id = initialise_channel_data['user1_priv']['channel_id']
+    channel_id = initialise_channel_data['user0_priv']['channel_id']
 
-    message1 = message_send(users['user1']['token'], channel_id, 'private')
+    message1 = message_send(users['user0']['token'], channel_id, 'private')
     message1_info = {
         'message_id' : message1['message_id'],
-        'u_id' : users['user1']['u_id'],
+        'u_id' : users['user0']['u_id'],
         'message' : 'private',
     }
 

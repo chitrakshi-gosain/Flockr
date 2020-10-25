@@ -89,7 +89,7 @@ def test_channel_join_private_user(initialise_user_data, initialise_channel_data
 
 def test_channel_join_private_admin(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
-    channel_id = initialise_channel_data['user1_priv']['channel_id']
+    channel_id = initialise_channel_data['user0_priv']['channel_id']
 
     #make sure admin is not in channel
     assert is_user_in_channel(users['admin']['u_id'], users['admin']['token'], channel_id) == False
