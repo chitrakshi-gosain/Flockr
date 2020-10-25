@@ -9,9 +9,9 @@ import json
 import requests
 import pytest
 
-# '''
-# ****************************BASIC TEMPLATE******************************
-# '''
+'''
+****************************BASIC TEMPLATE******************************
+'''
 
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
@@ -28,12 +28,13 @@ FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 -> initialist_channel_data
 '''
 
-# Exceptions:
-#     InputError (400) when:
-#         -> Channel ID is not a valid channel
-#     AccessError (400) when:
-#         -> channel_id refers to a channel that is private (when the authorised user is not a global owner)
-
+'''
+EXCEPTIONS
+Error Type: InputError
+    -> Channel ID is not a valid channel
+Error Type: AccessError
+    -> channel_id refers to a channel that is private (when the authorised user is not a global owner)
+'''
 
 def get_messages(url, admin_token):
     messages = requests.get(url + "/search", params = {
