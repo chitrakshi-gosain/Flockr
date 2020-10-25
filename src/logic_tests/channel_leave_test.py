@@ -29,19 +29,11 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 '''
 
 '''
-----channel_leave Documentation----
-
-Parameters:(token, channel_id)
-
-Return type: {}
-
-Exceptions: InputError ->
-                Channel ID is not a valid channel
-            AccessError ->
-                Authorised user is not a member of channel with channel_id
-
-Description: Given a channel ID, the user removed as a member of this channel
-
+EXCEPTIONS
+Error type: InputError
+    -> Channel ID is not a valid channel
+Error type: AccessError
+    -> Authorised user is not a member of channel with channel_id
 '''
 
 # Jordan Huynh (z5169771)

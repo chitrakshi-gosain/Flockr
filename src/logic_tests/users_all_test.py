@@ -17,6 +17,10 @@ from error import AccessError
 '''
 FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> users_all(token) return {users}
+
+EXCEPTIONS:
+AccessError
+-> Invalid token
 '''
 
 def test_users_all_basic(initialise_user_data):
