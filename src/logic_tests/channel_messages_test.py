@@ -62,7 +62,7 @@ def test_return_type(initialise_user_data, initialise_channel_data):
     assert isinstance(message_history['messages'][0]['message_id'], int)
     assert isinstance(message_history['messages'][0]['u_id'], int)
     assert isinstance(message_history['messages'][0]['message'], str)
-    # assert isinstance(message_history['messages'][0]['time_created'], time)
+    assert isinstance(message_history['messages'][0]['time_created'], float)
     assert isinstance(message_history['start'], int)
     assert isinstance(message_history['end'], int)
 
@@ -87,4 +87,4 @@ def test_channel_messages_50_messages(initialise_user_data, initialise_channel_d
         message_send(token, channel_id, str(i))
 
     messages = channel_messages(token, channel_id, 0)
-    assert message['end'] == 50
+    assert messages['end'] == 50
