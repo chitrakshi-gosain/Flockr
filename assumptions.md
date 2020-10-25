@@ -86,6 +86,9 @@
 - 3. If a user tries to update his handle to what his previous handle was, it
      is considered a valid handle updatation request
 
+### user_profile_setname
+- 1. ' ' is not a valid token
+
 ## other.py
 
 ### users_all
