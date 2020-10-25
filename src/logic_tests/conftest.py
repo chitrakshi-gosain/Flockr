@@ -25,7 +25,7 @@ def reset():
     '''
     Resets the internal data of the application to it's initial state
     '''
-    
+
     clear()
 
 
@@ -58,7 +58,7 @@ def initialise_user_data(reset):
     }
 
 @pytest.fixture
-def initialise_channel_data(url, initialise_user_data):
+def initialise_channel_data(initialise_user_data):
     '''
     Creates few channels with descriptive data for testing
     '''
@@ -88,7 +88,7 @@ def initialise_data():
     Sets up various descriptive user sample data for testing
     purposes and returns user data which is implementation dependent
     '''
-    
+
     data.data = {
         'users': [
             { # user -> u_id : 0
