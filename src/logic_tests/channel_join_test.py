@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor -
+Contributor - Jordan Hunyh
 
 Iteration 1
 '''
@@ -18,38 +18,22 @@ from error import InputError, AccessError
 
 '''
 FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> intialise_user_data() return { users }, { channels }
--> is_user_in_channel(user_id, token, channel_id) return amount of times u_id was found in channel
--> test_channel_join_basic()
--> test_channel_join_invalid_channel()
--> test_channel_join_private_user()
--> test_channel_join_private_admin()
--> test_channel_join_invalid_token()
--> test_channel_join_already_member()
+-> auth_register(email, password, name_first, name_last) return
+   {u_id, token}
+-> channel_details(token, channel_id) return
+   {name, owner_memers, all_members}
+-> channels_create(token, name. is_public) return {channel_id}
+-> channel_join(token, channel_id) return {}
 '''
 
 '''
-----channel_join Documentation----
-Parameters:
-(token, channel_id)
-
-Return Type:
-{}
-
-Exceptions:
-    InputError when:
-        -> Channel ID is not a valid channel
-    AccessError when:
-        -> channel_id refers to a channel that is private (when the authorised user is not a global owner)
-
-Description: Given a channel_id of a channel that the
-             authorised user can join, adds them to that channel
+EXCEPTIONS:
+InputError when:
+    -> Channel ID is not a valid channel
+AccessError when:
+    -> channel_id refers to a channel that is private (when the
+        authorised user is not a global owner
 '''
-
-
-
-# Jordan Huynh (z5169771)
-# Wed15 Grape 2
 
 def is_user_in_channel(user_id, token, channel_id):
     channel_members = channel_details(token, channel_id)['all_members']

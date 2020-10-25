@@ -1,12 +1,40 @@
-from auth import auth_register
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - Ahmet Karatas
+
+Iteration 1
+'''
+
 from channel import channel_messages
-from channels import channels_create
 from message import message_send
 import pytest
 from other import clear
 from error import InputError
 from error import AccessError
 from datetime import time
+
+'''
+****************************BASIC TEMPLATE******************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return
+   {u_id, token}
+-> channel_details(token, channel_id) return
+   {name, owner_memers, all_members}
+-> channels_create(token, name. is_public) return {channel_id}
+-> channel_join(token, channel_id) return {}
+'''
+
+'''
+EXCEPTIONS:
+InputError when:
+    -> Channel ID is not a valid channel
+AccessError when:
+    -> channel_id refers to a channel that is private (when the
+        authorised user is not a global owner
+'''
 
 def test_user1_not_authorised(initialise_user_data, initialise_channel_data):
     channel1_id = initialise_channel_data['owner_priv']
