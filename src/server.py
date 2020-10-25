@@ -20,9 +20,13 @@ from  user import user_profile, user_profile_setname, user_profile_setemail, \
     user_profile_sethandle
 from other import users_all, admin_userpermission_change, search, clear
 
-# need to plan how to write things here
 '''
 **************************BASIC TEMPLATE****************************
+'''
+
+'''
+This file contains all the APP.routes required in order to implement the
+HTTP Flask server
 '''
 
 def defaultHandler(err):
@@ -56,6 +60,12 @@ def auth_login_route():
     RETURN VALUES:
         -> u_id : user-id of the user
         -> token : token to authenticate the user
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> email entered is not a valid email
+        -> email entered does not belong to a user
+        -> password is not correct
     '''
 
     payload = request.get_json()
@@ -79,6 +89,10 @@ def auth_logout_route():
     RETURN VALUES:
         -> is_success : True if user is successfully logged out,
                         otherwise False
+    
+    EXCEPTIONS:
+    Error type: AccessError
+         -> token passed in is not a valid token
     '''
 
     payload = request.get_json()
@@ -109,6 +123,17 @@ def auth_register_route():
     RETURN VALUES:
         -> u_id : user-id of the user
         -> token : token to authenticate the user
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> email entered is not a valid email
+        -> email address is already being used by another user
+        -> password entered is less than 6 characters long or more
+            than 32 characters long
+        -> name_first is not between 1 and 50 characters inclusively
+            in length
+        -> name_last is not between 1 and 50 characters inclusively
+            in length
     '''
 
     payload = request.get_json()
@@ -132,8 +157,14 @@ def channel_invite_route():
         -> channel_id : id of the channel
         -> u_id : id of the user who is to be invited
 
-    RETURN VALUES:
-        -> {}
+    EXCEPTIONS:
+    Error type: InputError
+        -> channel_id does not refer to a valid channel
+        -> u_id does not refer to a valid user
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> the authorised user is not already a member of the
+            channel
     '''
 
     payload = request.get_json()
@@ -156,9 +187,16 @@ def channel_details_route():
         -> channel_id : id of the channel
 
     RETURN VALUES:
-        -> name : name of channel
-        -> owner_members : list of channel owners
-        -> all_members : list of all members
+        -> name : name of the channel
+        -> owner_members :  all owner members of the channels
+        -> all_members: all members of the channels, includes owners too
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel is not valid
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> User is not an authorised member of the channel
     '''
 
     token = request.args.get('token')
@@ -169,16 +207,28 @@ def channel_details_route():
 @APP.route("/channel/messages", methods=['GET'])
 def channel_messages_route():
     '''
-    Given a channel_id that a user is authorised in, returns the messages from
-    the start message to the start + 50'th message.
+    DESCRIPTION:
+    Given a channel_id that a user is authorised in, returns the
+    messages from the start message to the start + 50'th message.
 
     PARAMETERS:
         -> token : token of user who is to join channel
         -> channel_id : id of the channel
-        -> start : The position to start loading the messages
+        -> start: the position to start loading the messages
 
     RETURN VALUES:
-        -> messages : most recent 50 messages in channel
+        -> messages : messages in the channel
+        -> start : start index of messages returned from channel
+        -> end : end index of messages returned from channel
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel is not valid
+        -> If start is greater than the number of messages in the
+            channel
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> User is not an authorised member of the channel
     '''
 
     token = request.args.get('token')
@@ -197,8 +247,12 @@ def channel_leave_route():
         -> token : token of user who is to leave
         -> channel_id : id of the channel
 
-    RETURN VALUES:
-        -> {}
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel ID is not a valid channel
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> Authorised user is not a member of channel with channel_id
     '''
 
     payload = request.get_json()
@@ -218,8 +272,13 @@ def channel_join_route():
         -> token : token of user who is to join channel
         -> channel_id : id of the channel
 
-    RETURN VALUES:
-        -> {}
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel ID is not a valid channel
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> channel_id refers to a channel that is private (when the
+            authorised user is not a global owner)
     '''
 
     payload = request.get_json()
@@ -231,6 +290,7 @@ def channel_join_route():
 @APP.route("/channel/addowner", methods=['POST'])
 def channel_addowner_route():
     '''
+    DESCRIPTION:
     Make user with user id u_id an owner of the channel
     with channel id channel_id
 
@@ -239,8 +299,15 @@ def channel_addowner_route():
         -> channel_id : id of channel to be added to
         -> u_id : id of user to be added
 
-    RETURN VALUES:
-        -> {}
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel ID is not a valid channel
+        -> When user with user id u_id is already an owner of the
+            channel
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> when the authorised user is not an owner of the flockr,
+           or an owner of this channel
     '''
 
     payload = request.get_json()
@@ -261,9 +328,14 @@ def channel_removeowner_route():
         -> token : token for authenticating the user
         -> channel_id : id of channel to be removed from
         -> u_id : id of user to be removed
-
-    RETURN VALUES:
-        -> {}
+    
+    EXCEPTIONS:
+    Error type: InputError
+        -> Channel ID is not a valid channel
+        -> When user with user id u_id is not an owner of the channel
+    Error type: AccessError
+        -> when the authorised user is not an owner of the flockr,
+            or an owner of this channel
     '''
 
     payload = request.get_json()
@@ -277,15 +349,18 @@ def channel_removeowner_route():
 def channels_list_route():
     '''
     DESCRIPTION:
-    Provide a list of all channels (and
-    their associated details) that the
-    authorised user is part of
+    Provide a list of all channels (and their associated details) that
+    the authorised user is part of
 
     PARAMETERS:
-        -> token
+        -> token : token of the usr
 
     RETURN VALUES:
-        -> channels : list of channels a user is in
+        -> channels : list of channels
+
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     token = request.args.get('token')
@@ -296,14 +371,16 @@ def channels_list_route():
 def channels_listall_route():
     '''
     DESCRIPTION:
-    Provide a list of all channels (and
-    their associated details)
+    Provide a list of all channels (and their associated details)
 
     PARAMETERS:
         -> token
 
     RETURN VALUES:
-        -> channels : list of all channels
+        -> channels : list of channels
+
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     token = request.args.get('token')
@@ -314,8 +391,8 @@ def channels_listall_route():
 def channels_create_route():
     '''
     DESCRIPTION:
-    Creates a new channel with that name
-    that is either a public or private channel
+    Creates a new channel with that name that is either a public or
+    private channel
 
     PARAMETERS:
         -> token
@@ -323,7 +400,13 @@ def channels_create_route():
         -> is_public: Whether the channel is public
 
     RETURN VALUES:
-        -> channel_id : id of created channel
+        -> channel_id : id of the channel created
+
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> channel name is more than 20 characters long
     '''
 
     payload = request.get_json()
@@ -347,6 +430,14 @@ def message_send_route():
 
     RETURN VALUES:
         -> message_id : id of the sent message
+
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> when the authorised user has not joined the channel they are
+           trying to post to
+    Error type: InputError
+        -> message is more than 1000 characters 
     '''
 
     payload = request.get_json()
@@ -360,15 +451,21 @@ def message_send_route():
 def message_remove_route():
     '''
     DESCRIPTION:
-    Given a message_id for a message, this
-    message is removed from the channel
+    Given a message_id for a message, this message is removed from the
+    channel
 
     PARAMETERS:
         -> token
         -> message_id : id of the message to be removed
 
-    RETURN VALUES:
-        -> {}
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> message with message_id was sent by the authorised user
+           making this request
+        -> the authorised user is an owner of this channel or the flockr
+    Error type: InputError
+        -> message (based on ID) no longer exists
     '''
 
     payload = request.get_json()
@@ -387,11 +484,16 @@ def message_edit_route():
 
     PARAMETERS:
         -> token : token of user who called the function
-        -> message_id : identification number for intended message to be updated
+        -> message_id : identification number for intended message to be
+        updated
         -> message : updated text
 
-    RETURN VALUES:
-        -> {}
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> message with message_id was sent by the authorised user
+        making this request
+        -> the authorised user is an owner of this channel or the flockr
     '''
 
     payload = request.get_json()
@@ -415,8 +517,13 @@ def user_profile_route():
         -> u_id : user id of a user
 
     RETURN VALUES:
-        -> user : dictionary containing u_id, email, name_first,
-                  name_last, handle_str of the user
+        -> user : information of user
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> user with u_id is not a valid_user
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     u_id = int(request.args.get('u_id'))
@@ -436,9 +543,15 @@ def user_profile_setname_route():
                    may not be authorized)
         -> name_first : new first name of a user
         -> name_last : new last name of a user
-
-    RETURN VALUES:
-        -> {}
+    
+    EXCEPTIONS:
+    Error type: InputError
+        -> name_first is not between 1 and 50 characters inclusively
+            in length
+        -> name_last is not between 1 and 50 characters inclusively
+            in length
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     payload = request.get_json()
@@ -459,8 +572,12 @@ def user_profile_setemail_route():
                    may not be authorized)
         -> email : new email of a user
 
-    RETURN VALUES:
-        -> {}
+    EXCEPTIONS:
+    Error type: InputError
+        -> email entered is not a valid email
+        -> email address is already being used by another user
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     payload = request.get_json()
@@ -480,8 +597,12 @@ def user_profile_sethandle_route():
                    may not be authorized)
         -> handle_str : new handle_str of a user
 
-    RETURN VALUES:
-        -> {}
+    EXCEPTIONS:
+    Error type: InputError
+        -> handle_str must be between 3 and 20 characters
+        -> handle is already being used by another user
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     payload = request.get_json()
@@ -494,14 +615,17 @@ def user_profile_sethandle_route():
 def users_all_route():
     '''
     DESCRIPTION:
-    Returns a list of all users and
-    their associated details
+    Returns a list of all users and their associated details
 
     PARAMETERS:
-        -> token
+        -> token : token of a user
 
     RETURN VALUES:
-        -> users
+        -> users : information about all the users
+
+    EXCEPTIONS:
+    Error type: AccessError
+         -> token passed in is not a valid token
     '''
 
     token = request.args.get('token')
@@ -520,8 +644,13 @@ def change_userpermission_route():
         -> u_id : id of the user who is to be invited
         -> permission_id : id of the permission (1 == Owner, 2 == user)
 
-    RETURN VALUES:
-        -> {}
+    EXCEPTIONS:
+    Error type: AccessError
+         -> token passed in is not a valid token
+         -> when the authorised user is not an owner
+    Error type: InputError
+    -> u_id does not refer to a valid user
+    -> permission_id does not refer to a value permission
     '''
 
     payload = request.get_json()
@@ -543,7 +672,11 @@ def search_route():
         -> query_str : the target string to search with
 
     RETURN VALUES:
-        -> messages : all messages visible to the user that contains query_str
+        -> messages : all messages that contain query_str
+
+    EXCEPTIONS:
+    Error type: AccessError
+         -> token passed in is not a valid token
     '''
 
     token = request.args.get('token')
@@ -555,14 +688,7 @@ def search_route():
 def clear_route():
     '''
     DESCRIPTION:
-    Resets the internal data of the
-    application to it's initial state
-
-    Parameters:
-        ->
-
-    RETURN VALUES:
-        ->
+    Resets the internal data of the application to it's initial state
     '''
 
     return dumps(clear())

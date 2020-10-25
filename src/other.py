@@ -1,13 +1,37 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - Cyrus Wilkie, Jordan Hunyh
+Contributors - Cyrus Wilkie, Jordan Hunyh
 
-Iteration 1
+Iteration 1 & 2
 '''
 
 import data
-import helper
+from helper import get_user_info, is_user_in_channel
 from error import AccessError, InputError
+
+'''
+****************************BASIC TEMPLATE******************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> users_all(token) return {users}
+-> admin_userpermission_change(token, u_id, permission_id) return {}
+-> search(toke, query_str) return {messages}
+-> clear() return {}
+'''
+
+'''
+DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
+    -> token: string
+    -> u_id: integer
+    -> permission_id: integer
+    -> query_str:string
+    -> users: list of dictionaries, where each dictionary contains types
+              u_id, email, name_first, name_last, handle_str
+    -> messages: list of dictionaries, where each dictionary contains
+                 types message_id, u_id, message, time_created
+'''
 
 # CONSTANTS
 OWNER = 1
@@ -15,7 +39,8 @@ USER = 2
 
 def clear():
     '''
-    ADD DOCSTRING HERE
+    DESCRIPTION:
+    Resets the internal data of the application to it's initial state
     '''
 
     data.data = {
@@ -29,24 +54,24 @@ def clear():
 def users_all(token):
     '''
     DESCRIPTION:
-    Returns a list of all users and
-    their associated details
+    Returns a list of all users and their associated details
 
     PARAMETERS:
-        -> token
+        -> token : token of a user
 
     RETURN VALUES:
-        -> {users}
+        -> user : information about all the users
 
     EXCEPTIONS:
-        -> AccessError: Invalid token
+    Error type: AccessError
+         -> token passed in is not a valid token
     '''
 
     # Checking token validity
-    caller = helper.get_user_info('token', token)
+    caller = get_user_info('token', token)
 
     if not caller:
-        raise AccessError('Invalid Token')
+        raise AccessError(description='Token passed in is not a valid token')
 
     # Processing and appending each user dictionary entry
     # to the appropriate return format dictionary
@@ -78,19 +103,26 @@ def admin_userpermission_change(token, u_id, permission_id):
         -> u_id : id of the user who is to be invited
         -> permission_id : id of the permission (1 == Owner, 2 == user)
 
-    RETURN VALUES:
+    EXCEPTIONS:
+    Error type: AccessError
+         -> token passed in is not a valid token
+         -> when the authorised user is not an owner
+    Error type: InputError
+    -> u_id does not refer to a valid user
+    -> permission_id does not refer to a value permission
     '''
-    #order of checks: invalid token, invalid user, invalid permission_id, invoker is admin
-    invoker_info = helper.get_user_info('token', token)
-    if not invoker_info:
-        raise AccessError('invalid token')
 
-    user_info = helper.get_user_info('u_id', u_id)
+    #order of checks: invalid token, invalid user, invalid permission_id, invoker is admin
+    invoker_info = get_user_info('token', token)
+    if not invoker_info:
+        raise AccessError(description='Token passed in is not a valid token')
+
+    user_info = get_user_info('u_id', u_id)
     if not user_info:
-        raise InputError('u_id does not refer to valid user')
+        raise InputError(description='u_id does not refer to valid user')
 
     if not invoker_info['is_admin']:
-        raise AccessError('invoker is not an admin')
+        raise AccessError(description='invoker is not an admin')
 
     admin_count = len(list(filter(lambda user: user['is_admin'], data.data['users'])))
 
@@ -102,7 +134,7 @@ def admin_userpermission_change(token, u_id, permission_id):
             user_info['is_admin'] = False
 
     else:
-        raise InputError('permission_id is invalid')
+        raise InputError(description='permission_id is invalid')
 
 def search(token, query_str):
     '''
@@ -115,17 +147,22 @@ def search(token, query_str):
         -> query_str : the target string to search with
 
     RETURN VALUES:
-        -> { messages } : all messages visible to the user that contains query_str
+        -> messages : all messages that contain query_str
+
+    EXCEPTIONS:
+    Error type: AccessError
+         -> token passed in is not a valid token
     '''
-    user_info = helper.get_user_info('token', token)
+
+    user_info = get_user_info('token', token)
     if not user_info:
-        raise AccessError('invalid token')
+        raise AccessError(description='Token passed in is not a valid token')
 
     #find channels user is part of and add messages
     visible_messages = []
 
     for channel in data.data['channels']:
-        if helper.is_user_in_channel(user_info['u_id'], channel['channel_id']) or user_info['is_admin']:
+        if is_user_in_channel(user_info['u_id'], channel['channel_id']) or user_info['is_admin']:
             visible_messages += channel['messages']
 
     return {'messages': list(filter(lambda message: query_str in message['message'], visible_messages)) }

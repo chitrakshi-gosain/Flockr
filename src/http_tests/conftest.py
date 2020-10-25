@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - Chitrakshi Gosain, Jordan Hunyh, Ahmet Karatas,
+Contributors - Chitrakshi Gosain, Jordan Hunyh, Ahmet Karatas,
               Cyrus Wilkie, Joseph Knox
 
 Iteration 2
@@ -14,9 +14,12 @@ import json
 import requests
 import pytest
 
-# need to plan how to format this
 '''
 ****************************BASIC TEMPLATE******************************
+'''
+
+'''
+This file contains all the fixtures used in *http_test.py
 '''
 
 @pytest.fixture
@@ -142,7 +145,7 @@ def initialise_user_data(url, initialise_user_dictionary):
 @pytest.fixture
 def initialise_channel_data(url, initialise_user_data):
     '''
-    creates 3 channels with descriptive data for testing
+    Creates few channels with descriptive data for testing
     '''
 
     admin_public_details = requests.post(f"{url}/channels/create", json={

@@ -6,25 +6,64 @@ Iteration 1
 '''
 
 from datetime import datetime, timezone
-import helper
+from helper import get_user_info, get_channel_info, is_user_in_channel, \
+    get_message_info, is_user_authorised
 import data
 from error import InputError, AccessError
 
+'''
+****************************BASIC TEMPLATE******************************
+'''
+
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> message_send(token, channel_id, message) return {message_id}
+-> message_remove(token, message_id) return {}
+-> message_edit(token, message_id, message) return {}
+'''
+
+'''
+DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
+    -> token: string
+    -> channel_id: integer
+    -> message_id: integer
+    -> message: string
+'''
+
 def message_send(token, channel_id, message):
     '''
-    checks that the user if authorised in the channel and sends the message
+    DESCRIPTION:
+    checks that the user if authorised in
+    the channel and sends the message
+
+    PARAMETERS:
+        -> token
+        -> channel_id : id of channel to send message
+        -> message : message contents
+
+    RETURN VALUES:
+        -> message_id : id of the sent message
+
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> when the authorised user has not joined the channel they are
+           trying to post to
+    Error type: InputError
+        -> message is more than 1000 characters 
     '''
+
     # Testing for token validity
-    user_info = helper.get_user_info('token', token)
+    user_info = get_user_info('token', token)
     if not user_info:
-        raise AccessError('Invalid Token')
+        raise AccessError(description='Invalid Token')
 
-    channel_info = helper.get_channel_info(channel_id)
+    channel_info = get_channel_info(channel_id)
     if not channel_info:
-        raise InputError('Channel ID is not a valid channel')
+        raise InputError(description='Channel ID is not a valid channel')
 
-    if not user_info['is_admin'] and not helper.is_user_in_channel(user_info['u_id'], channel_id):
-        raise AccessError('Authorised user is not a member of channel with channel_id')
+    if not user_info['is_admin'] and not is_user_in_channel(user_info['u_id'], channel_id):
+        raise AccessError(description='Authorised user is not a member of channel with channel_id')
 
     message_id = len(data.data['messages'])
 
@@ -47,15 +86,31 @@ def message_send(token, channel_id, message):
 
 def message_remove(token, message_id):
     '''
-    ADD DOCSTRING HERE
-    '''
-    user_info = helper.get_user_info('token', token)
-    if not user_info:
-        raise AccessError('Invalid Token')
+    DESCRIPTION:
+    Given a message_id for a message, this message is removed from the
+    channel
 
-    message_info = helper.get_message_info(message_id)
+    PARAMETERS:
+        -> token
+        -> message_id : id of the message to be removed
+
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> message with message_id was sent by the authorised user
+           making this request
+        -> the authorised user is an owner of this channel or the flockr
+    Error type: InputError
+        -> message (based on ID) no longer exists
+    '''
+
+    user_info = get_user_info('token', token)
+    if not user_info:
+        raise AccessError(description='Invalid Token')
+
+    message_info = get_message_info(message_id)
     if not message_info:
-        raise InputError('message_id does not correlate to an existing message_id')
+        raise InputError(description='message_id does not correlate to an existing message_id')
 
     for channel in data.data['channels']:
         if message_info in channel['messages']:
@@ -63,9 +118,9 @@ def message_remove(token, message_id):
             break
 
     #if not admin or not owner or not sender, denied
-    if not helper.is_user_authorised(token, channel_info['channel_id']) and \
+    if not is_user_authorised(token, channel_info['channel_id']) and \
     not message_info['u_id'] == user_info['u_id']:
-        raise AccessError('User is does not have rights to remove message')
+        raise AccessError(description='User is does not have rights to remove message')
 
     channel_info['messages'].remove(message_info)
 
@@ -81,16 +136,22 @@ def message_edit(token, message_id, message):
 
     PARAMETERS:
         -> token : token of user who called the function
-        -> message_id : identification number for intended message to be updated
+        -> message_id : identification number for intended message to be
+        updated
         -> message : updated text
 
-    RETURN VALUES:
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> message with message_id was sent by the authorised user
+        making this request
+        -> the authorised user is an owner of this channel or the flockr
     '''
 
     # check if token is valid
-    user_info = helper.get_user_info("token", token)
+    user_info = get_user_info("token", token)
     if not user_info:
-        raise AccessError('invalid token')
+        raise AccessError(description='Token passed in is not a valid token')
 
     channel_id = -1
     for channel in data.data['channels']:
@@ -99,10 +160,10 @@ def message_edit(token, message_id, message):
                 channel_id = channel["channel_id"]
 
     # check if message with message_id was sent by the authorised user
-    message_info = helper.get_message_info(message_id)
+    message_info = get_message_info(message_id)
     if user_info["u_id"] != message_info["u_id"] and not \
-        helper.is_user_authorised(token, channel_id):
-        raise AccessError("message not sent by user, or user is not authorised")
+        is_user_authorised(token, channel_id):
+        raise AccessError(description="message not sent by user, or user is not authorised")
 
     channel_index = 0
     for channel in data.data['channels']:

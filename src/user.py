@@ -34,35 +34,6 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
 '''
 
 '''
-EXCEPTIONS
-    * user_profile
-        Error type: InputError
-            -> user with u_id is not a valid_user
-        Error type: AccessError
-            -> token passed in is not a valid token
-    * user_profile_setname
-        Error type: InputError
-            -> name_first is not between 1 and 50 characters inclusively
-               in length
-            -> name_last is not between 1 and 50 characters inclusively
-               in length
-        Error type: AccessError
-            -> token passed in is not a valid token
-    * user_profile_setemail
-        Error type: InputError
-            -> email entered is not a valid email
-            -> email address is already being used by another user
-        Error type: AccessError
-            -> token passed in is not a valid token
-    * user_profile_sethandle
-        Error type: InputError
-            -> handle_str must be between 3 and 20 characters
-            -> handle is already being used by another user
-        Error type: AccessError
-            -> token passed in is not a valid token
-'''
-
-'''
 KEEP IN MIND:
 -> allow multiple session log-ins,
    * for this make a data.data['valid_tokens'] dict in data.py, have
@@ -94,8 +65,13 @@ def user_profile(token, u_id):
         -> u_id : user id of a user
 
     RETURN VALUES:
-        -> user : dictionary containing u_id, email, name_first,
-                  name_last, handle_str of the user
+        -> user : information of user
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> user with u_id is not a valid_user
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     # Checking token validity
@@ -129,6 +105,15 @@ def user_profile_setname(token, name_first, name_last):
                    may not be authorized)
         -> name_first : new first name of a user
         -> name_last : new last name of a user
+    
+    EXCEPTIONS:
+    Error type: InputError
+        -> name_first is not between 1 and 50 characters inclusively
+            in length
+        -> name_last is not between 1 and 50 characters inclusively
+            in length
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     # check if token is valid
@@ -163,6 +148,13 @@ def user_profile_setemail(token, email):
         -> token : token of a user for the particular session (may or
                    may not be authorized)
         -> email : new email of a user
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> email entered is not a valid email
+        -> email address is already being used by another user
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     # Checking for InputError(s) or AccessError:
@@ -199,6 +191,13 @@ def user_profile_sethandle(token, handle_str):
         -> token : token of a user for the particular session (may or
                    may not be authorized)
         -> handle_str : new handle_str of a user
+
+    EXCEPTIONS:
+    Error type: InputError
+        -> handle_str must be between 3 and 20 characters
+        -> handle is already being used by another user
+    Error type: AccessError
+        -> token passed in is not a valid token
     '''
 
     # Checking for InputError(s) or AccessError:

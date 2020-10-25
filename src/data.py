@@ -1,17 +1,31 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Used to store data for our Flockr implementation
+Contributors - Chitrakshi Gosain, Joseph Knox, Cyrus Wilkie,
+               Jordan Hunyh, Ahmet Karatas
+
+Iteration 1 & 2
 '''
 
-# Modification log:
-# 25/09: added is_admin key to users' dict and is_public key to channels's dict
-# 01/10: changed data in user['handle_str'], user['token'] and user['password']
-#        as per the implementation, modified/added comments, also added a header
-#        comment
-# 02/10: Ensured data dictionary is blank at execution
-# 10/10: added 'messages' and 'valid_token' keys
+'''
+****************************BASIC TEMPLATE******************************
+'''
 
-# the global variable data is a listed dictionary
+'''
+This file contains the empty data dictionary which acts as the backend
+for our implementation.
+'''
+
+'''
+Modification log:
+25/09: added is_admin key to users' dict and is_public key to channels's dict
+01/10: changed data in user['handle_str'], user['token'] and user['password']
+       as per the implementation, modified/added comments, also added a header
+       comment
+02/10: Ensured data dictionary is blank at execution
+10/10: added 'messages' and 'valid_token' keys
+
+the global variable data is a listed dictionary
+'''
 
 data = {
         'users': [],
