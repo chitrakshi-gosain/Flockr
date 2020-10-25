@@ -11,34 +11,6 @@ from message import message_send, message_edit
 from error import AccessError
 from other import clear, search
 
-@pytest.fixture
-def reset():
-    clear()
-
-@pytest.fixture
-def initialise_user_data(reset):
-    # user0 is admin
-    user0_details = auth.auth_register("user0@email.com", "user0_pass", "user0_first", "user0_last")
-    user1_details = auth.auth_register("user1@email.com", "user1_pass", "user1_first", "user1_last")
-
-    return {
-        'user0': user0_details,
-        'user1': user1_details
-    }
-
-@pytest.fixture
-def initialise_channel_data(initialise_user_data):
-    # user0 creates channel, thus is owner and member
-    # user1 joins channel, thus is member but not owner
-    user0_details = initialise_user_data['user0']
-    user1_details = initialise_user_data['user1']
-    channel_id = channels_create(user0_details['token'], "ch_name0", True)['channel_id']
-    channel_join(user1_details['token'], channel_id)
-
-    return {
-        'channel_id': channel_id
-    }
-
 def get_messages(admin_token):
     messages = search(admin_token, '')
     return messages
@@ -51,8 +23,6 @@ def message_details(token, message_id):
             return message
     return False
 
-# TESTS
-
 def test_message_edit_noerrors(initialise_user_data, initialise_channel_data):
     '''
     basic test with no edge case or errors raised
@@ -62,7 +32,7 @@ def test_message_edit_noerrors(initialise_user_data, initialise_channel_data):
     user_details = initialise_user_data['user0']
     token = user_details['token']
 
-    channel_id = initialise_channel_data["channel_id"]
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
 
     first_message = "This is the original message."
 
@@ -90,7 +60,7 @@ def test_message_edit_secondmessage(initialise_user_data, initialise_channel_dat
     user_details = initialise_user_data['user0']
     token = user_details['token']
 
-    channel_id = initialise_channel_data["channel_id"]
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
 
     first_message0 = "This is the first original message."
     first_message1 = "This is the second original message."
@@ -124,7 +94,7 @@ def test_message_edit_emptystring(initialise_user_data, initialise_channel_data)
     user_details = initialise_user_data['user0']
     token = user_details['token']
 
-    channel_id = initialise_channel_data["channel_id"]
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
 
     first_message = "This is the original message."
 
@@ -159,7 +129,8 @@ def test_message_edit_notsender(initialise_user_data, initialise_channel_data):
     token1 = user1_details['token']
 
     # channel with channel_id has members user0, user1 and owner user0
-    channel_id = initialise_channel_data['channel_id']
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_join(user1_details['token'], channel_id)
 
     first_message = "This is the original message."
 
@@ -185,7 +156,7 @@ def test_message_edit_notauth(initialise_user_data, initialise_channel_data):
     user_details = initialise_user_data['user0']
     token = user_details['token']
 
-    channel_id = initialise_channel_data["channel_id"]
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
 
     first_message = "This is the original message."
 
