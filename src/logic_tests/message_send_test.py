@@ -6,6 +6,29 @@ import pytest
 from other import clear, search
 from error import InputError, AccessError
 
+'''
+****************************BASIC TEMPLATE******************************
+'''
+
+'''
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, firstname, lastname)
+-> channels_create(token) return {channel_id}
+-> message_send(token, channel_id, message) return {message_id}
+-> channel_join(token, channel_id) return {}
+-> get_messages(token) return {messages}
+'''
+
+'''
+EXCEPTIONS
+Error type: InputError
+    -> channel_id does not refer to a valid channel
+    -> token passed in is not a valid token
+    -> u_id does not refer to a valid user
+Error type: AccessError
+    -> Authorised user is not a member of channel with channel_id
+'''
+
 def get_messages(admin_token):
     messages = search(admin_token, '')
     return messages
