@@ -11,14 +11,18 @@ from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
 import sys
-from auth import auth_login, auth_register, auth_logout
+from auth import auth_login, auth_register, auth_logout, \
+    auth_passwordreset_request, auth_passwordreset_reset
 from channel import channel_invite, channel_details, channel_messages, \
     channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_list, channels_listall, channels_create
-from message import message_send, message_remove, message_edit
+from message import message_send, message_remove, message_edit, \
+    message_sendlater, message_react, message_unreact, message_pin, \
+        message_unpin
 from  user import user_profile, user_profile_setname, user_profile_setemail, \
-    user_profile_sethandle
+    user_profile_sethandle, user_profile_uploadphoto
 from other import users_all, admin_userpermission_change, search, clear
+from standup import standup_start, standup_active, standup_send
 
 '''
 **************************BASIC TEMPLATE****************************
@@ -693,6 +697,284 @@ def clear_route():
     '''
 
     return dumps(clear())
+    
+@APP.route("/message/sendlater", methods=['POST'])
+def message_sendlater_route():
+    '''
+    DESCRIPTION:
+    Send a message from authorised_user to the channel specified by
+    channel_id automatically at a specified time in the future
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> channel_id : id of channel to send message
+        -> message : message contents
+        -> time_sent : time in future to send the message at
+
+    RETURN VALUES:
+        -> message_id : id of the message which will be sent later
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> when the authorised user has not joined the channel they are
+        trying to post to
+    Error type : InputError
+        -> channel ID is not a valid channel
+        -> message is more than 1000 characters
+        -> time sent is a time in the past
+    '''
+
+    pass
+
+@APP.route("/message/react", methods=['POST'])
+def message_react_route():
+    '''
+    DESCRIPTION:
+    Given a message within a channel the authorised user is part of, add
+    a "react" to that particular message
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> message_id : id of the message to be reacted
+        -> react_id : id of the react, presently only possibility is 1
+                      for thumbs up
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> message_id is not a valid message within a channel that the
+           authorised user has joined
+        -> react_id is not a valid React ID. The only valid react ID the
+            frontend has is 1
+        -> Message with ID message_id already contains an active React
+           with ID react_id from the authorised user
+    '''
+
+    pass
+
+@APP.route("/message/unreact", methods=['POST'])
+def message_unreact_route():
+    '''
+    DESCRIPTION:
+    Given a message within a channel the authorised user is part of,
+    remove a "react" to that particular message
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> message_id : id of the message to be unreacted
+        -> react_id : id of the react, presently only possibility is 1
+                      for thumbs up
+
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> message_id is not a valid message within a channel that the
+           authorised user has joined
+        -> react_id is not a valid React ID
+        -> message with ID message_id does not contain an active React
+           with ID react_id
+    '''
+
+    pass
+
+@APP.route("/message/pin", methods=['POST'])
+def message_pin_route():
+    '''
+    DESCRIPTION:
+    Given a message within a channel, mark it as "pinned" to be given
+    special display treatment by the frontend
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> message_id : id of the message to be pinned
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> the authorised user is not a member of the channel that the
+           message is within
+        -> the authorised user is not an owner
+    Error type: InputError
+        -> message_id is not a valid message
+        -> message with ID message_id is already pinned
+    '''
+
+    pass
+
+@APP.route("/message/unpin", methods=['POST'])
+def message_unpin_route():
+    '''
+    DESCRIPTION:
+    Given a message within a channel, remove it's mark as unpinned
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> message_id : id of the message to be unpinned
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> message_id is not a valid message
+        -> message with ID message_id is already unpinned
+    Error type: InputError
+        -> the authorised user is not a member of the channel that the
+           message is within
+        -> the authorised user is not an owner
+    '''
+
+    pass
+
+@APP.route("/user/profile/uploadphoto", methods=['POST'])
+def user_profile_uploadphoto_route():
+    '''
+    DESCRIPTION:
+    Given a URL of an image on the internet, crops the image within
+    bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the
+    top left
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> img_url : url of an image to be uploaded as profile photo
+        -> x_start : start horizontal bound for image to be cropped from
+        -> y_start : start vertical bound for image to be cropped from
+        -> x_end : end horizontal bound for image to be cropped till
+        -> y_end : end vertical bound for image to be cropped till
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> img_url returns an HTTP status other than 200.
+        -> any of x_start, y_start, x_end, y_end are not within the
+           dimensions of the image at the URL.
+        -> image uploaded is not a JPG
+    '''
+
+    pass
+
+@APP.route("/standup/start", methods=['POST'])
+def standup_start_route():
+    '''
+    DESCRIPTION:
+    For a given channel, start the standup period whereby for the next
+    "length" seconds if someone calls "standup_send" with a message, it
+    is buffered during the X second window then at the end of the X
+    second window a message will be added to the message queue in the
+    channel from the user who started the standup. X is an integer that
+    denotes the number of seconds that the standup occurs for
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> channel_id : id of the channel to start standup in
+        -> length : length of period standup should last for
+
+    RETURN VALUES:
+        -> time_finish : the time when standup will end in the
+                         particular channel
+
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> channel ID is not a valid channel
+        -> an active standup is currently running in this channel
+    '''
+
+    pass
+
+@APP.route("/standup/active", methods=['POST'])
+def standup_active_route():
+    '''
+    DESCRIPTION:
+    For a given channel, return whether a standup is active in it, and
+    what time the standup finishes. If no standup is active, then
+    time_finish returns None
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> channel_id : id of the channel to check where standup is
+                        running
+
+    RETURN VALUES:
+        -> is_active : status of standup in particular channel
+        -> time_finish : the time when standup will end in the
+                         particular channel
+
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> channel ID is not a valid channel
+    '''
+
+    pass
+
+@APP.route("/standup/send", methods=['POST'])
+def standup_send_route():
+    '''
+    DESCRIPTION:
+    Sending a message to get buffered in the standup queue, assuming a
+    standup is currently active
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> channel_id : id of the channel to send message in for standup
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> the authorised user is not a member of the channel that the
+           message is within
+    Error type: InputError
+        -> channel ID is not a valid channel
+        -> message is more than 1000 characters
+        -> an active standup is not currently running in this channel
+    '''
+
+    pass
+
+@APP.route("/auth/passwordreset/request", methods=['POST'])
+def auth_passwordreset_request_route():
+    '''
+    DESCRIPTION:
+    Given an email address, if the user is a registered user, sends
+    them a an email containing a specific secret code, that when entered
+    in auth_passwordreset_reset, shows that the user trying to reset the
+    password is the one who got sent this email.
+
+    PARAMETERS:
+        -> email : email of a user
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    '''
+
+    pass
+
+@APP.route("/auth/passwordreset/reset", methods=['POST'])
+def auth_passwordreset_reset_route():
+    '''
+    DESCRIPTION:
+    Given a reset code for a user, set that user's new password to the
+    password provided
+
+    PARAMETERS:
+        -> reset_code : reset code provided to user for password reset
+        -> new_password : new password of user
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> reset_code is not a valid reset_code
+        -> password entered is not a valid password
+    '''
+
+    pass
 
 # Example, it is associated with echo_http_test.py, do not remove it
 @APP.route("/echo", methods=['GET'])
