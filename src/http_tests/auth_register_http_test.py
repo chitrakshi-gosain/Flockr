@@ -24,6 +24,7 @@ json.dumps({RETURN VALUE})
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 -> url
 -> reset
+-> initialise_user_dictionary
 '''
 
 '''

@@ -5,25 +5,30 @@ Contributor - Ahmet Karatas
 Iteration 1
 '''
 
+import pytest
 from channel import channel_messages
 from message import message_send
-import pytest
-from other import clear
-from error import InputError
-from error import AccessError
+from error import InputError, AccessError
 
 '''
 ****************************BASIC TEMPLATE******************************
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> auth_register(email, password, name_first, name_last) return
    {u_id, token}
--> channel_details(token, channel_id) return
-   {name, owner_memers, all_members}
+-> channel_messages(token, channel_id, start) return
+   {messages, start, end}
 -> channels_create(token, name. is_public) return {channel_id}
 -> channel_join(token, channel_id) return {}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''

@@ -6,9 +6,8 @@ Iteration 1
 '''
 
 import pytest
-from auth import auth_register, auth_logout
+from auth import auth_logout
 from channels import channels_create, channels_list
-from other import clear
 from error import AccessError
 
 '''
@@ -16,26 +15,23 @@ from error import AccessError
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return {u_id, token}
 -> channels_create(token, name. is_public) return {channel_id}
 -> channels_list(token) return {channels}
 '''
 
 '''
-----channels_list Documentation----
-Parameters:
-(token)
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
+'''
 
-Return Type:
-{channels}
-
-Exceptions:
-N/A
-
-Description:
-Provide a list of all channels (and 
-their associated details) that the 
-authorised user is part of
+'''
+EXCEPTIONS
+Error type: AccessError
+    -> token passed in is not a valid token
 '''
 
 def test_channels_list_valid_single(initialise_user_data):
@@ -56,8 +52,6 @@ def test_channels_list_valid_single(initialise_user_data):
     # Type checking
     assert isinstance(channel_list['channels'][0]['channel_id'], int)
     assert isinstance(channel_list['channels'][0]['name'], str)
-
-    clear()
 
 
 def test_channels_list_valid_same(initialise_user_data):
@@ -92,8 +86,6 @@ def test_channels_list_valid_same(initialise_user_data):
     assert channel_list['channels'][3]['name'] == 'Chatter'
     assert channel_list['channels'][4]['name'] == '3rd Channel'
 
-    clear()
-
 
 def test_channels_list_valid_different(initialise_user_data):
     '''
@@ -122,8 +114,6 @@ def test_channels_list_valid_different(initialise_user_data):
     assert user1_channel_list['channels'][0]['name'] == 'First Channel'
     assert user2_channel_list['channels'][0]['name'] == 'Channel 2'
     assert user3_channel_list['channels'][0]['name'] == 'Discussion'
-
-    clear()
 
 
 def test_channels_list_valid_private(initialise_user_data):
@@ -158,8 +148,6 @@ def test_channels_list_valid_private(initialise_user_data):
     assert user2_channel_list['channels'][0]['name'] == 'Discussion'
     assert user2_channel_list['channels'][1]['name'] == 'Chatter'
     assert user2_channel_list['channels'][2]['name'] == '3rd Channel'
-
-    clear()
 
 
 def test_channels_list_valid_mix(initialise_user_data):
@@ -196,8 +184,6 @@ def test_channels_list_valid_mix(initialise_user_data):
     assert user1_channel_list['channels'][1]['name'] == 'First Channel'
     assert user3_channel_list['channels'][1]['name'] == 'Channel 2'
 
-    clear()
-
 
 def test_channels_list_valid_empty(initialise_user_data):
     '''
@@ -207,9 +193,6 @@ def test_channels_list_valid_empty(initialise_user_data):
 
     # Checking channels_list return is correct
     assert channels_list(users['user1']['token']) == {'channels': []}
-
-    clear()
-
 
 def test_channels_list_invalid_token(initialise_user_data):
     '''
@@ -224,5 +207,3 @@ def test_channels_list_invalid_token(initialise_user_data):
     # Checking that AccessError is thrown
     with pytest.raises(AccessError):
         channels_list(invalid_token)
-
-    clear()

@@ -16,17 +16,24 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route("/channels/create", methods=['POST']) return json.dumps({channel_id})
--> APP.route("/channel/details", methods=['GET']) return json.dumps({name, owner_members, all_members})
--> APP.route("/channels/listall", methods=['GET']) return json.dumps({channels})
--> APP.route("/auth/logout", methods=['POST']) return json.dumps({is_success})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+   json.dumps({channel_id})
+-> APP.route("/channel/details", methods=['GET']) return
+   json.dumps({name, owner_members, all_members})
+-> APP.route("/channels/listall", methods=['GET']) return
+   json.dumps({channels})
+-> APP.route("/auth/logout", methods=['POST']) return
+   json.dumps({is_success})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
--> reset
 -> url
--> intialise_users
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''

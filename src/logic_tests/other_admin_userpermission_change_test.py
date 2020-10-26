@@ -7,50 +7,34 @@ Iteration 2
 
 import pytest
 from channel import channel_join, channel_leave
-from other import clear, admin_userpermission_change
-from auth import auth_register
-from channels import channels_create
+from other import admin_userpermission_change
 from error import InputError, AccessError
 
 '''
-*********************************BASIC TEMPLATE*********************************
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return
+   {u_id, token}
+-> channels_create(token, name. is_public) return {channel_id}
+-> channel_join(token, channel_id) return {}
+-> channel_leave(token, channel_id) return {}
+-> admin_userpermission_change(token, u_id, permission_id) return {}
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> intialise_data() return { users }, { channels }
--> test_other_admin_userpermission_change_make_admin()
--> test_other_admin_userpermission_change_remove_admin()
--> test_other_admin_userpermission_change_remove_self()
--> test_other_admin_userpermission_change_remove_last()
--> test_other_admin_userpermission_change_invalid_permission_id()
--> test_other_admin_userpermission_change_invalid_uid()
--> test_other_admin_userpermission_change_invalid_token()
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
-----admin_userpermission_change Documentation----
-
-HTTP Method: POST
-
-Parameters:(token, u_id, permission_id)
-
-Return type: {}
-
-Exceptions: InputError ->
-                u_id does not refer to a valid user
-                permission_id does not refer to a value permission
-            AccessError ->
-                The authorised user is not an owner
-
-Description: Given a User by their user ID, set their permissions to
-             new permissions described by permission_id
-
-'''
-
-'''
-Assumptions:
-1. There must always be at least 1 global owner
+EXCEPTIONS
+Error type: AccessError
+        -> token passed in is not a valid token
+        -> when the authorised user is not an owner
+Error type: InputError
+-> u_id does not refer to a valid user
+-> permission_id does not refer to a value permission
 '''
 
 def test_other_admin_userpermission_change_make_admin(initialise_user_data, initialise_channel_data):

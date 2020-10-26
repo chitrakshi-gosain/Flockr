@@ -4,12 +4,14 @@
   accessing the application
 
 ## auth.py
-- 1. As of iteration 1, token provided by *auth_login* and *auth_register*
-     are not unique to the login session.
+- 1. As of iteration 1, token provided by *auth_register* are not
+     unique to the login session.
 - 2. Password can be maximum 32 characters long
 - 3. Password will only consist of printable ASCII characters
 
 ### auth_login
+- 1. As of iteration 1, token provided by *auth_login* are not
+     unique to the login session.
 
 ### auth_logout
 - 1. " " is an invalid token
@@ -93,3 +95,11 @@
 
 ### users_all
 - 1. Users displayed in order of registration
+
+### search
+- 1. ' ' is an invalid token
+- 2. Admins can see all messages
+- 3. '' will return all visible messages
+
+### admin_userpermission_change
+- 1. There must always be at least 1 global owner

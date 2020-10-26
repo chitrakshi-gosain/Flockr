@@ -1,9 +1,14 @@
-from auth import auth_register
-from channel import channel_join
-from channels import channels_create
-from message import message_send
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - Ahmet Karatas
+
+Iteration 2
+'''
+
 import pytest
-from other import clear, search
+from channel import channel_join
+from message import message_send
+from other import search
 from error import InputError, AccessError
 
 '''
@@ -16,7 +21,14 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> channels_create(token) return {channel_id}
 -> message_send(token, channel_id, message) return {message_id}
 -> channel_join(token, channel_id) return {}
--> get_messages(token) return {messages}
+-> search(token, query_str) return {messages}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
@@ -71,11 +83,9 @@ def test_return_type(initialise_user_data, initialise_channel_data):
 
 def test_sample(initialise_user_data, initialise_channel_data):
     
-    channel1_id = initialise_channel_data['owner_priv']
+    channel1_id = initialise_channel_data['owner_publ']
     owner_credentials = initialise_user_data['owner']
-    user1_credentials = initialise_user_data['user1']
-
-    channel1_id = channels_create(owner_credentials['token'], 'channel1_name', True)                                 # create a public channel
+    user1_credentials = initialise_user_data['user1']                                 # create a public channel
     channel_join(user1_credentials['token'], channel1_id['channel_id'])
 
     message_send(owner_credentials['token'], channel1_id['channel_id'], "Hey, how are you")

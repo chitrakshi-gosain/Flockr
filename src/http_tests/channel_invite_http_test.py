@@ -14,12 +14,26 @@ import pytest
 '''
 
 '''
-FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
--> channels_create(token) return {channel_id}
--> channel_join(token, channel_id) return {}
--> channel_invite(token, channel_id, u_id) return {}
--> channel_details(token, channel_id) return
-   {name, owner_members, all_members}
+APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
+json.dumps({RETURN VALUE})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+    json.dumps({channel_id})
+-> APP.route("/channel/join", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/channel/invite", methods=['POST']) return
+    json.dumps({})
+-> APP.route("/channel/details", methods=['GET']) return
+    json.dumps({name, owner_members, all_members})
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
+-> url
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
@@ -32,10 +46,12 @@ Error type: AccessError
     -> token is invalid
 '''
 
+def test_url(url):
+    '''
+    A simple sanity test to check that the server is set up properly
+    '''
+    assert url.startswith("http")
 
-
-# Jordan Huynh (z5169771)
-# Wed15 Grape 2
 def is_user_in_channel(url, user_id, token, channel_id):
     datain = {"token": token, "channel_id": channel_id}
     channel_members = requests.get(url+ "channel/details", params=datain).json()['all_members']

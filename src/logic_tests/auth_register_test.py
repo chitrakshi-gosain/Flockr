@@ -6,7 +6,6 @@ Iteration 1
 '''
 
 import pytest
-from other import clear
 from error import InputError
 from user import user_profile
 from auth import auth_register
@@ -21,6 +20,11 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> auth_register(email, password, name_first, name_last) return
    {u_id, token}
 -> user_profile(token, u_id) return {user}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
 '''
 
 '''

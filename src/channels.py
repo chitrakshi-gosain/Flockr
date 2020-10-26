@@ -80,7 +80,8 @@ def channels_listall(token):
 
     RETURN VALUES:
         -> channels : list of channels
-
+    
+    EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
     '''

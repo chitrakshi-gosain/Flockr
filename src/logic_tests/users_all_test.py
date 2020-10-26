@@ -6,8 +6,8 @@ Iteration 2
 '''
 
 import pytest
-from auth import auth_register, auth_logout
-from other import clear, users_all
+from auth import auth_logout
+from other import users_all
 from error import AccessError
 
 '''
@@ -16,8 +16,19 @@ from error import AccessError
 
 '''
 FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return
+   {u_id, token}
 -> users_all(token) return {users}
+-> auth_logout(token) return {is_success}
+'''
 
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+'''
+
+'''
 EXCEPTIONS:
 AccessError
 -> Invalid token

@@ -7,9 +7,6 @@ Iteration 1
 
 import pytest
 from channel import channel_invite, channel_join, channel_details
-from other import clear
-from auth import auth_register
-from channels import channels_create
 from error import InputError, AccessError
 
 '''
@@ -23,6 +20,13 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> channel_invite(token, channel_id, u_id) return {}
 -> channel_details(token, channel_id) return
    {name, owner_members, all_members}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''

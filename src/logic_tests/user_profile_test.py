@@ -6,9 +6,8 @@ Iteration 2
 '''
 
 import pytest
-from auth import auth_register, auth_logout
+from auth import auth_logout
 from user import user_profile
-from other import clear
 from error import AccessError, InputError
 
 '''
@@ -21,6 +20,20 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> auth_register(email, password, name_first, name_last) return
    {u_id, token}
 -> auth_logout(token) return {is_success}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+'''
+
+'''
+EXCEPTIONS
+Error type: InputError
+    -> user with u_id is not a valid_user
+Error type: AccessError
+    -> token passed in is not a valid token
 '''
 
 def test_user_profile_valid_own(initialise_user_data):

@@ -1,7 +1,7 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributors - Chitrakshi Gosain, Jordan Hunyh, Ahmet Karatas,
-              Cyrus Wilkie, Joseph Knox
+               Cyrus Wilkie, Joseph Knox
 
 Iteration 2
 '''
@@ -18,6 +18,12 @@ import data
 
 '''
 This file contains all the fixtures used in *test.py
+'''
+
+'''
+FUNCTIONS_USED_FOR_THIS FIXTURE_FILE(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, firstname, lastname)
+-> channels_create(token) return {channel_id}
 '''
 
 @pytest.fixture

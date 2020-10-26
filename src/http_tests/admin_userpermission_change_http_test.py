@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - YOUR NAME HERE
+Contributor - Jordan Hunyh
 
 Iteration 2
 '''

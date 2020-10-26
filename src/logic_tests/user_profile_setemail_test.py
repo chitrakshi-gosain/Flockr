@@ -6,10 +6,8 @@ Iteration 2
 '''
 
 import pytest
-from other import clear
 from error import InputError, AccessError
 from user import user_profile, user_profile_setemail
-from auth import auth_register
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -21,6 +19,12 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
    {u_id, token}
 -> user_profile(token, u_id) return {user}
 -> user_profile_setemail(token, email) return {}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
 '''
 
 '''

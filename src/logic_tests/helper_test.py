@@ -24,6 +24,17 @@ This file contains test for all the helper functions used throughout the
 implementation of interface
 '''
 
+'''
+FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, firstname, lastname)
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+'''
+
 def test_check_if_valid_email(reset):
     '''
     Given the email of the user to be registered checks if it is a

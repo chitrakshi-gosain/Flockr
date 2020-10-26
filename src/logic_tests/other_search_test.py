@@ -1,51 +1,40 @@
-from other import clear, search
-from message import message_send
-from auth import auth_register
-from channels import channels_create
-from channel import channel_join
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - Jordan Hunyh
+
+Iteration 2
+'''
 
 import pytest
 from error import InputError, AccessError
+from other import search
+from message import message_send
+from channel import channel_join
 
 '''
-*********************************BASIC TEMPLATE*********************************
-'''
-
-'''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> intialise_data() return { users }, { channels }
--> pop_datetimes(messages) return {messages} (without 'time_created')
--> test_other_search_not_in_channels()
--> test_other_search_join_channel()
--> test_other_search_no_messages()
--> test_other_search_empty_query()
--> test_other_search_admin()
--> test_other_search_multiple_channels()
--> test_other_search_invalid_token()
+****************************BASIC TEMPLATE******************************
 '''
 
 '''
-----search Documentation----
-
-HTTP Method: GET
-
-Parameters:(token, query_str)
-
-Return type: { messages }
-
-Exceptions: InputError ->
-            AccessError ->
-
-Description: Given a query string, return a collection of messages in
-             all of the channels that the user has joined that match the query
-
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, name_first, name_last) return
+   {u_id, token}
+-> channels_create(token, name. is_public) return {channel_id}
+-> channel_join(token, channel_id) return {}
+-> search(token, query_str) return {messages}
 '''
 
 '''
-Assumptions:
-1. ' ' is an invalid token
-2. Admins can see all messages
-3. '' will return all visible messages
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
+'''
+
+'''
+EXCEPTIONS
+Error type: AccessError
+    -> token passed in is not a valid token
 '''
 
 def pop_datetimes(messages):
@@ -156,9 +145,7 @@ def test_other_search_multiple_channels(initialise_user_data, initialise_channel
     assert message1_info in popped
     assert message2_info in popped
 
-def test_other_search_invalid_token():
-    clear()
-
+def test_other_search_invalid_token(reset):
     invalid_token = ' '
 
     with pytest.raises(AccessError):

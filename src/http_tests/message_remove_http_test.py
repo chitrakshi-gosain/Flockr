@@ -1,9 +1,9 @@
-# '''
-# Created collaboratively by Wed15GrapeTeam2 2020 T3
-# Contributor - Ahmet Karatas
+'''
+Created collaboratively by Wed15GrapeTeam2 2020 T3
+Contributor - Ahmet Karatas
 
-# Iteration 1
-# '''
+Iteration 1
+'''
 
 import json
 import requests
@@ -16,16 +16,26 @@ import pytest
 '''
 APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route("/message/send", methods=['POST']) return json.dumps({token, channel_id, message})
--> APP.route("/message/remove", methods=['POST']) return json.dumps({token, message_id})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/channels/create", methods=['POST']) return
+    json.dumps({channel_id})
+-> APP.route("/channel/messages", methods=['GET']) return
+    json.dumps({messages, start, end})
+-> APP.route("/message/send", methods=['POST']) return
+   json.dumps({token, channel_id, message})
+-> APP.route("/message/remove", methods=['POST']) return
+   json.dumps({token, message_id})
+-> APP.route("/search", methods=['GET']) return
+    json.dumps({messages})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 -> reset
 -> url
--> intialise_user_data
--> initialist_channel_data
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
@@ -35,6 +45,13 @@ Error Type: InputError
 Error Type: AccessError
     -> channel_id refers to a channel that is private (when the authorised user is not a global owner)
 '''
+
+def test_url(url):
+    '''
+    A simple sanity test to check that the server is set up properly
+    '''
+
+    assert url.startswith("http")
 
 def get_messages(url, admin_token):
     messages = requests.get(url + "/search", params = {

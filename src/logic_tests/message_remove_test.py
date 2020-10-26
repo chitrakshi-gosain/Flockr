@@ -6,11 +6,9 @@ Iteration 2
 '''
 
 import pytest
-from auth import auth_register
 from channel import channel_join, channel_messages
-from channels import channels_create
 from message import message_send, message_remove
-from other import clear, search
+from other import search
 from error import InputError, AccessError
 
 '''
@@ -18,12 +16,22 @@ from error import InputError, AccessError
 '''
 
 '''
-FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
--> get_messages(admin_token) return all messages in all channels
--> test_user_not_authorised(initialise_user_data, initialise_channel_data)
--> test_token_invalid(initialise_user_data, initialise_channel_data)
--> test_invalid_message_id(initialise_user_data, initialise_channel_data)
--> test_empty(initialise_user_data, initialise_channel_data)
+FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
+-> auth_register(email, password, firstname, lastname)
+-> channels_create(token) return {channel_id}
+-> message_send(token, channel_id, message) return {messag
+-> channel_messages(token, channel_id, start) return
+   {messages, start, end}e_id}
+-> message_remove(token, message_id) return {}
+-> channel_join(token, channel_id) return {}
+-> search(token, query_str) return {messages}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''

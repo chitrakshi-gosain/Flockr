@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - YOUR NAME HERE
+Contributor - Ahmet Karatas
 
 Iteration 2
 '''
@@ -22,6 +22,8 @@ json.dumps({RETURN VALUE})
     json.dumps({channel_id})
 -> APP.route("/channel/messages", methods=['GET']) return
     json.dumps({messages, start, end})
+-> APP.route("/message/send", methods=['POST']) return
+   json.dumps({token, channel_id, message})
 '''
 
 '''

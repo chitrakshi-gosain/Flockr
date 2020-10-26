@@ -1,17 +1,14 @@
 '''
 Created collaboratively by Wed15Team2 2020 T3
-Contributer - Ahmet Karatas
+Contributor - Ahmet Karatas
 
 Iteration 1
 '''
 
-from auth import auth_register
+import pytest
 from channel import channel_details, channel_join, channel_invite, channel_leave
-from channels import channels_create
-from other import clear
 from error import InputError
 from error import AccessError
-import pytest
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -22,6 +19,13 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> channel_details(token, channel_id) return {name, owner_memers, all_members}
 -> channel_join(token, channel_id) return {}
 -> channel_invite(token, channel_id, u_id) return {}
+'''
+
+'''
+FIXTURES_USED_FOR_THIS_TEST (available in src/logic_tests/conftest.py)
+-> reset
+-> initialise_user_data
+-> initialise_channel_data
 '''
 
 '''
