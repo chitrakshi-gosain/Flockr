@@ -24,6 +24,11 @@ Modification log:
 02/10: Ensured data dictionary is blank at execution
 10/10: added 'messages' and 'valid_token' keys
 
+27/10: Added iteration3 stuff:
+            standups in channel
+            reacts in message,
+            reset_codes in data
+            profile_pic url in user
 the global variable data is a listed dictionary
 '''
 
@@ -31,7 +36,8 @@ data = {
         'users': [],
         'channels': [],
         'messages': [],
-        'valid_tokens': []
+        'valid_tokens': [],
+        'reset_codes': {}
         }
 
 '''
@@ -46,6 +52,7 @@ data = {
             'handle_str' : 'fname0lname0',
             'token' : '0',
             'password' : 'password0'
+            'profile_pic' : '/profile_pics/img[u_id].jpg' #local url
         },
         { # user -> u_id : 1
             'u_id' : 1,
@@ -56,6 +63,7 @@ data = {
             'handle_str' : 'fname1lname1',
             'token' : '1',
             'password' : 'password1'
+            'profile_pic' : '/profile_pics/img1.jpg' #local url
         }
     ],
 
@@ -89,14 +97,41 @@ data = {
                     'u_id' : 0,
                     'message' : 'messagecontents0',
                     'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
+                    'is_pinned' : True,
+                    'reacts' : {
+                        'thumbs_up' : [u_id, 1, 2],
+                        'heart' : [u_id, 0] #list of users
+                    }
                 },
                 { # mesages -> message_id : 1
                     'message_id' : 1,
                     'u_id' : 0,
                     'message' : 'messagecontents1',
                     'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
+                    'is_pinned' : False,
+                    'reacts' : {
+                        'thumbs_up' : [u_id, 2],
+                        'heart' : [u_id, 1] #list of users
+                    }
                 }
-            ]
+            ],
+            'standup': {
+                'u_id': 0,
+                'time_start': 1201843272, #unix timestamp
+                'time_finish': 1201843572,
+                'messages': [
+                    {
+                        'u_id': 0,
+                        'name': 'user0'
+                        'message': 'this is standup'
+                    },
+                    {
+                        'u_id': 1,
+                        'name': 'user1'
+                        'message': 'message2'
+                    }
+                ] #message_send all as 1 message at end of standup
+            }
         },
         { # channels -> channel_id : 1
             'channel_id' : 1,
@@ -127,8 +162,30 @@ data = {
                     'u_id' : 0,
                     'message' : 'messagecontents0',
                     'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
+                    'is_pinned' : True,
+                    'reacts' : {
+                        'thumbs_up' : [u_id, 0, 1, 2],
+                        'heart' : [u_id] #list of users
+                    }
                 }
-            ]
+            ],
+            'standup': {
+                'u_id': 1,
+                'time_start': 120238921, #unix timestamp
+                'time_finish': 120239921,
+                'messages': [
+                    {
+                        'u_id': 0,
+                        'name': 'user0'
+                        'message': 'this is standup'
+                    },
+                    {
+                        'u_id': 1,
+                        'name': 'user1'
+                        'message': 'message2'
+                    }
+                ] #message_send all as 1 message at end of standup
+            }
         }
     ],
 
@@ -138,10 +195,22 @@ data = {
             'u_id' : 0,
             'message' : 'messagecontents0',
             'timecreated' : 'datetime(YYYY, MM, DD, HH, MM)' #(not in quotes)
+            'is_pinned' : True,
+            'reacts' : {
+                'thumbs_up' : [u_id, 1, 2],
+                'heart' : [u_id, 0] #list of users
+            }
         }
     ],
 
     'valid_tokens': { # format  => token : u_id
+    },
+
+    'reset_codes': {
+        'code1' : u_id,
+        'code2' : 1
     }
+
+
 }
 '''
