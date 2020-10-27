@@ -2,7 +2,7 @@
 Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributor - Chitrakshi Gosain
 
-Iteration 1
+Iteration 1 & 3
 '''
 
 import data
@@ -21,6 +21,8 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
    {u_id, token}
 -> auth_login(email,password) return {u_id, token}
 -> auth_logout(token) return {is_success}
+-> auth_passwordreset_request(email) return {}
+-> auth_passwordreset_reset(reset_code, new_password) return {}
 '''
 
 '''
@@ -32,6 +34,8 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
     -> token: string
     -> u_id: integer
     -> is_success: boolean
+    -> reset_code: string
+    -> new_password: string
 '''
 
 '''
@@ -45,6 +49,7 @@ KEEP IN MIND:
    change implementation, do it after we are done merging all branches
    once, so if anything ever goes wrong we have A BACKUP. also, this
    ain't imp for itr 1 so don't stress. :)
+-> new key 'reset_codes' in data.data to store 'reset_code : email'
 '''
 
 # CONSTANTS
@@ -88,14 +93,14 @@ def auth_login(email, password):
     if not user_info['password'] == encrypt_password_with_hash(password):
         raise InputError(description='Password is not correct')
 
-    # Since there are no InputError(s), hence proceeding forward:
-
-    # returning the dictionary with users' u_id, and encoded token
-    # authenticated for their session
+    # Since there are no AccessError or InputError(s), hence proceeding
+    # forward:
 
     # generating a valid token
     user_info['token'] = str(user_info['u_id'])
 
+    # returning the dictionary with users' u_id, and encoded token
+    # authenticated for their session
     return {
         'u_id': user_info['u_id'],
         'token': generate_encoded_token(user_info['u_id'])
@@ -124,8 +129,7 @@ def auth_logout(token):
     if not get_user_info('token', token):
         raise AccessError(description='Token passed in is not a valid token')
 
-    # Since there is no InputError or AccessError, hence proceeding
-    # forward:
+    # Since there is no AccessError, hence proceeding forward:
 
     return {
         'is_success': invalidating_token(decode_encoded_token(token))
@@ -190,7 +194,8 @@ def auth_register(email, password, name_first, name_last):
         raise InputError(description='Email address is already being used by \
         another user')
 
-    # Since there are no InputError(s), hence proceeding forward:
+    # Since there are no AccessError or InputError(s), hence proceeding
+    # forward:
 
     # Generating handle_str
     concatenated_names = name_first.lower() + name_last.lower()
@@ -232,6 +237,58 @@ def auth_register(email, password, name_first, name_last):
         'u_id': user_login_credentials['u_id'],
         'token': user_login_credentials['token']
     }
+
+def auth_passwordreset_request(email):
+    '''
+    DESCRIPTION:
+    Given an email address, if the user is a registered user, sends
+    them a an email containing a specific secret code, that when entered
+    in auth_passwordreset_reset, shows that the user trying to reset the
+    password is the one who got sent this email.
+
+    PARAMETERS:
+        -> email : email of a user
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    '''
+
+    # Checking for AccessError:
+
+    # Since there is no AccessError, hence proceeding forward:
+
+    return {
+    }
+
+def auth_passwordreset_reset(reset_code, new_password):
+    '''
+    DESCRIPTION:
+    Given a reset code for a user, set that user's new password to the
+    password provided
+
+    PARAMETERS:
+        -> reset_code : reset code provided to user for password reset
+        -> new_password : new password of user
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> reset_code is not a valid reset_code
+        -> password entered is not a valid password
+    '''
+
+    # Checking for AccessError:
+
+    # Checking for InputError(s):
+
+    # Since there are no AccessError or InputError(s), hence proceeding
+    # forward:
+
+    return {
+    }
+
 
 '''
 WHITE BOX TESTING FOR CHECKING IF IMPLEMENTATION IS AS EXPECTED

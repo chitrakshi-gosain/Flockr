@@ -2,7 +2,7 @@
 Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributor - Ahmet Karatas, Joseph Knox
 
-Iteration 1
+Iteration 1 & 3
 '''
 
 from datetime import datetime, timezone
@@ -20,6 +20,12 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 -> message_send(token, channel_id, message) return {message_id}
 -> message_remove(token, message_id) return {}
 -> message_edit(token, message_id, message) return {}
+-> message_sendlater(token, channel_id, message, time_sent) return
+   {message_id}
+-> message_react(token, message_id, react_id) return {}
+-> message_unreact(token, message_id, react_id) return {}
+-> message_pin(token, message_id) return {}
+-> message_unpin(token, message_id) return {}
 '''
 
 '''
@@ -28,6 +34,8 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
     -> channel_id: integer
     -> message_id: integer
     -> message: string
+    -> time_sent: int
+    -> react_id: int
 '''
 
 def message_send(token, channel_id, message):
@@ -180,6 +188,170 @@ def message_edit(token, message_id, message):
                 break
             message_index += 1
         channel_index += 1
+
+    return {
+    }
+
+def message_sendlater(token, channel_id, message, time_sent):
+    '''
+    DESCRIPTION:
+    Send a message from authorised_user to the channel specified by
+    channel_id automatically at a specified time in the future
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> channel_id : id of channel to send message
+        -> message : message contents
+        -> time_sent : time in future to send the message at
+
+    RETURN VALUES:
+        -> message_id : id of the message which will be sent later
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> when the authorised user has not joined the channel they are
+        trying to post to
+    Error type : InputError
+        -> channel ID is not a valid channel
+        -> message is more than 1000 characters
+        -> time sent is a time in the past
+    '''
+
+    # Checking for AccessError:
+
+    # Checking for InputError(s):
+
+    # Since there are no AccessError or InputError(s), hence proceeding
+    # forward:
+
+    return {
+        'message_id': 0
+    }
+
+def message_react(token, message_id, react_id):
+    '''
+    DESCRIPTION:
+    Given a message within a channel the authorised user is part of, add
+    a "react" to that particular message
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> message_id : id of the message to be reacted
+        -> react_id : id of the react, presently only possibility is 1
+                      for thumbs up
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> message_id is not a valid message within a channel that the
+           authorised user has joined
+        -> react_id is not a valid React ID. The only valid react ID the
+            frontend has is 1
+        -> Message with ID message_id already contains an active React
+           with ID react_id from the authorised user
+    '''
+
+    # Checking for AccessError:
+
+    # Checking for InputError(s):
+
+    # Since there are no AccessError or InputError(s), hence proceeding
+    # forward:
+
+    return {
+    }
+
+def message_unreact(token, message_id, react_id):
+    '''
+    DESCRIPTION:
+    Given a message within a channel the authorised user is part of,
+    remove a "react" to that particular message
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> message_id : id of the message to be unreacted
+        -> react_id : id of the react, presently only possibility is 1
+                      for thumbs up
+
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> message_id is not a valid message within a channel that the
+           authorised user has joined
+        -> react_id is not a valid React ID
+        -> message with ID message_id does not contain an active React
+           with ID react_id
+    '''
+
+    # Checking for AccessError:
+
+    # Checking for InputError(s):
+
+    # Since there are no AccessError or InputError(s), hence proceeding
+    # forward:
+
+    return {
+    }
+
+def message_pin(token, message_id):
+    '''
+    DESCRIPTION:
+    Given a message within a channel, mark it as "pinned" to be given
+    special display treatment by the frontend
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> message_id : id of the message to be pinned
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> the authorised user is not a member of the channel that the
+           message is within
+        -> the authorised user is not an owner
+    Error type: InputError
+        -> message_id is not a valid message
+        -> message with ID message_id is already pinned
+    '''
+
+    # Checking for AccessError:
+
+    # Checking for InputError(s):
+
+    # Since there are no InputError(s), hence proceeding forward:
+
+    return {
+    }
+
+def message_unpin(token, message_id):
+    '''
+    DESCRIPTION:
+    Given a message within a channel, remove it's mark as unpinned
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> message_id : id of the message to be unpinned
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+        -> message_id is not a valid message
+        -> message with ID message_id is already unpinned
+    Error type: InputError
+        -> the authorised user is not a member of the channel that the
+           message is within
+        -> the authorised user is not an owner
+    '''
+
+    # Checking for AccessError:
+
+    # Checking for InputError(s):
+
+    # Since there are no AccessError or InputError(s), hence proceeding
+    # forward:
 
     return {
     }

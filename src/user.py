@@ -2,7 +2,7 @@
 Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributors - Cyrus Wilkie, Chitrakshi Gosain, Joseph Knox
 
-Iteration 2
+Iteration 2 & 3
 '''
 
 from error import InputError, AccessError
@@ -19,6 +19,8 @@ FUNCTIONS_IN_THIS FILE(PARAMETERS) return {RETURN_VALUES}:
 -> user_profile_setname(token, name_first, name_last) return {}
 -> user_profile_setemail(token, email) return {}
 -> user_profile_sethandle(token, handle_str) return {}
+-> user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end)
+   return {}
 '''
 
 '''
@@ -31,6 +33,11 @@ DATA TYPES  OF ALL PARAMETERS / RETURN VALUES
     -> name_last: string
     -> email: string
     -> handle_str: string
+    -> img_url: string
+    -> x_start: int
+    -> y_start: int
+    -> x_end: int
+    -> y_end: int
 '''
 
 '''
@@ -223,6 +230,41 @@ def user_profile_sethandle(token, handle_str):
     # forward:
 
     user_info['handle_str'] = handle_str
+
+    return {
+    }
+
+def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
+    '''
+    DESCRIPTION:
+    Given a URL of an image on the internet, crops the image within
+    bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the
+    top left
+
+    PARAMETERS:
+        -> token : token of the authenticated user
+        -> img_url : url of an image to be uploaded as profile photo
+        -> x_start : start horizontal bound for image to be cropped from
+        -> y_start : start vertical bound for image to be cropped from
+        -> x_end : end horizontal bound for image to be cropped till
+        -> y_end : end vertical bound for image to be cropped till
+    
+    EXCEPTIONS:
+    Error type: AccessError
+        -> token passed in is not a valid token
+    Error type: InputError
+        -> img_url returns an HTTP status other than 200.
+        -> any of x_start, y_start, x_end, y_end are not within the
+           dimensions of the image at the URL.
+        -> image uploaded is not a JPG
+    '''
+
+    # Checking for AccessError:
+
+    # Checking for InputError(s):
+
+    # Since there are no AccessError or InputError(s), hence proceeding
+    # forward:
 
     return {
     }
