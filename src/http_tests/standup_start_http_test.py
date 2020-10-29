@@ -62,7 +62,7 @@ def test_standup_start_basic(url, initialise_user_data, initialise_channel_data)
     start_input = {
         'token': token,
         'channel_id': channel2_id,
-        'length': 2
+        'length': 10
     }
     start_response2 = requests.post(url + "/standup/start", json=start_input)
     assert start_response2.status_code == 200
