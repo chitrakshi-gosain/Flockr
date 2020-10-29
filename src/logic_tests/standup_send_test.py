@@ -9,6 +9,7 @@ import pytest
 from error import AccessError, InputError
 from standup import standup_start, standup_active, standup_send
 from channel import channel_join, channel_messages
+from auth import auth_logout
 
 import time
 '''
@@ -58,7 +59,7 @@ def test_standup_send_basic(initialise_user_data, initialise_channel_data):
     token1 = initialise_user_data['admin']['token']
     token2 = initialise_user_data['user0']['token']
     channel1_id = initialise_channel_data['admin_publ']['channel_id']
-    channel2_id = initialise_channel_data['user0_publ']
+    channel2_id = initialise_channel_data['user0_publ']['channel_id']
     duration = 1
 
     channel_join(token2, channel1_id)
@@ -67,22 +68,25 @@ def test_standup_send_basic(initialise_user_data, initialise_channel_data):
     standup_start(token2, channel2_id, duration) #user0_publ
 
     standup_send(token1, channel1_id, 'start of standup in admin_publ')
-    standup_send(token2, channel2_id, 'start of standup in user0_publ')
     standup_send(token2, channel1_id, 'end of standup in admin_publ')
 
-    #wait 2 seconds for standups to expire
-    time.sleep(2)
+    standup_send(token2, channel2_id, 'start of standup in user0_publ')
+
+    #wait 1 seconds for standups to expire (and call standup_active() to update)
+    time.sleep(1)
+    standup_active(token1, channel1_id)
+    standup_active(token1, channel2_id)
 
     with pytest.raises(InputError):
         standup_send(token1, channel1_id, 'standup has expired')
 
     admin_publ_standup_message = 'admin_first: start of standup in admin_publ\n' +\
-                                 'user0_first: end of standup in admin_publ\n'
+                                 'user0_first: end of standup in admin_publ'
     user0_publ_standup_message = 'user0_first: start of standup in user0_publ'
 
     #get channel_messages
-    admin_publ_messages = channel_messages(token1, channel1_id)['messages']
-    user0_publ_messages = channel_messages(token2, channel2_id)['messages']
+    admin_publ_messages = channel_messages(token1, channel1_id, 0)['messages']
+    user0_publ_messages = channel_messages(token2, channel2_id, 0)['messages']
 
     assert is_message_in_messages(admin_publ_standup_message, admin_publ_messages)
     assert is_message_in_messages(user0_publ_standup_message, user0_publ_messages)
@@ -124,7 +128,7 @@ def test_standup_send_invalid_channel(initialise_user_data, initialise_channel_d
     with pytest.raises(InputError):
         standup_send(token, invalid_channel_id, 'sent with invalid channel_id')
 
-def test_standup_send_long_message(initialise_user_data, initialise_channel_data):
+def test_standup_send_long_short_message(initialise_user_data, initialise_channel_data):
     token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
     duration = 1
@@ -134,9 +138,49 @@ def test_standup_send_long_message(initialise_user_data, initialise_channel_data
     with pytest.raises(InputError):
         standup_send(token, channel_id, 'aa'*1000)
 
+    with pytest.raises(InputError):
+        standup_send(token, channel_id, '')
+
 def test_standup_send_not_active(initialise_user_data, initialise_channel_data):
     token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
 
     with pytest.raises(InputError):
         standup_send(token, channel_id, 'there is no standup')
+
+def test_standup_send_expire_leave(initialise_user_data, initialise_channel_data):
+    token = initialise_user_data['admin']['token']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
+    duration = 1
+
+    standup_start(token, channel_id, duration)
+    standup_send(token, channel_id, 'I am about to logout')
+
+    auth_logout(token)
+
+    #we still need a valid token
+    user_token = initialise_user_data['user0']['token']
+    channel_join(user_token, channel_id)
+
+    #make sure message is still sent at end
+    time.sleep(1)
+    standup_active(user_token, channel_id)
+
+    message = 'admin_first: I am about to logout'
+    admin_publ_messages = channel_messages(user_token, channel_id, 0)['messages']
+
+    assert is_message_in_messages(message, admin_publ_messages)
+
+def test_standup_send_no_messages(initialise_user_data, initialise_channel_data):
+    token = initialise_user_data['admin']['token']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
+    duration = 1
+
+    standup_start(token, channel_id, duration)
+
+    time.sleep(1)
+    standup_active(token, channel_id)
+
+    #should send nothing
+    messages = channel_messages(token, channel_id, 0)['messages']
+    assert messages == []

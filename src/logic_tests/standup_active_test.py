@@ -88,7 +88,7 @@ def test_standup_active_no_standup(initialise_user_data, initialise_channel_data
     token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
 
-    standup_info = standup_start(token, channel_id, 1)
+    standup_info = standup_active(token, channel_id)
     assert not standup_info['is_active']
     assert standup_info['time_finish'] == None
 
