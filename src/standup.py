@@ -220,7 +220,9 @@ def standup_end(channel_id):
         'message_id': message_id,
         'u_id': channel_info['standup']['u_id'],
         'message': message_out,
-        'time_created': channel_info['standup']['time_finish']
+        'time_created': channel_info['standup']['time_finish'],
+        'reacts': [],
+        'is_pinned': False
     }
 
     if message_out != '':
