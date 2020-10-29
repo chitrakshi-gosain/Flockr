@@ -83,7 +83,7 @@ def test_standup_active_invalid_token(url, initialise_user_data, initialise_chan
         'token': token,
         'channel_id': channel_id,
         'length': 1
-    }
+    })
 
     active_input = {
         'token': ' ',
