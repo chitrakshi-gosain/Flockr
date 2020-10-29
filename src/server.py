@@ -886,11 +886,11 @@ def standup_start_route():
     payload = request.get_json()
     token = payload['token']
     channel_id = int(payload['channel_id'])
-    length = int(payload['length']
+    length = int(payload['length'])
 
     return dumps(standup_start(token, channel_id, length))
 
-@APP.route("/standup/active", methods=['POST'])
+@APP.route("/standup/active", methods=['GET'])
 def standup_active_route():
     '''
     DESCRIPTION:
