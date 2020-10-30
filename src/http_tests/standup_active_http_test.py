@@ -138,7 +138,7 @@ def test_standup_active_not_in_channel(url, initialise_user_data, initialise_cha
     start_response = requests.post(url + "/standup/start", json={
         'token': token,
         'channel_id': channel_id,
-        'length': 1
+        'length': 100
     }).json()
 
     active_input = {

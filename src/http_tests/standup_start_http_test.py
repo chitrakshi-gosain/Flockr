@@ -62,21 +62,24 @@ def test_standup_start_basic(url, initialise_user_data, initialise_channel_data)
     start_input = {
         'token': token,
         'channel_id': channel2_id,
-        'length': 10
+        'length': 100
     }
     start_response2 = requests.post(url + "/standup/start", json=start_input)
     assert start_response2.status_code == 200
 
     time.sleep(1)
-    requests.get(url + "/standup/active", params={
+    standup1_status = requests.get(url + "/standup/active", params={
         'token': token,
         'channel_id': channel1_id
-    })
+    }).json()
 
-    requests.get(url + "/standup/active", params={
+    standup2_status = requests.get(url + "/standup/active", params={
         'token': token,
         'channel_id': channel2_id
-    })
+    }).json()
+
+    assert not standup1_status['is_active']
+    assert standup2_status['is_active']
 
     send_response = requests.post(url + "/standup/send", json={
         'token': token,
@@ -91,12 +94,6 @@ def test_standup_start_basic(url, initialise_user_data, initialise_channel_data)
         'message': 'standup2 still valid'
     })
     assert send_response.status_code == 200
-
-    time.sleep(1)
-    requests.get(url + "/standup/active", params={
-        'token': token,
-        'channel_id': channel2_id
-    })
 
 def test_standup_start_invalid_token(url, initialise_channel_data):
     invalid_token = ' '
@@ -127,7 +124,7 @@ def test_standup_start_invalid_channel(url, initialise_user_data):
 def test_standup_start_already_running(url, initialise_user_data, initialise_channel_data):
     token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
-    duration = 1
+    duration = 100
 
     start_input = {
         'token': token,

@@ -55,7 +55,7 @@ def test_standup_send_basic(url, initialise_user_data, initialise_channel_data):
     token2 = initialise_user_data['user1']['token']
     channel1_id = initialise_channel_data['admin_publ']['channel_id']
     channel2_id = initialise_channel_data['user1_priv']['channel_id']
-    duration = 1
+    duration = 5
 
     #user1 join channel
     requests.post(url + '/channel/join', json={
@@ -102,7 +102,7 @@ def test_standup_send_basic(url, initialise_user_data, initialise_channel_data):
     assert send_response.status_code == 200
 
     #wait 1 seconds for standups to expire (and call standup_active() to update)
-    time.sleep(1)
+    time.sleep(5)
     requests.get(url +'/standup/active', params={
         'token': token1,
         'channel_id': channel1_id
@@ -145,7 +145,7 @@ def test_standup_send_basic(url, initialise_user_data, initialise_channel_data):
 def test_standup_send_invalid_token(url, initialise_user_data, initialise_channel_data):
     token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
-    duration = 1
+    duration = 100
 
     requests.post(url + '/standup/start', json={
         'token': token,
@@ -164,7 +164,7 @@ def test_standup_send_invalid_token(url, initialise_user_data, initialise_channe
 def test_standup_send_not_in_channel(url, initialise_user_data, initialise_channel_data):
     standup_token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['admin_priv']['channel_id']
-    duration = 1
+    duration = 100
 
     requests.post(url + '/standup/start', json={
         'token': standup_token,
@@ -184,7 +184,7 @@ def test_standup_send_not_in_channel(url, initialise_user_data, initialise_chann
 def test_standup_send_invalid_channel(url, initialise_user_data, initialise_channel_data):
     token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
-    duration = 1
+    duration = 100
 
     requests.post(url + '/standup/start', json={
         'token': token,
@@ -203,7 +203,7 @@ def test_standup_send_invalid_channel(url, initialise_user_data, initialise_chan
 def test_standup_send_long_short_message(url, initialise_user_data, initialise_channel_data):
     token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
-    duration = 1
+    duration = 100
 
     requests.post(url + '/standup/start', json={
         'token': token,
@@ -242,7 +242,7 @@ def test_standup_send_not_active(url, initialise_user_data, initialise_channel_d
 def test_standup_send_expire_leave(url, initialise_user_data, initialise_channel_data):
     token = initialise_user_data['admin']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
-    duration = 1
+    duration = 5
 
     requests.post(url + '/standup/start', json={
         'token': token,
@@ -270,7 +270,7 @@ def test_standup_send_expire_leave(url, initialise_user_data, initialise_channel
     })
 
     #make sure message is still sent at end
-    time.sleep(1)
+    time.sleep(5)
     requests.get(url +'/standup/active', params={
         'token': user_token,
         'channel_id': channel_id
