@@ -59,7 +59,7 @@ def message_send(token, channel_id, message):
         -> when the authorised user has not joined the channel they are
            trying to post to
     Error type: InputError
-        -> message is more than 1000 characters 
+        -> message is more than 1000 characters
     '''
 
     # Testing for token validity
