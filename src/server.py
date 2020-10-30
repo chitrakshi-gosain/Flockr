@@ -93,7 +93,7 @@ def auth_logout_route():
     RETURN VALUES:
         -> is_success : True if user is successfully logged out,
                         otherwise False
-    
+
     EXCEPTIONS:
     Error type: AccessError
          -> token passed in is not a valid token
@@ -332,7 +332,7 @@ def channel_removeowner_route():
         -> token : token for authenticating the user
         -> channel_id : id of channel to be removed from
         -> u_id : id of user to be removed
-    
+
     EXCEPTIONS:
     Error type: InputError
         -> Channel ID is not a valid channel
@@ -442,7 +442,7 @@ def message_send_route():
         -> when the authorised user has not joined the channel they are
            trying to post to
     Error type: InputError
-        -> message is more than 1000 characters 
+        -> message is more than 1000 characters
     '''
 
     payload = request.get_json()
@@ -548,7 +548,7 @@ def user_profile_setname_route():
                    may not be authorized)
         -> name_first : new first name of a user
         -> name_last : new last name of a user
-    
+
     EXCEPTIONS:
     Error type: InputError
         -> name_first is not between 1 and 50 characters inclusively
@@ -697,7 +697,7 @@ def clear_route():
     '''
 
     return dumps(clear())
-    
+
 @APP.route("/message/sendlater", methods=['POST'])
 def message_sendlater_route():
     '''
@@ -713,7 +713,7 @@ def message_sendlater_route():
 
     RETURN VALUES:
         -> message_id : id of the message which will be sent later
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -739,7 +739,7 @@ def message_react_route():
         -> message_id : id of the message to be reacted
         -> react_id : id of the react, presently only possibility is 1
                       for thumbs up
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -790,7 +790,7 @@ def message_pin_route():
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be pinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -813,7 +813,7 @@ def message_unpin_route():
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be unpinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -842,7 +842,7 @@ def user_profile_uploadphoto_route():
         -> y_start : start vertical bound for image to be cropped from
         -> x_end : end horizontal bound for image to be cropped till
         -> y_end : end vertical bound for image to be cropped till
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -883,9 +883,14 @@ def standup_start_route():
         -> an active standup is currently running in this channel
     '''
 
-    pass
+    payload = request.get_json()
+    token = payload['token']
+    channel_id = int(payload['channel_id'])
+    length = int(payload['length'])
 
-@APP.route("/standup/active", methods=['POST'])
+    return dumps(standup_start(token, channel_id, length))
+
+@APP.route("/standup/active", methods=['GET'])
 def standup_active_route():
     '''
     DESCRIPTION:
@@ -910,7 +915,10 @@ def standup_active_route():
         -> channel ID is not a valid channel
     '''
 
-    pass
+    token = request.args.get('token')
+    channel_id = int(request.args.get('channel_id'))
+
+    return dumps(standup_active(token, channel_id))
 
 @APP.route("/standup/send", methods=['POST'])
 def standup_send_route():
@@ -922,7 +930,7 @@ def standup_send_route():
     PARAMETERS:
         -> token : token of the authenticated user
         -> channel_id : id of the channel to send message in for standup
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -934,7 +942,12 @@ def standup_send_route():
         -> an active standup is not currently running in this channel
     '''
 
-    pass
+    payload = request.get_json()
+    token = payload['token']
+    channel_id = int(payload['channel_id'])
+    message = payload['message']
+
+    return dumps(standup_send(token, channel_id, message))
 
 @APP.route("/auth/passwordreset/request", methods=['POST'])
 def auth_passwordreset_request_route():
@@ -947,7 +960,7 @@ def auth_passwordreset_request_route():
 
     PARAMETERS:
         -> email : email of a user
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -965,7 +978,7 @@ def auth_passwordreset_reset_route():
     PARAMETERS:
         -> reset_code : reset code provided to user for password reset
         -> new_password : new password of user
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token

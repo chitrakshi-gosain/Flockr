@@ -6,8 +6,10 @@ Iteration 3
 '''
 
 from error import InputError, AccessError
-from helper import get_user_info
-
+import helper
+from datetime import datetime
+from message import message_send
+import data
 '''
 ****************************BASIC TEMPLATE******************************
 '''
@@ -82,17 +84,30 @@ def standup_start(token, channel_id, length):
         -> an active standup is currently running in this channel
     '''
 
-    # Checking for AccessError:
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
+        raise AccessError('invalid token')
 
-    # Checking for InputError(s):
+    channel_info = helper.get_channel_info(channel_id)
+    if not channel_info:
+        raise InputError('invalid channel id')
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    if channel_info['standup'] != {}:
+        raise InputError('standup already exists')
+
+    now = int(datetime.now().timestamp())
+
+    channel_info['standup'] = {
+        'u_id': user_info['u_id'],
+        'time_start': now,
+        'time_finish': now+length,
+        'messages': []
+    }
 
     return {
-        'time_finish': 0
+        'time_finish': now+length
         }
-    
+
 def standup_active(token,channel_id):
     '''
     DESCRIPTION:
@@ -116,17 +131,34 @@ def standup_active(token,channel_id):
     Error type: InputError
         -> channel ID is not a valid channel
     '''
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
+        raise AccessError('invalid token')
 
-    # Checking for AccessError:
+    channel_info = helper.get_channel_info(channel_id)
+    if not channel_info:
+        raise InputError('invalid channel id')
 
-    # Checking for InputError(s):
+    now = int(datetime.now().timestamp())
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    if channel_info['standup'] == {}: #standup did not exist since last call
+        is_active = False
+        time_finish = None
+
+    else:
+        if channel_info['standup']['time_finish'] <= now:
+            #standup has expired
+            is_active = False
+            time_finish = None
+
+            standup_end(channel_id)
+        else:
+            is_active = True
+            time_finish = channel_info['standup']['time_finish']
 
     return {
-        'is_active': True,
-        'time_finish': 0
+        'is_active': is_active,
+        'time_finish': time_finish
     }
 
 def standup_send(token, channel_id, message):
@@ -138,7 +170,7 @@ def standup_send(token, channel_id, message):
     PARAMETERS:
         -> token : token of the authenticated user
         -> channel_id : id of the channel to send message in for standup
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -150,12 +182,51 @@ def standup_send(token, channel_id, message):
         -> an active standup is not currently running in this channel
     '''
 
-    # Checking for AccessError:
+    user_info = helper.get_user_info('token', token)
+    if not user_info:
+        raise AccessError('invalid token')
 
-    # Checking for InputError(s):
+    channel_info = helper.get_channel_info(channel_id)
+    if not channel_info:
+        raise InputError('invalid channel id')
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    if not helper.is_user_in_channel(user_info['u_id'], channel_info['channel_id']):
+        raise AccessError('user is not in channel')
+
+    if not standup_active(token, channel_id)['is_active']:
+        raise InputError('there is no active standup in channel')
+
+    if not (1 <= len(message) <= 1000):
+        raise InputError('messages cannot be 0 or more than 1000 characters')
+
+    user_message = f"{user_info['name_first']}: {message}"
+    channel_info['standup']['messages'].append(user_message)
 
     return {
     }
+
+def standup_end(channel_id):
+    '''
+    reset the channel's standup state and send message
+    '''
+    # no need to check for errors as they have been checked in standup_active
+
+    channel_info = helper.get_channel_info(channel_id)
+
+    message_out = '\n'.join(channel_info['standup']['messages'])
+    message_id = len(data.data['messages'])
+    #should not use send as token can be invalidated
+    message_dict = {
+        'message_id': message_id,
+        'u_id': channel_info['standup']['u_id'],
+        'message': message_out,
+        'time_created': channel_info['standup']['time_finish'],
+        'reacts': [],
+        'is_pinned': False
+    }
+
+    if message_out != '':
+        data.data['messages'].append(message_dict)
+        channel_info['messages'].append(message_dict)
+
+    channel_info['standup'] = {}
