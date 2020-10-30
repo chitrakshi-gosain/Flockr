@@ -105,8 +105,6 @@ def test_standup_active_invalid_channel(url, initialise_user_data, initialise_ch
         'length': 1
     })
 
-    invalid_channel_id = -1
-
     active_input = {
         'token': token,
         'channel_id': -1
