@@ -83,6 +83,8 @@ def message_send(token, channel_id, message):
         'u_id': user_info['u_id'],
         'message': message,
         'time_created': time_created
+        'is_pinned': False
+        'reacts': []
     }
 
     data.data['messages'].append(message_dict)
