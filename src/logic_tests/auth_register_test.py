@@ -348,6 +348,6 @@ def test_details_registered_by_auth_register(reset):
             'name_first': 'user0_first',
             'name_last': 'user0_last',
             'handle_str': 'user0_firstuser0_las',
-            'img_profile_url': '',
+            'profile_img_url': '',
         }
     }

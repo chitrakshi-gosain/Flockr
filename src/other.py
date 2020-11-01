@@ -86,6 +86,7 @@ def users_all(token):
                 'name_first': user['name_first'],
                 'name_last': user['name_last'],
                 'handle_str': user['handle_str'],
+                'profile_img_url': user['profile_img_url'],
             }
 
         return_dict['users'].append(curr_user)

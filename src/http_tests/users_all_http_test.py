@@ -107,6 +107,7 @@ def test_users_all_basic(url, users_all_initialise_users):
                 'name_first': 'John',
                 'name_last': 'Smith',
                 'handle_str': 'johnsmith',
+                'profile_img_url': '',
             },
             {
                 'u_id': user_data['jane']['u_id'],
@@ -114,6 +115,7 @@ def test_users_all_basic(url, users_all_initialise_users):
                 'name_first': 'Jane',
                 'name_last': 'Smith',
                 'handle_str': 'janesmith',
+                'profile_img_url': '',
             },
             {
                 'u_id': user_data['noah']['u_id'],
@@ -121,6 +123,7 @@ def test_users_all_basic(url, users_all_initialise_users):
                 'name_first': 'Noah',
                 'name_last': 'Navarro',
                 'handle_str': 'noahnavarro',
+                'profile_img_url': '',
             },
             {
                 'u_id': user_data['ingrid']['u_id'],
@@ -128,6 +131,7 @@ def test_users_all_basic(url, users_all_initialise_users):
                 'name_first': 'Ingrid',
                 'name_last': 'Cline',
                 'handle_str': 'ingridcline',
+                'profile_img_url': '',
             },
             {
                 'u_id': user_data['donald']['u_id'],
@@ -135,6 +139,7 @@ def test_users_all_basic(url, users_all_initialise_users):
                 'name_first': 'Donald',
                 'name_last': 'Richards',
                 'handle_str': 'donaldrichards',
+                'profile_img_url': '',
             },
         ],
     }
@@ -167,6 +172,7 @@ def test_users_all_logout(url, users_all_initialise_users):
                 'name_first': 'John',
                 'name_last': 'Smith',
                 'handle_str': 'johnsmith',
+                'profile_img_url': '',
             },
             {
                 'u_id': user_data['jane']['u_id'],
@@ -174,6 +180,7 @@ def test_users_all_logout(url, users_all_initialise_users):
                 'name_first': 'Jane',
                 'name_last': 'Smith',
                 'handle_str': 'janesmith',
+                'profile_img_url': '',
             },
             {
                 'u_id': user_data['noah']['u_id'],
@@ -181,6 +188,7 @@ def test_users_all_logout(url, users_all_initialise_users):
                 'name_first': 'Noah',
                 'name_last': 'Navarro',
                 'handle_str': 'noahnavarro',
+                'profile_img_url': '',
             },
             {
                 'u_id': user_data['ingrid']['u_id'],
@@ -188,6 +196,7 @@ def test_users_all_logout(url, users_all_initialise_users):
                 'name_first': 'Ingrid',
                 'name_last': 'Cline',
                 'handle_str': 'ingridcline',
+                'profile_img_url': '',
             },
             {
                 'u_id': user_data['donald']['u_id'],
@@ -195,6 +204,7 @@ def test_users_all_logout(url, users_all_initialise_users):
                 'name_first': 'Donald',
                 'name_last': 'Richards',
                 'handle_str': 'donaldrichards',
+                'profile_img_url': '',
             },
         ],
     }
