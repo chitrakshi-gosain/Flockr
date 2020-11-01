@@ -87,7 +87,8 @@ def channel_invite(token, channel_id, u_id):
     user_added = {
         'u_id': user_info['u_id'],
         'name_first': user_info['name_first'],
-        'name_last': user_info['name_last']
+        'name_last': user_info['name_last'],
+        'profile_img_url': user_info['profile_img_url'],
         }
 
     if not is_user_in_channel(u_id, channel_id):
@@ -220,7 +221,8 @@ def channel_leave(token, channel_id):
     user_removed = {
         'u_id': user_info['u_id'],
         'name_first': user_info['name_first'],
-        'name_last': user_info['name_last']
+        'name_last': user_info['name_last'],
+        'profile_img_url': user_info['profile_img_url'],
         }
 
     if user_removed in channel_info['owner_members']:
@@ -268,7 +270,8 @@ def channel_join(token, channel_id):
     user_added = {
         'u_id': user_info['u_id'],
         'name_first': user_info['name_first'],
-        'name_last': user_info['name_last']
+        'name_last': user_info['name_last'],
+        'profile_img_url': user_info['profile_img_url'],
         }
 
     if not is_user_in_channel(user_info['u_id'], channel_id):
@@ -327,7 +330,8 @@ def channel_addowner(token, channel_id, u_id):
 
     name_first = user_info['name_first']
     name_last = user_info['name_last']
-    user_dict = {'u_id': u_id, 'name_first': name_first, 'name_last': name_last}
+    img_url = user_info['profile_img_url']
+    user_dict = {'u_id': u_id, 'name_first': name_first, 'name_last': name_last, 'profile_img_url': img_url,}
 
     # append the given user to the list of owners
     channel_info['owner_members'].append(user_dict)
@@ -378,7 +382,7 @@ def channel_removeowner(token, channel_id, u_id):
 
     # remove the given user from the list of owners
     u_info = get_user_info("u_id", u_id)
-    user_dict = {'u_id': u_id, 'name_first': u_info['name_first'], 'name_last': u_info['name_last']}
+    user_dict = {'u_id': u_id, 'name_first': u_info['name_first'], 'name_last': u_info['name_last'], 'profile_img_url': u_info['profile_img_url'],}
 
     channel_info['owner_members'].remove(user_dict)
 
