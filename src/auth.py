@@ -223,7 +223,8 @@ def auth_register(email, password, name_first, name_last):
         'name_last' : name_last,
         'handle_str' : handle_string,
         'token' : 'no_token_generated',
-        'password' : encrypt_password_with_hash(password)
+        'password' : encrypt_password_with_hash(password),
+        'profile_img_url': '',
     }
 
     # appending the data of new_user to data dictionary in data file
