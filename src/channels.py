@@ -156,14 +156,16 @@ def channels_create(token, name, is_public):
             {
                 'u_id': current_user['u_id'],
                 'name_first': current_user['name_first'],
-                'name_last': current_user['name_last']
+                'name_last': current_user['name_last'],
+                'profile_img_url': current_user['profile_img_url'],
             }
         ],
         'all_members': [
             {
                 'u_id': current_user['u_id'],
                 'name_first': current_user['name_first'],
-                'name_last': current_user['name_last']
+                'name_last': current_user['name_last'],
+                'profile_img_url': current_user['profile_img_url'],
             }
         ],
         'messages': [],
