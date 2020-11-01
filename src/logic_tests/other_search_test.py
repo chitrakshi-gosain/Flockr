@@ -55,14 +55,14 @@ def test_other_search_join_channel(initialise_user_data, initialise_channel_data
     channel_id = initialise_channel_data['admin_publ']['channel_id']
 
     message1_str = 'I am in no channels'
-    message1 = message_send(users['admin']['token'], channel_id, message1_str)
+    message_send(users['admin']['token'], channel_id, message1_str)
 
     assert search(users['user0']['token'], 'channel') == { 'messages': [] }
 
     channel_join(users['user0']['token'], channel_id)
 
     message2_str = 'Now Im in a channel'
-    message2 = message_send(users['admin']['token'], channel_id, message2_str)
+    message_send(users['admin']['token'], channel_id, message2_str)
 
     searched_messages = search(users['user0']['token'], 'no channels')
 
@@ -81,10 +81,10 @@ def test_other_search_empty_query(initialise_user_data, initialise_channel_data)
     channel_join(users['user0']['token'], channel_id)
 
     message1_str = 'this is message1'
-    message1 = message_send(users['admin']['token'], channel_id, message1_str)
+    message_send(users['admin']['token'], channel_id, message1_str)
 
     message2_str = 'this is message2'
-    message2 = message_send(users['admin']['token'], channel_id, message2_str)
+    message_send(users['admin']['token'], channel_id, message2_str)
 
     searched_messages = search(users['user0']['token'], '')
 
@@ -96,7 +96,7 @@ def test_other_search_admin(initialise_user_data, initialise_channel_data):
     channel_id = initialise_channel_data['user0_priv']['channel_id']
 
     message1_str = 'private'
-    message1 = message_send(users['user0']['token'], channel_id, message1_str)
+    message_send(users['user0']['token'], channel_id, message1_str)
 
     searched_messages = search(users['admin']['token'], 'priv')
 
@@ -108,10 +108,10 @@ def test_other_search_multiple_channels(initialise_user_data, initialise_channel
     channel_id2 = initialise_channel_data['admin_priv']['channel_id']
 
     message1_str = 'channel1'
-    message1 = message_send(users['admin']['token'], channel_id1, message1_str)
+    message_send(users['admin']['token'], channel_id1, message1_str)
 
     message2_str = 'channel2'
-    message2 = message_send(users['admin']['token'], channel_id2, message2_str)
+    message_send(users['admin']['token'], channel_id2, message2_str)
 
     searched_messages = search(users['admin']['token'], 'channel')
 
