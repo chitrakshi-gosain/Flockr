@@ -86,7 +86,7 @@ def test_http_message_react_noerrors(url, initialise_user_data, initialise_chann
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -103,8 +103,9 @@ def test_http_message_react_noerrors(url, initialise_user_data, initialise_chann
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
-    # react
+    # user reacts to their own message
     message_react_response = requests.post(f"{url}/message/react", json={
         'token': token,
         'message_id': message_id,
@@ -114,6 +115,7 @@ def test_http_message_react_noerrors(url, initialise_user_data, initialise_chann
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
 
 def test_http_message_react_existing(url, initialise_user_data, initialise_channel_data):
@@ -123,9 +125,9 @@ def test_http_message_react_existing(url, initialise_user_data, initialise_chann
 
     # get user data
     user0_details = initialise_user_data['user0']
-    token0 = user0_details['token']
+    u_id0, token0 = user0_details['u_id'], user0_details['token']
     user1_details = initialise_user_data['user1']
-    token1 = user1_details['token']
+    u_id1, token1 = user1_details['u_id'], user1_details['token']
     # get channel data
     # channel has members user0, user1 and owner user0
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -145,23 +147,24 @@ def test_http_message_react_existing(url, initialise_user_data, initialise_chann
     # react_id 1 corresponds to 'thumbs up'
     react_id = 1
     # get reaction details for message with message_id
-    # get with both tokens
-    react0 = react_details(url, token0, message_id, react_id)
-    react1 = react_details(url, token1, message_id, react_id)
+    react = react_details(url, token0, message_id, react_id)
     # assert message hasn't been reacted to
-    assert not react0['is_this_user_reacted']
-    assert not react1['is_this_user_reacted']
-    # user0 reacts
+    assert u_id0 not in react['u_ids']
+    assert u_id1 not in react['u_ids']
+    assert not react['is_this_user_reacted']
+    # user0 reacts to their own message
     message_react_response0 = requests.post(f"{url}/message/react", json={
         'token': token0,
         'message_id': message_id,
         'react_id': react_id
     })
     assert message_react_response0.status_code == 200
-    # user0 gets reaction details
-    react0 = react_details(url, token0, message_id, react_id)
-    # assert message has been reacted to
-    assert react0['is_this_user_reacted']
+    # get reaction details
+    react = react_details(url, token0, message_id, react_id)
+    # assert message has been reacted to by its sender user0 but not user1
+    assert u_id0 in react['u_ids']
+    assert u_id1 not in react['u_ids']
+    assert react['is_this_user_reacted']
     # user1 reacts
     message_react_response1 = requests.post(f"{url}/message/react", json={
         'token': token1,
@@ -169,10 +172,10 @@ def test_http_message_react_existing(url, initialise_user_data, initialise_chann
         'react_id': react_id
     })
     assert message_react_response1.status_code == 200
-    # user1 gets reaction details
-    react1 = react_details(url, token1, message_id, react_id)
-    # assert message has been reacted to
-    assert react1['is_this_user_reacted']
+    # get reaction details
+    react = react_details(url, token0, message_id, react_id)
+    # assert message has been reacted to by user1
+    assert u_id1 in react['u_ids']
 
 def test_http_message_react_invalidmessage(url, initialise_user_data, initialise_channel_data):
     '''
@@ -247,7 +250,7 @@ def test_http_message_react_twice(url, initialise_user_data, initialise_channel_
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -264,8 +267,9 @@ def test_http_message_react_twice(url, initialise_user_data, initialise_channel_
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
-    # react
+    # user reacts to their own message
     message_react_response = requests.post(f"{url}/message/react", json={
         'token': token,
         'message_id': message_id,
@@ -275,6 +279,7 @@ def test_http_message_react_twice(url, initialise_user_data, initialise_channel_
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
     # attempt to react twice
     # react - assert InputError
@@ -293,7 +298,7 @@ def test_http_message_react_notauth(url, initialise_user_data, initialise_channe
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -310,6 +315,7 @@ def test_http_message_react_notauth(url, initialise_user_data, initialise_channe
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
     # assume ' ' is invalid
     token = ' '

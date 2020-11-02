@@ -87,7 +87,7 @@ def test_http_message_unreact_noerrors(url, initialise_user_data, initialise_cha
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -104,8 +104,9 @@ def test_http_message_unreact_noerrors(url, initialise_user_data, initialise_cha
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
-    # react
+    # user reacts to their own message
     message_react_response = requests.post(f"{url}/message/react", json={
         'token': token,
         'message_id': message_id,
@@ -115,8 +116,9 @@ def test_http_message_unreact_noerrors(url, initialise_user_data, initialise_cha
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
-    # unreact
+    # user unreacts to their own message
     message_unreact_response = requests.post(f"{url}/message/unreact", json={
         'token': token,
         'message_id': message_id,
@@ -126,6 +128,7 @@ def test_http_message_unreact_noerrors(url, initialise_user_data, initialise_cha
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
 
 def test_http_message_unreact_invalidmessage(url, initialise_user_data, initialise_channel_data):
@@ -136,7 +139,7 @@ def test_http_message_unreact_invalidmessage(url, initialise_user_data, initiali
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -153,8 +156,9 @@ def test_http_message_unreact_invalidmessage(url, initialise_user_data, initiali
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
-    # react
+    # user reacts to their own message
     message_react_response = requests.post(f"{url}/message/react", json={
         'token': token,
         'message_id': message_id,
@@ -164,6 +168,7 @@ def test_http_message_unreact_invalidmessage(url, initialise_user_data, initiali
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
     # set message_id as -1
     message_id = -1
@@ -183,7 +188,7 @@ def test_http_message_unreact_invalidreact(url, initialise_user_data, initialise
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -200,6 +205,7 @@ def test_http_message_unreact_invalidreact(url, initialise_user_data, initialise
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
     # react
     message_react_response = requests.post(f"{url}/message/react", json={
@@ -211,6 +217,7 @@ def test_http_message_unreact_invalidreact(url, initialise_user_data, initialise
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
     # set react_id as -1
     react_id = -1
@@ -230,7 +237,7 @@ def test_http_message_unreact_twice(url, initialise_user_data, initialise_channe
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -247,6 +254,7 @@ def test_http_message_unreact_twice(url, initialise_user_data, initialise_channe
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
     # react
     message_react_response = requests.post(f"{url}/message/react", json={
@@ -258,6 +266,7 @@ def test_http_message_unreact_twice(url, initialise_user_data, initialise_channe
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
     # unreact
     message_unreact_response = requests.post(f"{url}/message/unreact", json={
@@ -269,6 +278,7 @@ def test_http_message_unreact_twice(url, initialise_user_data, initialise_channe
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
     # unreact - assert InputError
     message_unreact_response = requests.post(f"{url}/message/unreact", json={
@@ -286,7 +296,7 @@ def test_http_message_unreact_notauth(url, initialise_user_data, initialise_chan
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -303,6 +313,7 @@ def test_http_message_unreact_notauth(url, initialise_user_data, initialise_chan
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
     # react
     message_react_response = requests.post(f"{url}/message/react", json={
@@ -314,6 +325,7 @@ def test_http_message_unreact_notauth(url, initialise_user_data, initialise_chan
     # get reaction details for message with message_id
     react = react_details(url, token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
     # set token as ' '
     token = ' '
