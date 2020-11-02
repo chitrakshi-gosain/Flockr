@@ -61,7 +61,7 @@ def test_user_profile_uploadphoto_invalid_http(initialise_user_data):
     users = initialise_user_data
 
     with pytest.raises(InputError):
-        user_profile_uploadphoto(users['user0']['token'], 'https://webcms3.cse.unsw.edu.au/users/hello', 0, 0, 200, 200)
+        user_profile_uploadphoto(users['user0']['token'], 'https://webcms3.cse.unsw.edu.au/users/hello.jpg', 0, 0, 200, 200)
 
 def test_user_profile_uploadphoto_invalid_dimensions(initialise_user_data):
     '''
