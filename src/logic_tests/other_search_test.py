@@ -37,10 +37,11 @@ Error type: AccessError
     -> token passed in is not a valid token
 '''
 
-def pop_datetimes(messages):
-    for entry in messages:
-        entry.pop('time_created')
-    return messages
+def is_message_in_messages(message_str, messages):
+    for message in messages['messages']:
+        if message['message'] == message_str:
+            return True
+    return False
 
 def test_other_search_not_in_channels(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
@@ -53,28 +54,20 @@ def test_other_search_join_channel(initialise_user_data, initialise_channel_data
     users = initialise_user_data
     channel_id = initialise_channel_data['admin_publ']['channel_id']
 
-    message1 = message_send(users['admin']['token'], channel_id, 'I am in no channels')
-    message1_info = {
-        'message_id' : message1['message_id'],
-        'u_id' : users['admin']['u_id'],
-        'message' : 'I am in no channels',
-    }
+    message1_str = 'I am in no channels'
+    message_send(users['admin']['token'], channel_id, message1_str)
 
     assert search(users['user0']['token'], 'channel') == { 'messages': [] }
 
     channel_join(users['user0']['token'], channel_id)
 
-    message2 = message_send(users['admin']['token'], channel_id, 'Now Im in a channel')
-    message2_info = {
-        'message_id' : message2['message_id'],
-        'u_id' : users['admin']['u_id'],
-        'message' : 'Now Im in a channel',
-    }
+    message2_str = 'Now Im in a channel'
+    message_send(users['admin']['token'], channel_id, message2_str)
 
     searched_messages = search(users['user0']['token'], 'no channels')
-    popped = pop_datetimes(searched_messages['messages'])
-    assert message1_info in popped
-    assert message2_info not in popped
+
+    assert is_message_in_messages(message1_str, searched_messages)
+    assert not is_message_in_messages(message2_str, searched_messages)
 
 def test_other_search_no_messages(initialise_user_data):
     users = initialise_user_data
@@ -87,63 +80,43 @@ def test_other_search_empty_query(initialise_user_data, initialise_channel_data)
 
     channel_join(users['user0']['token'], channel_id)
 
-    message1 = message_send(users['admin']['token'], channel_id, 'this is message1')
-    message1_info = {
-        'message_id' : message1['message_id'],
-        'u_id' : users['admin']['u_id'],
-        'message' : 'this is message1',
-    }
+    message1_str = 'this is message1'
+    message_send(users['admin']['token'], channel_id, message1_str)
 
-    message2 = message_send(users['admin']['token'], channel_id, 'this is message2')
-    message2_info = {
-        'message_id' : message2['message_id'],
-        'u_id' : users['admin']['u_id'],
-        'message' : 'this is message2',
-    }
+    message2_str = 'this is message2'
+    message_send(users['admin']['token'], channel_id, message2_str)
 
     searched_messages = search(users['user0']['token'], '')
-    popped =  pop_datetimes(searched_messages['messages'])
-    assert message1_info in popped
-    assert message2_info in popped
+
+    assert is_message_in_messages(message1_str, searched_messages)
+    assert is_message_in_messages(message2_str, searched_messages)
 
 def test_other_search_admin(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
     channel_id = initialise_channel_data['user0_priv']['channel_id']
 
-    message1 = message_send(users['user0']['token'], channel_id, 'private')
-    message1_info = {
-        'message_id' : message1['message_id'],
-        'u_id' : users['user0']['u_id'],
-        'message' : 'private',
-    }
+    message1_str = 'private'
+    message_send(users['user0']['token'], channel_id, message1_str)
 
     searched_messages = search(users['admin']['token'], 'priv')
-    popped = pop_datetimes(searched_messages['messages'])
-    assert message1_info in popped
+
+    assert is_message_in_messages(message1_str, searched_messages)
 
 def test_other_search_multiple_channels(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
     channel_id1 = initialise_channel_data['admin_publ']['channel_id']
     channel_id2 = initialise_channel_data['admin_priv']['channel_id']
 
-    message1 = message_send(users['admin']['token'], channel_id1, 'channel1')
-    message1_info = {
-        'message_id' : message1['message_id'],
-        'u_id' : users['admin']['u_id'],
-        'message' : 'channel1',
-    }
+    message1_str = 'channel1'
+    message_send(users['admin']['token'], channel_id1, message1_str)
 
-    message2 = message_send(users['admin']['token'], channel_id2, 'channel2')
-    message2_info = {
-        'message_id' : message2['message_id'],
-        'u_id' : users['admin']['u_id'],
-        'message' : 'channel2',
-    }
+    message2_str = 'channel2'
+    message_send(users['admin']['token'], channel_id2, message2_str)
 
     searched_messages = search(users['admin']['token'], 'channel')
-    popped = pop_datetimes(searched_messages['messages'])
-    assert message1_info in popped
-    assert message2_info in popped
+
+    assert is_message_in_messages(message1_str, searched_messages)
+    assert is_message_in_messages(message2_str, searched_messages)
 
 def test_other_search_invalid_token(reset):
     invalid_token = ' '
