@@ -73,7 +73,7 @@ def test_user_profile_uploadphoto_valid(url, initialise_user_data):
 
     assert profile['profile_img_url'] != ''
 
-def test_user_profile_uploadphoto_invalid_http(initialise_user_data):
+def test_user_profile_uploadphoto_invalid_http(url, initialise_user_data):
     '''
     Testing an invalid HTTP status return
     '''
@@ -86,4 +86,19 @@ def test_user_profile_uploadphoto_invalid_http(initialise_user_data):
         'y_start': 0,
         'x_end': 200,
         'y_end': 200,
+    }).status_code == 400
+
+def test_user_profile_uploadphoto_invalid_dimensions(url, initialise_user_data):
+    '''
+    Testing invalid (x, y) dimensions
+    '''
+    users = initialise_user_data
+
+    assert requests.post(f'{url}/user/profile/uploadphoto', json={
+        'token': users['user0']['token'],
+        'img_url': 'https://webcms3.cse.unsw.edu.au/static/uploads/profilepic/z3418003/a17b8699d370d74996ef09e6044395d8330ddfe889ae1e364b5c8198b38d16a9/41250447_10214718102400449_1962109165832765440_n.jpg',
+        'x_start': 0,
+        'y_start': 0,
+        'x_end': 2000,
+        'y_end': 2000,
     }).status_code == 400
