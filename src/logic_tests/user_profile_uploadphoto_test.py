@@ -6,6 +6,7 @@ Iteration 2
 '''
 
 import pytest
+import requests
 from auth import auth_logout
 from user import user_profile
 from error import AccessError, InputError
