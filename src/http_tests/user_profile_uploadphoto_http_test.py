@@ -81,7 +81,7 @@ def test_user_profile_uploadphoto_invalid_http(url, initialise_user_data):
 
     assert requests.post(f'{url}/user/profile/uploadphoto', json={
         'token': users['user0']['token'],
-        'img_url': 'https://webcms3.cse.unsw.edu.au/users/hello.jpg',
+        'img_url': 'https://webcms3.cse.unsw.edu.au/gobbledegook.jpg',
         'x_start': 0,
         'y_start': 0,
         'x_end': 200,
@@ -124,7 +124,7 @@ def test_user_profile_uploadphoto_invalid_token(initialise_user_data):
     '''
     users = initialise_user_data
 
-    invalid_token = user_data['user0']['token']
+    invalid_token = users['user0']['token']
     requests.post(f'{url}/auth/logout', json={
         'token': invalid_token,
     })

@@ -61,7 +61,7 @@ def test_user_profile_uploadphoto_invalid_http(initialise_user_data):
     users = initialise_user_data
 
     with pytest.raises(InputError):
-        user_profile_uploadphoto(users['user0']['token'], 'https://webcms3.cse.unsw.edu.au/users/hello.jpg', 0, 0, 200, 200)
+        user_profile_uploadphoto(users['user0']['token'], 'https://webcms3.cse.unsw.edu.au/gobbledegook.jpg', 0, 0, 200, 200)
 
 def test_user_profile_uploadphoto_invalid_dimensions(initialise_user_data):
     '''
@@ -89,8 +89,8 @@ def test_user_profile_uploadphoto_invalid_token(initialise_user_data):
     '''
     users = initialise_user_data
 
-    invalid_token = user_data['user0']['token']
-    auth_logout(user_data['user0']['token'])
+    invalid_token = users['user0']['token']
+    auth_logout(users['user0']['token'])
 
     with pytest.raises(AccessError):
         user_profile_uploadphoto(invalid_token, 'https://webcms3.cse.unsw.edu.au/static/uploads/profilepic/z3418003/a17b8699d370d74996ef09e6044395d8330ddfe889ae1e364b5c8198b38d16a9/41250447_10214718102400449_1962109165832765440_n.jpg', 
