@@ -277,26 +277,23 @@ def message_react(token, message_id, react_id):
         if message['message_id'] == message_id:
             for react in message['reacts']:
                 if react['react_id'] == react_id:
-                    if react['is_this_user_reacted']:
+                    if user_info['u_id'] in react['u_ids']:
                         raise InputError('User has already reacted')
 
     # Since there are no AccessError or InputError(s), hence proceeding
     # forward:
 
     u_id = user_info['u_id']
+    message = get_message_info(message_id)
     # find the react with react_id in the message with message_id
     # append u_id to the react's list of u_ids
     # if u_id sent the message, toggle 'is_this_user_reacted'
-    for channel in data.data['channels']:
-        if is_user_in_channel(u_id, channel['channel_id']):
-            for message in channel['messages']:
-                if message['message_id'] == message_id:
-                    for react in message['reacts']:
-                        if react['react_id'] == react_id:
-                            react['u_ids'].append(u_id)
-                            if message['u_id'] == u_id:
-                                message['is_this_user_reacted'] = True
-                            break
+    for react in message['reacts']:
+        if react['react_id'] == react_id:
+            react['u_ids'].append(u_id)
+            if message['u_id'] == u_id:
+                message['is_this_user_reacted'] = True
+            break
 
     return {
     }
@@ -345,26 +342,23 @@ def message_unreact(token, message_id, react_id):
         if message['message_id'] == message_id:
             for react in message['reacts']:
                 if react['react_id'] == react_id:
-                    if not react['is_this_user_reacted']:
+                    if user_info['u_id'] not in react['u_ids']:
                         raise InputError('User has not reacted')
 
     # Since there are no AccessError or InputError(s), hence proceeding
     # forward:
 
     u_id = user_info['u_id']
+    message = get_message_info(message_id)
     # find the react with react_id in the message with message_id
     # remove u_id from the react's list of u_ids
     # if u_id sent the message, toggle 'is_this_user_reacted'
-    for channel in data.data['channels']:
-        if is_user_in_channel(u_id, channel['channel_id']):
-            for message in channel['messages']:
-                if message['message_id'] == message_id:
-                    for react in message['reacts']:
-                        if react['react_id'] == react_id:
-                            react['u_ids'].remove(u_id)
-                            if message['u_id'] == u_id:
-                                message['is_this_user_reacted'] = False
-                            break
+    for react in message['reacts']:
+        if react['react_id'] == react_id:
+            react['u_ids'].remove(u_id)
+            if message['u_id'] == u_id:
+                message['is_this_user_reacted'] = False
+            break
 
     return {
     }
