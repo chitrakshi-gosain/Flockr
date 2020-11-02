@@ -117,3 +117,23 @@ def test_user_profile_uploadphoto_invalid_file(url, initialise_user_data):
         'x_end': 200,
         'y_end': 200,
     }).status_code == 400
+
+def test_user_profile_uploadphoto_invalid_token(initialise_user_data):
+    '''
+    Testing with an invalid token
+    '''
+    users = initialise_user_data
+
+    invalid_token = user_data['user0']['token']
+    requests.post(f'{url}/auth/logout', json={
+        'token': invalid_token,
+    })
+
+    requests.post(f'{url}/user/profile/uploadphoto', json={
+        'token': invalid_token,
+        'img_url': 'https://webcms3.cse.unsw.edu.au/static/uploads/profilepic/z3418003/a17b8699d370d74996ef09e6044395d8330ddfe889ae1e364b5c8198b38d16a9/41250447_10214718102400449_1962109165832765440_n.jpg',
+        'x_start': 0,
+        'y_start': 0,
+        'x_end': 200,
+        'y_end': 200,
+    }).status_code == 400
