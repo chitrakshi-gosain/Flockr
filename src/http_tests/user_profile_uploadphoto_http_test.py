@@ -55,6 +55,13 @@ def test_user_profile_uploadphoto_valid(url, initialise_user_data):
     '''
     users = initialise_user_data
 
+    profile = requests.get(f'{url}/user/profile', params={
+        'token': users['user0']['token'],
+        'u_id': users['user0']['u_id'],
+    }).json()
+
+    curr_img_url = profile['profile_img_url']
+
     requests.post(f'{url}/user/profile/uploadphoto', json={
         'token': users['user0']['token'],
         'img_url': 'https://webcms3.cse.unsw.edu.au/static/uploads/profilepic/z3418003/a17b8699d370d74996ef09e6044395d8330ddfe889ae1e364b5c8198b38d16a9/41250447_10214718102400449_1962109165832765440_n.jpg',
@@ -64,14 +71,12 @@ def test_user_profile_uploadphoto_valid(url, initialise_user_data):
         'y_end': 200,
     })
 
-    profile = user_profile(users['user0']['token'], users['user0']['u_id'])
-
     profile = requests.get(f'{url}/user/profile', params={
         'token': users['user0']['token'],
         'u_id': users['user0']['u_id'],
     }).json()
 
-    assert profile['profile_img_url'] != ''
+    assert profile['profile_img_url'] != curr_img_url
 
 def test_user_profile_uploadphoto_invalid_http(url, initialise_user_data):
     '''
