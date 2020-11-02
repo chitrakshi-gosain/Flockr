@@ -83,7 +83,9 @@ def message_send(token, channel_id, message):
         'message_id': message_id,
         'u_id': user_info['u_id'],
         'message': message,
-        'time_created': time_created
+        'time_created': time_created,
+        'is_pinned': False,
+        'reacts': []
     }
 
     data.data['messages'].append(message_dict)
@@ -207,7 +209,7 @@ def message_sendlater(token, channel_id, message, time_sent):
 
     RETURN VALUES:
         -> message_id : id of the message which will be sent later
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -284,6 +286,7 @@ def message_react(token, message_id, react_id):
     u_id = user_info['u_id']
     # find the react with react_id in the message with message_id
     # append u_id to the react's list of u_ids
+    # if u_id sent the message, toggle 'is_this_user_reacted'
     for channel in data.data['channels']:
         if is_user_in_channel(u_id, channel['channel_id']):
             for message in channel['messages']:
@@ -291,6 +294,8 @@ def message_react(token, message_id, react_id):
                     for react in message['reacts']:
                         if react['react_id'] == react_id:
                             react['u_ids'].append(u_id)
+                            if message['u_id'] == u_id:
+                                message['is_this_user_reacted'] = True
                             break
 
     return {
@@ -349,6 +354,7 @@ def message_unreact(token, message_id, react_id):
     u_id = user_info['u_id']
     # find the react with react_id in the message with message_id
     # remove u_id from the react's list of u_ids
+    # if u_id sent the message, toggle 'is_this_user_reacted'
     for channel in data.data['channels']:
         if is_user_in_channel(u_id, channel['channel_id']):
             for message in channel['messages']:
@@ -356,6 +362,8 @@ def message_unreact(token, message_id, react_id):
                     for react in message['reacts']:
                         if react['react_id'] == react_id:
                             react['u_ids'].remove(u_id)
+                            if message['u_id'] == u_id:
+                                message['is_this_user_reacted'] = False
                             break
 
     return {

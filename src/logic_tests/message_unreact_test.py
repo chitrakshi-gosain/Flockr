@@ -51,10 +51,6 @@ KEEP IN MIND:
 -> channels_create adds user (based on token) as member and owner of the channel
 '''
 
-def get_messages(admin_token):
-    messages = search(admin_token, '')
-    return messages
-
 def message_details(token, message_id):
     # 'search' with empty query string returns list of all messages
     message_list = search(token, '')['messages']
@@ -77,7 +73,7 @@ def test_message_unreact_noerrors(initialise_user_data, initialise_channel_data)
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -88,18 +84,21 @@ def test_message_unreact_noerrors(initialise_user_data, initialise_channel_data)
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
-    # react
+    # user reacts to their own message
     message_react(token, message_id, react_id)
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
-    # unreact
+    # user unreacts to their own message
     message_unreact(token, message_id, react_id)
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
 
 def test_message_unreact_invalidmessage(initialise_user_data, initialise_channel_data):
@@ -110,7 +109,7 @@ def test_message_unreact_invalidmessage(initialise_user_data, initialise_channel
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -121,12 +120,14 @@ def test_message_unreact_invalidmessage(initialise_user_data, initialise_channel
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
-    # react
+    # user reacts to their own message
     message_react(token, message_id, react_id)
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
     # set message_id as -1
     message_id = -1
@@ -142,7 +143,7 @@ def test_message_unreact_invalidreact(initialise_user_data, initialise_channel_d
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -153,12 +154,14 @@ def test_message_unreact_invalidreact(initialise_user_data, initialise_channel_d
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
-    # react
+    # user reacts to their own message
     message_react(token, message_id, react_id)
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
     # set react_id as -1
     react_id = -1
@@ -174,7 +177,7 @@ def test_message_unreact_twice(initialise_user_data, initialise_channel_data):
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -185,18 +188,21 @@ def test_message_unreact_twice(initialise_user_data, initialise_channel_data):
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
     # react
     message_react(token, message_id, react_id)
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
     # unreact
     message_unreact(token, message_id, react_id)
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
     # unreact - assert InputError
     with pytest.raises(InputError):
@@ -210,7 +216,7 @@ def test_message_unreact_notauth(initialise_user_data, initialise_channel_data):
 
     # get user data
     user_details = initialise_user_data['user0']
-    token = user_details['token']
+    u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
@@ -221,12 +227,14 @@ def test_message_unreact_notauth(initialise_user_data, initialise_channel_data):
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message hasn't been reacted to
+    assert u_id not in react['u_ids']
     assert not react['is_this_user_reacted']
-    # react
+    # user reacts to their own message
     message_react(token, message_id, react_id)
     # get reaction details for message with message_id
     react = react_details(token, message_id, react_id)
     # assert message has been reacted to
+    assert u_id in react['u_ids']
     assert react['is_this_user_reacted']
     # set token as ' '
     token = ' '
