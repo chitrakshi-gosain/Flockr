@@ -4,7 +4,8 @@ Contributors - Cyrus Wilkie, Chitrakshi Gosain, Joseph Knox
 
 Iteration 2 & 3
 '''
-
+import requests
+import shutil
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
 check_string_length_and_whitespace, decode_encoded_token
@@ -260,12 +261,29 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
         -> image uploaded is not a JPG
     '''
 
-    # Checking for AccessError:
+    # Checking token validity
+    user = get_user_info('token', token)
 
-    # Checking for InputError(s):
+    if not user:
+        raise AccessError(description='Token passed in is not a valid token')
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    # Checking file type
+    if img_url.split('.')[-1] != 'jpg':
+        raise InputError(description='Image uploaded is not a JPG')
+
+    # Downloading image
+    image = requests.get(img_url, stream=True)
+
+    if image.status_code != 200:
+        raise InputError(description='Specified URL returned an error status')
+
+    img_file_name = f"{user['handle_str']}.jpg"
+
+    with open(f'profile_img/{img_file_name}', 'wb') as img_file:
+        image.raw.decode_content = True
+        shutil.copyfileobj(image.raw, img_file)
+
+    # Change the img url of user
 
     return {
     }
