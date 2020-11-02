@@ -102,3 +102,18 @@ def test_user_profile_uploadphoto_invalid_dimensions(url, initialise_user_data):
         'x_end': 2000,
         'y_end': 2000,
     }).status_code == 400
+
+def test_user_profile_uploadphoto_invalid_file(url, initialise_user_data):
+    '''
+    Testing a non jpg file
+    '''
+    users = initialise_user_data
+
+    assert requests.post(f'{url}/user/profile/uploadphoto', json={
+        'token': users['user0']['token'],
+        'img_url': 'https://pngimg.com/uploads/lightning/lightning_PNG52.png',
+        'x_start': 0,
+        'y_start': 0,
+        'x_end': 200,
+        'y_end': 200,
+    }).status_code == 400
