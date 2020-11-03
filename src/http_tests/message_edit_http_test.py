@@ -71,7 +71,7 @@ def test_http_message_edit_no_errors(initialise_channel_data, initialise_user_da
     })
     assert message_send_response.status_code == 200
     message_id = message_send_response.json()["message_id"]
-    
+
     # search using empty query string, thus return list of every message
     search_response = requests.get(f"{url}/search", params={
         'token': token,
