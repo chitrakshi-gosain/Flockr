@@ -161,8 +161,6 @@ def search(token, query_str):
     #find channels user is part of and add messages
     visible_messages = []
 
-    u_id = user_info['u_id']
-
     for channel in data.data['channels']:
         if is_user_in_channel(user_info['u_id'], channel['channel_id']) or user_info['is_admin']:
             visible_messages += channel['messages']
