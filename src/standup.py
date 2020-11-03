@@ -8,8 +8,10 @@ Iteration 3
 from error import InputError, AccessError
 import helper
 from datetime import datetime
-from message import message_send
 import data
+
+import threading
+import time
 '''
 ****************************BASIC TEMPLATE******************************
 '''
@@ -104,6 +106,9 @@ def standup_start(token, channel_id, length):
         'messages': []
     }
 
+    t = threading.Timer(length, standup_end, [channel_id])
+    t.start()
+
     return {
         'time_finish': now+length
         }
@@ -150,8 +155,6 @@ def standup_active(token,channel_id):
             #standup has expired
             is_active = False
             time_finish = None
-
-            standup_end(channel_id)
         else:
             is_active = True
             time_finish = channel_info['standup']['time_finish']
@@ -209,24 +212,24 @@ def standup_end(channel_id):
     '''
     reset the channel's standup state and send message
     '''
-    # no need to check for errors as they have been checked in standup_active
 
     channel_info = helper.get_channel_info(channel_id)
+    #collect and send messages
+    if channel_info: #nested if statements to prevent bool subscript errors
+        if channel_info['standup'] != {}:
+            if channel_info['standup']['messages']:
+                message_out = '\n'.join(channel_info['standup']['messages'])
+                message_id = len(data.data['messages'])
 
-    message_out = '\n'.join(channel_info['standup']['messages'])
-    message_id = len(data.data['messages'])
-    #should not use send as token can be invalidated
-    message_dict = {
-        'message_id': message_id,
-        'u_id': channel_info['standup']['u_id'],
-        'message': message_out,
-        'time_created': channel_info['standup']['time_finish'],
-        'reacts': [],
-        'is_pinned': False
-    }
+                message_dict = {
+                    'message_id': message_id,
+                    'u_id': channel_info['standup']['u_id'],
+                    'message': message_out,
+                    'time_created': channel_info['standup']['time_finish'],
+                    'reacts': [],
+                    'is_pinned': False
+                }
+                data.data['messages'].append(message_dict)
+                channel_info['messages'].append(message_dict)
 
-    if message_out != '':
-        data.data['messages'].append(message_dict)
-        channel_info['messages'].append(message_dict)
-
-    channel_info['standup'] = {}
+        channel_info['standup'] = {}
