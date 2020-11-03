@@ -97,4 +97,24 @@ def test_user_not_owner():
     with pytest.raises(AccessError):
         message_pin(user1_credentials['token'], message1_id['message_id'])
 
+def test_sample_case():
+    admin_credentials = initialise_user_data['admin']
+    channel1_id = initialise_channel_data['admin_priv']
+
+    messages = get_messages(admin_credentials['token'])
+    for message in messages:
+        if message['message_id'] == message1_id['message_id']:
+            assert message['is_pinned'] == False
+            
+    message1_id = message_send(admin_credentials['token'], channel1_id['channel_id'], "The date for the AGM is 14th of November, 2020")
+    
+    messages = get_messages(admin_credentials['token'])
+    for message in messages:
+        if message['message_id'] == message1_id['message_id']:
+            assert message['is_pinned'] == True
+
+
+
+
+
 
