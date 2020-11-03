@@ -86,11 +86,11 @@ def test_http_message_unreact_noerrors(url, initialise_user_data, initialise_cha
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
@@ -138,11 +138,11 @@ def test_http_message_unreact_invalidmessage(url, initialise_user_data, initiali
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
@@ -187,11 +187,11 @@ def test_http_message_unreact_invalidreact(url, initialise_user_data, initialise
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
@@ -236,11 +236,11 @@ def test_http_message_unreact_twice(url, initialise_user_data, initialise_channe
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
@@ -295,11 +295,11 @@ def test_http_message_unreact_notauth(url, initialise_user_data, initialise_chan
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,

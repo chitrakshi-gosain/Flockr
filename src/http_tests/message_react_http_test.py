@@ -85,11 +85,11 @@ def test_http_message_react_noerrors(url, initialise_user_data, initialise_chann
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
@@ -124,13 +124,13 @@ def test_http_message_react_existing(url, initialise_user_data, initialise_chann
     '''
 
     # get user data
-    user0_details = initialise_user_data['user0']
+    user0_details = initialise_user_data['admin']
     u_id0, token0 = user0_details['u_id'], user0_details['token']
-    user1_details = initialise_user_data['user1']
+    user1_details = initialise_user_data['owner']
     u_id1, token1 = user1_details['u_id'], user1_details['token']
     # get channel data
     # channel has members user0, user1 and owner user0
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     channel_join_response = requests.post(f"{url}/channel/join", json={
         'token': token1,
         'channel_id': channel_id
@@ -184,11 +184,11 @@ def test_http_message_react_invalidmessage(url, initialise_user_data, initialise
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     token = user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
@@ -217,11 +217,11 @@ def test_http_message_react_invalidreact(url, initialise_user_data, initialise_c
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     token = user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
@@ -249,11 +249,11 @@ def test_http_message_react_twice(url, initialise_user_data, initialise_channel_
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
@@ -297,11 +297,11 @@ def test_http_message_react_notauth(url, initialise_user_data, initialise_channe
     '''
 
     # get user data
-    user_details = initialise_user_data['user0']
+    user_details = initialise_user_data['admin']
     u_id, token = user_details['u_id'], user_details['token']
     # get channel data
     # channel has member and owner user
-    channel_id = initialise_channel_data['user0_publ']['channel_id']
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
     # send message
     message_send_response = requests.post(f"{url}/message/send", json={
         'token': token,
