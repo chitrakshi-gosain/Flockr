@@ -85,7 +85,13 @@ def message_send(token, channel_id, message):
         'message': message,
         'time_created': time_created,
         'is_pinned': False,
-        'reacts': []
+        'reacts': [
+            {
+                'react_id': 1,
+                'u_ids': [],
+                'is_this_user_reacted': False
+            }
+        ]
     }
 
     data.data['messages'].append(message_dict)
@@ -263,12 +269,12 @@ def message_react(token, message_id, react_id):
 
     # check if message_id is valid
     # search with empty query_str returns list of all messages from channels including user
-    message_list = search(token, '')
+    message_list = search(token, '')['messages']
     if message_id not in [message['message_id'] for message in message_list]:
         raise InputError('Message ID is invalid')
 
     # check if react_id is valid
-    react_ids = [react['react_id'] for react in message['reacts'] for message in message_list]
+    react_ids = [react['react_id'] for message in message_list for react in message['reacts']]
     if react_id not in react_ids:
         raise InputError('React ID is invalid')
 
@@ -292,7 +298,7 @@ def message_react(token, message_id, react_id):
         if react['react_id'] == react_id:
             react['u_ids'].append(u_id)
             if message['u_id'] == u_id:
-                message['is_this_user_reacted'] = True
+                react['is_this_user_reacted'] = True
             break
 
     return {
@@ -328,12 +334,12 @@ def message_unreact(token, message_id, react_id):
 
     # check if message_id is valid
     # search with empty query_str returns list of all messages from channels including user
-    message_list = search(token, '')
+    message_list = search(token, '')['messages']
     if message_id not in [message['message_id'] for message in message_list]:
         raise InputError('Message ID is invalid')
 
     # check if react_id is valid
-    react_ids = [react['react_id'] for react in message['reacts'] for message in message_list]
+    react_ids = [react['react_id'] for message in message_list for react in message['reacts']]
     if react_id not in react_ids:
         raise InputError('React ID is invalid')
 
@@ -357,7 +363,7 @@ def message_unreact(token, message_id, react_id):
         if react['react_id'] == react_id:
             react['u_ids'].remove(u_id)
             if message['u_id'] == u_id:
-                message['is_this_user_reacted'] = False
+                react['is_this_user_reacted'] = False
             break
 
     return {
