@@ -10,6 +10,7 @@ from helper import get_user_info, get_channel_info, is_user_in_channel, \
     get_message_info, is_user_authorised
 import data
 from error import InputError, AccessError
+from other import search
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -58,7 +59,7 @@ def message_send(token, channel_id, message):
         -> when the authorised user has not joined the channel they are
            trying to post to
     Error type: InputError
-        -> message is more than 1000 characters 
+        -> message is more than 1000 characters
     '''
 
     # Testing for token validity
@@ -82,7 +83,15 @@ def message_send(token, channel_id, message):
         'message_id': message_id,
         'u_id': user_info['u_id'],
         'message': message,
-        'time_created': time_created
+        'time_created': time_created,
+        'is_pinned': False,
+        'reacts': [
+            {
+                'react_id': 1,
+                'u_ids': [],
+                'is_this_user_reacted': False
+            }
+        ]
     }
 
     data.data['messages'].append(message_dict)
@@ -206,7 +215,7 @@ def message_sendlater(token, channel_id, message, time_sent):
 
     RETURN VALUES:
         -> message_id : id of the message which will be sent later
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -240,7 +249,7 @@ def message_react(token, message_id, react_id):
         -> message_id : id of the message to be reacted
         -> react_id : id of the react, presently only possibility is 1
                       for thumbs up
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -253,12 +262,44 @@ def message_react(token, message_id, react_id):
            with ID react_id from the authorised user
     '''
 
-    # Checking for AccessError:
+    # check if token is valid
+    user_info = get_user_info("token", token)
+    if not user_info:
+        raise AccessError('Token is invalid')
 
-    # Checking for InputError(s):
+    # check if message_id is valid
+    # search with empty query_str returns list of all messages from channels including user
+    message_list = search(token, '')['messages']
+    if message_id not in [message['message_id'] for message in message_list]:
+        raise InputError('Message ID is invalid')
+
+    # check if react_id is valid
+    react_ids = [react['react_id'] for message in message_list for react in message['reacts']]
+    if react_id not in react_ids:
+        raise InputError('React ID is invalid')
+
+    # check if user has already reacted
+    for message in message_list:
+        if message['message_id'] == message_id:
+            for react in message['reacts']:
+                if react['react_id'] == react_id:
+                    if user_info['u_id'] in react['u_ids']:
+                        raise InputError('User has already reacted')
 
     # Since there are no AccessError or InputError(s), hence proceeding
     # forward:
+
+    u_id = user_info['u_id']
+    message = get_message_info(message_id)
+    # find the react with react_id in the message with message_id
+    # append u_id to the react's list of u_ids
+    # if u_id sent the message, toggle 'is_this_user_reacted'
+    for react in message['reacts']:
+        if react['react_id'] == react_id:
+            react['u_ids'].append(u_id)
+            if message['u_id'] == u_id:
+                react['is_this_user_reacted'] = True
+            break
 
     return {
     }
@@ -286,12 +327,44 @@ def message_unreact(token, message_id, react_id):
            with ID react_id
     '''
 
-    # Checking for AccessError:
+    # check if token is valid
+    user_info = get_user_info("token", token)
+    if not user_info:
+        raise AccessError('Token is invalid')
 
-    # Checking for InputError(s):
+    # check if message_id is valid
+    # search with empty query_str returns list of all messages from channels including user
+    message_list = search(token, '')['messages']
+    if message_id not in [message['message_id'] for message in message_list]:
+        raise InputError('Message ID is invalid')
+
+    # check if react_id is valid
+    react_ids = [react['react_id'] for message in message_list for react in message['reacts']]
+    if react_id not in react_ids:
+        raise InputError('React ID is invalid')
+
+    # check if user has not reacted
+    for message in message_list:
+        if message['message_id'] == message_id:
+            for react in message['reacts']:
+                if react['react_id'] == react_id:
+                    if user_info['u_id'] not in react['u_ids']:
+                        raise InputError('User has not reacted')
 
     # Since there are no AccessError or InputError(s), hence proceeding
     # forward:
+
+    u_id = user_info['u_id']
+    message = get_message_info(message_id)
+    # find the react with react_id in the message with message_id
+    # remove u_id from the react's list of u_ids
+    # if u_id sent the message, toggle 'is_this_user_reacted'
+    for react in message['reacts']:
+        if react['react_id'] == react_id:
+            react['u_ids'].remove(u_id)
+            if message['u_id'] == u_id:
+                react['is_this_user_reacted'] = False
+            break
 
     return {
     }

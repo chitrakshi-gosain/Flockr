@@ -752,7 +752,12 @@ def message_react_route():
            with ID react_id from the authorised user
     '''
 
-    pass
+    payload = request.get_json()
+    token = payload['token']
+    message_id = payload['message_id']
+    react_id = payload['react_id']
+
+    return dumps(message_react(token, message_id, react_id))
 
 @APP.route("/message/unreact", methods=['POST'])
 def message_unreact_route():
@@ -778,7 +783,12 @@ def message_unreact_route():
            with ID react_id
     '''
 
-    pass
+    payload = request.get_json()
+    token = payload['token']
+    message_id = payload['message_id']
+    react_id = payload['react_id']
+
+    return dumps(message_unreact(token, message_id, react_id))
 
 @APP.route("/message/pin", methods=['POST'])
 def message_pin_route():
