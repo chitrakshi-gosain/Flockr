@@ -78,7 +78,7 @@ def test_message_unreact_noerrors(initialise_user_data, initialise_channel_data)
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
     # send message
-    message_id = message_send(token, channel_id, "Test message")
+    message_id = message_send(token, channel_id, "Test message")['message_id']
     # react_id 1 corresponds to 'thumbs up'
     react_id = 1
     # get reaction details for message with message_id
@@ -114,7 +114,7 @@ def test_message_unreact_invalidmessage(initialise_user_data, initialise_channel
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
     # send message
-    message_id = message_send(token, channel_id, "Test message")
+    message_id = message_send(token, channel_id, "Test message")['message_id']
     # react_id 1 corresponds to 'thumbs up'
     react_id = 1
     # get reaction details for message with message_id
@@ -148,7 +148,7 @@ def test_message_unreact_invalidreact(initialise_user_data, initialise_channel_d
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
     # send message
-    message_id = message_send(token, channel_id, "Test message")
+    message_id = message_send(token, channel_id, "Test message")['message_id']
     # react_id 1 corresponds to 'thumbs up'
     react_id = 1
     # get reaction details for message with message_id
@@ -182,7 +182,7 @@ def test_message_unreact_twice(initialise_user_data, initialise_channel_data):
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
     # send message
-    message_id = message_send(token, channel_id, "Test message")
+    message_id = message_send(token, channel_id, "Test message")['message_id']
     # react_id 1 corresponds to 'thumbs up'
     react_id = 1
     # get reaction details for message with message_id
@@ -221,7 +221,7 @@ def test_message_unreact_notauth(initialise_user_data, initialise_channel_data):
     # channel has member and owner user
     channel_id = initialise_channel_data['user0_publ']['channel_id']
     # send message
-    message_id = message_send(token, channel_id, "Test message")
+    message_id = message_send(token, channel_id, "Test message")['message_id']
     # react_id 1 corresponds to 'thumbs up'
     react_id = 1
     # get reaction details for message with message_id

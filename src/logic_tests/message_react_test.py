@@ -117,18 +117,20 @@ def test_message_react_existing(initialise_user_data, initialise_channel_data):
     # assert message hasn't been reacted to
     assert u_id0 not in react['u_ids']
     assert u_id1 not in react['u_ids']
+    assert not react['is_this_user_reacted']
     # user0 reacts to their own message
     message_react(token0, message_id, react_id)
     # get reaction details
     react = react_details(token0, message_id, react_id)
-    # assert message has been reacted to by its sender
+    # assert message has been reacted to by its sender user0 but not user1
     assert u_id0 in react['u_ids']
+    assert u_id1 not in react['u_ids']
     assert react['is_this_user_reacted']
     # user1 reacts
     message_react(token1, message_id, react_id)
     # get reaction details
     react = react_details(token0, message_id, react_id)
-    # assert message has been reacted to
+    # assert message has been reacted to by user1
     assert u_id1 in react['u_ids']
 
 def test_message_react_invalidmessage(initialise_user_data, initialise_channel_data):
