@@ -5,7 +5,7 @@ Contributors - Cyrus Wilkie, Chitrakshi Gosain, Joseph Knox
 Iteration 2 & 3
 '''
 import requests
-import shutil
+import urllib.request
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
 check_string_length_and_whitespace, decode_encoded_token
@@ -279,9 +279,7 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
 
     img_file_name = f"{user['handle_str']}.jpg"
 
-    with open(f'profile_img/{img_file_name}', 'wb') as img_file:
-        image.raw.decode_content = True
-        shutil.copyfileobj(image.raw, img_file)
+    urllib.request.urlretrieve(img_url, f"profile_img/{img_file_name}")
 
     # Change the img url of user
 
