@@ -82,13 +82,6 @@ def test_user_not_authorised(initialise_user_data, initialise_channel_data):
     with pytest.raises(AccessError):
         message_pin(user1_credentials['token'], message1_id[])
 
-def test_token_invalid(initialise_channel_data):
-    owner_credentials = initialise_user_data['owner']
-    channel1_id = initialise_channel_data['owner_priv']
-    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "First message in this channel.")
-    with pytest.raises(AccessError):
-        message_pin('incorrect_user1_token', message1_id['message_id'])
-
 def test_user_not_owner():
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_priv']
