@@ -213,8 +213,8 @@ data = {
     },
 
     'password_record': {
-        'user0@email.com' : ['pass1', 'pass2'],
-        'user1@email.com' : ['pass1', 'pass2']
+        'user0@email.com' : {'pass1', 'pass2'},
+        'user1@email.com' : {'pass1', 'pass2'}
     }
 
 }
