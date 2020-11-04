@@ -219,7 +219,9 @@ def standup_end(channel_id):
                     'u_id': channel_info['standup']['u_id'],
                     'message': message_out,
                     'time_created': channel_info['standup']['time_finish'],
-                    'reacts': [],
+                    'reacts': [
+                        {'react_id': 1, 'u_ids': [], 'is_this_user_reacted': False}
+                    ],
                     'is_pinned': False
                 }
                 data.data['messages'].append(message_dict)
