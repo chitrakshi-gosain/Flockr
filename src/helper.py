@@ -33,7 +33,7 @@ def check_if_valid_email(email):
     valid email using a regex
     '''
 
-    regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
+    regex = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
     return re.search(regex, email) #more concise
     # this returns None instead of False.. :/
 

@@ -26,6 +26,14 @@
 - 6. name_first and name_last that are purely whitespace are not valid
 - 7. User becomes admin of the flockr
 
+### auth_passwordreset_request
+- 1. An input error is raised if email entered is not a valid email
+- 2. An input error is raised if email entered does not belong to a user
+
+### auth_password_reset
+- 1. An input error is raised if password entered is similar to one of
+     the old passwords
+- 2. " " is an invalid reset code
 
 ## channel.py
 

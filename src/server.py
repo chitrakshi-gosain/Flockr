@@ -972,8 +972,9 @@ def auth_passwordreset_request_route():
         -> email : email of a user
 
     EXCEPTIONS:
-    Error type: AccessError
-        -> token passed in is not a valid token
+    Error type: InputError
+        -> email entered is not a valid email
+        -> email entered does not belong to a user
     '''
 
     pass
@@ -990,8 +991,6 @@ def auth_passwordreset_reset_route():
         -> new_password : new password of user
 
     EXCEPTIONS:
-    Error type: AccessError
-        -> token passed in is not a valid token
     Error type: InputError
         -> reset_code is not a valid reset_code
         -> password entered is not a valid password

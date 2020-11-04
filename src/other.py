@@ -47,7 +47,9 @@ def clear():
         'users': [],
         'channels': [],
         'messages': [],
-        'valid_tokens': []
+        'valid_tokens': [],
+        'reset_codes': {},
+        'password_record': {}
     }
 
 
