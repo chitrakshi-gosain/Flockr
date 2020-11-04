@@ -144,9 +144,7 @@ def standup_active(token,channel_id):
     if not channel_info:
         raise InputError('invalid channel id')
 
-    now = int(datetime.now().timestamp())
-
-    if channel_info['standup'] == {}: #standup did not exist since last call
+    if channel_info['standup'] == {}: #standup does not currently exist
         is_active = False
         time_finish = None
 
