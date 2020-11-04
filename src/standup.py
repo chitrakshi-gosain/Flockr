@@ -151,13 +151,8 @@ def standup_active(token,channel_id):
         time_finish = None
 
     else:
-        if channel_info['standup']['time_finish'] <= now:
-            #standup has expired
-            is_active = False
-            time_finish = None
-        else:
-            is_active = True
-            time_finish = channel_info['standup']['time_finish']
+        is_active = True
+        time_finish = channel_info['standup']['time_finish']
 
     return {
         'is_active': is_active,
