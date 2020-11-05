@@ -80,7 +80,7 @@ def channels_listall(token):
 
     RETURN VALUES:
         -> channels : list of channels
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -166,7 +166,8 @@ def channels_create(token, name, is_public):
                 'name_last': current_user['name_last']
             }
         ],
-        'messages': []
+        'messages': [],
+        'standup': {}
     }
 
     # Entry is added to data.py
