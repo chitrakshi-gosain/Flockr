@@ -73,16 +73,6 @@ def test_message_already_pinned(initialise_user_data, initialise_channel_data):
     with pytest.raises(InputError):
         message_pin(owner_credentials['token'], message1_id['message_id'])
 
-def test_user_not_owner(initialise_user_data, initialise_channel_data):
-    owner_credentials = initialise_user_data['owner']
-    channel1_id = initialise_channel_data['owner_publ']
-    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "First message in this channel.")
-    user1_credentials = initialise_user_data['user1']
-    channel_join(user1_credentials['token'], channel1_id['channel_id'])
-    with pytest.raises(AccessError):
-        message_pin(user1_credentials['token'], message1_id['message_id'])
-
-
 # User is not in Channel
 def test_user_not_authorised(initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']
@@ -93,6 +83,16 @@ def test_user_not_authorised(initialise_user_data, initialise_channel_data):
 
     with pytest.raises(AccessError):
         message_pin(user1_credentials['token'], message1_id['message_id'])
+
+def test_user_not_owner(initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']
+    channel1_id = initialise_channel_data['owner_publ']
+    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "First message in this channel.")
+    user1_credentials = initialise_user_data['user1']
+    channel_join(user1_credentials['token'], channel1_id['channel_id'])
+    with pytest.raises(AccessError):
+        message_pin(user1_credentials['token'], message1_id['message_id'])
+
 
 def test_admin_can_pin_if_in_channel(initialise_user_data, initialise_channel_data):
     admin_credentials = initialise_user_data['admin']

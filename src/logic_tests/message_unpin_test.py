@@ -7,7 +7,7 @@ Iteration 2
 
 import pytest
 from channel import channel_join
-from message import message_pin, message_unpin
+from message import message_pin, message_unpin, message_send
 from other import search
 from error import InputError, AccessError
 
@@ -52,60 +52,82 @@ def get_messages(admin_token):
     messages = search(admin_token, '')
     return messages
 
-def test_token_invalid(initialise_channel_data):
+def test_token_invalid(initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_priv']
     message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "Message to be pinned.")
 
-    with pytest.raises(AccessError):
-        message_pin('incorrect_user1_token', message1_id['message_id'])
+    with pytest.raises(InputError):
+        message_unpin('incorrect_owner_token', message1_id['message_id'])
 
-def test_invalid_message_id(initialise_user_data, initialise_channel_data):
+def test_invalid_message_id(initialise_user_data):
     owner_credentials = initialise_user_data['owner']
     incorrect_message_id = -1
     with pytest.raises(InputError):
-        message_pin(owner_credentials['token'], incorrect_message_id)
+        message_unpin(owner_credentials['token'], incorrect_message_id)
 
+        
 def test_message_already_unpinned(initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_priv']
-    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "Message to be pinned.")
+    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "Message to be unpinned.")
     with pytest.raises(InputError):
-        message_unpin(token, message1_id['message_id'])
+        message_unpin(owner_credentials['token'], message1_id['message_id'])
 
 
 def test_user_not_authorised(initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']
     user1_credentials = initialise_user_data['user1']  
     channel1_id = initialise_channel_data['owner_priv']
-    message1_id = message_send(user1_credentials['token'], channel1_id['channel_id'], "First message in this channel.")
+    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "First message in this channel.")
 
     with pytest.raises(AccessError):
-        message_unpin(owner_credentials['token'], message1_id['message_id'])
+        message_unpin(user1_credentials['token'], message1_id['message_id'])
 
-def test_user_not_owner():
+def test_user_not_owner(initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']
-    channel1_id = initialise_channel_data['owner_priv']
+    channel1_id = initialise_channel_data['owner_publ']
     message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "First message in this channel.")
     user1_credentials = initialise_user_data['user1']
     with pytest.raises(AccessError):
         message_unpin(user1_credentials['token'], message1_id['message_id'])
 
-def test_sample_case():
+def test_admin_can_unpin_if_in_channel(initialise_user_data, initialise_channel_data):
     admin_credentials = initialise_user_data['admin']
-    channel1_id = initialise_channel_data['admin_priv']
+    owner_credentials = initialise_user_data['owner']
 
-    message1_id = message_send(admin_credentials['token'], channel1_id['channel_id'], "The date for the AGM is 14th of November, 2020")
-    message_pin(owner_credentials['token'], message1_id['message_id'])
+    channel1_id = initialise_channel_data['owner_publ']
+    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "First message in this channel.")
+    channel_join(admin_credentials['token'], channel1_id['channel_id'])
+    message_pin(admin_credentials['token'], message1_id['message_id'])
+    
+    messages = get_messages(admin_credentials['token'])
+    for message in messages['messages']:
+        if message['message_id'] == message1_id['message_id']:
+            assert message['is_pinned'] == True
+    
+    message_unpin(admin_credentials['token'], message1_id['message_id'])
 
     messages = get_messages(admin_credentials['token'])
-    for message in messages:
+    for message in messages['messages']:
+        if message['message_id'] == message1_id['message_id']:
+            assert message['is_pinned'] == False
+
+def test_owner_can_unpin(initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']
+    channel1_id = initialise_channel_data['owner_priv']
+
+    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "The date for the AGM is 14th of November, 2020")
+    message_pin(owner_credentials['token'], message1_id['message_id'])
+
+    messages = get_messages(owner_credentials['token'])
+    for message in messages['messages']:
         if message['message_id'] == message1_id['message_id']:
             assert message['is_pinned'] == True
             
     message_unpin(owner_credentials['token'], message1_id['message_id'])
-    messages = get_messages(admin_credentials['token'])
-    for message in messages:
+    messages = get_messages(owner_credentials['token'])
+    for message in messages['messages']:
         if message['message_id'] == message1_id['message_id']:
             assert message['is_pinned'] == False
 

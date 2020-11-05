@@ -341,7 +341,7 @@ def message_pin(token, message_id):
                 channel_info = channel
                 break
 
-    # Find if user is an owner member or not
+    # Find if the user is an owner member in the channel or not
     is_owner = False
     for owner in channel_info['owner_members']:
         if owner['u_id'] == user_info['u_id']:
@@ -373,13 +373,38 @@ def message_unpin(token, message_id):
            message is within
         -> the authorised user is not an owner
     '''
+    # Checking for InputError(s):
+    # Checking if token is valid
+    user_info = get_user_info('token', token)
+    if not user_info:
+        raise InputError(description='Invalid Token')
+
+    # Checking if message is valid
+    message_info = get_message_info(message_id)
+    if not message_info:
+        raise InputError(description='message_id does not correlate to an existing message_id')
 
     # Checking for AccessError:
+    # Find channel for message_id
+    for channel in data.data['channels']:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                channel_info = channel
+                break
 
-    # Checking for InputError(s):
+    # Find if the user is an owner member in the channel or not
+    is_owner = False
+    for owner in channel_info['owner_members']:
+        if owner['u_id'] == user_info['u_id']:
+            is_owner = True
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    if not is_owner and not user_info['is_admin']:
+        raise AccessError(description='User is neither an owner nor an admin of the channel')
 
+    # Checking if message has been pinned yet
+    if message_info['is_pinned'] == False:
+        raise InputError(description='Message has already been unpinned')
+        
+    message_info['is_pinned'] = False
     return {
     }
