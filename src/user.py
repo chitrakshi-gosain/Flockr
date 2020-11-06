@@ -283,11 +283,11 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
         raise InputError(description='Specified URL returned an error status')
 
     img_file_name = f"{user['handle_str']}.jpg"
-    urllib.request.urlretrieve(img_url, f"profile_img/{img_file_name}")
+    urllib.request.urlretrieve(img_url, f"src/profile_img/{img_file_name}")
 
     # Cropping the image
     try:
-        photoImage = Image.open(f"profile_img/{img_file_name}")
+        photoImage = Image.open(f"src/profile_img/{img_file_name}")
     except:
         raise InputError(description='Image uploaded is not a JPG')
 
@@ -298,10 +298,10 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
         raise InputError(description='Invalid cropping coordinates')
 
     croppedImage = photoImage.crop((x_start, y_start, x_end, y_end))
-    croppedImage.save(f"profile_img/{img_file_name}")
+    croppedImage.save(f"src/profile_img/{img_file_name}")
 
     # Change the img url of user
-    user['profile_img_url'] = f"profile_img/{img_file_name}"
+    user['profile_img_url'] = f"src/profile_img/{img_file_name}"
 
     return {
     }
