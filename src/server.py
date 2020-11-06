@@ -852,8 +852,9 @@ def user_profile_uploadphoto_route():
            dimensions of the image at the URL.
         -> image uploaded is not a JPG
     '''
-
-    pass
+    payload = request.get_json()
+    return dumps(user_profile_uploadphoto(payload['token'], payload['img_url'],
+        payload['x_start'], payload['y_start'], payload['x_end'], payload['y_end']))
 
 @APP.route("/standup/start", methods=['POST'])
 def standup_start_route():
