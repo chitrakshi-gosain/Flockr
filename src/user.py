@@ -6,6 +6,7 @@ Iteration 2 & 3
 '''
 import requests
 import urllib.request
+from PIL import Image
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
 check_string_length_and_whitespace, decode_encoded_token
@@ -271,6 +272,10 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     if img_url.split('.')[-1] != 'jpg':
         raise InputError(description='Image uploaded is not a JPG')
 
+    # Checking dimensions
+    if x_start >= x_end or y_start >= y_end or x_start < 0 or y_start < 0:
+        raise InputError(description='Invalid cropping coordinates')
+
     # Downloading image
     image = requests.get(img_url, stream=True)
 
@@ -278,10 +283,25 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
         raise InputError(description='Specified URL returned an error status')
 
     img_file_name = f"{user['handle_str']}.jpg"
-
     urllib.request.urlretrieve(img_url, f"profile_img/{img_file_name}")
 
+    # Cropping the image
+    try:
+        photoImage = Image.open(f"profile_img/{img_file_name}")
+    except:
+        raise InputError(description='Image uploaded is not a JPG')
+
+    # Checking image size
+    width, height = photoImage.size
+
+    if x_start >= width or y_start >= height or x_end > width or y_end > height:
+        raise InputError(description='Invalid cropping coordinates')
+
+    croppedImage = photoImage.crop((x_start, y_start, x_end, y_end))
+    croppedImage.save(f"profile_img/{img_file_name}")
+
     # Change the img url of user
+    user['profile_img_url'] = f"profile_img/{img_file_name}"
 
     return {
     }
