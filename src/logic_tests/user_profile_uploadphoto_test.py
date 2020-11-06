@@ -66,7 +66,7 @@ def test_user_profile_uploadphoto_invalid_http(initialise_user_data):
     with pytest.raises(InputError):
         user_profile_uploadphoto(users['user0']['token'], 'https://webcms3.cse.unsw.edu.au/gobbledegook.jpg', 0, 0, 200, 200)
 
-def test_user_profile_uploadphoto_invalid_dimensions(initialise_user_data):
+def test_user_profile_uploadphoto_large_dimensions(initialise_user_data):
     '''
     Testing invalid (x, y) dimensions
     '''
@@ -75,6 +75,26 @@ def test_user_profile_uploadphoto_invalid_dimensions(initialise_user_data):
     with pytest.raises(InputError):
         user_profile_uploadphoto(users['user0']['token'], 'https://webcms3.cse.unsw.edu.au/static/uploads/profilepic/z3418003/a17b8699d370d74996ef09e6044395d8330ddfe889ae1e364b5c8198b38d16a9/41250447_10214718102400449_1962109165832765440_n.jpg', 
                              0, 0, 2000, 2000)
+
+def test_user_profile_uploadphoto_negative_dimensions(initialise_user_data):
+    '''
+    Testing invalid (x, y) dimensions
+    '''
+    users = initialise_user_data
+
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(users['user0']['token'], 'https://webcms3.cse.unsw.edu.au/static/uploads/profilepic/z3418003/a17b8699d370d74996ef09e6044395d8330ddfe889ae1e364b5c8198b38d16a9/41250447_10214718102400449_1962109165832765440_n.jpg', 
+                             -10, -10, 200, 200)
+
+def test_user_profile_uploadphoto_swapped_dimensions(initialise_user_data):
+    '''
+    Testing invalid (x, y) dimensions
+    '''
+    users = initialise_user_data
+
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(users['user0']['token'], 'https://webcms3.cse.unsw.edu.au/static/uploads/profilepic/z3418003/a17b8699d370d74996ef09e6044395d8330ddfe889ae1e364b5c8198b38d16a9/41250447_10214718102400449_1962109165832765440_n.jpg', 
+                             200, 200, 0, 0)
 
 def test_user_profile_uploadphoto_invalid_file(initialise_user_data):
     '''
