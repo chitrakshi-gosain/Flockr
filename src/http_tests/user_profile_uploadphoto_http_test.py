@@ -153,7 +153,7 @@ def test_user_profile_uploadphoto_invalid_file(url, initialise_user_data):
         'y_end': 200,
     }).status_code == 400
 
-def test_user_profile_uploadphoto_invalid_token(initialise_user_data):
+def test_user_profile_uploadphoto_invalid_token(url, initialise_user_data):
     '''
     Testing with an invalid token
     '''
