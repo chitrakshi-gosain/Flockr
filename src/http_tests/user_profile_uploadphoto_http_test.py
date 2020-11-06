@@ -60,7 +60,7 @@ def test_user_profile_uploadphoto_valid(url, initialise_user_data):
         'u_id': users['user0']['u_id'],
     }).json()
 
-    curr_img_url = profile['profile_img_url']
+    curr_img_url = profile['user']['profile_img_url']
 
     requests.post(f'{url}/user/profile/uploadphoto', json={
         'token': users['user0']['token'],
@@ -76,7 +76,7 @@ def test_user_profile_uploadphoto_valid(url, initialise_user_data):
         'u_id': users['user0']['u_id'],
     }).json()
 
-    assert profile['profile_img_url'] != curr_img_url
+    assert profile['user']['profile_img_url'] != curr_img_url
 
 def test_user_profile_uploadphoto_invalid_http(url, initialise_user_data):
     '''
@@ -93,7 +93,7 @@ def test_user_profile_uploadphoto_invalid_http(url, initialise_user_data):
         'y_end': 200,
     }).status_code == 400
 
-def test_user_profile_uploadphoto_invalid_dimensions(url, initialise_user_data):
+def test_user_profile_uploadphoto_large_dimensions(url, initialise_user_data):
     '''
     Testing invalid (x, y) dimensions
     '''
@@ -106,6 +106,36 @@ def test_user_profile_uploadphoto_invalid_dimensions(url, initialise_user_data):
         'y_start': 0,
         'x_end': 2000,
         'y_end': 2000,
+    }).status_code == 400
+
+def test_user_profile_uploadphoto_negative_dimensions(url, initialise_user_data):
+    '''
+    Testing invalid (x, y) dimensions
+    '''
+    users = initialise_user_data
+
+    assert requests.post(f'{url}/user/profile/uploadphoto', json={
+        'token': users['user0']['token'],
+        'img_url': 'https://webcms3.cse.unsw.edu.au/static/uploads/profilepic/z3418003/a17b8699d370d74996ef09e6044395d8330ddfe889ae1e364b5c8198b38d16a9/41250447_10214718102400449_1962109165832765440_n.jpg',
+        'x_start': -10,
+        'y_start': -10,
+        'x_end': 200,
+        'y_end': 200,
+    }).status_code == 400
+
+def test_user_profile_uploadphoto_swapped_dimensions(url, initialise_user_data):
+    '''
+    Testing invalid (x, y) dimensions
+    '''
+    users = initialise_user_data
+
+    assert requests.post(f'{url}/user/profile/uploadphoto', json={
+        'token': users['user0']['token'],
+        'img_url': 'https://webcms3.cse.unsw.edu.au/static/uploads/profilepic/z3418003/a17b8699d370d74996ef09e6044395d8330ddfe889ae1e364b5c8198b38d16a9/41250447_10214718102400449_1962109165832765440_n.jpg',
+        'x_start': 200,
+        'y_start': 200,
+        'x_end': 0,
+        'y_end': 0,
     }).status_code == 400
 
 def test_user_profile_uploadphoto_invalid_file(url, initialise_user_data):
