@@ -285,7 +285,7 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     img_file_name = f"{user['handle_str']}.jpg"
     urllib.request.urlretrieve(img_url, f"src/profile_img/{img_file_name}")
 
-    # Cropping the image
+    # Opening image for editing
     try:
         photoImage = Image.open(f"src/profile_img/{img_file_name}")
     except:
@@ -297,11 +297,12 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     if x_start >= width or y_start >= height or x_end > width or y_end > height:
         raise InputError(description='Invalid cropping coordinates')
 
+    # Cropping image
     croppedImage = photoImage.crop((x_start, y_start, x_end, y_end))
     croppedImage.save(f"src/profile_img/{img_file_name}")
 
     # Change the img url of user
-    user['profile_img_url'] = f"/profile_img/{img_file_name}"
+    user['profile_img_url'] = f"profile_img/{img_file_name}"
 
     return {
     }
