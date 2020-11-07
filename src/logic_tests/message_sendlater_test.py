@@ -113,3 +113,20 @@ def test_message_sendlater_channel_invalid(initialise_user_data, initialise_chan
     with pytest.raises(AccessError):
         message_sendlater(users['user0']['token'], channels['admin_publ']['channel_id'], 
         'Hello World!', time_sent)
+
+def test_message_sendlater_token_invalid(initialise_user_data, initialise_channel_data):
+    '''
+    Testing with an invalid token
+    '''
+    users = initialise_user_data
+    channels = initialise_channel_data
+
+    curr_time = datetime.now()
+    time_sent = curr_time + timedelta(seconds=30)
+
+    invalid_token = users['user0']['token']
+    auth_logout(invalid_token)
+
+    with pytest.raises(AccessError):
+        message_sendlater(invalid_token, channels['user0_publ']['channel_id'], 
+        'Hello World!', time_sent)
