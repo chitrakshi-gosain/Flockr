@@ -240,7 +240,7 @@ def message_sendlater(token, channel_id, message, time_sent):
     # Checking time_sent
     curr_time = datetime.now(timezone.utc)
     if curr_time.replace(tzinfo=timezone.utc).timestamp() > time_sent:
-        raise InputError(description=f'Invalid time {time_sent} {curr_time.replace(tzinfo=timezone.utc).timestamp()}')
+        raise InputError(description=f'Invalid time')
 
     # Constructing message
     message_id = len(data.data['messages'])
@@ -254,6 +254,7 @@ def message_sendlater(token, channel_id, message, time_sent):
 
     # Sending message
     data.data['messages'].append(message_dict)
+    # A timer is run in order to post the message to the channel
     timer_duration = time_sent - curr_time.replace(tzinfo=timezone.utc).timestamp()
     timer = threading.Timer(timer_duration, post_message_to_channel, [message_dict, channel_id])
     timer.start()
