@@ -77,7 +77,7 @@ def message_send(token, channel_id, message):
     message_id = len(data.data['messages'])
 
     date = datetime.now()
-    time_created = date.replace(tzinfo=timezone.utc).timestamp()
+    time_created = int(date.replace(tzinfo=timezone.utc).timestamp())
 
     message_dict = {
         'message_id': message_id,
@@ -119,7 +119,7 @@ def message_remove(token, message_id):
         -> the authorised user is an owner of this channel or the flockr
     Error type: InputError
         -> message (based on ID) no longer exists
-        
+
     '''
 
     user_info = get_user_info('token', token)
@@ -379,7 +379,7 @@ def message_pin(token, message_id):
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be pinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> the authorised user is not a member of the channel that the
@@ -433,7 +433,7 @@ def message_unpin(token, message_id):
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be unpinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
