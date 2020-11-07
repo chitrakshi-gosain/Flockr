@@ -58,7 +58,7 @@ def message_send(token, channel_id, message):
         -> when the authorised user has not joined the channel they are
            trying to post to
     Error type: InputError
-        -> message is more than 1000 characters 
+        -> message is more than 1000 characters
     '''
 
     # Testing for token validity
@@ -76,7 +76,7 @@ def message_send(token, channel_id, message):
     message_id = len(data.data['messages'])
 
     date = datetime.now()
-    time_created = date.replace(tzinfo=timezone.utc).timestamp()
+    time_created = int(date.replace(tzinfo=timezone.utc).timestamp())
 
     message_dict = {
         'message_id': message_id,
@@ -110,7 +110,7 @@ def message_remove(token, message_id):
         -> the authorised user is an owner of this channel or the flockr
     Error type: InputError
         -> message (based on ID) no longer exists
-        
+
     '''
 
     user_info = get_user_info('token', token)
@@ -206,7 +206,7 @@ def message_sendlater(token, channel_id, message, time_sent):
 
     RETURN VALUES:
         -> message_id : id of the message which will be sent later
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -240,7 +240,7 @@ def message_react(token, message_id, react_id):
         -> message_id : id of the message to be reacted
         -> react_id : id of the react, presently only possibility is 1
                       for thumbs up
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -305,7 +305,7 @@ def message_pin(token, message_id):
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be pinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -334,7 +334,7 @@ def message_unpin(token, message_id):
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be unpinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
