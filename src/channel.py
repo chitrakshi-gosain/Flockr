@@ -6,6 +6,7 @@ Iteration 1
 '''
 
 import data
+from datetime import datetime, timezone
 from user import user_profile
 from error import InputError
 from error import AccessError
@@ -184,7 +185,7 @@ def channel_messages(token, channel_id, start):
 
     messages = channel_info['messages'][::-1]
 
-    end = start + 50
+    end = start + 50   
     output = messages[start:end - 1]
     if number_of_messages - start < 50:
         end = -1
