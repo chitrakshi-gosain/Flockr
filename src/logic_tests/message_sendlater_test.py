@@ -51,7 +51,8 @@ def test_message_sendlater_valid(initialise_user_data, initialise_channel_data):
     channels = initialise_channel_data
 
     curr_time = datetime.now()
-    time_sent = curr_time + timedelta(seconds=30)
+    date_sent = curr_time + timedelta(seconds=30)
+    time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     message_id = message_sendlater(users['user0']['token'], channels['user0_publ']['channel_id'], 
         'Hello World!', time_sent)
@@ -65,7 +66,8 @@ def test_message_sendlater_id_invalid(initialise_user_data):
     users = initialise_user_data
 
     curr_time = datetime.now()
-    time_sent = curr_time + timedelta(seconds=30)
+    date_sent = curr_time + timedelta(seconds=30)
+    time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     with pytest.raises(InputError):
         message_sendlater(users['user0']['token'], 0, 'Hello World!', time_sent)
@@ -78,7 +80,8 @@ def test_message_sendlater_large_invalid(initialise_user_data, initialise_channe
     channels = initialise_channel_data
 
     curr_time = datetime.now()
-    time_sent = curr_time + timedelta(seconds=30)
+    date_sent = curr_time + timedelta(seconds=30)
+    time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     message = 'djsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergdjsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergsdfhsdhsdh'
 
@@ -94,7 +97,8 @@ def test_message_sendlater_time_invalid(initialise_user_data, initialise_channel
     channels = initialise_channel_data
 
     curr_time = datetime.now()
-    time_sent = curr_time - timedelta(minutes=10)
+    date_sent = curr_time - timedelta(minutes=10)
+    time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     with pytest.raises(InputError):
         message_sendlater(users['user0']['token'], channels['user0_publ']['channel_id'], 
@@ -108,7 +112,8 @@ def test_message_sendlater_channel_invalid(initialise_user_data, initialise_chan
     channels = initialise_channel_data
 
     curr_time = datetime.now()
-    time_sent = curr_time + timedelta(seconds=30)
+    date_sent = curr_time + timedelta(seconds=30)
+    time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     with pytest.raises(AccessError):
         message_sendlater(users['user0']['token'], channels['admin_publ']['channel_id'], 
@@ -122,7 +127,8 @@ def test_message_sendlater_token_invalid(initialise_user_data, initialise_channe
     channels = initialise_channel_data
 
     curr_time = datetime.now()
-    time_sent = curr_time + timedelta(seconds=30)
+    date_sent = curr_time + timedelta(seconds=30)
+    time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     invalid_token = users['user0']['token']
     auth_logout(invalid_token)
