@@ -55,18 +55,18 @@ def test_message_sendlater_valid(url, initialise_user_data, initialise_channel_d
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     message_id = requests.post(f'{url}/message/sendlater', json={
-        'token': users['user0']['token'],
-        'channel_id': channels['user0_publ']['channel_id'],
+        'token': users['owner']['token'],
+        'channel_id': channels['owner_publ']['channel_id'],
         'message': 'Hello World!',
         'time_sent': time_sent,
     }).json()
 
-    assert isInstance(message_id['message_id'], int)
+    assert isinstance(message_id['message_id'], int)
 
 def test_message_sendlater_id_invalid(url, initialise_user_data):
     '''
@@ -74,12 +74,12 @@ def test_message_sendlater_id_invalid(url, initialise_user_data):
     '''
     users = initialise_user_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
-    assert message_id = requests.post(f'{url}/message/sendlater', json={
-        'token': users['user0']['token'],
+    assert requests.post(f'{url}/message/sendlater', json={
+        'token': users['owner']['token'],
         'channel_id': 0,
         'message': 'Hello World!',
         'time_sent': time_sent,
@@ -92,15 +92,15 @@ def test_message_sendlater_large_invalid(url, initialise_user_data, initialise_c
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     message = 'djsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergdjsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergsdfhsdhsdh'
 
-    assert message_id = requests.post(f'{url}/message/sendlater', json={
-        'token': users['user0']['token'],
-        'channel_id': channels['user0_publ']['channel_id'],
+    assert requests.post(f'{url}/message/sendlater', json={
+        'token': users['owner']['token'],
+        'channel_id': channels['owner_publ']['channel_id'],
         'message': message,
         'time_sent': time_sent,
     }).status_code == 400
@@ -112,14 +112,14 @@ def test_message_sendlater_time_invalid(url, initialise_user_data, initialise_ch
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time - timedelta(minutes=10)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
-    assert message_id = requests.post(f'{url}/message/sendlater', json={
-        'token': users['user0']['token'],
-        'channel_id': channels['user0_publ']['channel_id'],
-        'message': message,
+    assert requests.post(f'{url}/message/sendlater', json={
+        'token': users['owner']['token'],
+        'channel_id': channels['owner_publ']['channel_id'],
+        'message': 'Hello World!',
         'time_sent': time_sent,
     }).status_code == 400
 
@@ -130,14 +130,14 @@ def test_message_sendlater_channel_invalid(url, initialise_user_data, initialise
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
-    assert message_id = requests.post(f'{url}/message/sendlater', json={
+    assert requests.post(f'{url}/message/sendlater', json={
         'token': users['user0']['token'],
         'channel_id': channels['admin_publ']['channel_id'],
-        'message': message,
+        'message': 'Hello World!',
         'time_sent': time_sent,
     }).status_code == 400
 
@@ -148,16 +148,18 @@ def test_message_sendlater_token_invalid(url, initialise_user_data, initialise_c
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     invalid_token = users['user0']['token']
-    auth_logout(invalid_token)
-
-    assert message_id = requests.post(f'{url}/message/sendlater', json={
+    requests.post(f'{url}/auth/logout', json={
         'token': invalid_token,
-        'channel_id': channels['user0_publ']['channel_id'],
-        'message': message,
+    })
+
+    assert requests.post(f'{url}/message/sendlater', json={
+        'token': invalid_token,
+        'channel_id': channels['owner_publ']['channel_id'],
+        'message': 'Hello World!',
         'time_sent': time_sent,
     }).status_code == 400
