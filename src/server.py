@@ -21,6 +21,7 @@ from message import message_send, message_remove, message_edit, \
         message_unpin
 from  user import user_profile, user_profile_setname, user_profile_setemail, \
     user_profile_sethandle, user_profile_uploadphoto
+from helper import get_user_info
 from other import users_all, admin_userpermission_change, search, clear
 from standup import standup_start, standup_active, standup_send
 
@@ -854,8 +855,15 @@ def user_profile_uploadphoto_route():
         -> image uploaded is not a JPG
     '''
     payload = request.get_json()
-    return dumps(user_profile_uploadphoto(payload['token'], payload['img_url'],
+
+    return_dict = dumps(user_profile_uploadphoto(payload['token'], payload['img_url'],
         payload['x_start'], payload['y_start'], payload['x_end'], payload['y_end']))
+
+    # Adding base url to the existing file path
+    user = get_user_info('token', payload['token'])
+    user['profile_img_url'] = request.url_root + user['profile_img_url']
+
+    return return_dict
 
 @APP.route("/standup/start", methods=['POST'])
 def standup_start_route():
