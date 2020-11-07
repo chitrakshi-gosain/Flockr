@@ -6,7 +6,7 @@ Iteration 3
 '''
 
 import pytest
-from datetime import timezone, datetime
+from datetime import timezone, datetime, timedelta
 from auth import auth_logout
 from message import message_sendlater
 from error import AccessError, InputError
@@ -51,10 +51,37 @@ def test_message_sendlater_valid(initialise_user_data, initialise_channel_data):
     channels = initialise_channel_data
 
     curr_time = datetime.now()
-    time_sent = curr_time + datetime(0, 0, 0, 0, 1, 0, 0)
+    time_sent = curr_time + timedelta(seconds=30)
 
     message_id = message_sendlater(users['user0']['token'], channels['user0_publ']['channel_id'], 
         'Hello World!', time_sent)
 
     assert isInstance(message_id['message_id'], int)
 
+def test_message_sendlater_id_invalid(initialise_user_data):
+    '''
+    Testing with an invalid channel_id
+    '''
+    users = initialise_user_data
+
+    curr_time = datetime.now()
+    time_sent = curr_time + timedelta(seconds=30)
+
+    with pytest.raises(InputError):
+        message_sendlater(users['user0']['token'], 0, 'Hello World!', time_sent)
+
+def test_message_sendlater_large_invalid(initialise_user_data, initialise_channel_data):
+    '''
+    Testing with a message that is too large
+    '''
+    users = initialise_user_data
+    channels = initialise_channel_data
+
+    curr_time = datetime.now()
+    time_sent = curr_time + timedelta(seconds=30)
+
+    message = 'djsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergdjsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergsdfhsdhsdh'
+
+    with pytest.raises(InputError):
+        message_sendlater(users['user0']['token'], channels['user0_publ']['channel_id'], 
+        message, time_sent)
