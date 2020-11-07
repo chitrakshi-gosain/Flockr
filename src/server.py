@@ -724,8 +724,9 @@ def message_sendlater_route():
         -> message is more than 1000 characters
         -> time sent is a time in the past
     '''
-
-    pass
+    payload = request.get_json()
+    return dumps(message_sendlater(payload['token'], payload['channel_id'], payload['message'],
+        payload['time_sent']))
 
 @APP.route("/message/react", methods=['POST'])
 def message_react_route():
