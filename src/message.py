@@ -11,6 +11,7 @@ from helper import get_user_info, get_channel_info, is_user_in_channel, \
 import data
 import threading
 from error import InputError, AccessError
+from other import search
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -59,7 +60,7 @@ def message_send(token, channel_id, message):
         -> when the authorised user has not joined the channel they are
            trying to post to
     Error type: InputError
-        -> message is more than 1000 characters 
+        -> message is more than 1000 characters
     '''
 
     # Testing for token validity
@@ -83,7 +84,15 @@ def message_send(token, channel_id, message):
         'message_id': message_id,
         'u_id': user_info['u_id'],
         'message': message,
-        'time_created': time_created
+        'time_created': time_created,
+        'is_pinned': False,
+        'reacts': [
+            {
+                'react_id': 1,
+                'u_ids': [],
+                'is_this_user_reacted': False
+            }
+        ]
     }
 
     data.data['messages'].append(message_dict)
@@ -111,7 +120,7 @@ def message_remove(token, message_id):
         -> the authorised user is an owner of this channel or the flockr
     Error type: InputError
         -> message (based on ID) no longer exists
-        
+
     '''
 
     user_info = get_user_info('token', token)
@@ -208,7 +217,7 @@ def message_sendlater(token, channel_id, message, time_sent):
 
     RETURN VALUES:
         -> message_id : id of the message which will be sent later
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -274,7 +283,7 @@ def message_react(token, message_id, react_id):
         -> message_id : id of the message to be reacted
         -> react_id : id of the react, presently only possibility is 1
                       for thumbs up
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -287,12 +296,44 @@ def message_react(token, message_id, react_id):
            with ID react_id from the authorised user
     '''
 
-    # Checking for AccessError:
+    # check if token is valid
+    user_info = get_user_info("token", token)
+    if not user_info:
+        raise AccessError('Token is invalid')
 
-    # Checking for InputError(s):
+    # check if message_id is valid
+    # search with empty query_str returns list of all messages from channels including user
+    message_list = search(token, '')['messages']
+    if message_id not in [message['message_id'] for message in message_list]:
+        raise InputError('Message ID is invalid')
+
+    # check if react_id is valid
+    react_ids = [react['react_id'] for message in message_list for react in message['reacts']]
+    if react_id not in react_ids:
+        raise InputError('React ID is invalid')
+
+    # check if user has already reacted
+    for message in message_list:
+        if message['message_id'] == message_id:
+            for react in message['reacts']:
+                if react['react_id'] == react_id:
+                    if user_info['u_id'] in react['u_ids']:
+                        raise InputError('User has already reacted')
 
     # Since there are no AccessError or InputError(s), hence proceeding
     # forward:
+
+    u_id = user_info['u_id']
+    message = get_message_info(message_id)
+    # find the react with react_id in the message with message_id
+    # append u_id to the react's list of u_ids
+    # if u_id sent the message, toggle 'is_this_user_reacted'
+    for react in message['reacts']:
+        if react['react_id'] == react_id:
+            react['u_ids'].append(u_id)
+            if message['u_id'] == u_id:
+                react['is_this_user_reacted'] = True
+            break
 
     return {
     }
@@ -320,15 +361,48 @@ def message_unreact(token, message_id, react_id):
            with ID react_id
     '''
 
-    # Checking for AccessError:
+    # check if token is valid
+    user_info = get_user_info("token", token)
+    if not user_info:
+        raise AccessError('Token is invalid')
 
-    # Checking for InputError(s):
+    # check if message_id is valid
+    # search with empty query_str returns list of all messages from channels including user
+    message_list = search(token, '')['messages']
+    if message_id not in [message['message_id'] for message in message_list]:
+        raise InputError('Message ID is invalid')
+
+    # check if react_id is valid
+    react_ids = [react['react_id'] for message in message_list for react in message['reacts']]
+    if react_id not in react_ids:
+        raise InputError('React ID is invalid')
+
+    # check if user has not reacted
+    for message in message_list:
+        if message['message_id'] == message_id:
+            for react in message['reacts']:
+                if react['react_id'] == react_id:
+                    if user_info['u_id'] not in react['u_ids']:
+                        raise InputError('User has not reacted')
 
     # Since there are no AccessError or InputError(s), hence proceeding
     # forward:
 
+    u_id = user_info['u_id']
+    message = get_message_info(message_id)
+    # find the react with react_id in the message with message_id
+    # remove u_id from the react's list of u_ids
+    # if u_id sent the message, toggle 'is_this_user_reacted'
+    for react in message['reacts']:
+        if react['react_id'] == react_id:
+            react['u_ids'].remove(u_id)
+            if message['u_id'] == u_id:
+                react['is_this_user_reacted'] = False
+            break
+
     return {
     }
+
 
 def message_pin(token, message_id):
     '''
@@ -339,24 +413,49 @@ def message_pin(token, message_id):
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be pinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
-        -> token passed in is not a valid token
         -> the authorised user is not a member of the channel that the
            message is within
-        -> the authorised user is not an owner
+        -> the authorised user is not an owner or an admin
     Error type: InputError
         -> message_id is not a valid message
+        -> token passed in is not a valid token
         -> message with ID message_id is already pinned
     '''
+    # Checking for InputError(s):
+    # Checking if token is valid
+    user_info = get_user_info('token', token)
+    if not user_info:
+        raise InputError(description='Invalid Token')
+
+    # Checking if message is valid
+    message_info = get_message_info(message_id)
+    if not message_info:
+        raise InputError(description='message_id does not correlate to an existing message_id')
+
+    if message_info['is_pinned'] == True:
+        raise InputError(description='Message has already been pinned')
 
     # Checking for AccessError:
+    # Find channel for message_id
+    for channel in data.data['channels']:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                channel_info = channel
+                break
 
-    # Checking for InputError(s):
+    # Find if the user is an owner member in the channel or not
+    is_owner = False
+    for owner in channel_info['owner_members']:
+        if owner['u_id'] == user_info['u_id']:
+            is_owner = True
 
-    # Since there are no InputError(s), hence proceeding forward:
+    if not is_owner and not user_info['is_admin']:
+        raise AccessError(description='User is neither an owner nor an admin of the channel')
 
+    message_info['is_pinned'] = True
     return {
     }
 
@@ -368,7 +467,7 @@ def message_unpin(token, message_id):
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be unpinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -379,13 +478,38 @@ def message_unpin(token, message_id):
            message is within
         -> the authorised user is not an owner
     '''
+    # Checking for InputError(s):
+    # Checking if token is valid
+    user_info = get_user_info('token', token)
+    if not user_info:
+        raise InputError(description='Invalid Token')
+
+    # Checking if message is valid
+    message_info = get_message_info(message_id)
+    if not message_info:
+        raise InputError(description='message_id does not correlate to an existing message_id')
 
     # Checking for AccessError:
+    # Find channel for message_id
+    for channel in data.data['channels']:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                channel_info = channel
+                break
 
-    # Checking for InputError(s):
+    # Find if the user is an owner member in the channel or not
+    is_owner = False
+    for owner in channel_info['owner_members']:
+        if owner['u_id'] == user_info['u_id']:
+            is_owner = True
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    if not is_owner and not user_info['is_admin']:
+        raise AccessError(description='User is neither an owner nor an admin of the channel')
 
+    # Checking if message has been pinned yet
+    if message_info['is_pinned'] == False:
+        raise InputError(description='Message has already been unpinned')
+        
+    message_info['is_pinned'] = False
     return {
     }

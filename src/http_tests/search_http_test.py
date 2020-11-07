@@ -45,20 +45,22 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
-def pop_datetimes(messages):
-    for entry in messages:
-        entry.pop('time_created')
-    return messages
+def is_message_in_messages(message_str, messages):
+    for message in messages['messages']:
+        if message['message'] == message_str:
+            return True
+    return False
 
 def test_search_not_in_channels(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['user1']['token']
     channel_id = initialise_channel_data['admin_publ']['channel_id']
 
+    message_str = "I am in no channels"
     message_input = {
         "token": initialise_user_data['admin']['token'],
         "channel_id": channel_id,
-        "message": "I am in no channels"
+        "message": message_str
     }
     requests.post(url + "/message/send", json=message_input)
 
@@ -76,17 +78,14 @@ def test_search_join_channel(url, initialise_user_data, initialise_channel_data)
     channel_id = initialise_channel_data['admin_publ']['channel_id']
 
     #message1 stuff
+    message1_str = 'I am in no channels'
     message_input = {
         "token": initialise_user_data['admin']['token'],
         "channel_id": channel_id,
-        "message": "I am in no channels"
+        "message": message1_str
     }
-    message1 = requests.post(url + "/message/send", json=message_input).json()
-    message1_info = {
-        'message_id' : message1['message_id'],
-        'u_id' : initialise_user_data['admin']['u_id'],
-        'message' : 'I am in no channels',
-    }
+    requests.post(url + "/message/send", json=message_input)
+
     #search
     search_input = {
         "token": token,
@@ -101,18 +100,16 @@ def test_search_join_channel(url, initialise_user_data, initialise_channel_data)
         "token": token,
         "channel_id": channel_id
     })
+
     #message2 stuff
+    message2_str = "Now Im in a channel"
     message_input = {
         "token": initialise_user_data['admin']['token'],
         "channel_id": channel_id,
-        "message": "Now Im in a channel"
+        "message": message2_str
     }
-    message2 = requests.post(url + "/message/send", json=message_input).json()
-    message2_info = {
-        'message_id' : message2['message_id'],
-        'u_id' : initialise_user_data['admin']['u_id'],
-        'message' : 'Now Im in a channel',
-    }
+    requests.post(url + "/message/send", json=message_input)
+
     #seach again
     search_input = {
         "token": token,
@@ -122,9 +119,8 @@ def test_search_join_channel(url, initialise_user_data, initialise_channel_data)
     assert response.status_code == 200
     searched_messages = response.json()
 
-    popped = pop_datetimes(searched_messages['messages'])
-    assert message1_info in popped
-    assert message2_info not in popped
+    assert is_message_in_messages(message1_str, searched_messages)
+    assert not is_message_in_messages(message2_str, searched_messages)
 
 def test_search_no_messages(url, initialise_user_data, initialise_channel_data):
 
@@ -148,30 +144,22 @@ def test_search_empty_query(url, initialise_user_data, initialise_channel_data):
     })
 
     #message1 stuff
+    message1_str = "this is message1"
     message_input = {
         "token": initialise_user_data['admin']['token'],
         "channel_id": channel_id,
-        "message": "this is message1"
+        "message": message1_str
     }
-    message1 = requests.post(url + "/message/send", json=message_input).json()
-    message1_info = {
-        'message_id' : message1['message_id'],
-        'u_id' : initialise_user_data['admin']['u_id'],
-        'message' : 'this is message1',
-    }
+    requests.post(url + "/message/send", json=message_input)
 
     #message2 stuff
+    message2_str = "this is message2"
     message_input = {
         "token": initialise_user_data['admin']['token'],
         "channel_id": channel_id,
-        "message": "this is message2"
+        "message": message2_str
     }
-    message2 = requests.post(url + "/message/send", json=message_input).json()
-    message2_info = {
-        'message_id' : message2['message_id'],
-        'u_id' : initialise_user_data['admin']['u_id'],
-        'message' : 'this is message2',
-    }
+    requests.post(url + "/message/send", json=message_input)
 
     #search
     search_input = {
@@ -182,9 +170,8 @@ def test_search_empty_query(url, initialise_user_data, initialise_channel_data):
     assert response.status_code == 200
     searched_messages = response.json()
 
-    popped =  pop_datetimes(searched_messages['messages'])
-    assert message1_info in popped
-    assert message2_info in popped
+    assert is_message_in_messages(message1_str, searched_messages)
+    assert is_message_in_messages(message2_str, searched_messages)
 
 def test_search_admin(url, initialise_user_data, initialise_channel_data):
 
@@ -192,17 +179,13 @@ def test_search_admin(url, initialise_user_data, initialise_channel_data):
     channel_id = initialise_channel_data['user1_priv']['channel_id']
 
     #message stuff
+    message_str = 'private'
     message_input = {
         "token": initialise_user_data['user1']['token'],
         "channel_id": channel_id,
-        "message": "private"
+        "message": message_str
     }
-    message = requests.post(url + "/message/send", json=message_input).json()
-    message_info = {
-        'message_id' : message['message_id'],
-        'u_id' : initialise_user_data['user1']['u_id'],
-        'message' : 'private',
-    }
+    requests.post(url + "/message/send", json=message_input).json()
 
     #search
     search_input = {
@@ -213,38 +196,29 @@ def test_search_admin(url, initialise_user_data, initialise_channel_data):
     assert response.status_code == 200
     searched_messages = response.json()
 
-    popped = pop_datetimes(searched_messages['messages'])
-    assert message_info in popped
+    assert is_message_in_messages(message_str, searched_messages)
 
 def test_search_multiple_channels(url, initialise_user_data, initialise_channel_data):
 
     token = initialise_user_data['admin']['token']
 
     #message1
+    message1_str = 'channel1'
     message_input = {
         "token": token,
         "channel_id": initialise_channel_data['admin_publ']['channel_id'],
-        "message": "channel1"
+        "message": message1_str
     }
-    message1 = requests.post(url + "/message/send", json=message_input).json()
-    message1_info = {
-        'message_id' : message1['message_id'],
-        'u_id' : initialise_user_data['admin']['u_id'],
-        'message' : 'channel1',
-    }
+    requests.post(url + "/message/send", json=message_input).json()
 
     #message2
+    message2_str = 'channel2'
     message_input = {
         "token": token,
         "channel_id": initialise_channel_data['admin_priv']['channel_id'],
-        "message": "channel2"
+        "message": message2_str
     }
-    message2 = requests.post(url + "/message/send", json=message_input).json()
-    message2_info = {
-        'message_id' : message2['message_id'],
-        'u_id' : initialise_user_data['admin']['u_id'],
-        'message' : 'channel2',
-    }
+    requests.post(url + "/message/send", json=message_input).json()
 
     #search
     search_input = {
@@ -255,9 +229,8 @@ def test_search_multiple_channels(url, initialise_user_data, initialise_channel_
     assert response.status_code == 200
     searched_messages = response.json()
 
-    popped = pop_datetimes(searched_messages['messages'])
-    assert message1_info in popped
-    assert message2_info in popped
+    assert is_message_in_messages(message1_str, searched_messages)
+    assert is_message_in_messages(message2_str, searched_messages)
 
 def test_search_invalid_token(url, initialise_user_data, initialise_channel_data):
 
