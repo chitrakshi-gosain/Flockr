@@ -7,7 +7,7 @@ Iteration 2
 '''
 
 from json import dumps
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from error import InputError
 import sys
@@ -989,6 +989,13 @@ def auth_passwordreset_reset_route():
     '''
 
     pass
+
+@APP.route("/profile_img/<path:path>")
+def send_image(path):
+    '''
+`   Handles requests for images uploaded to the server
+    '''
+    return send_from_directory('profile_img/', path)
 
 # Example, it is associated with echo_http_test.py, do not remove it
 @APP.route("/echo", methods=['GET'])
