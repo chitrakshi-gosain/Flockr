@@ -211,3 +211,10 @@ def decode_encoded_token(token):
         return payload['u_id']
     except:
         raise AccessError(description='Token passed in is not a valid token')  
+
+def post_message_to_channel(message, channel_id):
+    '''
+    Posts a message already present in data['messages'] to the relevant channel
+    '''
+    channel = get_channel_info(channel_id)
+    channel['messages'].append(message)
