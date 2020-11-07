@@ -88,7 +88,7 @@ def test_message_sendlater_large_invalid(initialise_user_data, initialise_channe
 
 def test_message_sendlater_time_invalid(initialise_user_data, initialise_channel_data):
     '''
-    Testings with an invalid time in the past
+    Testing with an invalid time in the past
     '''
     users = initialise_user_data
     channels = initialise_channel_data
@@ -98,4 +98,18 @@ def test_message_sendlater_time_invalid(initialise_user_data, initialise_channel
 
     with pytest.raises(InputError):
         message_sendlater(users['user0']['token'], channels['user0_publ']['channel_id'], 
+        'Hello World!', time_sent)
+
+def test_message_sendlater_channel_invalid(initialise_user_data, initialise_channel_data):
+    '''
+    Testing with a channel that the user is not a member of
+    '''
+    users = initialise_user_data
+    channels = initialise_channel_data
+
+    curr_time = datetime.now()
+    time_sent = curr_time + timedelta(seconds=30)
+
+    with pytest.raises(AccessError):
+        message_sendlater(users['user0']['token'], channels['admin_publ']['channel_id'], 
         'Hello World!', time_sent)
