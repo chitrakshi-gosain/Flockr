@@ -50,14 +50,14 @@ def test_message_sendlater_valid(initialise_user_data, initialise_channel_data):
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     message_id = message_sendlater(users['user0']['token'], channels['user0_publ']['channel_id'], 
         'Hello World!', time_sent)
 
-    assert isInstance(message_id['message_id'], int)
+    assert isinstance(message_id['message_id'], int)
 
 def test_message_sendlater_id_invalid(initialise_user_data):
     '''
@@ -65,7 +65,7 @@ def test_message_sendlater_id_invalid(initialise_user_data):
     '''
     users = initialise_user_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
@@ -79,7 +79,7 @@ def test_message_sendlater_large_invalid(initialise_user_data, initialise_channe
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
@@ -96,7 +96,7 @@ def test_message_sendlater_time_invalid(initialise_user_data, initialise_channel
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time - timedelta(minutes=10)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
@@ -111,7 +111,7 @@ def test_message_sendlater_channel_invalid(initialise_user_data, initialise_chan
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
@@ -126,7 +126,7 @@ def test_message_sendlater_token_invalid(initialise_user_data, initialise_channe
     users = initialise_user_data
     channels = initialise_channel_data
 
-    curr_time = datetime.now()
+    curr_time = datetime.now(timezone.utc)
     date_sent = curr_time + timedelta(seconds=30)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
