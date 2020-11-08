@@ -58,3 +58,26 @@ def get_messages(url, admin_token):
     }).json()
     return messages
 
+def test_token_invalid(url, reset, initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']
+    channel1_id = initialise_channel_data['owner_priv']
+
+    # send_message
+    response = requests.post(url + "/message/send", json={
+        'token': owner_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+        'message': "Sample message" 
+    })
+    assert response.status_code == 200
+    message1_id = response.json()
+
+    # pin message
+    send_input = {
+        'token': 'incorrect_owner_token',
+        'message_id': message1_id['message_id']
+    }
+
+    response = requests.post(url + "/message/pin", json=send_input)
+    assert response.status_code == 400
+
+
