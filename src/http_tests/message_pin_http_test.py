@@ -176,7 +176,7 @@ def test_admin_can_pin_if_in_channel(url, reset, initialise_user_data, initialis
         if message['message_id'] == message1_id['message_id']:
             assert message['is_pinned'] == True
 
-def test_owner_can_pin(url, rest, initialise_user_data, initialise_channel_data):
+def test_owner_can_pin(url, reset, initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_priv']
     
