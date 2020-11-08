@@ -6,8 +6,6 @@ Iteration 1 & 3
 '''
 
 from uuid import uuid4
-import smtplib
-from email.message import EmailMessage
 import data
 from error import InputError, AccessError
 from helper import check_if_valid_email, check_if_valid_password, \
@@ -248,14 +246,13 @@ def auth_register(email, password, name_first, name_last):
 def auth_passwordreset_request(email):
     '''
     DESCRIPTION:
-    Given an email address, if the user is a registered user, sends
-    them a an email containing a specific secret code, that when entered
-    in auth_passwordreset_reset, shows that the user trying to reset the
-    password is the one who got sent this email.
+    Given an email address, if the user is a registered user, generates
+    a reset code, stores it the database and returns it, which is then
+    incorporated in the reset email
 
     PARAMETERS:
         -> email : email of a user
-    
+
     EXCEPTIONS:
     Error type: InputError
         -> email entered is not a valid email
@@ -278,21 +275,7 @@ def auth_passwordreset_request(email):
     reset_code = uuid4().hex.upper()[0:6]
     data.data['reset_codes'][reset_code] = email
 
-    # sending the email with reset code
-    sender_email = 'wed15grapeteam2.20T3@gmail.com'
-    sender_pass = 'Comp@1531'
-    msg = EmailMessage()
-    msg['From'] = sender_email
-    msg['To'] = email
-    msg['subject'] = 'Flockr Password Reset Code'
-    msg.set_content(reset_code)
-
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login(sender_email, sender_pass)
-        smtp.send_message(msg)
-
-    return {
-    }
+    return reset_code
 
 def auth_passwordreset_reset(reset_code, new_password):
     '''
@@ -303,7 +286,7 @@ def auth_passwordreset_reset(reset_code, new_password):
     PARAMETERS:
         -> reset_code : reset code provided to user for password reset
         -> new_password : new password of user
-    
+
     EXCEPTIONS:
     Error type: InputError
         -> reset_code is not a valid reset_code
@@ -312,6 +295,7 @@ def auth_passwordreset_reset(reset_code, new_password):
     '''
 
     # Checking for InputError(s):
+
     if reset_code not in data.data['reset_codes'].keys():
         raise InputError(description='Reset code is not a valid code')
 
