@@ -171,7 +171,7 @@ def test_user_not_owner(url, reset, initialise_user_data, initialise_channel_dat
     response = requests.post(url + "/message/unpin", json=unpin_input)
     assert response.status_code == 400
 
-def test_admin_can_pin_if_in_channel(url, reset, initialise_user_data, initialise_channel_data):
+def test_admin_can_unpin_if_in_channel(url, reset, initialise_user_data, initialise_channel_data):
     admin_credentials = initialise_user_data['admin']
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_publ']
