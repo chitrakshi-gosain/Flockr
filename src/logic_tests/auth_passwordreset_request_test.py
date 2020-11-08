@@ -51,7 +51,8 @@ def test_invalid_email(reset):
 def test_unregistered_user(reset):
     '''
     Tests that auth_passwordreset_request raises an InputError when an
-    unregistered user tries to log-in
+    unregistered user tries to request for a reset code to change his
+    password
     '''
 
     with pytest.raises(InputError):
@@ -59,8 +60,8 @@ def test_unregistered_user(reset):
 
 def test_return_type(initialise_user_data):
     '''
-    Tests that auth_passwordreset_request successfully send an email to
-    the user with reset code so that he can reset his password
+    Tests that auth_passwordreset_request successfully returns the reset
+    code which is of string type as per the spec
     '''
 
     reset_code = auth_passwordreset_request('user0@email.com')
