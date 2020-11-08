@@ -99,4 +99,108 @@ def test_message_already_pinned(url, reset, initialise_user_data, initialise_cha
     response = requests.post(url + "/message/pin", json=pin_input)
     assert response.status_code == 400
 
+def test_user_not_authorised(url, reset, initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']
+    user1_credentials = initialise_user_data['user1'] 
+    channel1_id = initialise_channel_data['owner_priv']
+
+    response = requests.post(url + "/message/send", json={
+        'token': owner_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+        'message': "Sample message" 
+    })
+    message1_id = response.json()
+
+    pin_input = {
+        'token': user1_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+
+    response = requests.post(url + "/message/pin", json=pin_input)
+    assert response.status_code == 400
+
+def test_user_not_owner(url, reset, initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']
+    user1_credentials = initialise_user_data['user1']
+    channel1_id = initialise_channel_data['owner_publ']
+
+    response = requests.post(url + "/message/send", json={
+        'token': owner_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+        'message': "Sample message" 
+    })
+    message1_id = response.json()
+
+    requests.post(url + "/channel/join", json={
+        'token': user1_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+    })
+
+    pin_input = {
+        'token': user1_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+    response = requests.post(url + "/message/pin", json=pin_input)
+    assert response.status_code == 400
+
+def test_admin_can_pin_if_in_channel(url, reset, initialise_user_data, initialise_channel_data):
+    admin_credentials = initialise_user_data['admin']
+    owner_credentials = initialise_user_data['owner']
+    channel1_id = initialise_channel_data['owner_publ']
+
+    response = requests.post(url + "/message/send", json={
+        'token': owner_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+        'message': "Sample message" 
+    })
+    message1_id = response.json()
+
+    requests.post(url + "/channel/join", json={
+        'token': admin_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+    })
+    messages = get_messages(url, admin_credentials['token'])
+    for message in messages['messages']:
+        if message['message_id'] == message1_id['message_id']:
+            assert message['is_pinned'] == False
+
+    pin_input = {
+        'token': admin_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+    response = requests.post(url + "/message/pin", json=pin_input)
+    assert response.status_code == 200
+
+    messages = get_messages(url, admin_credentials['token'])
+    for message in messages['messages']:
+        if message['message_id'] == message1_id['message_id']:
+            assert message['is_pinned'] == True
+
+def test_owner_can_pin(url, reset, initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']
+    channel1_id = initialise_channel_data['owner_priv']
+    
+    response = requests.post(url + "/message/send", json={
+        'token': owner_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+        'message': "Sample message" 
+    })
+    message1_id = response.json()
+
+    messages = get_messages(url, owner_credentials['token'])
+    for message in messages['messages']:
+        if message['message_id'] == message1_id['message_id']:
+            assert message['is_pinned'] == False
+
+    pin_input = {
+        'token': owner_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+    response = requests.post(url + "/message/pin", json=pin_input)
+    assert response.status_code == 200
+
+    messages = get_messages(url, owner_credentials['token'])
+    for message in messages['messages']:
+        if message['message_id'] == message1_id['message_id']:
+            assert message[is_pinned] == True
 
