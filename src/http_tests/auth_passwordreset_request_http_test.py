@@ -5,9 +5,8 @@ Contributor - YOUR NAME HERE
 Iteration 2
 '''
 
-import json
 import requests
-import pytest
+from flask_mail import Mail
 from server import APP
 
 '''
@@ -39,8 +38,11 @@ Error type: AccessError
 '''
 
 APP.config['TESTING'] = True
-# technically i should reinstatiate the mail object, but i'm not passing
+mail = Mail(APP)
+# technically i should reinstate the mail object, but i'm not passing
 # the mail object as an argument so how do i do it? this will still send email :(
+
+# email is still being sent after reinstating the mail object
 
 def test_url(url):
     '''
@@ -97,7 +99,7 @@ def test_return_type(url, initialise_user_data):
     resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
         'email': 'chitrakshi6072@gmail.com'
     })
-    # assert resetrequest_response.status_code == 200
+    assert resetrequest_response.status_code == 200
     resetrequest_payload = resetrequest_response.json()
 
     assert not resetrequest_payload
