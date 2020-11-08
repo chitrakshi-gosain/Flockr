@@ -47,3 +47,9 @@ Error Type: AccessError
     -> user is not an authorised member of the channel which contains the message
     -> The user is not an owner
 '''
+
+def test_url(url):
+    '''
+    A simple sanity test to check that the server is set up properly
+    '''
+    assert url.startswith("http")
