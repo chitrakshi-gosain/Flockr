@@ -9,8 +9,8 @@ Iteration 2
 from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
+from flask_mail import Mail, Message
 from error import InputError
-import sys
 from auth import auth_login, auth_register, auth_logout, \
     auth_passwordreset_request, auth_passwordreset_reset
 from channel import channel_invite, channel_details, channel_messages, \
@@ -49,6 +49,23 @@ CORS(APP)
 
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
 APP.register_error_handler(Exception, defaultHandler)
+
+# configuration of mail
+mail_settings = {
+    "MAIL_SERVER": 'smtp.gmail.com',
+    "MAIL_PORT": 465,
+    "MAIL_USERNAME": 'wed15grapeteam2.20T3@gmail.com',
+    "MAIL_PASSWORD": 'Comp@1531',
+    "MAIL_USE_TLS": False,
+    "MAIL_USE_SSL": True,
+}
+
+APP.config.update(mail_settings)
+#instating the mail class
+mail = Mail(APP)
+
+# mail = Mail()
+# mail.init_App(APP)
 
 @APP.route("/auth/login", methods=['POST'])
 def auth_login_route():
@@ -967,7 +984,6 @@ def auth_passwordreset_request_route():
     them a an email containing a specific secret code, that when entered
     in auth_passwordreset_reset, shows that the user trying to reset the
     password is the one who got sent this email.
-
     PARAMETERS:
         -> email : email of a user
 
@@ -977,7 +993,19 @@ def auth_passwordreset_request_route():
         -> email entered does not belong to a user
     '''
 
-    pass
+    payload = request.get_json()
+    email = payload['email']
+
+    reset_code = auth_passwordreset_request(email)
+
+    msg = Message(
+                'Flockr Password Reset Code',
+                sender='wed15grapeteam2.20T3@gmail.com',
+                recipients=[email]
+                )
+    msg.body = reset_code
+    mail.send(msg)
+    return dumps({})
 
 @APP.route("/auth/passwordreset/reset", methods=['POST'])
 def auth_passwordreset_reset_route():
@@ -995,8 +1023,6 @@ def auth_passwordreset_reset_route():
         -> reset_code is not a valid reset_code
         -> password entered is not a valid password
     '''
-
-    pass
 
 # Example, it is associated with echo_http_test.py, do not remove it
 @APP.route("/echo", methods=['GET'])
