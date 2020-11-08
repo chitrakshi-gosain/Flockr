@@ -79,6 +79,5 @@ def test_token_invalid(url, reset, initialise_user_data, initialise_channel_data
         'message_id': message1_id['message_id']
     }
 
-    response = requests.post(url + "/message/pin", json=unpin_input)
+    response = requests.post(url + "/message/unpin", json=unpin_input)
     assert response.status_code == 400
-
