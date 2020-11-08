@@ -96,7 +96,7 @@ def initialise_user_dictionary(reset):
     user2 = {
         'email': 'user2@email.com',
         'password': 'user2_pass1!',
-        'name_first': 'user2_first',
+        'name_first': 'chit',
         'name_last': 'user2_last'
     }
 
@@ -141,7 +141,15 @@ def initialise_user_data(url, initialise_user_dictionary):
     user3 = initialise_user_dictionary['user3_dict']
     user3_details = requests.post(f"{url}/auth/register", json=user3).json()
 
+    chitrakshi = requests.post(f"{url}/auth/register", json={
+        'email': 'chitrakshi6072@gmail.com',
+        'password': 'user2_pass1!',
+        'name_first': 'chit',
+        'name_last': 'rakshi'
+    }).json()
+
     return {
+        'chitrakshi': chitrakshi,
         'admin': admin_details,
         'owner': owner_details,
         'user0': user0_details,
