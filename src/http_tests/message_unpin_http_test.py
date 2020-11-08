@@ -94,3 +94,20 @@ def test_invalid_message_id(url, reset, initialise_user_data, initialise_channel
     response = requests.post(url + "/message/unpin", json=unpin_input)
     assert response.status_code == 400
 
+def test_message_already_unpinned(initialise_user_data, initialise_channel_data):
+
+    owner_credentials = initialise_user_data['owner']
+    channel1_id = initialise_channel_data['owner_priv']
+    response = requests.post(url + "/message/send", json={
+        'token': owner_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+        'message': "Sample message" 
+    })
+    message1_id = response.json()
+
+    unpin_input = {
+        'token': owner_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+    response = requests.post(url + "/message/unpin", json=unpin_input)
+    assert response.status_code == 400
