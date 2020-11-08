@@ -80,4 +80,23 @@ def test_token_invalid(url, reset, initialise_user_data, initialise_channel_data
     response = requests.post(url + "/message/pin", json=send_input)
     assert response.status_code == 400
 
+def test_message_already_pinned(url, reset, initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']
+    channel1_id = initialise_channel_data['owner_priv']
+    response = requests.post(url + "/message/send", json={
+        'token': owner_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+        'message': "Sample message" 
+    })
+    message1_id = response.json()
+
+    pin_input = {
+        'token': owner_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+    response = requests.post(url + "/message/pin", json=pin_input)
+    assert response.status_code == 200
+    response = requests.post(url + "/message/pin", json=pin_input)
+    assert response.status_code == 400
+
 
