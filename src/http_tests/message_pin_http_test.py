@@ -202,5 +202,5 @@ def test_owner_can_pin(url, reset, initialise_user_data, initialise_channel_data
     messages = get_messages(url, owner_credentials['token'])
     for message in messages['messages']:
         if message['message_id'] == message1_id['message_id']:
-            assert message[is_pinned] == True
+            assert message['is_pinned'] == True
 
