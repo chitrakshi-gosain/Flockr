@@ -171,3 +171,44 @@ def test_user_not_owner(url, reset, initialise_user_data, initialise_channel_dat
     response = requests.post(url + "/message/unpin", json=unpin_input)
     assert response.status_code == 400
 
+def test_admin_can_pin_if_in_channel(url, reset, initialise_user_data, initialise_channel_data):
+    admin_credentials = initialise_user_data['admin']
+    owner_credentials = initialise_user_data['owner']
+    channel1_id = initialise_channel_data['owner_publ']
+
+    response = requests.post(url + "/message/send", json={
+        'token': owner_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+        'message': "Sample message" 
+    })
+    message1_id = response.json()
+
+    requests.post(url + "/channel/join", json={
+        'token': admin_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+    })
+
+    pin_input = {
+        'token': owner_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+    response = requests.post(url + "/message/pin", json=pin_input)
+    assert response.status_code == 200
+
+    messages = get_messages(url, admin_credentials['token'])
+    for message in messages['messages']:
+        if message['message_id'] == message1_id['message_id']:
+            assert message['is_pinned'] == True
+
+    unpin_input = {
+        'token': admin_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+    response = requests.post(url + "/message/unpin", json=unpin_input)
+    assert response.status_code == 200
+
+    messages = get_messages(url, admin_credentials['token'])
+    for message in messages['messages']:
+        if message['message_id'] == message1_id['message_id']:
+            assert message['is_pinned'] == False
+
