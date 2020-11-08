@@ -7,8 +7,9 @@ Iteration 1 & 3
 
 from datetime import datetime, timezone
 from helper import get_user_info, get_channel_info, is_user_in_channel, \
-    get_message_info, is_user_authorised
+    get_message_info, is_user_authorised, post_message_to_channel
 import data
+import threading
 from error import InputError, AccessError
 from other import search
 
@@ -76,8 +77,8 @@ def message_send(token, channel_id, message):
 
     message_id = len(data.data['messages'])
 
-    date = datetime.now()
-    time_created = int(date.replace(tzinfo=timezone.utc).timestamp())
+    date = datetime.now(timezone.utc)
+    time_created = date.replace(tzinfo=timezone.utc).timestamp()
 
     message_dict = {
         'message_id': message_id,
@@ -141,6 +142,7 @@ def message_remove(token, message_id):
         raise AccessError(description='User is does not have rights to remove message')
 
     channel_info['messages'].remove(message_info)
+
 
     return {
     }
@@ -226,16 +228,48 @@ def message_sendlater(token, channel_id, message, time_sent):
         -> message is more than 1000 characters
         -> time sent is a time in the past
     '''
+    # Checking token
+    user_info = get_user_info('token', token)
+    if not user_info:
+        raise AccessError(description='Invalid Token')
 
-    # Checking for AccessError:
+    # Checking channel
+    channel_info = get_channel_info(channel_id)
+    if not channel_info:
+        raise InputError(description='Channel ID is not a valid channel')
 
-    # Checking for InputError(s):
+    # Checking user is a member of channel
+    if not user_info['is_admin'] and not is_user_in_channel(user_info['u_id'], channel_id):
+        raise AccessError(description='Authorised user is not a member of channel with channel_id')
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    # Checking message length
+    if len(message) > 1000:
+        raise InputError(description='Message is larger than 1000 characters')
+
+    # Checking time_sent
+    curr_time = datetime.now(timezone.utc)
+    if curr_time.replace(tzinfo=timezone.utc).timestamp() > time_sent:
+        raise InputError(description=f'Invalid time')
+
+    # Constructing message
+    message_id = len(data.data['messages'])
+
+    message_dict = {
+        'message_id': message_id,
+        'u_id': user_info['u_id'],
+        'message': message,
+        'time_created': time_sent,
+    }
+
+    # Sending message
+    data.data['messages'].append(message_dict)
+    # A timer is run in order to post the message to the channel
+    timer_duration = time_sent - curr_time.replace(tzinfo=timezone.utc).timestamp()
+    timer = threading.Timer(timer_duration, post_message_to_channel, [message_dict, channel_id])
+    timer.start()
 
     return {
-        'message_id': 0
+        'message_id': message_id,
     }
 
 def message_react(token, message_id, react_id):

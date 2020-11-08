@@ -7,7 +7,7 @@ Iteration 3
 
 from error import InputError, AccessError
 import helper
-from datetime import datetime
+from datetime import datetime, timezone
 import data
 
 import threading
@@ -97,7 +97,7 @@ def standup_start(token, channel_id, length):
     if channel_info['standup'] != {}:
         raise InputError('standup already exists')
 
-    now = int(datetime.now().timestamp())
+    now = int(datetime.now(timezone.utc).timestamp())
 
     channel_info['standup'] = {
         'u_id': user_info['u_id'],

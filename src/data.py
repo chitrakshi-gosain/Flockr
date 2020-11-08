@@ -52,7 +52,7 @@ data = {
             'handle_str' : 'fname0lname0',
             'token' : '0',
             'password' : 'password0'
-            'profile_pic' : '/profile_pics/img[u_id].jpg' #local url
+            'profile_img_url': '', #local url
         },
         { # user -> u_id : 1
             'u_id' : 1,
@@ -63,7 +63,7 @@ data = {
             'handle_str' : 'fname1lname1',
             'token' : '1',
             'password' : 'password1'
-            'profile_pic' : '/profile_pics/img1.jpg' #local url
+            'profile_img_url': '', #local url
         }
     ],
 
@@ -77,6 +77,7 @@ data = {
                     'u_id' : 0,
                     'name_first' : 'fname0',
                     'name_last' : 'fname1',
+                    'profile_img_url': '',
                 }
             ],
             'all_members' : [ # all_members of channel_id : 0
@@ -84,11 +85,13 @@ data = {
                     'u_id' : 0,
                     'name_first' : 'fname0',
                     'name_last' : 'fname0',
+                    'profile_img_url': '',
                 },
                 {
                     'u_id' : 1,
                     'name_first' : 'fname1',
                     'name_last' : 'fname1',
+                    'profile_img_url': '',
                 }
             ],
             'messages' : [ # messages of channel_id : 0
@@ -142,6 +145,7 @@ data = {
                     'u_id' : 1,
                     'name_first' : 'fname1',
                     'name_last' : 'fname1',
+                    'profile_img_url': '',
                 }
             ],
             'all_members' : [# all_members of channel_id : 1
@@ -149,11 +153,13 @@ data = {
                     'u_id' : 0,
                     'name_first' : 'fname0',
                     'name_last' : 'fname0',
+                    'profile_img_url': '',
                 },
                 {
                     'u_id' : 1,
                     'name_first' : 'fname1',
                     'name_last' : 'fname1',
+                    'profile_img_url': '',
                 }
             ],
             'messages' : [ # messages of channel_id : 1

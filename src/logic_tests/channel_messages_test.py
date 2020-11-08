@@ -68,7 +68,7 @@ def test_return_type(initialise_user_data, initialise_channel_data):
     assert isinstance(message_history['messages'][0]['message_id'], int)
     assert isinstance(message_history['messages'][0]['u_id'], int)
     assert isinstance(message_history['messages'][0]['message'], str)
-    assert isinstance(message_history['messages'][0]['time_created'], int)
+    assert isinstance(message_history['messages'][0]['time_created'], float)
     assert isinstance(message_history['start'], int)
     assert isinstance(message_history['end'], int)
 

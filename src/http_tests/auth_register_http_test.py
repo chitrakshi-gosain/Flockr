@@ -465,6 +465,7 @@ def test_details_registered_by_auth_register(url, initialise_user_dictionary):
             'email': 'user0@email.com',
             'name_first': 'user0_first',
             'name_last': 'user0_last',
-            'handle_str': 'user0_firstuser0_las'
+            'handle_str': 'user0_firstuser0_las',
+            'profile_img_url': '',
         }
     }
