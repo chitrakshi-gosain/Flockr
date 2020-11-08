@@ -57,10 +57,11 @@ def test_unregistered_user(reset):
     with pytest.raises(InputError):
         auth_passwordreset_request('user00@email.com')
 
-def test_reset_code_sent_succesfully(initialise_user_data):
+def test_return_type(initialise_user_data):
     '''
     Tests that auth_passwordreset_request successfully send an email to
     the user with reset code so that he can reset his password
     '''
 
-    auth_passwordreset_request('user0@email.com')
+    reset_code = auth_passwordreset_request('user0@email.com')
+    assert isinstance(reset_code, str)
