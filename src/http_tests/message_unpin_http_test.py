@@ -81,3 +81,16 @@ def test_token_invalid(url, reset, initialise_user_data, initialise_channel_data
 
     response = requests.post(url + "/message/unpin", json=unpin_input)
     assert response.status_code == 400
+
+def test_invalid_message_id(url, reset, initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']    
+    incorrect_message_id = -1
+
+    unpin_input = {
+        'token': owner_credentials['token'],
+        'message_id': incorrect_message_id
+    }
+
+    response = requests.post(url + "/message/unpin", json=unpin_input)
+    assert response.status_code == 400
+
