@@ -138,3 +138,36 @@ def test_user_not_authorised(url, reset, initialise_user_data, initialise_channe
 
     response = requests.post(url + "/message/unpin", json=unpin_input)
     assert response.status_code == 400
+
+#####
+def test_user_not_owner(url, reset, initialise_user_data, initialise_channel_data):
+    owner_credentials = initialise_user_data['owner']
+    user1_credentials = initialise_user_data['user1']
+    channel1_id = initialise_channel_data['owner_publ']
+
+    response = requests.post(url + "/message/send", json={
+        'token': owner_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+        'message': "Sample message" 
+    })
+    message1_id = response.json()
+
+    requests.post(url + "/channel/join", json={
+        'token': user1_credentials['token'],
+        'channel_id': channel1_id['channel_id'],
+    })
+
+    pin_input = {
+        'token': owner_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+    response = requests.post(url + "/message/pin", json=pin_input)
+    assert response.status_code == 200
+
+    unpin_input = {
+        'token': user1_credentials['token'],
+        'message_id': message1_id['message_id']
+    }
+    response = requests.post(url + "/message/unpin", json=unpin_input)
+    assert response.status_code == 400
+
