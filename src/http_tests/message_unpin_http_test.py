@@ -53,3 +53,10 @@ def test_url(url):
     A simple sanity test to check that the server is set up properly
     '''
     assert url.startswith("http")
+
+def get_messages(url, admin_token):
+    messages = requests.get(url + "/search", params = {
+        "token": admin_token,
+        "query_str": ""
+    }).json()
+    return messages
