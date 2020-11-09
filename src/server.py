@@ -1024,6 +1024,12 @@ def auth_passwordreset_reset_route():
         -> password entered is not a valid password
     '''
 
+    payload = request.get_json()
+    reset_code = payload['reset_code']
+    new_password = payload['new_password']
+
+    return dumps(auth_passwordreset_reset(reset_code, new_password))
+
 # Example, it is associated with echo_http_test.py, do not remove it
 @APP.route("/echo", methods=['GET'])
 def echo():
