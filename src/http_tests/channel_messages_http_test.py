@@ -70,8 +70,8 @@ def test_channel_id_not_valid(url, initialise_user_data):
     check that channel_messages raises InputError
     if Channel ID is not a valid channel
     '''
-    user1_credentials = initialise_user_data['user1']      
-    invalid_channel_id = -1 
+    user1_credentials = initialise_user_data['user1']
+    invalid_channel_id = -1
 
     response = requests.get(f"{url}/channel/messages", params={
         'token': user1_credentials['token'],

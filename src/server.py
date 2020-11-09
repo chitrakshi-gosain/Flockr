@@ -7,7 +7,7 @@ Iteration 2
 '''
 
 from json import dumps
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from flask_mail import Mail, Message
 from error import InputError
@@ -21,6 +21,7 @@ from message import message_send, message_remove, message_edit, \
         message_unpin
 from  user import user_profile, user_profile_setname, user_profile_setemail, \
     user_profile_sethandle, user_profile_uploadphoto
+from helper import get_user_info
 from other import users_all, admin_userpermission_change, search, clear
 from standup import standup_start, standup_active, standup_send
 
@@ -741,8 +742,9 @@ def message_sendlater_route():
         -> message is more than 1000 characters
         -> time sent is a time in the past
     '''
-
-    pass
+    payload = request.get_json()
+    return dumps(message_sendlater(payload['token'], payload['channel_id'], payload['message'],
+        payload['time_sent']))
 
 @APP.route("/message/react", methods=['POST'])
 def message_react_route():
@@ -879,8 +881,16 @@ def user_profile_uploadphoto_route():
            dimensions of the image at the URL.
         -> image uploaded is not a JPG
     '''
+    payload = request.get_json()
 
-    pass
+    return_dict = dumps(user_profile_uploadphoto(payload['token'], payload['img_url'],
+        payload['x_start'], payload['y_start'], payload['x_end'], payload['y_end']))
+
+    # Adding base url to the existing file path
+    user = get_user_info('token', payload['token'])
+    user['profile_img_url'] = request.url_root + user['profile_img_url']
+
+    return return_dict
 
 @APP.route("/standup/start", methods=['POST'])
 def standup_start_route():
@@ -1029,6 +1039,13 @@ def auth_passwordreset_reset_route():
     new_password = payload['new_password']
 
     return dumps(auth_passwordreset_reset(reset_code, new_password))
+
+@APP.route("/profile_img/<path:path>")
+def send_image(path):
+    '''
+`   Handles requests for images uploaded to the server
+    '''
+    return send_from_directory('profile_img/', path)
 
 # Example, it is associated with echo_http_test.py, do not remove it
 @APP.route("/echo", methods=['GET'])
