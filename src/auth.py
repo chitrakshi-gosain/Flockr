@@ -229,7 +229,7 @@ def auth_register(email, password, name_first, name_last):
         'handle_str' : handle_string,
         'token' : 'no_token_generated',
         'password' : encrypted_password,
-        'profile_img': 'default profile img address from frontend'
+        'profile_img_url': ''
     }
 
     # appending the data of new_user to data dictionary in data file
