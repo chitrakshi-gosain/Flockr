@@ -120,7 +120,7 @@ def auth_logout(token):
     RETURN VALUES:
         -> is_success : True if user is successfully logged out,
                         otherwise False
-    
+
     EXCEPTIONS:
     Error type: AccessError
          -> token passed in is not a valid token
@@ -212,6 +212,10 @@ def auth_register(email, password, name_first, name_last):
         cut_handle_till = MAX_CHAR_HANDLE_STR - len(user_id)
         handle_string = handle_string[:cut_handle_till] + user_id
 
+    # encrypting the password and adding it to his password record
+    password = encrypt_password_with_hash(password)
+    data.data['password_record'][email] = password
+
     # making a new dictionary for new_user and adding values to the keys
     # respectively some keys' values are parameters from the user, others are
     # obtained using both helper functions and user's innput(as parameters
@@ -224,7 +228,7 @@ def auth_register(email, password, name_first, name_last):
         'name_last' : name_last,
         'handle_str' : handle_string,
         'token' : 'no_token_generated',
-        'password' : encrypt_password_with_hash(password),
+        'password' : password,
         'profile_img': 'default profile img address from frontend'
     }
 
@@ -304,8 +308,10 @@ def auth_passwordreset_reset(reset_code, new_password):
         characters long or more than 32 characters long or contains Non-ASCII \
             characters')
 
-    email = data.data['reset_codes']['reset_code']
-    prev_password_list = data.data['password_record']['email']
+    new_password = encrypt_password_with_hash(new_password)
+
+    email = data.data['reset_codes'][reset_code]
+    prev_password_list = data.data['password_record'][email]
 
     if new_password in prev_password_list:
         raise InputError(description='Password entered is similar to one of \
@@ -317,7 +323,7 @@ def auth_passwordreset_reset(reset_code, new_password):
     user_info = get_user_info('email', email)
     user_info['password'] = new_password
 
-    # adding user's new_password to password record
+    # adding user's new_password to his password record
     data.data['password_record'][email].add(new_password)
 
     return {

@@ -8,6 +8,7 @@ Iteration 2
 import requests
 from flask_mail import Mail
 from server import APP
+import data
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -37,12 +38,23 @@ Error type: AccessError
     -> ..
 '''
 
+#JUST TRY RECORDING MESSAGES GETTING RESET CODE, EVEN IF IT SENDS THE EMAIL, ITS OK - MICHAEL 9/11/200
+
+# APP.config['MAIL_SUPPRESS_SEND'] = True
+# mail = Mail(APP)
+# does not stop sending emails
+
+# APP.testing = True
+# does not stop sending emails
+
 APP.config['TESTING'] = True
 mail = Mail(APP)
 # technically i should reinstate the mail object, but i'm not passing
 # the mail object as an argument so how do i do it? this will still send email :(
-
 # email is still being sent after reinstating the mail object
+
+# TESTING = True
+# this does not stop sending emails
 
 def test_url(url):
     '''
@@ -103,3 +115,12 @@ def test_return_type(url, initialise_user_data):
     resetrequest_payload = resetrequest_response.json()
 
     assert not resetrequest_payload
+
+def test_trying_to_record_emails(url, initialise_user_data):
+    with mail.record_messages() as outbox:
+        resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
+            'email': 'chitrakshi6072@gmail.com'
+        })
+        assert resetrequest_response.status_code == 200
+        assert len(outbox) == 1
+        assert outbox[0].body == data.data['password_record']['chitrakshi6072@gmail.com']   
