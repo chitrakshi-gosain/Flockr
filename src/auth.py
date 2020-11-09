@@ -213,8 +213,8 @@ def auth_register(email, password, name_first, name_last):
         handle_string = handle_string[:cut_handle_till] + user_id
 
     # encrypting the password and adding it to his password record
-    password = encrypt_password_with_hash(password)
-    data.data['password_record'][email] = password
+    encrypted_password = encrypt_password_with_hash(password)
+    data.data['password_record'][email] = encrypted_password
 
     # making a new dictionary for new_user and adding values to the keys
     # respectively some keys' values are parameters from the user, others are
@@ -228,7 +228,7 @@ def auth_register(email, password, name_first, name_last):
         'name_last' : name_last,
         'handle_str' : handle_string,
         'token' : 'no_token_generated',
-        'password' : password,
+        'password' : encrypted_password,
         'profile_img': 'default profile img address from frontend'
     }
 
@@ -300,13 +300,13 @@ def auth_passwordreset_reset(reset_code, new_password):
 
     # Checking for InputError(s):
 
-    if reset_code not in data.data['reset_codes'].keys():
-        raise InputError(description='Reset code is not a valid code')
-
     if not check_if_valid_password(new_password):
         raise InputError(description='Password entered is less than 6 \
         characters long or more than 32 characters long or contains Non-ASCII \
             characters')
+
+    if reset_code not in data.data['reset_codes'].keys():
+        raise InputError(description='Reset code is not a valid code')
 
     new_password = encrypt_password_with_hash(new_password)
 

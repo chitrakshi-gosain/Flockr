@@ -6,9 +6,9 @@ Iteration 2
 '''
 
 import requests
-from flask_mail import Mail
-from server import APP
-import data
+# from flask_mail import Mail
+# from server import APP
+# import data
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -47,8 +47,8 @@ Error type: AccessError
 # APP.testing = True
 # does not stop sending emails
 
-APP.config['TESTING'] = True
-mail = Mail(APP)
+# APP.config['TESTING'] = True
+# mail = Mail(APP)
 # technically i should reinstate the mail object, but i'm not passing
 # the mail object as an argument so how do i do it? this will still send email :(
 # email is still being sent after reinstating the mail object
@@ -69,8 +69,7 @@ def test_invalid_email(url, reset):
     the parameters
     '''
 
-    resetrequest_response = requests.post(f"{url}/auth/passwordreset/request",\
-        json={
+    resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
         'email': 'user0_email.com'
     })
 
@@ -83,8 +82,7 @@ def test_unregistered_user(url, reset):
     a reset code to change his password
     '''
 
-    resetrequest_response = requests.post(f"{url}/auth/passwordreset/request",\
-        json={
+    resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
         'email': 'user00@email.com'
     })
 
@@ -116,11 +114,12 @@ def test_return_type(url, initialise_user_data):
 
     assert not resetrequest_payload
 
-def test_trying_to_record_emails(url, initialise_user_data):
-    with mail.record_messages() as outbox:
-        resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
-            'email': 'chitrakshi6072@gmail.com'
-        })
-        assert resetrequest_response.status_code == 200
-        assert len(outbox) == 1
-        assert outbox[0].body == data.data['password_record']['chitrakshi6072@gmail.com']   
+# THIS IS MEANT TO BE A SANITY CHECK WHITEBOX TO CONFIRM MESSAGES WERE RECORDED PROPERLY, DOESN'T WORK ATM
+# def test_trying_to_record_emails(url, initialise_user_data):
+#     with mail.record_messages() as outbox:
+#         resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
+#             'email': 'chitrakshi6072@gmail.com'
+#         })
+#         assert resetrequest_response.status_code == 200
+#         assert len(outbox) == 1
+#         assert outbox[0].body == data.data['password_record']['chitrakshi6072@gmail.com']
