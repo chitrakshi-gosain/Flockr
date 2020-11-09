@@ -55,7 +55,7 @@ def get_messages(admin_token):
 def test_token_invalid(initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']
     channel1_id = initialise_channel_data['owner_priv']
-    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "Message to be pinned.")
+    message1_id = message_send(owner_credentials['token'], channel1_id['channel_id'], "Message to be unpinned.")
 
     with pytest.raises(InputError):
         message_unpin('incorrect_owner_token', message1_id['message_id'])
