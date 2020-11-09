@@ -52,18 +52,16 @@ def test_successful_login_with_everything_valid(initialise_user_data):
     auth_logout(test_user_0['token'])
     auth_login('user0@email.com', 'user0_pass1!')
 
-def test_invalid_email(initialise_user_data):
+def test_invalid_email(reset):
     '''
     Tests that auth_login raises an InputError when an invalid email-id
     is passed as one of the parameters
     '''
 
-    test_user_0 = initialise_user_data['user0']
-    auth_logout(test_user_0['token'])
     with pytest.raises(InputError):
         auth_login('user0_email.com', 'user0_pass1!')
 
-def test_unregistered_user(initialise_user_data):
+def test_unregistered_user(reset):
     '''
     Tests that auth_login raises an InputError when an unregistered user
     tries to log-in

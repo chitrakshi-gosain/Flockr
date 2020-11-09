@@ -37,7 +37,8 @@ data = {
         'channels': [],
         'messages': [],
         'valid_tokens': [],
-        'reset_codes': {}
+        'reset_codes': {},
+        'password_record': {}
         }
 
 '''
@@ -213,10 +214,14 @@ data = {
     },
 
     'reset_codes': {
-        'code1' : u_id,
-        'code2' : 1
-    }
+        'code1' : email_id,
+        'code2' : 'user0@email.com'
+    },
 
+    'password_record': {
+        'user0@email.com' : {'pass1', 'pass2'},
+        'user1@email.com' : {'pass1', 'pass2'}
+    }
 
 }
 '''

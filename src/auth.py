@@ -5,6 +5,7 @@ Contributor - Chitrakshi Gosain
 Iteration 1 & 3
 '''
 
+from uuid import uuid4
 import data
 from error import InputError, AccessError
 from helper import check_if_valid_email, check_if_valid_password, \
@@ -119,7 +120,7 @@ def auth_logout(token):
     RETURN VALUES:
         -> is_success : True if user is successfully logged out,
                         otherwise False
-    
+
     EXCEPTIONS:
     Error type: AccessError
          -> token passed in is not a valid token
@@ -211,6 +212,10 @@ def auth_register(email, password, name_first, name_last):
         cut_handle_till = MAX_CHAR_HANDLE_STR - len(user_id)
         handle_string = handle_string[:cut_handle_till] + user_id
 
+    # encrypting the password and adding it to his password record
+    encrypted_password = encrypt_password_with_hash(password)
+    data.data['password_record'][email] = encrypted_password
+
     # making a new dictionary for new_user and adding values to the keys
     # respectively some keys' values are parameters from the user, others are
     # obtained using both helper functions and user's innput(as parameters
@@ -223,12 +228,15 @@ def auth_register(email, password, name_first, name_last):
         'name_last' : name_last,
         'handle_str' : handle_string,
         'token' : 'no_token_generated',
-        'password' : encrypt_password_with_hash(password),
-        'profile_img_url': '',
+        'password' : encrypted_password,
+        'profile_img_url': ''
     }
 
     # appending the data of new_user to data dictionary in data file
     data.data['users'].append(new_user)
+
+    # storing the user's password in password record
+    data.data['password_record'][email] = {password}
 
     # logging-in the new_user to get the authenticated token for their
     # current session
@@ -242,25 +250,36 @@ def auth_register(email, password, name_first, name_last):
 def auth_passwordreset_request(email):
     '''
     DESCRIPTION:
-    Given an email address, if the user is a registered user, sends
-    them a an email containing a specific secret code, that when entered
-    in auth_passwordreset_reset, shows that the user trying to reset the
-    password is the one who got sent this email.
+    Given an email address, if the user is a registered user, generates
+    a reset code, stores it the database and returns it, which is then
+    incorporated in the reset email
 
     PARAMETERS:
         -> email : email of a user
-    
+
     EXCEPTIONS:
-    Error type: AccessError
-        -> token passed in is not a valid token
+    Error type: InputError
+        -> email entered is not a valid email
+        -> email entered does not belong to a user
     '''
 
-    # Checking for AccessError:
+    # Checking for InputError(s):
 
-    # Since there is no AccessError, hence proceeding forward:
+    if not check_if_valid_email(email):
+        raise InputError(description='Email entered is not a valid email')
 
-    return {
-    }
+    user_info = get_user_info('email', email)
+
+    if not user_info:
+        raise InputError(description='Email entered does not belong to a user')
+
+    # Since there is no InputError(s), hence proceeding forward:
+
+    # generating and saving reset_code in data.py for later use
+    reset_code = uuid4().hex.upper()[0:6]
+    data.data['reset_codes'][reset_code] = email
+
+    return reset_code
 
 def auth_passwordreset_reset(reset_code, new_password):
     '''
@@ -271,21 +290,41 @@ def auth_passwordreset_reset(reset_code, new_password):
     PARAMETERS:
         -> reset_code : reset code provided to user for password reset
         -> new_password : new password of user
-    
+
     EXCEPTIONS:
-    Error type: AccessError
-        -> token passed in is not a valid token
     Error type: InputError
         -> reset_code is not a valid reset_code
         -> password entered is not a valid password
+        -> password entered is similar to one of the old passwords
     '''
-
-    # Checking for AccessError:
 
     # Checking for InputError(s):
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    if not check_if_valid_password(new_password):
+        raise InputError(description='Password entered is less than 6 \
+        characters long or more than 32 characters long or contains Non-ASCII \
+            characters')
+
+    if reset_code not in data.data['reset_codes'].keys():
+        raise InputError(description='Reset code is not a valid code')
+
+    new_password = encrypt_password_with_hash(new_password)
+
+    email = data.data['reset_codes'][reset_code]
+    prev_password_list = data.data['password_record'][email]
+
+    if new_password in prev_password_list:
+        raise InputError(description='Password entered is similar to one of \
+        the old passwords')
+
+    # Since there are no InputError(s), hence proceeding forward:
+
+    # changing the password
+    user_info = get_user_info('email', email)
+    user_info['password'] = new_password
+
+    # adding user's new_password to his password record
+    data.data['password_record'][email].add(new_password)
 
     return {
     }

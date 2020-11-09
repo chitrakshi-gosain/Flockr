@@ -37,8 +37,15 @@
 
 ### channel_details
 - 1. An admin can get the details from any channel
+- 2. If the channel owner leaves a channel that they created,
+and the channel is empty, the channel still exists
 
 ### channel_messages
+- 1. An admin can get the messages of any channel
+- 2. If the channel owner leaves a channel that they created,
+the messages still exists.
+- 3. If the channel owner leaves a channel that they created,
+they cannot read the messages in the channel.
 
 ### channel_leave
 - 1. " " is an invalid token
@@ -75,6 +82,15 @@
 - 2. Two channels can share a name
 - 3. Channel names can have spaces and special characters
 - 4. User who creates a channel becomes an owner and member of that channel
+
+## message.py
+### message_send
+- 1. If an owner leaves their channel, they cannot send messages to the channel anymore.
+- 1. Admins may send any messages in any channel.
+
+### message_remove
+- 1. Admins may remove any messages in any channel.
+- 1. If a user leaves their channel, they cannot delete messages from the channel anymore.
 
 ## user.py
 
