@@ -14,7 +14,7 @@ import pytest
 '''
 
 '''
-APP.routes_USED_fOR_THIS_TEST("/rule", methods=['METHOD']) return
+APP.routes_USED_FOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
 -> APP.route(.....) return json.dumps({...})
 '''
