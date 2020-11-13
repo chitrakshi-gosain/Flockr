@@ -51,40 +51,42 @@ def test_new_password_too_short(initialise_user_data):
     '''
     ADD DOCSTRING HERE
     '''
-
+    
+    reset_code = auth_passwordreset_request('user0@email.com')
     with pytest.raises(InputError):
-        auth_passwordreset_reset('reset_code', 'some')
+        auth_passwordreset_reset(reset_code, 'some')
 
 def test_new_password_too_long(initialise_user_data):
     '''
     ADD DOCSTRING HERE
     '''
 
+    reset_code = auth_passwordreset_request('user0@email.com')
     with pytest.raises(InputError):
-        auth_passwordreset_reset('reset_code', 'some' * 10)
+        auth_passwordreset_reset(reset_code, 'some' * 10)
 
-# THESE MAKE NO SENSE AT ALL BECAUSE NO EMAIL IS SENT FROM REQUEST FUNCTION, CONFIRM BUT, WILL BE COVERED IN HTTP TEST ANYWAY
-# def test_new_password_is_actually_old(initialise_user_data):
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
+def test_new_password_is_actually_old(initialise_user_data):
+    '''
+    ADD DOCSTRING HERE
+    '''
 
-#     auth_passwordreset_request('user0@email.com')
-#     with pytest.raises(InputError):
-#         auth_passwordreset_reset('reset_code', 'user0_pass1!')
+    auth_passwordreset_request('user0@email.com')
+    with pytest.raises(InputError):
+        auth_passwordreset_reset('reset_code', 'user0_pass1!')
 
-# def test_successful_reset(initialise_user_data):
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
+def test_successful_reset(initialise_user_data):
+    '''
+    ADD DOCSTRING HERE
+    '''
 
-#     auth_passwordreset_request('user0@email.com')
-#     auth_passwordreset_reset('reset_code', 'user0_password1!')
+    reset_code = auth_passwordreset_request('user0@email.com')
+    auth_passwordreset_reset(reset_code, 'user0_password1!')
 
-# def test_return_type(initialise_user_data):
-#     '''
-#     ADD DOCSTRING HERE
-#     '''
+def test_return_type(initialise_user_data):
+    '''
+    ADD DOCSTRING HERE
+    '''
 
-#     auth_passwordreset_request('user0@email.com')
-#     assert not auth_passwordreset_reset('reset_code', 'user0_password1!')
+    reset_code = auth_passwordreset_request('user0@email.com')
+    assert not auth_passwordreset_reset(reset_code, 'user0_password1!')
+
