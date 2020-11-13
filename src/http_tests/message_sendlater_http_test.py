@@ -8,6 +8,7 @@ Iteration 3
 import json
 import requests
 import pytest
+import time
 from datetime import timezone, datetime, timedelta
 
 '''
@@ -56,7 +57,7 @@ def test_message_sendlater_valid(url, initialise_user_data, initialise_channel_d
     channels = initialise_channel_data
 
     curr_time = datetime.now(timezone.utc)
-    date_sent = curr_time + timedelta(seconds=30)
+    date_sent = curr_time + timedelta(seconds=2)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     message_id = requests.post(f'{url}/message/sendlater', json={
@@ -65,6 +66,8 @@ def test_message_sendlater_valid(url, initialise_user_data, initialise_channel_d
         'message': 'Hello World!',
         'time_sent': time_sent,
     }).json()
+
+    time.sleep(3)
 
     assert isinstance(message_id['message_id'], int)
 
