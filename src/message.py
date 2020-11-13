@@ -464,6 +464,9 @@ def message_pin(token, message_id):
         raise AccessError(description='User is neither an owner nor an admin of the channel')
 
     message_info['is_pinned'] = True
+    for message in data.data['messages']:
+        if message['message_id'] == message_info['message_id']:
+            message['is_pinned'] = True
     return {
     }
 
@@ -519,5 +522,8 @@ def message_unpin(token, message_id):
         raise InputError(description='Message has already been unpinned')
         
     message_info['is_pinned'] = False
+    for message in data.data['messages']:
+        if message['message_id'] == message_info['message_id']:
+            message['is_pinned'] = False
     return {
     }
