@@ -90,3 +90,23 @@ def test_return_type(initialise_user_data):
     reset_code = auth_passwordreset_request('user0@email.com')
     assert not auth_passwordreset_reset(reset_code, 'user0_password1!')
 
+def test_new_password_is_actually_old(initialise_user_data):
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    reset_code = auth_passwordreset_request('user0@email.com')
+    with pytest.raises(InputError):
+        auth_passwordreset_reset(reset_code, 'user0_pass1!')
+
+def test_new_password_is_one_of_old_ones(initialise_user_data):
+    '''
+    ADD DOCSTRING HERE
+    '''
+
+    reset_code = auth_passwordreset_request('user0@email.com')
+    assert not auth_passwordreset_reset(reset_code, 'user0_password1!')
+
+    reset_code = auth_passwordreset_request('user0@email.com')
+    with pytest.raises(InputError):
+        auth_passwordreset_reset(reset_code, 'user0_pass1!')
