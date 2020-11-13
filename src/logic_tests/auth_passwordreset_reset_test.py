@@ -65,15 +65,6 @@ def test_new_password_too_long(initialise_user_data):
     with pytest.raises(InputError):
         auth_passwordreset_reset(reset_code, 'some' * 10)
 
-def test_new_password_is_actually_old(initialise_user_data):
-    '''
-    ADD DOCSTRING HERE
-    '''
-
-    auth_passwordreset_request('user0@email.com')
-    with pytest.raises(InputError):
-        auth_passwordreset_reset('reset_code', 'user0_pass1!')
-
 def test_successful_reset(initialise_user_data):
     '''
     ADD DOCSTRING HERE
