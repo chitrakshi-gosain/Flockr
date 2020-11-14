@@ -84,8 +84,6 @@ def test_start_more_than_total_messages(initialise_user_data, initialise_channel
     channel_id = initialise_channel_data['owner_priv']
     with pytest.raises(InputError):
         channel_messages(owner_credentials['token'], channel_id['channel_id'], 2)
-<<<<<<< HEAD
-=======
 
 def test_50_messages(initialise_user_data, initialise_channel_data):
     owner_credentials = initialise_user_data['owner']
@@ -97,4 +95,3 @@ def test_50_messages(initialise_user_data, initialise_channel_data):
 
     messages_info = channel_messages(owner_credentials['token'], channel_id['channel_id'], 0)
     assert messages_info['end'] == 50
->>>>>>> deaa083... added test for 50+ messages
