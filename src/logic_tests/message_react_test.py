@@ -7,7 +7,7 @@ Iteration 3
 
 import pytest
 from channel import channel_join
-from message import message_send, message_edit, message_react
+from message import message_send, message_react
 from error import InputError, AccessError
 from other import search
 

@@ -6,8 +6,8 @@ Iteration 1
 '''
 
 import pytest
-from error import AccessError, InputError
-from auth import auth_login, auth_logout
+from error import AccessError
+from auth import auth_logout
 
 '''
 ****************************BASIC TEMPLATE******************************

@@ -5,9 +5,7 @@ Contributor - YOUR NAME HERE
 Iteration 2
 '''
 
-import json
 import requests
-import pytest
 
 '''
 ****************************BASIC TEMPLATE******************************

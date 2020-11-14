@@ -5,9 +5,7 @@ Contributor - Cyrus Wilkie
 Iteration 2
 '''
 
-import json
 import requests
-import pytest
 
 '''
 ****************************BASIC TEMPLATE******************************

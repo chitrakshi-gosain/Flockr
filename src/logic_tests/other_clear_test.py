@@ -7,7 +7,7 @@ Iteration 2
 
 import pytest
 from error import AccessError
-from channel import channel_invite, channel_join, channel_details
+from channel import channel_details
 from other import clear
 
 '''

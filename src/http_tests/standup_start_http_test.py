@@ -5,10 +5,7 @@ Contributor - Jordan Huynh
 Iteration 3
 '''
 
-import json
 import requests
-import pytest
-
 import time
 
 '''

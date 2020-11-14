@@ -5,13 +5,13 @@ Contributor - Jordan Huynh
 Iteration 3
 '''
 
+import time
 import pytest
 from error import AccessError, InputError
 from standup import standup_start, standup_active, standup_send
 from channel import channel_join, channel_messages
 from auth import auth_logout
 
-import time
 '''
 ****************************BASIC TEMPLATE******************************
 '''
