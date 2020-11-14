@@ -144,3 +144,24 @@ def test_sample(url, reset, initialise_user_data, initialise_channel_data):
     for message in messages['messages']:
          if message['message_id'] == message_id['message_id']:
              assert message['message'] == "Good thank you, how are you!"
+
+def test_invalid_size(url, reset, initialise_user_data, initialise_channel_data):
+    '''
+    Testing with a message that is too large
+    '''
+
+    users = initialise_user_data
+    channels = initialise_channel_data
+
+    requests.post(url + "/channel/join", json={
+        "token": users['user0']['token'],
+        "channel_id": channels['owner_publ']['channel_id']
+    })
+
+    message = 'djsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergdjsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergsdfhsdhsdh'
+
+    assert requests.post(url + "/message/send", json={
+        'token': users['user0']['token'],
+        'channel_id': channels['owner_publ']['channel_id'],
+        'message': message,
+    }).status_code == 400

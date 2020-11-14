@@ -340,3 +340,30 @@ def test_http_message_edit_invalidtoken(initialise_channel_data, initialise_user
         'message': second_message
     })
     assert message_edit_response.status_code == 400
+
+def test_message_edit_invalid_size(url, initialise_user_data, initialise_channel_data):
+    '''
+    Test that messages cannot be larger than 1000 characters
+    '''
+    user_details = initialise_user_data['admin']
+    token = user_details['token']
+
+    channel_id = initialise_channel_data['admin_publ']['channel_id']
+
+    first_message = "This is the original message."
+
+    message_send_response = requests.post(f"{url}/message/send", json={
+        'token': token,
+        'channel_id': channel_id,
+        'message': first_message,
+    })
+    assert message_send_response.status_code == 200
+    message_id = message_send_response.json()["message_id"]
+
+    message = 'djsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergdjsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergsdfhsdhsdh'
+
+    assert requests.put(f"{url}/message/edit", json={
+        'token': token,
+        'message_id': message_id,
+        'message': message,
+    }).status_code == 400

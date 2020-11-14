@@ -1,6 +1,6 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - Ahmet Karatas, Joseph Knox
+Contributor - Ahmet Karatas, Joseph Knox, Cyrus Wilkie
 
 Iteration 1 & 3
 '''
@@ -67,6 +67,10 @@ def message_send(token, channel_id, message):
     user_info = get_user_info('token', token)
     if not user_info:
         raise AccessError(description='Invalid Token')
+
+    # Checking message length
+    if len(message) > 1000:
+        raise InputError(description='Message is larger than 1000 characters')
 
     channel_info = get_channel_info(channel_id)
     if not channel_info:
@@ -172,6 +176,10 @@ def message_edit(token, message_id, message):
     user_info = get_user_info("token", token)
     if not user_info:
         raise AccessError(description='Token passed in is not a valid token')
+
+    # Checking message length
+    if len(message) > 1000:
+        raise InputError(description='Message is larger than 1000 characters')
 
     channel_id = -1
     for channel in data.data['channels']:

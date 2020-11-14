@@ -6,6 +6,7 @@ Iteration 3
 '''
 
 import pytest
+import time
 from datetime import timezone, datetime, timedelta
 from auth import auth_logout
 from message import message_sendlater
@@ -51,11 +52,13 @@ def test_message_sendlater_valid(initialise_user_data, initialise_channel_data):
     channels = initialise_channel_data
 
     curr_time = datetime.now(timezone.utc)
-    date_sent = curr_time + timedelta(seconds=30)
+    date_sent = curr_time + timedelta(seconds=2)
     time_sent = date_sent.replace(tzinfo=timezone.utc).timestamp()
 
     message_id = message_sendlater(users['user0']['token'], channels['user0_publ']['channel_id'], 
         'Hello World!', time_sent)
+
+    time.sleep(3)
 
     assert isinstance(message_id['message_id'], int)
 
