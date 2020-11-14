@@ -92,6 +92,14 @@ they cannot read the messages in the channel.
 - 1. Admins may remove any messages in any channel.
 - 1. If a user leaves their channel, they cannot delete messages from the channel anymore.
 
+### message_react
+- 1. ' ' is not a valid token
+- 2. 1 is the only valid react ID
+
+### message_unreact
+- 1. ' ' is not a valid token
+- 2. 1 is the only valid react ID
+
 ## user.py
 
 ### user_profile_setemail
