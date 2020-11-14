@@ -24,15 +24,14 @@ json.dumps({RETURN VALUE})
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 -> url
 -> reset
--> ...
+-> initialise_user_data
 '''
 
 '''
 EXCEPTIONS
-Error type: InputError
-    -> ..
-Error type: AccessError
-    -> ..
+Error type: InputError]
+    -> email entered is not a valid email
+    -> email entered does not belong to a user
 '''
 
 def test_url(url):
@@ -69,8 +68,9 @@ def test_unregistered_user(url, reset):
 
 def test_reset_code_sent_successfully(url, initialise_user_data):
     '''
-    Tests that auth_passwordreset_request successfully send an email to
-    the user with reset code so that he can reset his password
+    Tests that APP.route("/auth/passwordreset/request", methods=['POST'])
+    successfully send an email to the user with reset code so that he
+    can reset his password
     '''
 
     resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
@@ -81,8 +81,9 @@ def test_reset_code_sent_successfully(url, initialise_user_data):
 
 def test_return_type(url, initialise_user_data):
     '''
-    Tests that auth_passwordreset_request successfully returns the reset
-    code which is of string type as per the spec
+    Tests that APP.route("/auth/passwordreset/request", methods=['POST'])
+    successfully returns the reset code which is of string type as per
+    the spec
     '''
 
     resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={

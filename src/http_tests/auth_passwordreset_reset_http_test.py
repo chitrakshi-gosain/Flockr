@@ -14,22 +14,27 @@ import requests
 '''
 APP.routes_USED_FOR_THIS_TEST("/rule", methods=['METHOD']) return
 json.dumps({RETURN VALUE})
--> APP.route(.....) return json.dumps({...})
+-> APP.route("/auth/register", methods=['POST']) return
+   json.dumps({u_id, token})
+-> APP.route("/auth/passwordreset/request", methods=['POST']) return
+   json.dumps({})
+-> APP.route("/auth/passwordreset/reset", methods=['POST']) return
+   json.dumps({})
 '''
 
 '''
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 -> url
 -> reset
--> ...
+-> initialise_user_data
 '''
 
 '''
 EXCEPTIONS
 Error type: InputError
-    -> ..
-Error type: AccessError
-    -> ..
+    -> reset_code is not a valid reset_code
+    -> password entered is not a valid password
+    -> password entered is similar to one of the old passwords
 '''
 
 def test_url(url):
@@ -40,7 +45,9 @@ def test_url(url):
 
 def test_invalid_reset_code(url, reset):
     '''
-    ADD DOCSTRING HERE
+    Tests that APP.route("/auth/passwordreset/reset", methods=['POST'])
+    raises an AccessError when an invalid reset code is passed as one of
+    the parameters
     '''
 
     reset_response = requests.post(f"{url}/auth/passwordreset/reset", json={

@@ -18,7 +18,6 @@ FUNCTIONS_USED_FOR_THIS_TEST(PARAMETERS) return {RETURN_VALUES}:
 -> auth_register(email, password, name_first, name_last) return
    {u_id, token}
 -> auth_passwordreset_request(email) return {}
--> auth_passwordreset_reset(reset_code, new_password) return {}
 '''
 
 '''
@@ -32,11 +31,6 @@ EXCEPTIONS
 Error type: InputError
     -> email entered is not a valid email
     -> email entered does not belong to a user
-'''
-
-'''
-KEEP IN MIND:
--> ...
 '''
 
 def test_invalid_email(reset):

@@ -32,16 +32,13 @@ EXCEPTIONS
 Error type: InputError
     -> reset_code is not a valid reset_code
     -> password entered is not a valid password
-'''
-
-'''
-KEEP IN MIND:
--> ...
+    -> password entered is similar to one of the old passwords
 '''
 
 def test_invalid_reset_code(reset):
     '''
-    ADD DOCSTRING HERE
+    Tests that auth_passwordreset_reset raises an AccessError when an
+    invalid reset code is passed as one of the parameters
     '''
 
     with pytest.raises(InputError):
@@ -49,7 +46,8 @@ def test_invalid_reset_code(reset):
 
 def test_new_password_too_short(initialise_user_data):
     '''
-    ADD DOCSTRING HERE
+    Tests that auth_passwordreset_reset raises an InputError when new
+    password is less than 6 characters long
     '''
     
     reset_code = auth_passwordreset_request('user0@email.com')
@@ -58,7 +56,8 @@ def test_new_password_too_short(initialise_user_data):
 
 def test_new_password_too_long(initialise_user_data):
     '''
-    ADD DOCSTRING HERE
+    Tests that auth_passwordreset_reset raises an InputError when new
+    password is more than 32 characters long
     '''
 
     reset_code = auth_passwordreset_request('user0@email.com')
@@ -75,7 +74,8 @@ def test_successful_reset(initialise_user_data):
 
 def test_return_type(initialise_user_data):
     '''
-    ADD DOCSTRING HERE
+    Tests that auth_passwordreset_reset returns the expected datatype
+    i.e. {}
     '''
 
     reset_code = auth_passwordreset_request('user0@email.com')
@@ -83,7 +83,8 @@ def test_return_type(initialise_user_data):
 
 def test_new_password_is_actually_old(initialise_user_data):
     '''
-    ADD DOCSTRING HERE
+    Tests that auth_passwordreset_reset raises an error when old
+    password is entered as new password while resetting
     '''
 
     reset_code = auth_passwordreset_request('user0@email.com')
@@ -92,7 +93,8 @@ def test_new_password_is_actually_old(initialise_user_data):
 
 def test_new_password_is_one_of_old_ones(initialise_user_data):
     '''
-    ADD DOCSTRING HERE
+    Tests that auth_passwordreset_reset raises an error when one of the
+    old passwords is entered as new password while resetting
     '''
 
     reset_code = auth_passwordreset_request('user0@email.com')
