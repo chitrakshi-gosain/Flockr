@@ -8,7 +8,7 @@ Iteration 2
 import pytest
 from channel import channel_join
 from message import message_send, message_edit
-from error import AccessError
+from error import AccessError, InputError
 from other import search
 
 '''
@@ -207,3 +207,26 @@ def test_message_edit_notauth(initialise_user_data, initialise_channel_data):
 
     with pytest.raises(AccessError):
         message_edit(token, message_id, second_message)
+
+def test_message_edit_invalid_size(initialise_user_data, initialise_channel_data):
+    '''
+    Test that messages cannot be larger than 1000 characters
+    '''
+    user_details = initialise_user_data['user0']
+    token = user_details['token']
+
+    channel_id = initialise_channel_data['user0_publ']['channel_id']
+
+    first_message = "This is the original message."
+
+    message_info = message_send(token, channel_id, first_message)
+    message_id = message_info["message_id"]
+
+    # get dictionary containing message_id, u_id, message, time_created
+    message = message_details(token, message_id)
+    assert message['message'] == first_message
+
+    message = 'djsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergdjsfgnpoarkegnalknosndkbnsnrlinpogaijonfvljgblaonewojifoanvkdnslbnmv,x.vnb;n[ojgoarpirhgoanfapo;jfigushbefkbnviuseboriguapiergkjabljgblsdblgibspirhgangkljsdbflbnpsnbksljbrihapiruhgperhisbdhfjbnbksnlbhpisurhgoawnrkjfbsdljbishorngabrghbaoirughsdbhsfugbarebgnjhsbgkbsbhisbdrgkjhbasoirufhapnoiaebrpigusdkjfbvnjdfbnuisrjpofjapoenfposrngpisdpgijprfnvindpishuprogjsikjdrnvuishporghpaierfoiuehpouvhisdbniusebrgpauhjfpjnfsdlkbnsdpifugjpoierjgnsdivfuhnpsuidhpishnrpgouhjsdpofigjsidnffghsergsfgbhdrtstrhsdfwwergsdfhsdhsdh'
+
+    with pytest.raises(InputError):
+        message_edit(token, message_id, message)
