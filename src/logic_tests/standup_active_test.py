@@ -55,7 +55,7 @@ def test_standup_active_expiry(initialise_user_data, initialise_channel_data):
     assert standup_info['is_active']
     assert standup_info['time_finish'] == time_finish
 
-    time.sleep(1)
+    time.sleep(2)
 
     #now standup has expired
     standup_info = standup_active(token, channel_id)

@@ -73,7 +73,7 @@ def test_standup_send_basic(initialise_user_data, initialise_channel_data):
     standup_send(token2, channel2_id, 'start of standup in user0_publ')
 
     #wait 1 seconds for standups to expire (and call standup_active() to update)
-    time.sleep(1)
+    time.sleep(2)
     standup_active(token1, channel1_id)
     standup_active(token1, channel2_id)
 

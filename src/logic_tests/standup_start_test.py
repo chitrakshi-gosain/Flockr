@@ -50,9 +50,9 @@ def test_standup_start_basic(initialise_user_data, initialise_channel_data):
     channel2_id = initialise_channel_data['admin_priv']['channel_id']
 
     standup_start(token, channel1_id, 1)
-    standup_start(token, channel2_id, 2)
+    standup_start(token, channel2_id, 3)
 
-    time.sleep(1)
+    time.sleep(2)
     standup_active(token, channel1_id)
     standup_active(token, channel2_id)
 
@@ -61,7 +61,7 @@ def test_standup_start_basic(initialise_user_data, initialise_channel_data):
 
     standup_send(token, channel2_id, 'standup2 still valid')
 
-    time.sleep(1)
+    time.sleep(2)
     standup_active(token, channel1_id)
     standup_active(token, channel2_id)
     
