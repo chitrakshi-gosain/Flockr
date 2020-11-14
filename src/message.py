@@ -59,6 +59,7 @@ def message_send(token, channel_id, message):
         -> when the authorised user has not joined the channel they are
            trying to post to
     Error type: InputError
+        -> channel_id does not correlate to a valid channel
         -> message is more than 1000 characters
     '''
 
@@ -67,12 +68,13 @@ def message_send(token, channel_id, message):
     if not user_info:
         raise AccessError(description='Invalid Token')
 
-    channel_info = get_channel_info(channel_id)
-    if not channel_info:
-        raise InputError(description='Channel ID is not a valid channel')
 
     if not user_info['is_admin'] and not is_user_in_channel(user_info['u_id'], channel_id):
         raise AccessError(description='Authorised user is not a member of channel with channel_id')
+
+    channel_info = get_channel_info(channel_id)
+    if not channel_info:
+        raise InputError(description='channel_id does not correlate to a valid channel')
 
     message_id = len(data.data['messages'])
 
@@ -118,7 +120,7 @@ def message_remove(token, message_id):
            making this request
         -> the authorised user is an owner of this channel or the flockr
     Error type: InputError
-        -> message (based on ID) no longer exists
+        -> message_id does not correlate to an existing message_id
         
     '''
 
@@ -381,14 +383,14 @@ def message_pin(token, message_id):
         -> message_id : id of the message to be pinned
     
     EXCEPTIONS:
-    Error type: AccessError
-        -> the authorised user is not a member of the channel that the
-           message is within
-        -> the authorised user is not an owner or an admin
     Error type: InputError
         -> message_id is not a valid message
         -> token passed in is not a valid token
         -> message with ID message_id is already pinned
+    Error type: AccessError
+        -> the authorised user is not a member of the channel that the
+           message is within
+        -> the authorised user is not an owner or an admin
     '''
     # Checking for InputError(s):
     # Checking if token is valid
@@ -466,6 +468,10 @@ def message_unpin(token, message_id):
                 channel_info = channel
                 break
 
+    # Checking if message has been pinned yet
+    if message_info['is_pinned'] == False:
+        raise InputError(description='Message has already been unpinned')
+
     # Find if the user is an owner member in the channel or not
     is_owner = False
     for owner in channel_info['owner_members']:
@@ -475,9 +481,6 @@ def message_unpin(token, message_id):
     if not is_owner and not user_info['is_admin']:
         raise AccessError(description='User is neither an owner nor an admin of the channel')
 
-    # Checking if message has been pinned yet
-    if message_info['is_pinned'] == False:
-        raise InputError(description='Message has already been unpinned')
         
     message_info['is_pinned'] = False
     for message in data.data['messages']:
