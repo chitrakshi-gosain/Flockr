@@ -5,9 +5,7 @@ Contributor - Joseph Knox
 Iteration 3
 '''
 
-import json
 import requests
-import pytest
 
 '''
 ****************************BASIC TEMPLATE******************************
