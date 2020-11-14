@@ -7,13 +7,16 @@ Iteration 2
 '''
 
 import pytest
+from channel import channel_join, channel_messages
 from helper import encrypt_password_with_hash, generate_encoded_token, \
     decode_encoded_token, get_channel_info, get_message_info, get_user_info, \
         is_channel_owner, is_user_authorised, is_user_in_channel, \
             check_if_valid_email, check_if_valid_password, \
-                check_string_length_and_whitespace, invalidating_token
+                check_string_length_and_whitespace, invalidating_token, \
+                post_message_to_channel
 import data
 from error import InputError, AccessError
+from datetime import datetime, timezone
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -234,3 +237,28 @@ def test_invalidating_token(reset, initialise_user_data):
 
     with pytest.raises(InputError):
      assert not invalidating_token(generate_encoded_token('some_token'))
+
+def test_post_message_to_channel(reset, initialise_user_data, initialise_channel_data):
+    '''
+    Posts a message already present in data['messages'] to the relevant channel
+    '''
+
+    users = initialise_user_data
+    channels = initialise_channel_data
+
+    message = 'Hello World!'
+    curr_time = datetime.now()
+    curr_time = curr_time.replace(tzinfo=timezone.utc).timestamp()
+
+    message_dict = {
+        'message_id': 1,
+        'u_id': users['user0']['u_id'],
+        'message': message,
+        'time_created': curr_time,
+    }
+
+    channel_join(users['user0']['token'], channels['user0_publ']['channel_id'])
+    post_message_to_channel(message_dict, channels['user0_publ']['channel_id'])
+    message_list = channel_messages(users['user0']['token'], channels['user0_publ']['channel_id'], 0)
+
+    assert message_list['messages'][0] == message_dict

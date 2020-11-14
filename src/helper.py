@@ -33,7 +33,7 @@ def check_if_valid_email(email):
     valid email using a regex
     '''
 
-    regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
+    regex = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
     return re.search(regex, email) #more concise
     # this returns None instead of False.. :/
 
@@ -211,3 +211,10 @@ def decode_encoded_token(token):
         return payload['u_id']
     except:
         raise AccessError(description='Token passed in is not a valid token')  
+
+def post_message_to_channel(message, channel_id):
+    '''
+    Posts a message already present in data['messages'] to the relevant channel
+    '''
+    channel = get_channel_info(channel_id)
+    channel['messages'].append(message)

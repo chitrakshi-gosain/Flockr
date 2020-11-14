@@ -4,7 +4,9 @@ Contributors - Cyrus Wilkie, Chitrakshi Gosain, Joseph Knox
 
 Iteration 2 & 3
 '''
-
+import requests
+import urllib.request
+from PIL import Image
 from error import InputError, AccessError
 from helper import get_user_info, check_if_valid_email, \
 check_string_length_and_whitespace, decode_encoded_token
@@ -98,6 +100,7 @@ def user_profile(token, u_id):
         	'name_first': user['name_first'],
         	'name_last': user['name_last'],
         	'handle_str': user['handle_str'],
+            'profile_img_url': user['profile_img_url'],
         },
     }
 
@@ -259,12 +262,45 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
         -> image uploaded is not a JPG
     '''
 
-    # Checking for AccessError:
+    # Checking token validity
+    user = get_user_info('token', token)
 
-    # Checking for InputError(s):
+    if not user:
+        raise AccessError(description='Token passed in is not a valid token')
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    # Checking file type
+    if img_url.split('.')[-1] != 'jpg':
+        raise InputError(description='Image uploaded is not a JPG')
+
+    # Checking dimensions
+    if x_start >= x_end or y_start >= y_end or x_start < 0 or y_start < 0:
+        raise InputError(description='Invalid cropping coordinates')
+
+    # Downloading image
+    image = requests.get(img_url, stream=True)
+
+    if image.status_code != 200:
+        raise InputError(description='Specified URL returned an error status')
+
+    img_file_name = f"{user['handle_str']}.jpg"
+    urllib.request.urlretrieve(img_url, f"src/profile_img/{img_file_name}")
+
+    # Opening image for editing
+    photoImage = Image.open(f"src/profile_img/{img_file_name}")
+    
+
+    # Checking image size
+    width, height = photoImage.size
+
+    if x_start >= width or y_start >= height or x_end > width or y_end > height:
+        raise InputError(description='Invalid cropping coordinates')
+
+    # Cropping image
+    croppedImage = photoImage.crop((x_start, y_start, x_end, y_end))
+    croppedImage.save(f"src/profile_img/{img_file_name}")
+
+    # Change the img url of user
+    user['profile_img_url'] = f"profile_img/{img_file_name}"
 
     return {
     }

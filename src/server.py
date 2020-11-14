@@ -7,10 +7,10 @@ Iteration 2
 '''
 
 from json import dumps
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
+from flask_mail import Mail, Message
 from error import InputError
-import sys
 from auth import auth_login, auth_register, auth_logout, \
     auth_passwordreset_request, auth_passwordreset_reset
 from channel import channel_invite, channel_details, channel_messages, \
@@ -21,6 +21,7 @@ from message import message_send, message_remove, message_edit, \
         message_unpin
 from  user import user_profile, user_profile_setname, user_profile_setemail, \
     user_profile_sethandle, user_profile_uploadphoto
+from helper import get_user_info
 from other import users_all, admin_userpermission_change, search, clear
 from standup import standup_start, standup_active, standup_send
 
@@ -49,6 +50,23 @@ CORS(APP)
 
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
 APP.register_error_handler(Exception, defaultHandler)
+
+# configuration of mail
+mail_settings = {
+    "MAIL_SERVER": 'smtp.gmail.com',
+    "MAIL_PORT": 465,
+    "MAIL_USERNAME": 'wed15grapeteam2.20T3@gmail.com',
+    "MAIL_PASSWORD": 'Comp@1531',
+    "MAIL_USE_TLS": False,
+    "MAIL_USE_SSL": True,
+}
+
+APP.config.update(mail_settings)
+#instating the mail class
+mail = Mail(APP)
+
+# mail = Mail()
+# mail.init_App(APP)
 
 @APP.route("/auth/login", methods=['POST'])
 def auth_login_route():
@@ -724,8 +742,9 @@ def message_sendlater_route():
         -> message is more than 1000 characters
         -> time sent is a time in the past
     '''
-
-    pass
+    payload = request.get_json()
+    return dumps(message_sendlater(payload['token'], payload['channel_id'], payload['message'],
+        payload['time_sent']))
 
 @APP.route("/message/react", methods=['POST'])
 def message_react_route():
@@ -812,7 +831,11 @@ def message_pin_route():
         -> message with ID message_id is already pinned
     '''
 
-    pass
+    payload = request.get_json()
+    token = payload['token']
+    message_id = int(payload['message_id'])
+
+    return dumps(message_pin(token, message_id))
 
 @APP.route("/message/unpin", methods=['POST'])
 def message_unpin_route():
@@ -835,7 +858,11 @@ def message_unpin_route():
         -> the authorised user is not an owner
     '''
 
-    pass
+    payload = request.get_json()
+    token = payload['token']
+    message_id = int(payload['message_id'])
+
+    return dumps(message_unpin(token, message_id))
 
 @APP.route("/user/profile/uploadphoto", methods=['POST'])
 def user_profile_uploadphoto_route():
@@ -862,8 +889,16 @@ def user_profile_uploadphoto_route():
            dimensions of the image at the URL.
         -> image uploaded is not a JPG
     '''
+    payload = request.get_json()
 
-    pass
+    return_dict = dumps(user_profile_uploadphoto(payload['token'], payload['img_url'],
+        payload['x_start'], payload['y_start'], payload['x_end'], payload['y_end']))
+
+    # Adding base url to the existing file path
+    user = get_user_info('token', payload['token'])
+    user['profile_img_url'] = request.url_root + user['profile_img_url']
+
+    return return_dict
 
 @APP.route("/standup/start", methods=['POST'])
 def standup_start_route():
@@ -967,16 +1002,28 @@ def auth_passwordreset_request_route():
     them a an email containing a specific secret code, that when entered
     in auth_passwordreset_reset, shows that the user trying to reset the
     password is the one who got sent this email.
-
     PARAMETERS:
         -> email : email of a user
 
     EXCEPTIONS:
-    Error type: AccessError
-        -> token passed in is not a valid token
+    Error type: InputError
+        -> email entered is not a valid email
+        -> email entered does not belong to a user
     '''
 
-    pass
+    payload = request.get_json()
+    email = payload['email']
+
+    reset_code = auth_passwordreset_request(email)
+
+    msg = Message(
+                'Flockr Password Reset Code',
+                sender='wed15grapeteam2.20T3@gmail.com',
+                recipients=[email]
+                )
+    msg.body = reset_code
+    mail.send(msg)
+    return dumps({})
 
 @APP.route("/auth/passwordreset/reset", methods=['POST'])
 def auth_passwordreset_reset_route():
@@ -990,14 +1037,23 @@ def auth_passwordreset_reset_route():
         -> new_password : new password of user
 
     EXCEPTIONS:
-    Error type: AccessError
-        -> token passed in is not a valid token
     Error type: InputError
         -> reset_code is not a valid reset_code
         -> password entered is not a valid password
     '''
 
-    pass
+    payload = request.get_json()
+    reset_code = payload['reset_code']
+    new_password = payload['new_password']
+
+    return dumps(auth_passwordreset_reset(reset_code, new_password))
+
+@APP.route("/profile_img/<path:path>")
+def send_image(path):
+    '''
+`   Handles requests for images uploaded to the server
+    '''
+    return send_from_directory('profile_img/', path)
 
 # Example, it is associated with echo_http_test.py, do not remove it
 @APP.route("/echo", methods=['GET'])

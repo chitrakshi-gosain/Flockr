@@ -51,6 +51,7 @@ def test_user_profile_valid_own(initialise_user_data):
             'name_first': 'owner_first',
             'name_last': 'owner_last',
             'handle_str': 'owner_firstowner_las',
+            'profile_img_url': '',
         }
     }
 
@@ -65,6 +66,7 @@ def test_user_profile_valid_own(initialise_user_data):
             'name_first': 'user0_first',
             'name_last': 'user0_last',
             'handle_str': 'user0_firstuser0_las',
+            'profile_img_url': '',
         },
     }
 
@@ -85,6 +87,7 @@ def test_user_profile_valid_else(initialise_user_data):
             'name_first': 'user1_first',
             'name_last': 'user1_last',
             'handle_str': 'user1_firstuser1_las',
+            'profile_img_url': '',
         },
     }
 
@@ -99,6 +102,7 @@ def test_user_profile_valid_else(initialise_user_data):
             'name_first': 'admin_first',
             'name_last': 'admin_last',
             'handle_str': 'admin_firstadmin_las',
+            'profile_img_url': '',
         },
     }
 
@@ -123,6 +127,7 @@ def test_user_profile_valid_logout(initialise_user_data):
             'name_first': 'user0_first',
             'name_last': 'user0_last',
             'handle_str': 'user0_firstuser0_las',
+            'profile_img_url': '',
         },
     }
 

@@ -1,14 +1,15 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - Ahmet Karatas, Joseph Knox
+Contributor - Ahmet Karatas, Joseph Knox, Cyrus Wilkie
 
 Iteration 1 & 3
 '''
 
 from datetime import datetime, timezone
 from helper import get_user_info, get_channel_info, is_user_in_channel, \
-    get_message_info, is_user_authorised
+    get_message_info, is_user_authorised, post_message_to_channel
 import data
+import threading
 from error import InputError, AccessError
 from other import search
 
@@ -67,6 +68,10 @@ def message_send(token, channel_id, message):
     if not user_info:
         raise AccessError(description='Invalid Token')
 
+    # Checking message length
+    if len(message) > 1000:
+        raise InputError(description='Message is larger than 1000 characters')
+
     channel_info = get_channel_info(channel_id)
     if not channel_info:
         raise InputError(description='Channel ID is not a valid channel')
@@ -76,7 +81,7 @@ def message_send(token, channel_id, message):
 
     message_id = len(data.data['messages'])
 
-    date = datetime.now()
+    date = datetime.now(timezone.utc)
     time_created = date.replace(tzinfo=timezone.utc).timestamp()
 
     message_dict = {
@@ -119,7 +124,7 @@ def message_remove(token, message_id):
         -> the authorised user is an owner of this channel or the flockr
     Error type: InputError
         -> message (based on ID) no longer exists
-        
+
     '''
 
     user_info = get_user_info('token', token)
@@ -141,6 +146,7 @@ def message_remove(token, message_id):
         raise AccessError(description='User is does not have rights to remove message')
 
     channel_info['messages'].remove(message_info)
+
 
     return {
     }
@@ -170,6 +176,10 @@ def message_edit(token, message_id, message):
     user_info = get_user_info("token", token)
     if not user_info:
         raise AccessError(description='Token passed in is not a valid token')
+
+    # Checking message length
+    if len(message) > 1000:
+        raise InputError(description='Message is larger than 1000 characters')
 
     channel_id = -1
     for channel in data.data['channels']:
@@ -226,16 +236,48 @@ def message_sendlater(token, channel_id, message, time_sent):
         -> message is more than 1000 characters
         -> time sent is a time in the past
     '''
+    # Checking token
+    user_info = get_user_info('token', token)
+    if not user_info:
+        raise AccessError(description='Invalid Token')
 
-    # Checking for AccessError:
+    # Checking channel
+    channel_info = get_channel_info(channel_id)
+    if not channel_info:
+        raise InputError(description='Channel ID is not a valid channel')
 
-    # Checking for InputError(s):
+    # Checking user is a member of channel
+    if not user_info['is_admin'] and not is_user_in_channel(user_info['u_id'], channel_id):
+        raise AccessError(description='Authorised user is not a member of channel with channel_id')
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    # Checking message length
+    if len(message) > 1000:
+        raise InputError(description='Message is larger than 1000 characters')
+
+    # Checking time_sent
+    curr_time = datetime.now(timezone.utc)
+    if curr_time.replace(tzinfo=timezone.utc).timestamp() > time_sent:
+        raise InputError(description=f'Invalid time')
+
+    # Constructing message
+    message_id = len(data.data['messages'])
+
+    message_dict = {
+        'message_id': message_id,
+        'u_id': user_info['u_id'],
+        'message': message,
+        'time_created': time_sent,
+    }
+
+    # Sending message
+    data.data['messages'].append(message_dict)
+    # A timer is run in order to post the message to the channel
+    timer_duration = time_sent - curr_time.replace(tzinfo=timezone.utc).timestamp()
+    timer = threading.Timer(timer_duration, post_message_to_channel, [message_dict, channel_id])
+    timer.start()
 
     return {
-        'message_id': 0
+        'message_id': message_id,
     }
 
 def message_react(token, message_id, react_id):
@@ -369,6 +411,7 @@ def message_unreact(token, message_id, react_id):
     return {
     }
 
+
 def message_pin(token, message_id):
     '''
     DESCRIPTION:
@@ -378,24 +421,52 @@ def message_pin(token, message_id):
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be pinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
-        -> token passed in is not a valid token
         -> the authorised user is not a member of the channel that the
            message is within
-        -> the authorised user is not an owner
+        -> the authorised user is not an owner or an admin
     Error type: InputError
         -> message_id is not a valid message
+        -> token passed in is not a valid token
         -> message with ID message_id is already pinned
     '''
+    # Checking for InputError(s):
+    # Checking if token is valid
+    user_info = get_user_info('token', token)
+    if not user_info:
+        raise InputError(description='Invalid Token')
+
+    # Checking if message is valid
+    message_info = get_message_info(message_id)
+    if not message_info:
+        raise InputError(description='message_id does not correlate to an existing message_id')
+
+    if message_info['is_pinned'] == True:
+        raise InputError(description='Message has already been pinned')
 
     # Checking for AccessError:
+    # Find channel for message_id
+    for channel in data.data['channels']:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                channel_info = channel
+                break
 
-    # Checking for InputError(s):
+    # Find if the user is an owner member in the channel or not
+    is_owner = False
+    for owner in channel_info['owner_members']:
+        if owner['u_id'] == user_info['u_id']:
+            is_owner = True
 
-    # Since there are no InputError(s), hence proceeding forward:
+    if not is_owner and not user_info['is_admin']:
+        raise AccessError(description='User is neither an owner nor an admin of the channel')
 
+    message_info['is_pinned'] = True
+    for message in data.data['messages']:
+        if message['message_id'] == message_info['message_id']:
+            message['is_pinned'] = True
     return {
     }
 
@@ -407,7 +478,7 @@ def message_unpin(token, message_id):
     PARAMETERS:
         -> token : token of the authenticated user
         -> message_id : id of the message to be unpinned
-    
+
     EXCEPTIONS:
     Error type: AccessError
         -> token passed in is not a valid token
@@ -418,13 +489,41 @@ def message_unpin(token, message_id):
            message is within
         -> the authorised user is not an owner
     '''
+    # Checking for InputError(s):
+    # Checking if token is valid
+    user_info = get_user_info('token', token)
+    if not user_info:
+        raise InputError(description='Invalid Token')
+
+    # Checking if message is valid
+    message_info = get_message_info(message_id)
+    if not message_info:
+        raise InputError(description='message_id does not correlate to an existing message_id')
 
     # Checking for AccessError:
+    # Find channel for message_id
+    for channel in data.data['channels']:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                channel_info = channel
+                break
 
-    # Checking for InputError(s):
+    # Find if the user is an owner member in the channel or not
+    is_owner = False
+    for owner in channel_info['owner_members']:
+        if owner['u_id'] == user_info['u_id']:
+            is_owner = True
 
-    # Since there are no AccessError or InputError(s), hence proceeding
-    # forward:
+    if not is_owner and not user_info['is_admin']:
+        raise AccessError(description='User is neither an owner nor an admin of the channel')
 
+    # Checking if message has been pinned yet
+    if message_info['is_pinned'] == False:
+        raise InputError(description='Message has already been unpinned')
+        
+    message_info['is_pinned'] = False
+    for message in data.data['messages']:
+        if message['message_id'] == message_info['message_id']:
+            message['is_pinned'] = False
     return {
     }

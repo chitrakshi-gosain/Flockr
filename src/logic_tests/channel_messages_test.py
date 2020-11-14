@@ -42,13 +42,13 @@ AccessError when:
 
 def test_user1_not_authorised(initialise_user_data, initialise_channel_data):
     channel1_id = initialise_channel_data['owner_priv']
-    user1_credentials = initialise_user_data['user1']      
+    user1_credentials = initialise_user_data['user1']
     with pytest.raises(AccessError):
         channel_messages(user1_credentials['token'], channel1_id['channel_id'], 0)
 
 def test_channel_id_not_valid(initialise_user_data):
-    user1_credentials = initialise_user_data['user1']      
-    invalid_channel_id = -1 
+    user1_credentials = initialise_user_data['user1']
+    invalid_channel_id = -1
 
     with pytest.raises(InputError):
         channel_messages(user1_credentials['token'], invalid_channel_id, 0)
@@ -63,7 +63,7 @@ def test_return_type(initialise_user_data, initialise_channel_data):
     channel_id = initialise_channel_data['owner_priv']
     message_send(owner_credentials['token'], channel_id['channel_id'], "This is owner's channel")
     message_history = channel_messages(owner_credentials['token'], channel_id['channel_id'], 0)
-    
+
     assert isinstance(message_history['messages'], list)
     assert isinstance(message_history['messages'][0]['message_id'], int)
     assert isinstance(message_history['messages'][0]['u_id'], int)
@@ -84,4 +84,3 @@ def test_start_more_than_total_messages(initialise_user_data, initialise_channel
     channel_id = initialise_channel_data['owner_priv']
     with pytest.raises(InputError):
         channel_messages(owner_credentials['token'], channel_id['channel_id'], 2)
-
