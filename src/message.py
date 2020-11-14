@@ -88,7 +88,7 @@ def message_send(token, channel_id, message):
         'message_id': message_id,
         'u_id': user_info['u_id'],
         'message': message,
-        'time_created': time_created,
+        'time_created': int(time_created),
         'is_pinned': False,
         'reacts': [
             {
@@ -266,7 +266,7 @@ def message_sendlater(token, channel_id, message, time_sent):
         'message_id': message_id,
         'u_id': user_info['u_id'],
         'message': message,
-        'time_created': time_sent,
+        'time_created': int(time_sent),
     }
 
     # Sending message
