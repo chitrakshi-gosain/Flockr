@@ -6,10 +6,10 @@ Iteration 1 & 3
 '''
 
 from datetime import datetime, timezone
+import threading
 from helper import get_user_info, get_channel_info, is_user_in_channel, \
     get_message_info, is_user_authorised, post_message_to_channel
 import data
-import threading
 from error import InputError, AccessError
 from other import search
 

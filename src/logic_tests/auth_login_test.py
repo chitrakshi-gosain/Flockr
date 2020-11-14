@@ -5,6 +5,7 @@ Contributor - Chitrakshi Gosain
 Iteration 1
 '''
 
+import time
 import pytest
 from error import InputError
 from auth import auth_login, auth_logout
@@ -135,3 +136,19 @@ def test_non_ascii_password(initialise_user_data):
 
     with pytest.raises(InputError):
         auth_login('user0@email.com', 'user0 \n pass1!')
+
+def test_multiple_login_different_token(initialise_user_data):
+    '''
+    Tests that auth_login allows multiple logins, and each login session
+    has a unique token
+    '''
+
+    test_user_0_login0 = auth_login('user0@email.com', 'user0_pass1!')
+    time.sleep(5)
+    test_user_0_login1 = auth_login('user0@email.com', 'user0_pass1!')
+
+    assert test_user_0_login0 != test_user_0_login1
+
+    tokens = [test_user_0_login0['token'], test_user_0_login1['token']]
+    assert len(set(tokens)) == len(tokens)
+    
