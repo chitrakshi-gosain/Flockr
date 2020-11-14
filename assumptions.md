@@ -86,11 +86,14 @@ they cannot read the messages in the channel.
 ## message.py
 ### message_send
 - 1. If an owner leaves their channel, they cannot send messages to the channel anymore.
-- 1. Admins may send any messages in any channel.
+- 2. Admins may send any messages in any channel.
 
 ### message_remove
 - 1. Admins may remove any messages in any channel.
-- 1. If a user leaves their channel, they cannot delete messages from the channel anymore.
+- 2. If a user leaves their channel, they cannot delete messages from the channel anymore.
+
+### message_edit
+- 1. ' ' is not a valid token
 
 ### message_react
 - 1. ' ' is not a valid token
