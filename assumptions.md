@@ -86,11 +86,32 @@ they cannot read the messages in the channel.
 ## message.py
 ### message_send
 - 1. If an owner leaves their channel, they cannot send messages to the channel anymore.
-- 1. Admins may send any messages in any channel.
+- 2. Admins may send any messages in any channel if they are in the channel.
 
 ### message_remove
 - 1. Admins may remove any messages in any channel.
-- 1. If a user leaves their channel, they cannot delete messages from the channel anymore.
+- 2. If a user leaves their channel, they cannot delete messages from the channel anymore.
+
+### message_edit
+- 1. ' ' is not a valid token
+
+### message_react
+- 1. ' ' is not a valid token
+- 2. 1 is the only valid react ID
+
+### message_unreact
+- 1. ' ' is not a valid token
+- 2. 1 is the only valid react ID
+
+### message_pin
+- 1. Admin can pin messages in any channel if they are in the channel
+- 2. If an owner sends a message in a channel and then leaves the channel, they
+     cannot pin the message.
+
+### message_unpin
+- 1. Admin can unpin messages in any channel if they are in the channel
+- 2. If an owner pins a message and then leaves a channel, they cannot unpin the message 
+     until the join the channel again.
 
 ## user.py
 

@@ -7,7 +7,6 @@ Iteration 1
 
 import pytest
 from channel import channel_addowner, channel_removeowner, channel_join, channel_details
-from channels import channels_listall
 from error import InputError, AccessError
 
 '''
@@ -46,8 +45,10 @@ KEEP IN MIND:
 -> channels_create adds user (based on token) as member and owner of the channel
 '''
 
-# basic test with no edge case or errors raised
 def test_channel_removeowner_noerrors(initialise_user_data, initialise_channel_data):
+    '''
+    basic test with no edge case or errors raised
+    '''
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
     user0_details = initialise_user_data['user0']
@@ -71,7 +72,7 @@ def test_channel_removeowner_noerrors(initialise_user_data, initialise_channel_d
     # assert user with u_id1 is an owner
     channel_dict = channel_details(token0, channel_id)
     assert any(user['u_id'] == u_id1 for user in channel_dict['owner_members'])
-    
+
     # user0 removes user1 as owner
     channel_removeowner(token0, channel_id, u_id1)
 
@@ -79,8 +80,10 @@ def test_channel_removeowner_noerrors(initialise_user_data, initialise_channel_d
     channel_dict = channel_details(token0, channel_id)
     assert not any(user['u_id'] == u_id1 for user in channel_dict['owner_members'])
 
-# test that channel_removeowner raises InputError if channel_id is not a valid channel_id
 def test_channel_removeowner_invalidchannel(initialise_user_data, initialise_channel_data):
+    '''
+    test that channel_removeowner raises InputError if channel_id is not a valid channel_id
+    '''
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
     user0_details = initialise_user_data['user0']
@@ -104,9 +107,11 @@ def test_channel_removeowner_invalidchannel(initialise_user_data, initialise_cha
     with pytest.raises(InputError):
         channel_removeowner(token0, channel_id, u_id1)
 
-# test that channel_removeowner raises InputError
-# if user with provided u_id is not an owner of the channel
 def test_channel_removeowner_notowner(initialise_user_data, initialise_channel_data):
+    '''
+    test that channel_removeowner raises InputError
+    if user with provided u_id is not an owner of the channel
+    '''
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
     user0_details = initialise_user_data['user0']
@@ -130,7 +135,7 @@ def test_channel_removeowner_notowner(initialise_user_data, initialise_channel_d
     # assert user with u_id1 is an owner
     channel_dict = channel_details(token0, channel_id)
     assert any(user['u_id'] == u_id1 for user in channel_dict['owner_members'])
-    
+
     # user0 removes user1 as owner
     channel_removeowner(token0, channel_id, u_id1)
 
@@ -143,9 +148,11 @@ def test_channel_removeowner_notowner(initialise_user_data, initialise_channel_d
     with pytest.raises(InputError):
         channel_removeowner(token0, channel_id, u_id1)
 
-# test that channel_removeowner raises AccessError
-# if the authorised user is not an owner of the channel or admin of the flockr
 def test_channel_removeowner_authnotowner(initialise_user_data, initialise_channel_data):
+    '''
+    test that channel_removeowner raises AccessError
+    if the authorised user is not an owner of the channel or admin of the flockr
+    '''
 
     # user0 with u_id0 and token0 is the first to register, thus also admin of the flockr
     user0_details = initialise_user_data['user0']
@@ -163,17 +170,19 @@ def test_channel_removeowner_authnotowner(initialise_user_data, initialise_chann
     with pytest.raises(AccessError):
         channel_removeowner(token1, channel_id, u_id0)
 
-# test that channel_removeowner raises AccessError
-# if the authorised user is not an owner of the channel or the flockr
-# i.e. test that channel_removeowner raises AccessError if token is invalid
 def test_channel_removeowner_accesserror(initialise_user_data, initialise_channel_data):
+    '''
+    test that channel_removeowner raises AccessError
+    if the authorised user is not an owner of the channel or the flockr
+    i.e. test that channel_removeowner raises AccessError if token is invalid
+    '''
 
     user_details = initialise_user_data['user0']
     u_id, token = user_details['u_id'], user_details['token']
 
     # channel with channel_id has members user0, user1 and owner user0
     channel_id = initialise_channel_data['user0_publ']['channel_id']
-    
+
     # assume " " is always an invalid token
     token = " "
 

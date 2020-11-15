@@ -6,10 +6,10 @@ Iteration 1 & 3
 '''
 
 from datetime import datetime, timezone
+import threading
 from helper import get_user_info, get_channel_info, is_user_in_channel, \
     get_message_info, is_user_authorised, post_message_to_channel
 import data
-import threading
 from error import InputError, AccessError
 from other import search
 
@@ -88,7 +88,7 @@ def message_send(token, channel_id, message):
         'message_id': message_id,
         'u_id': user_info['u_id'],
         'message': message,
-        'time_created': time_created,
+        'time_created': int(time_created),
         'is_pinned': False,
         'reacts': [
             {
@@ -266,7 +266,7 @@ def message_sendlater(token, channel_id, message, time_sent):
         'message_id': message_id,
         'u_id': user_info['u_id'],
         'message': message,
-        'time_created': time_sent,
+        'time_created': int(time_sent),
     }
 
     # Sending message

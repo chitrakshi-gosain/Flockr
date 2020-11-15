@@ -5,9 +5,8 @@ Contributor - Chitrakshi Gosain
 Iteration 2
 '''
 
-import json
+import time
 import requests
-import pytest
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -238,3 +237,29 @@ def test_non_ascii_password(url, initialise_user_data):
         'password': 'user0\nPass1!'
     })
     assert login_response.status_code == 400
+
+def test_multiple_login_different_tokne(url, initialise_user_data):
+    '''
+    Tests that App.route("/auth/login", methods=['POST']) allows
+    multiple logins, and each login session has a unique token
+    '''
+
+    login0_response = requests.post(f"{url}/auth/login", json={
+        'email': 'user0@email.com',
+        'password': 'user0_pass1!'
+    })
+    assert login0_response.status_code == 200
+    login0_payload = login0_response.json()
+
+    time.sleep(5)
+
+    login1_response = requests.post(f"{url}/auth/login", json={
+        'email': 'user0@email.com',
+        'password': 'user0_pass1!'
+    })
+    assert login1_response.status_code == 200
+    login1_payload = login1_response.json()
+
+    assert login0_payload != login1_payload
+    tokens = [login0_payload['token'], login1_payload['token']]
+    assert len(set(tokens)) == len(tokens)

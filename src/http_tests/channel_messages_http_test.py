@@ -5,9 +5,7 @@ Contributor - Ahmet Karatas
 Iteration 2
 '''
 
-import json
 import requests
-import pytest
 
 '''
 ***************************BASIC TEMPLATE*****************************
@@ -122,7 +120,7 @@ def test_return_type(url, initialise_user_data, initialise_channel_data):
     assert isinstance(message_payload['messages'][0]['message_id'], int)
     assert isinstance(message_payload['messages'][0]['u_id'], int)
     assert isinstance(message_payload['messages'][0]['message'], str)
-    assert isinstance(message_payload['messages'][0]['time_created'], float)
+    assert isinstance(message_payload['messages'][0]['time_created'], int)
 
     assert isinstance(message_payload['start'], int)
     assert isinstance(message_payload['end'], int)

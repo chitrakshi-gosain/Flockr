@@ -5,9 +5,7 @@ Contributor - Ahmet Karatas
 Iteration 1
 '''
 
-import json
 import requests
-import pytest
 
 '''
 ****************************BASIC TEMPLATE******************************

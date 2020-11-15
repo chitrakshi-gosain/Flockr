@@ -6,7 +6,7 @@ Iteration 2
 '''
 
 import pytest
-from channel import channel_join, channel_messages
+from channel import channel_messages
 from message import message_send, message_remove
 from other import search
 from error import InputError, AccessError

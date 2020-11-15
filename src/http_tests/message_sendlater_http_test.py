@@ -5,11 +5,9 @@ Contributor - Cyrus Wilkie
 Iteration 3
 '''
 
-import json
-import requests
-import pytest
 import time
 from datetime import timezone, datetime, timedelta
+import requests
 
 '''
 ****************************BASIC TEMPLATE******************************

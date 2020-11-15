@@ -5,9 +5,9 @@ Contributor - Cyrus Wilkie
 Iteration 3
 '''
 
-import pytest
 import time
 from datetime import timezone, datetime, timedelta
+import pytest
 from auth import auth_logout
 from message import message_sendlater
 from error import AccessError, InputError

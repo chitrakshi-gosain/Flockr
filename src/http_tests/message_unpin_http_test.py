@@ -2,12 +2,10 @@
 Created collaboratively by Wed15GrapeTeam2 2020 T3
 Contributor - Ahmet Karatas
 
-Iteration 2
+Iteration 3
 '''
 
-import json
 import requests
-import pytest
 
 '''
 ****************************BASIC TEMPLATE******************************

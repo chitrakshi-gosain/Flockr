@@ -1,14 +1,11 @@
 '''
 Created collaboratively by Wed15GrapeTeam2 2020 T3
-Contributor - YOUR NAME HERE
+Contributor - Chitrakshi Gosain
 
-Iteration 2
+Iteration 3
 '''
 
 import requests
-# from flask_mail import Mail
-# from server import APP
-# import data
 
 '''
 ****************************BASIC TEMPLATE******************************
@@ -27,34 +24,15 @@ json.dumps({RETURN VALUE})
 FIXTURES_USED_FOR_THIS_TEST (available in src/http_tests/conftest.py)
 -> url
 -> reset
--> ...
+-> initialise_user_data
 '''
 
 '''
 EXCEPTIONS
-Error type: InputError
-    -> ..
-Error type: AccessError
-    -> ..
+Error type: InputError]
+    -> email entered is not a valid email
+    -> email entered does not belong to a user
 '''
-
-#JUST TRY RECORDING MESSAGES GETTING RESET CODE, EVEN IF IT SENDS THE EMAIL, ITS OK - MICHAEL 9/11/200
-
-# APP.config['MAIL_SUPPRESS_SEND'] = True
-# mail = Mail(APP)
-# does not stop sending emails
-
-# APP.testing = True
-# does not stop sending emails
-
-# APP.config['TESTING'] = True
-# mail = Mail(APP)
-# technically i should reinstate the mail object, but i'm not passing
-# the mail object as an argument so how do i do it? this will still send email :(
-# email is still being sent after reinstating the mail object
-
-# TESTING = True
-# this does not stop sending emails
 
 def test_url(url):
     '''
@@ -90,36 +68,28 @@ def test_unregistered_user(url, reset):
 
 def test_reset_code_sent_successfully(url, initialise_user_data):
     '''
-    Tests that auth_passwordreset_request successfully send an email to
-    the user with reset code so that he can reset his password
+    Tests that APP.route("/auth/passwordreset/request", methods=['POST'])
+    successfully send an email to the user with reset code so that he
+    can reset his password
     '''
 
     resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
-        'email': 'chitrakshi6072@gmail.com'
+        'email': 'user0@email.com'
     })
 
     assert resetrequest_response.status_code == 200
 
 def test_return_type(url, initialise_user_data):
     '''
-    Tests that auth_passwordreset_request successfully returns the reset
-    code which is of string type as per the spec
+    Tests that APP.route("/auth/passwordreset/request", methods=['POST'])
+    successfully returns the reset code which is of string type as per
+    the spec
     '''
 
     resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
-        'email': 'chitrakshi6072@gmail.com'
+        'email': 'user0@email.com'
     })
     assert resetrequest_response.status_code == 200
     resetrequest_payload = resetrequest_response.json()
 
     assert not resetrequest_payload
-
-# THIS IS MEANT TO BE A SANITY CHECK WHITEBOX TO CONFIRM MESSAGES WERE RECORDED PROPERLY, DOESN'T WORK ATM
-# def test_trying_to_record_emails(url, initialise_user_data):
-#     with mail.record_messages() as outbox:
-#         resetrequest_response = requests.post(f"{url}/auth/passwordreset/request", json={
-#             'email': 'chitrakshi6072@gmail.com'
-#         })
-#         assert resetrequest_response.status_code == 200
-#         assert len(outbox) == 1
-#         assert outbox[0].body == data.data['password_record']['chitrakshi6072@gmail.com']

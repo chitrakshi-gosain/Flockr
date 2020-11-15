@@ -214,7 +214,7 @@ def auth_register(email, password, name_first, name_last):
 
     # encrypting the password and adding it to his password record
     encrypted_password = encrypt_password_with_hash(password)
-    data.data['password_record'][email] = encrypted_password
+    data.data['password_record'][email] = {encrypted_password}
 
     # making a new dictionary for new_user and adding values to the keys
     # respectively some keys' values are parameters from the user, others are
@@ -234,9 +234,6 @@ def auth_register(email, password, name_first, name_last):
 
     # appending the data of new_user to data dictionary in data file
     data.data['users'].append(new_user)
-
-    # storing the user's password in password record
-    data.data['password_record'][email] = {password}
 
     # logging-in the new_user to get the authenticated token for their
     # current session
@@ -300,19 +297,20 @@ def auth_passwordreset_reset(reset_code, new_password):
 
     # Checking for InputError(s):
 
+    if reset_code not in data.data['reset_codes'].keys():
+        raise InputError(description='Reset code is not a valid code')
+
     if not check_if_valid_password(new_password):
         raise InputError(description='Password entered is less than 6 \
         characters long or more than 32 characters long or contains Non-ASCII \
             characters')
 
-    if reset_code not in data.data['reset_codes'].keys():
-        raise InputError(description='Reset code is not a valid code')
-
     new_password = encrypt_password_with_hash(new_password)
 
     email = data.data['reset_codes'][reset_code]
     prev_password_list = data.data['password_record'][email]
-
+    print(prev_password_list)
+    print(new_password)
     if new_password in prev_password_list:
         raise InputError(description='Password entered is similar to one of \
         the old passwords')
